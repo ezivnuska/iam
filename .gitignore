@@ -4,6 +4,9 @@
 /backend/node_modules/
 /packages/**/node_modules/
 
+# Ignore config variables
+**/*/config.js
+
 # Ignore build/compiled output directories
 /frontend/dist/
 /packages/**/build/

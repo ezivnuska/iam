@@ -6,12 +6,10 @@ module.exports = {
         [
             'module-resolver',
             {
-                root: ['./'],
+                root: ['.'],
                 alias: {
-                    '@config':          './config',
+                    '@config':          './config.js',
                     '@components':      './src/components',
-                    '@grid':            './src/components/Grid',
-                    '@utils':           './src/components/Grid/utils',
                 },
             },
         ],
