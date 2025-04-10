@@ -1,20 +1,36 @@
-import React from 'react'
-import { View, Text } from 'react-native'
+// import React from 'react'
+import { Text } from 'react-native'
+import { Row, Size, Stack } from 'grid'
 
 const App = () => {
     return (
-        <View
+        <Stack
+            flex={1}
+            spacing={Size.XL}
+            justify='center'
+            align='center'
             style={{
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'green'
+                backgroundColor: 'green',
             }}
         >
-            <View>
+            <Row
+                flex={1}
+                justify='center'
+                align='center'
+                style={{
+                    width: '100%',
+                    backgroundColor: 'yellow',
+                }}
+            >
                 <Text>Hello World</Text>
-            </View>
-        </View>
+            </Row>
+            <Row
+                flex={1}
+                align='center'
+            >
+                <Text>How are you?</Text>
+            </Row>
+        </Stack>
     )
 }
 
