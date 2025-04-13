@@ -1,0 +1,7 @@
+approval:
+  build:
+    - "@parcel/watcher"
+    - "@swc/core"
+    - "bcrypt"
+    - "lmdb"
+    - "msgpackr-extract"

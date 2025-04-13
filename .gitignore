@@ -1,15 +1,13 @@
 # Ignore node_modules directories
 /node_modules/
-/frontend/node_modules/
-/backend/node_modules/
-/packages/**/node_modules/
+/**/*/node_modules/
 
 # Ignore config variables
-config.js
+config.ts
 
 # Ignore build/compiled output directories
-/frontend/dist/
-/packages/**/build/
+/**/*/dist/
+/**/*/build/
 
 # Ignore tsbuildinfo
 *.tsbuildinfo
@@ -33,14 +31,13 @@ config.js
 pnpm-lock.yaml
 
 # Ignore frontend-specific files (Webpack, Babel cache)
-frontend/.cache/
-/frontend/.webpack/
-/frontend/bundle.js
+/apps/web/.cache/
+/apps/web/.webpack/
 
 # Ignore backend-specific files (server logs, etc.)
-backend/.env
-backend/logs/
-/backend/tmp/
+apps/backend/.env
+apps/backend/logs/
+apps/backend/tmp/
 
 # Ignore generated documentation (if any)
 docs/
@@ -50,9 +47,6 @@ coverage/
 
 # Ignore build directories for CI/CD
 .build/
-
-# Ignore secure config variables
-config/
 
 # macOS
 .DS_Store
