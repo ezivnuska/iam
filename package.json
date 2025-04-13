@@ -1,5 +1,5 @@
 {
-	"name": "iam",
+	"name": "@iam",
 	"version": "1.0.0",
 	"description": "",
 	"main": "index.js",
@@ -7,13 +7,22 @@
 		"start": "pnpm --stream -r start",
 		"start:dev": "pnpm --parallel --stream -r run start:dev",
 		"build": "pnpm --stream -r run build",
-		"clean": "rm -rf .parcel-cache && pnpm -r run clean"
+		"clean": "rm -rf .parcel-cache && pnpm -r run clean",
+		"lint": "eslint . --ext .ts,.tsx --fix",
+		"format": "prettier --write ."
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"packageManager": "pnpm@10.8.0",
 	"devDependencies": {
-		"buffer": "^5.5.0||^6.0.0"
+		"@types/node": "^22.14.1",
+		"buffer": "^6.0.3",
+		"typescript": "^5.8.3"
+	},
+	"dependencies": {
+		"@babel/runtime": "^7.27.0",
+		"react": "^19.1.0",
+		"react-dom": "^19.1.0"
 	}
 }

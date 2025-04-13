@@ -1,0 +1,1 @@
+export const getSpacing = (value = 4) => value * 4 // 4px baseline spacing

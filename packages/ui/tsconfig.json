@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "build",
+    "rootDir": "src",
+    "types": ["react", "react-native"],
+    "jsx": "react-native",
+    "composite": true
+  },
+	"include": ["src"],
+  "exclude": ["node_modules", "build"],
+  "references": [
+    { "path": "../types" }
+  ]
+}

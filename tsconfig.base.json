@@ -1,0 +1,23 @@
+{
+	"compilerOptions": {
+	  "target": "ESNext",
+	  "module": "ESNext",
+	  "moduleResolution": "node",
+	  "allowJs": true,
+	  "strict": true,
+	  "resolveJsonModule": true,
+	  "esModuleInterop": true,
+	  "allowSyntheticDefaultImports": true,
+	  "skipLibCheck": true,
+	  "forceConsistentCasingInFileNames": true,
+	  "baseUrl": ".",
+	  "paths": {
+		"react-native": ["react-native-web"],
+		"@auth/*": ["packages/auth/src/*"],
+		"@config": ["config.ts"],
+		"@ui/*": ["packages/ui/src/*"],
+		"types/*": ["packages/types/src/*"],
+		"validation/*": ["packages/validation/src/*"]
+	  }
+	}
+}

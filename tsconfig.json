@@ -1,0 +1,20 @@
+{
+	"extends": "./tsconfig.base.json",
+	"compilerOptions": {
+	  "composite": true
+	},
+	"files": [],
+	"exclude": [
+		"**/build",
+		"**/dist",
+		"**/.parcel-cache"
+	],
+	"references": [
+	  { "path": "./apps/web" },
+	  { "path": "./apps/backend" },
+	  { "path": "./packages/ui" },
+	  { "path": "./packages/types" },
+	  { "path": "./packages/validation" },
+	  { "path": "./packages/auth" }
+	]
+}

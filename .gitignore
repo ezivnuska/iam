@@ -5,7 +5,7 @@
 /packages/**/node_modules/
 
 # Ignore config variables
-**/*/config.js
+config.js
 
 # Ignore build/compiled output directories
 /frontend/dist/

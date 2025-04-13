@@ -1,0 +1,21 @@
+{
+  "name": "types",
+  "version": "1.0.0",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "scripts": {
+    "clean": "rm -rf build tsconfig.tsbuildinfo",
+    "build": "tsc --build",
+    "start:dev": "tsc --build -w"
+  },
+  "exports": {
+    ".": {
+      "import": "./build/index.js",
+      "types": "./build/index.d.ts"
+    }
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.1",
+    "typescript": "^5.8.3"
+  }
+}

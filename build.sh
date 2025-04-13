@@ -1,0 +1,59 @@
+#!/bin/bash
+
+# Function to build with watch mode
+build_with_watch() {
+    PACKAGE=$1
+    echo "Watching build for package: $PACKAGE..."
+    cd $PACKAGE && tsc --watch --build tsconfig.json
+}
+
+# Function to build without watch mode (for production or initial build)
+build_once() {
+    PACKAGE=$1
+    echo "Building package: $PACKAGE..."
+    cd $PACKAGE && tsc --build tsconfig.json
+    cd -
+}
+
+# Clean up any old builds
+echo "Cleaning previous build outputs..."
+rm -rf apps/web/build
+rm -rf apps/backend/build
+rm -rf packages/ui/build
+rm -rf packages/auth/build
+rm -rf packages/types/build
+rm -rf packages/validation/build
+
+# Build the types package first since others depend on it
+build_once "packages/types"
+
+# Build the validation package (which depends on types)
+build_once "packages/validation"
+
+# Now, build auth (which depends on types)
+build_once "packages/auth"
+
+# Build ui (which depends on types, validation, and auth)
+build_once "packages/ui"
+
+# Now we can build the web app (which depends on ui)
+build_once "apps/web"
+
+# Lastly, build the backend app (which depends on types, validation, and auth)
+build_once "apps/backend"
+
+echo "Initial build complete!"
+
+# Now, if you want to watch the packages for changes, you can run `--watch` on specific packages.
+# Start watching the packages after the initial build
+
+# Start watching packages in development mode
+echo "Now watching the following packages for changes..."
+build_with_watch "packages/types" & # Watch types in background
+build_with_watch "packages/validation" & # Watch validation in background
+build_with_watch "packages/auth" & # Watch auth in background
+build_with_watch "packages/ui" & # Watch ui in background
+build_with_watch "apps/web" & # Watch web in background
+build_with_watch "apps/backend" # Watch backend (this will keep running)
+
+echo "Watching all packages... Press Ctrl+C to stop."
