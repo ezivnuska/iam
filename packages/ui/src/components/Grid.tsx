@@ -1,37 +1,24 @@
 import React from 'react'
-import { View, ViewStyle, StyleProp } from 'react-native'
-import { getFlexStyles } from '../utils/styles'
+import { View, ViewStyle, StyleSheet, StyleProp } from 'react-native'
+import { resolveResponsiveProp } from '../utils/responsive'
+import { getResolvedPadding } from '../utils/padding'
+import { useBreakpoint } from '../hooks/useBreakpoint'
+import { FlexProps } from '../types/flex'
+import { PaddingProps } from '../types/layout'
 
-export type GridProps = {
+export interface GridProps extends FlexProps, PaddingProps {
   children: React.ReactNode
-
-  flex?: number
-  spacing?: number
-
-  align?: ViewStyle['alignItems']
-  justify?: ViewStyle['justifyContent']
-  direction?: ViewStyle['flexDirection']
-  wrap?: boolean
-
-  padding?: number
-  paddingHorizontal?: number
-  paddingVertical?: number
-  paddingTop?: number
-  paddingBottom?: number
-  paddingLeft?: number
-  paddingRight?: number
-
   style?: StyleProp<ViewStyle>
 }
 
-export const Grid = ({
-  children,
+const Grid: React.FC<GridProps> = ({
   flex,
   spacing,
   align,
   justify,
-  direction = 'row',
-  wrap = false,
+  direction,
+  wrap,
+  children,
 
   padding,
   paddingHorizontal,
@@ -42,19 +29,35 @@ export const Grid = ({
   paddingRight,
 
   style,
-}: GridProps) => {
-  const layoutStyle: ViewStyle = {
-    ...getFlexStyles({ spacing, align, justify, direction, wrap }),
-    ...(flex !== undefined && { flex }),
+}) => {
 
-    ...(padding !== undefined && { padding }),
-    ...(paddingHorizontal !== undefined && { paddingHorizontal }),
-    ...(paddingVertical !== undefined && { paddingVertical }),
-    ...(paddingTop !== undefined && { paddingTop }),
-    ...(paddingBottom !== undefined && { paddingBottom }),
-    ...(paddingLeft !== undefined && { paddingLeft }),
-    ...(paddingRight !== undefined && { paddingRight }),
+  const resolvedSpacing = useBreakpoint(spacing) ?? 0
+  const resolvedAlign = useBreakpoint(align)
+  const resolvedJustify = useBreakpoint(justify)
+  const resolvedDirection = useBreakpoint(direction)
+  const resolvedWrap = useBreakpoint(wrap)
+
+  const layoutStyle: ViewStyle = {
+    flex: resolveResponsiveProp(flex),
+    flexDirection: resolvedDirection,
+    alignItems: resolvedAlign,
+    justifyContent: resolvedJustify,
+    flexWrap: resolvedWrap ? 'wrap' : 'nowrap',
+    gap: resolvedSpacing,
+
+    ...getResolvedPadding({
+      padding,
+      paddingHorizontal,
+      paddingVertical,
+      paddingTop,
+      paddingBottom,
+      paddingLeft,
+      paddingRight,
+    }),
+  
   }
 
-  return <View style={[layoutStyle, style]}>{children}</View>
+  return <View style={StyleSheet.flatten([layoutStyle, style])}>{children}</View>
 }
+
+export default Grid

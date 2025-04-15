@@ -1,19 +1,19 @@
 {
   "name": "@ui",
   "version": "1.0.0",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "import": "./build/index.js",
+      "types": "./build/index.d.ts"
     }
   },
   "scripts": {
-		"clean": "rm -rf build tsconfig.tsbuildinfo",
-		"build": "tsc --build",
-		"start:dev": "tsc --build -w"
-	},
+    "clean": "rm -rf build tsconfig.tsbuildinfo",
+    "build": "tsc --build",
+    "start:dev": "tsc --build -w"
+  },
   "dependencies": {
     "react": "^19.1.0",
     "react-native": "0.79.0",
@@ -21,6 +21,7 @@
     "types": "workspace:*"
   },
   "devDependencies": {
-    "@types/react": "^19.1.1"
+    "@types/react": "^19.1.1",
+    "@types/react-native": "^0.73.0"
   }
 }

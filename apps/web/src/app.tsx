@@ -1,36 +1,39 @@
+// src/App.tsx
 import React from 'react'
-import { Text } from 'react-native'
-import { Row, Stack } from '@ui'
+import { SafeAreaView, StyleSheet, View } from 'react-native'
+import { PageLayout } from '@ui'
 
-const App = () => {
-    return (
-        <Stack
-            flex={1}
-            justify='center'
-            align='center'
-            style={{
-                backgroundColor: 'green',
-            }}
+export default function App() {
+  return (
+    <SafeAreaView style={styles.container}>
+        <PageLayout
+            header={<View style={styles.header} />}
+            footer={<View style={styles.footer} />}
+            padding={{ sm: 12, md: 24 }}
         >
-            <Row
-                flex={1}
-                justify='center'
-                align='center'
-                style={{
-                    width: '100%',
-                    backgroundColor: 'yellow',
-                }}
-            >
-                <Text>Hello World</Text>
-            </Row>
-            <Row
-                flex={1}
-                align='center'
-            >
-                <Text>How are you?</Text>
-            </Row>
-        </Stack>
-    )
+            <View style={styles.content} />
+        </PageLayout>
+    </SafeAreaView>
+  )
 }
 
-export default App
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        borderWidth: 5,
+        borderStyle: 'dotted',
+    },
+    header: {
+        height: 100,
+        backgroundColor: 'green',
+    },
+    content: {
+        flex: 1,
+        backgroundColor: 'yellow',
+    },
+    footer: {
+        height: 100,
+        backgroundColor: 'green',
+    },
+})

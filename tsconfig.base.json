@@ -12,9 +12,9 @@
 	  "forceConsistentCasingInFileNames": true,
 	  "baseUrl": ".",
 	  "paths": {
-		"react-native": ["react-native-web"],
+		"react-native": ["node_modules/react-native-web"],
 		"@auth/*": ["packages/auth/src/*"],
-		"@config": ["config.ts"],
+		"@config": ["config/index.ts"],
 		"@ui/*": ["packages/ui/src/*"],
 		"types/*": ["packages/types/src/*"],
 		"validation/*": ["packages/validation/src/*"]

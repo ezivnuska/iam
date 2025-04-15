@@ -3,7 +3,7 @@
 /**/*/node_modules/
 
 # Ignore config variables
-config.ts
+config/
 
 # Ignore build/compiled output directories
 /**/*/dist/

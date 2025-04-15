@@ -65,7 +65,7 @@ const plugins = [
 	// 		{ from: path.resolve(__dirname, 'src/assets'), to: 'assets' },
 	// 	],
 	// }),
-	...(isDev ? [new BundleAnalyzerPlugin()] : [])
+	...(process.env.ANALYZE === 'true' ? [new BundleAnalyzerPlugin()] : []),
 ]
 
 module.exports = {

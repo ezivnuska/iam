@@ -14,7 +14,7 @@ import userRoutes from './routes/user.routes'
 require('dotenv').config()
 
 const app = express()
-const port = 4000
+const PORT = process.env.PORT || 4000
 
 //
 // Enables cross origin resource sharing so the frontend can us this REST API.
@@ -39,7 +39,7 @@ app.use(cors({
 //
 app.use(session({
 	secret: process.env.JWT_SECRET || require('@config').JWT_SECRET,
-	resave: false, // set to true to reset session on every request
+	resave: false,
 	saveUninitialized: true,
 }))
 
@@ -63,91 +63,44 @@ app.use((err: any, _req: any, res: any, _next: any) => {
     res.status(500).json({ message: err.message || 'Unexpected error' })
 })
 
-// const connectToMongoDB = async () => {
-//     try {
-//         await mongoose.connect(process.env.MONGO_URI || require('./config').MONGO_URI)
-//         console.log(`\n\n* * *\n** MongoDB connected **\n* * *\n\n`)
-//     } catch (err) {
-//         console.log(err)
-//     }
-// }
-
-// connectToMongoDB()
-
-// change to:
 const start = async () => {
 	try {
 		await mongoose.connect(process.env.MONGO_URI!)
 		console.log('MongoDB connected')
-		app.listen(3000, () => console.log('Server running on http://localhost:3000'))
+
+		// server.listen(process.env.PORT, () => {
+		app.listen(PORT, () => {
+			console.log(`Server running on http://localhost:${PORT}`)
+		})
 	} catch (err) {
-		console.error('Failed to start server:', err)
+		console.error('MongoDB connection error:', err)
 	}
 }
+
+process.on('SIGINT', async () => {
+	console.log('Received SIGINT, shutting down gracefully...')
+	
+	try {
+		await mongoose.connection.close()
+		console.log('MongoDB connection closed')
+		process.exit(0)
+	} catch (err) {
+		console.error('Error during MongoDB disconnection', err)
+		process.exit(1)
+	}
+})
+  
+process.on('SIGTERM', async () => {
+	console.log('Received SIGTERM, shutting down gracefully...')
+	
+	try {
+		await mongoose.connection.close()
+		console.log('MongoDB connection closed')
+		process.exit(0)
+	} catch (err) {
+		console.error('Error during MongoDB disconnection', err)
+		process.exit(1)
+	}
+})
   
 start()
-
-// server.listen(process.env.PORT, () => {
-app.listen(process.env.PORT, () => {
-	console.log(`Server running on port ${process.env.PORT}`)
-})
-
-
-
-//
-// The validation code library is shared between backend and frontend 
-// without being published to npm.
-// 
-// import { validateTodo, IAddTodoPayload, IGetTodosResponse, ITodoItem } from 'validation'
-
-//
-// List of items in the todo list.
-// Normally in a production application this might be stored in a database.
-// For simplicity it is stored in memory.
-//
-// const todoList: ITodoItem[] = [
-//     {
-//         text: 'Feed the cat',
-//     },
-//     {
-//         text: 'Go to work',
-//     },
-//     {
-//         text: 'Have a delicious ice cream',
-//     },
-// ]
-
-//
-// Adds an item to the todo list.
-//
-// app.post('/todo', (req, res) => {
-
-//     const payload = req.body as IAddTodoPayload
-//     const todoItem = payload.todoItem
-//     const result = validateTodo(todoItem)
-//     if (!result.valid) {
-//         res.status(400).json(result)
-//         return
-//     }
-
-//     //
-//     // The todo item is valid, add it to the todo list.
-//     //
-//     todoList.push(todoItem)
-//     res.sendStatus(200)
-// })
-
-//
-// Gets the todo list.
-//
-// app.get('/todos', (req, res) => {
-//     const response: IGetTodosResponse = {
-//         todoList: todoList,
-//     }
-
-//     res.json(response)
-// })
-
-// app.listen(port, () => {
-//     console.log(`Todo list app listening on port ${port}`)
-// })

@@ -1,0 +1,95 @@
+import React from 'react'
+import {
+	View,
+	StyleSheet,
+	ScrollView,
+	ViewStyle,
+	StyleProp,
+} from 'react-native'
+import Grid from './Grid'
+import type { ResponsiveProp } from '../types/responsive'
+import { getResolvedPadding } from '../utils/padding'
+
+export type PageLayoutProps = {
+	header?: React.ReactNode
+	footer?: React.ReactNode
+	children: React.ReactNode
+	padding?: ResponsiveProp<number>
+	paddingHorizontal?: ResponsiveProp<number>,
+	paddingVertical?: ResponsiveProp<number>,
+	paddingTop?: ResponsiveProp<number>,
+	paddingBottom?: ResponsiveProp<number>,
+	paddingLeft?: ResponsiveProp<number>,
+	paddingRight?: ResponsiveProp<number>,
+	style?: StyleProp<ViewStyle>
+}
+
+export const PageLayout: React.FC<PageLayoutProps> = ({
+		header,
+		footer,
+		children,
+		padding,
+		paddingHorizontal,
+		paddingVertical,
+		paddingTop,
+		paddingBottom,
+		paddingLeft,
+		paddingRight,
+		style,
+}) => {
+	const paddingStyle = getResolvedPadding({
+		padding,
+		paddingHorizontal,
+		paddingVertical,
+		paddingTop,
+		paddingBottom,
+		paddingLeft,
+		paddingRight,
+	})
+	return (
+		<Grid
+		direction="column"
+		flex={1}
+		style={[styles.container, style]}
+		>
+		{header && <View style={styles.header}>{header}</View>}
+		
+		<ScrollView
+			contentContainerStyle={[
+			styles.main,
+			paddingStyle,
+			]}
+			keyboardShouldPersistTaps="handled"
+			showsVerticalScrollIndicator={false}
+			style={{ flex: 1 }}
+		>
+			{children}
+		</ScrollView>
+
+		{footer && <View style={styles.footer}>{footer}</View>}
+		</Grid>
+	)
+}
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		height: '100%',
+		width: '100%',
+	},
+	header: {
+		flexShrink: 0,
+		paddingVertical: 12,
+		paddingHorizontal: 16,
+		backgroundColor: '#f9f9f9',
+	},
+	main: {
+		flexGrow: 1,
+	},
+	footer: {
+		flexShrink: 0,
+		paddingVertical: 12,
+		paddingHorizontal: 16,
+		backgroundColor: '#f9f9f9',
+	},
+})

@@ -1,6 +1,12 @@
 {
     "watch": ["src"],
     "ext": "ts",
-    "ignore": ["src/**/*.test.ts"],
-    "exec": "npx ts-node ./src/index.ts"
-}
+    "ignore": [
+      "src/**/*.test.ts",
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "exec": "npx ts-node -r ./src/index.ts",
+    "delay": "500ms"
+  }
+  
