@@ -10,6 +10,8 @@ import Grid from './Grid'
 import type { ResponsiveProp } from '../types/responsive'
 import { getResolvedPadding } from '../utils/padding'
 
+const MAX_WIDTH = 900
+
 export type PageLayoutProps = {
 	header?: React.ReactNode
 	footer?: React.ReactNode
@@ -25,17 +27,17 @@ export type PageLayoutProps = {
 }
 
 export const PageLayout: React.FC<PageLayoutProps> = ({
-		header,
-		footer,
-		children,
-		padding,
-		paddingHorizontal,
-		paddingVertical,
-		paddingTop,
-		paddingBottom,
-		paddingLeft,
-		paddingRight,
-		style,
+	header,
+	footer,
+	children,
+	padding,
+	paddingHorizontal,
+	paddingVertical,
+	paddingTop,
+	paddingBottom,
+	paddingLeft,
+	paddingRight,
+	style,
 }) => {
 	const paddingStyle = getResolvedPadding({
 		padding,
@@ -46,27 +48,38 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
 		paddingLeft,
 		paddingRight,
 	})
+
 	return (
 		<Grid
-		direction="column"
-		flex={1}
-		style={[styles.container, style]}
+			direction="column"
+			flex={1}
+			style={[styles.container, style]}
 		>
-		{header && <View style={styles.header}>{header}</View>}
-		
-		<ScrollView
-			contentContainerStyle={[
-			styles.main,
-			paddingStyle,
-			]}
-			keyboardShouldPersistTaps="handled"
-			showsVerticalScrollIndicator={false}
-			style={{ flex: 1 }}
-		>
-			{children}
-		</ScrollView>
+			{header && (
+				<View style={styles.header}>
+					<View style={styles.maxWidthContainer}>{header}</View>
+				</View>
+			)}
+			
+			<ScrollView
+				contentContainerStyle={[
+					styles.main,
+					paddingStyle,
+				]}
+				keyboardShouldPersistTaps="handled"
+				showsVerticalScrollIndicator={false}
+				style={{ flex: 1 }}
+			>
+				<View style={styles.maxWidthContainer}>
+					{children}
+				</View>
+			</ScrollView>
 
-		{footer && <View style={styles.footer}>{footer}</View>}
+			{footer && (
+				<View style={styles.footer}>
+					<View style={styles.maxWidthContainer}>{footer}</View>
+				</View>
+			)}
 		</Grid>
 	)
 }
@@ -79,17 +92,22 @@ const styles = StyleSheet.create({
 	},
 	header: {
 		flexShrink: 0,
-		paddingVertical: 12,
-		paddingHorizontal: 16,
-		backgroundColor: '#f9f9f9',
+		// paddingVertical: 12,
+		// paddingHorizontal: 16,
+		backgroundColor: 'red',
 	},
 	main: {
 		flexGrow: 1,
 	},
 	footer: {
 		flexShrink: 0,
-		paddingVertical: 12,
-		paddingHorizontal: 16,
-		backgroundColor: '#f9f9f9',
+		// paddingVertical: 12,
+		// paddingHorizontal: 16,
+		backgroundColor: 'green',
+	},
+	maxWidthContainer: {
+		width: '100%',
+		maxWidth: MAX_WIDTH,
+		alignSelf: 'center',
 	},
 })
