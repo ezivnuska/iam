@@ -5,13 +5,16 @@ import mongoose from 'mongoose'
 import session from 'express-session'
 import cors from 'cors'
 import path from 'path'
+import dotenv from 'dotenv'
 
 import adminRoutes from './routes/admin.routes'
 import authRoutes from './routes/auth.routes'
 import profileRoutes from './routes/profile.routes'
 import userRoutes from './routes/user.routes'
 
-require('dotenv').config()
+
+dotenv.config({ path: path.resolve(__dirname, '../../../.env') })
+dotenv.config({ path: path.resolve(__dirname, '../.env') })
 
 const app = express()
 const PORT = process.env.PORT || 4000
@@ -33,14 +36,25 @@ app.use(cors({
 	allowedHeaders: [ 'Origin', 'X-Requested-With', 'Content-Type', 'Accept' ],
 }))
 
+const sessionSecret = process.env.JWT_SECRET
+
+if (!sessionSecret) {
+	throw new Error('JWT_SECRET must be defined in environment variables.')
+}
+
 //
 // Configure session middleware
 // https://www.npmjs.com/package/express-session
 //
 app.use(session({
-	secret: process.env.JWT_SECRET || require('@config').JWT_SECRET,
+	secret: sessionSecret,
 	resave: false,
 	saveUninitialized: true,
+	cookie: {
+		secure: process.env.NODE_ENV === 'production',
+		httpOnly: true,
+		sameSite: 'lax',
+	}
 }))
 
 app.use(express.urlencoded({ extended: true }))

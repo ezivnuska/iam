@@ -1,4 +1,4 @@
-// apps/backend/src/@types/express/index.d.ts
+// apps/backend/src/types/express/index.d.ts
 
 import { IUser } from '../../models/user.model'
 

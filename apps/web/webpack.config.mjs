@@ -1,10 +1,15 @@
-const path = require('path');
-const webpack = require('webpack')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const CopyPlugin = require('copy-webpack-plugin')
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+import path from 'path'
+import { fileURLToPath } from 'url'
+import webpack from 'webpack'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
+import CopyPlugin from 'copy-webpack-plugin'
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
+import Dotenv from 'dotenv-webpack'
 
-const isDev = process.argv.includes('--mode=development')
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+const isDev = process.env.NODE_ENV !== 'production'
 
 const compileNodeModules = [
 	// Add every react-native package that needs compiling
@@ -55,11 +60,12 @@ const plugins = [
 		template: path.join(__dirname, 'index.html')
 	}),
 	new webpack.DefinePlugin({
-		'__DEV__': isDev,
+		'__DEV__': JSON.stringify(isDev),
 	}),
 	new webpack.ProvidePlugin({
 		process: 'process/browser',
 	}),
+	new Dotenv(),
 	// new CopyPlugin({
 	// 	patterns: [
 	// 		{ from: path.resolve(__dirname, 'src/assets'), to: 'assets' },
@@ -68,9 +74,9 @@ const plugins = [
 	...(process.env.ANALYZE === 'true' ? [new BundleAnalyzerPlugin()] : []),
 ]
 
-module.exports = {
+export default {
 	target: 'web',
-	mode: 'development',
+	mode: isDev ? 'development' : 'production',
 	entry: {
 		app: path.join(__dirname, 'src/index.ts'),
 	},
@@ -90,7 +96,6 @@ module.exports = {
 			'react-native$': 'react-native-web',
 			'react-native-safe-area-context': 'expo-dev-menu/vendored/react-native-safe-area-context/src',
 			"@auth": path.resolve(__dirname, "../../packages/auth/src"),
-			"@config": path.resolve(__dirname, "../../config.ts"),
 			"@ui": path.resolve(__dirname, "../../packages/ui/src"),
 			"types": path.resolve(__dirname, "../../packages/types/src"),
 			"validation": path.resolve(__dirname, "../../packages/validation/src"),
@@ -112,7 +117,7 @@ module.exports = {
 	devtool: isDev ? 'eval' : 'source-map',
 	devServer: {
 		compress: true,
-		port: 3000,
+		port: process.env.PORT || 3000,
 		static: {
 		  directory: path.resolve(__dirname, 'dist'),
 		},
@@ -120,7 +125,7 @@ module.exports = {
 		proxy: [
 		  {
 			context: ['/api'],
-			target: 'http://localhost:4000',
+			target: `http://localhost:${process.env.API_PORT || 4000}`,
 			secure: false,
 			changeOrigin: true,
 		  },

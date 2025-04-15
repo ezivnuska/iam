@@ -9,7 +9,7 @@
 		"declarationDir": "build",
 		"emitDeclarationOnly": false,
 		"jsx": "preserve",
-		"typeRoots": ["./src/@types", "./node_modules/@types"],
+		"typeRoots": ["./src/types", "./node_modules/@types"],
 		"types": ["node", "express"]
 	},
 	"include": ["src"],

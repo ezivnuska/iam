@@ -14,7 +14,6 @@
 	  "paths": {
 		"react-native": ["node_modules/react-native-web"],
 		"@auth/*": ["packages/auth/src/*"],
-		"@config": ["config/index.ts"],
 		"@ui/*": ["packages/ui/src/*"],
 		"types/*": ["packages/types/src/*"],
 		"validation/*": ["packages/validation/src/*"]
