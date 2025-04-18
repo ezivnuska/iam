@@ -3,8 +3,7 @@ import { View, ViewStyle, StyleSheet, StyleProp } from 'react-native'
 import { resolveResponsiveProp } from '../utils/responsive'
 import { getResolvedPadding } from '../utils/padding'
 import { useBreakpoint } from '../hooks/useBreakpoint'
-import { FlexProps } from '../types/flex'
-import { PaddingProps } from '../types/layout'
+import { FlexProps, PaddingProps } from '../types/layout'
 
 export interface GridProps extends FlexProps, PaddingProps {
   children: React.ReactNode

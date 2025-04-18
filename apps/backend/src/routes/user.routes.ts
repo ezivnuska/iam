@@ -1,3 +1,5 @@
+// app/backend/src/routes/user.routes.ts
+
 import { Router } from 'express'
 import {
   getAllUsers,
@@ -6,11 +8,11 @@ import {
   updateUserRole,
   deleteUser
 } from '../controllers/user.controller'
-import { authenticate, requireRole } from '../middlewares/authMiddleware'
+import { requireAuth } from '../middleware/authMiddleware'
 
 const router: ReturnType<typeof Router> = Router()
 
-router.use(authenticate, requireRole('admin'))
+router.use(requireAuth(['admin']))
 
 router.get('/',         getAllUsers)
 router.get('/:id',      getUserById)

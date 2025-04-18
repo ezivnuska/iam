@@ -9,9 +9,17 @@
 		"declarationDir": "build",
 		"emitDeclarationOnly": false,
 		"jsx": "preserve",
-		"typeRoots": ["./src/types", "./node_modules/@types"],
+		"typeRoots": [
+			"./node_modules/@types",
+			"./src/types"
+		],
 		"types": ["node", "express"]
 	},
 	"include": ["src"],
-	"exclude": ["node_modules", "build"]
+	"exclude": ["node_modules", "build"],
+	"references": [
+		{ "path": "../../packages/types" },
+		{ "path": "../../packages/validation" },
+		{ "path": "../../packages/auth" }
+	]
 }

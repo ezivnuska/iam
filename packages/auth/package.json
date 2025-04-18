@@ -9,12 +9,13 @@
         "start:dev": "tsc --build -w"
     },
     "dependencies": {
+        "@types": "workspace:*",
         "bcryptjs": "^3.0.2",
-        "jsonwebtoken": "^9.0.2",
-        "types": "workspace:*"
+        "jsonwebtoken": "^9.0.2"
     },
     "devDependencies": {
         "@types/bcrypt": "^5.0.2",
+        "@types/express": "^4.17.21",
         "@types/jsonwebtoken": "^9.0.9",
         "@types/node": "^22.14.1",
         "@types/react": "^19.1.1",

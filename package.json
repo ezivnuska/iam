@@ -16,13 +16,31 @@
 	"license": "ISC",
 	"packageManager": "pnpm@10.8.0",
 	"devDependencies": {
+		"@types/cors": "^2.8.17",
+		"@types/express": "^5.0.1",
+		"@types/express-session": "^1.18.1",
+		"@types/jsonwebtoken": "^9.0.9",
 		"@types/node": "^22.14.1",
+		"@types/nodemailer": "^6.4.17",
+		"@types/react": "19.1.2",
 		"buffer": "^6.0.3",
 		"typescript": "^5.8.3"
 	},
 	"dependencies": {
 		"@babel/runtime": "^7.27.0",
+		"@react-navigation/core": "7.8.5",
+		"@react-navigation/native": "7.1.6",
+		"@react-navigation/stack": "^7.2.10",
+		"nodemailer": "^6.10.1",
 		"react": "^19.1.0",
-		"react-dom": "^19.1.0"
+		"react-dom": "^19.1.0",
+		"react-native": "^0.79.1",
+		"react-native-gesture-handler": "^2.25.0",
+		"react-native-pager-view": "^6.7.0",
+		"react-native-reanimated": "^3.17.4",
+		"react-native-safe-area-context": "^5.4.0",
+		"react-native-screens": "^4.10.0",
+		"react-native-vector-icons": "^10.2.0",
+		"react-native-web": "^0.20.0"
 	}
 }

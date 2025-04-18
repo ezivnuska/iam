@@ -1,19 +1,13 @@
+// apps/backend/src/routes/profile.routes.ts
+
 import { Router } from 'express'
-import { updateSelf } from '../controllers/profile.controller'
-import { authenticate } from '../middlewares/authMiddleware'
-import { changePassword } from '../controllers/profile.controller'
+import { requireAuth } from '../middleware/authMiddleware'
+import { updateSelf, changePassword, getProfile } from '../controllers/profile.controller'
 
 const router: ReturnType<typeof Router> = Router()
 
-// Get current user profile
-router.get('/', authenticate, (req, res) => {
-	res.json({ user: req.user })
-})
-
-// Update profile info
-router.patch('/', authenticate, updateSelf)
-
-// Change password
-router.post('/change-password', authenticate, changePassword)
+router.get('/', requireAuth(), getProfile)
+router.put('/', requireAuth(), updateSelf)
+router.put('/password', requireAuth(), changePassword)
 
 export default router

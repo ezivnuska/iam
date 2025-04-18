@@ -1,7 +1,7 @@
 // packages/ui/src/components/Flex.tsx
 import React from 'react'
 import { View, ViewStyle } from 'react-native'
-import type { FlexProps } from '../types/flex'
+import type { FlexProps } from '../types/layout'
 import { resolveResponsiveProp } from '../utils/responsive'
 
 export const Flex: React.FC<React.PropsWithChildren<FlexProps>> = ({

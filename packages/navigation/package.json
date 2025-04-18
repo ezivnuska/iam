@@ -1,0 +1,21 @@
+{
+	"name": "@navigation",
+	"version": "1.0.0",
+	"main": "src/index.js",
+	"types": "build/index.d.ts",
+	"scripts": {
+		"clean": "rm -rf build tsconfig.tsbuildinfo",
+		"build": "tsc --build",
+		"start:dev": "tsc --build -w"
+	},
+	"dependencies": {
+		"@navigation": "workspace:*",
+		"@types": "workspace:*",
+		"@ui": "workspace:*",
+		"react-native-safe-area-context": "^5.4.0",
+		"react-native-screens": "^4.10.0"
+	},
+	"devDependencies": {
+		"@types/react": "^19.1.2"
+	}
+}

@@ -1,11 +1,26 @@
 {
 	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
-		"outDir": "dist",
+		"composite": true,
+		"outDir": "build",
 		"rootDir": "src",
-		"jsx": "react-native",
-		"composite": true
+		"skipDefaultLibCheck": true,
+		"jsx": "react",
+		"isolatedModules": true
 	},
-	"include": ["src"],
-	"exclude": ["node_modules", "dist"]
+	"include": [
+		"src",
+		"../../packages/auth/src",
+		"../../packages/navigation/src",
+		"../../packages/ui/src",
+		"../../packages/validation/src"
+	],
+	"exclude": ["node_modules", "build"],
+	"references": [
+		{ "path": "../../packages/auth" },
+		{ "path": "../../packages/navigation" },
+		{ "path": "../../packages/types" },
+		{ "path": "../../packages/ui" },
+		{ "path": "../../packages/validation" }
+	],
 }

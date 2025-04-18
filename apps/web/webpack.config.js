@@ -13,34 +13,53 @@ const isDev = process.env.NODE_ENV !== 'production'
 
 const compileNodeModules = [
 	// Add every react-native package that needs compiling
-	// 'react-native-gesture-handler',
-	// 'react-native-paper',
-	// 'react-native-vector-icons',
+	'react-native-screens',
+	'react-native-safe-area-context',
+	'react-native-gesture-handler',
+	'react-native-reanimated',
+	'react-native-pager-view',
+	'react-native-vector-icons',
 ].map(moduleName => path.resolve(__dirname, `node_modules/${moduleName}`));
 
 const babelLoaderConfig = {
 	test: /\.[jt]sx?$/,
 	// Add every directory that needs to be compiled by Babel during the build.
 	include: (filepath) => {
-		return (
-			filepath.startsWith(path.resolve(__dirname, 'src')) ||
-			filepath.startsWith(path.resolve(__dirname, '../../packages/ui/src')) ||
-			filepath.startsWith(path.resolve(__dirname, '../../packages/types/src')) ||
-			filepath.startsWith(path.resolve(__dirname, '../../packages/auth/src')) ||
-			filepath.startsWith(path.resolve(__dirname, '../../packages/validation/src')) ||
+		const sourcesToCompile = [
+			path.resolve(__dirname, 'src'),
+			path.resolve(__dirname, '../../packages/ui/src'),
+			path.resolve(__dirname, '../../packages/types/src'),
+			path.resolve(__dirname, '../../packages/auth/src'),
+			path.resolve(__dirname, '../../packages/navigation/src'),
+			path.resolve(__dirname, '../../packages/validation/src'),
+			...compileNodeModules,
+		]
+
+		return sourcesToCompile.some(srcPath => filepath.startsWith(srcPath)) ||
 			filepath.includes(`node_modules/expo/`) ||
 			filepath.includes(`node_modules/expo-modules-core/`)
-		)
 	},
 	use: {
 		loader: 'babel-loader',
 		options: {
 			presets: [
 				"babel-preset-expo",
-				"@babel/preset-typescript",
+				['@babel/preset-typescript', { allowDeclareFields: true }],
 			],
 		},
 	},
+}
+
+const imageLoaderConfig = {
+	test: /\.(png|jpe?g|gif|svg)$/i,
+	// include: [
+	// 	path.resolve(__dirname, 'node_modules/react-native-vector-icons'),
+	// 	path.resolve(__dirname, 'src/fonts'),
+	// ],
+	type: 'asset/resource',
+	// generator: {
+	// 	filename: 'src/fonts/[name].[hash][ext][query]',
+	// },
 }
 
 const fontLoaderConfig = {
@@ -65,7 +84,10 @@ const plugins = [
 	new webpack.ProvidePlugin({
 		process: 'process/browser',
 	}),
-	new Dotenv(),
+	new Dotenv({
+		path: path.resolve(__dirname, '.env'), // frontend-safe env
+		systemvars: true // optionally also pull from process.env
+	}),
 	// new CopyPlugin({
 	// 	patterns: [
 	// 		{ from: path.resolve(__dirname, 'src/assets'), to: 'assets' },
@@ -86,22 +108,31 @@ export default {
 	},
 	module: {
 		rules: [
+			{
+				test: /\.js$/,
+				resolve: {
+					fullySpecified: false,
+				},
+			},
 			babelLoaderConfig,
 			fontLoaderConfig,
+			imageLoaderConfig,
 		],
 	},
 	plugins,
 	resolve: {
 		alias: {
 			'react-native$': 'react-native-web',
-			'react-native-safe-area-context': 'expo-dev-menu/vendored/react-native-safe-area-context/src',
+			'react-native-safe-area-context': 'react-native-safe-area-context',
+			// 'react-native-safe-area-context': 'expo-dev-menu/vendored/react-native-safe-area-context/src',
 			"@auth": path.resolve(__dirname, "../../packages/auth/src"),
+			"@navigation": path.resolve(__dirname, "../../packages/navigation/src"),
 			"@ui": path.resolve(__dirname, "../../packages/ui/src"),
-			"types": path.resolve(__dirname, "../../packages/types/src"),
+			"@types": path.resolve(__dirname, "../../packages/types/src"),
 			"validation": path.resolve(__dirname, "../../packages/validation/src"),
 		},
 		extensions: [
-			'.mjs',
+			// '.mjs',
 			'.web.tsx',
 			'.tsx',
 			'.web.ts',
@@ -113,6 +144,7 @@ export default {
 			'.css',
 			'.json'
 		],
+		// fullySpecified: false,
 	},
 	devtool: isDev ? 'eval' : 'source-map',
 	devServer: {

@@ -1,19 +1,23 @@
 // src/App.tsx
+
 import React from 'react'
-import { SafeAreaView, StyleSheet, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { PageLayout } from '@ui'
+import { AppNavigator } from '@navigation'
 
 export default function App() {
   return (
-    <SafeAreaView style={styles.container}>
-        <PageLayout
+    <SafeAreaProvider style={styles.container}>
+        <AppNavigator />
+        {/* <PageLayout
             header={<View style={styles.header}>Header</View>}
             footer={<View style={styles.footer}>Footer</View>}
             padding={{ sm: 12, md: 24 }}
         >
             <View style={styles.content}>Main</View>
-        </PageLayout>
-    </SafeAreaView>
+        </PageLayout> */}
+    </SafeAreaProvider>
   )
 }
 
@@ -24,14 +28,11 @@ const styles = StyleSheet.create({
     },
     header: {
         height: 100,
-        backgroundColor: 'red',
     },
     content: {
         flex: 1,
-        backgroundColor: 'yellow',
     },
     footer: {
         height: 100,
-        backgroundColor: 'green',
     },
 })

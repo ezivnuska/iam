@@ -6,6 +6,7 @@ import {
 	ViewStyle,
 	StyleProp,
 } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Grid from './Grid'
 import type { ResponsiveProp } from '../types/responsive'
 import { getResolvedPadding } from '../utils/padding'
@@ -39,14 +40,15 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
 	paddingRight,
 	style,
 }) => {
+	const insets = useSafeAreaInsets()
 	const paddingStyle = getResolvedPadding({
 		padding,
 		paddingHorizontal,
 		paddingVertical,
-		paddingTop,
-		paddingBottom,
-		paddingLeft,
-		paddingRight,
+		paddingTop: paddingTop ?? insets.top,
+		paddingBottom: paddingBottom ?? insets.bottom,
+		paddingLeft: paddingLeft ?? insets.left,
+		paddingRight: paddingRight ?? insets.right,
 	})
 
 	return (
@@ -98,6 +100,7 @@ const styles = StyleSheet.create({
 	},
 	main: {
 		flexGrow: 1,
+        backgroundColor: 'yellow',
 	},
 	footer: {
 		flexShrink: 0,

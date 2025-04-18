@@ -1,0 +1,22 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "Node",
+        "jsx": "react-jsx",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "outDir": "./build",
+        "composite": true,
+        "declaration": true,
+        "declarationMap": true
+    },
+    "include": ["src"],
+	"references": [
+        { "path": "../types" },
+        { "path": "../ui" }
+	]
+}

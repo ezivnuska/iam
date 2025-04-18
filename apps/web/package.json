@@ -3,8 +3,8 @@
 	"version": "1.0.0",
 	"description": "",
 	"scripts": {
-		"start:dev": "webpack serve --mode=development --config webpack.config.mjs",
-		"build": "pnpm run clean && webpack --mode=production --config webpack.config.mjs",
+		"start:dev": "webpack serve --mode=development --config webpack.config.js",
+		"build": "pnpm run clean && webpack --mode=production --stats-error-details --config webpack.config.js",
 		"clean": "rm -rf build tsconfig.tsbuildinfo dist .parcel-cache"
 	},
 	"keywords": [],
@@ -16,7 +16,7 @@
 		"@babel/plugin-transform-runtime": "^7.26.10",
 		"@babel/preset-typescript": "^7.27.0",
 		"@parcel/resolver-default": "^2.14.4",
-		"@types/react": "^19.1.1",
+		"@types/react": "^19.1.2",
 		"@types/react-dom": "^19.1.2",
 		"babel-loader": "^10.0.0",
 		"babel-plugin-module-resolver": "^5.0.2",
@@ -39,18 +39,12 @@
 	},
 	"dependencies": {
 		"@babel/runtime": "^7.27.0",
+		"@navigation": "workspace:*",
 		"@ui": "workspace:*",
 		"axios": "^0.27.2",
-		"expo": "^52.0.44",
+		"expo": "^52.0.46",
 		"expo-modules-core": "^2.2.3",
 		"process": "^0.11.10",
-		"react": "^19.1.0",
-		"react-dom": "^19.1.0",
-		"react-native": "^0.79.0",
-		"react-native-paper": "^5.13.1",
-		"react-native-safe-area-context": "^5.3.0",
-		"react-native-vector-icons": "^10.2.0",
-		"react-native-web": "^0.20.0",
 		"url": "^0.11.4",
 		"validation": "workspace:*"
 	}

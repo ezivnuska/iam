@@ -1,10 +1,11 @@
-import { Router, Response } from 'express'
-import { authenticate, requireRole, AuthenticatedRequest } from '../middlewares/authMiddleware'
+// apps/backend/src/routes/admin.routes.ts
+
+import { Router } from 'express'
+import { getAdminDashboard } from '../controllers/admin.controller'
+import { requireAuth } from '../middleware/authMiddleware'
 
 const router: ReturnType<typeof Router> = Router()
 
-router.get('/dashboard', authenticate, requireRole('admin'), (req: AuthenticatedRequest, res: Response) => {
-	res.json({ message: `Welcome to the admin dashboard, ${req.user.username}` })
-})
+router.get('/dashboard', requireAuth(['admin']), getAdminDashboard)
 
 export default router
