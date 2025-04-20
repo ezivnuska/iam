@@ -5,7 +5,7 @@
 		"declaration": true,
 		"declarationMap": true,
 		"emitDeclarationOnly": true,
-		"outDir": "build",
+		"outDir": "./build",
 		"rootDir": "src",
 		"skipLibCheck": true,
 		"strict": true

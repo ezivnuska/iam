@@ -1,5 +1,5 @@
 {
-	"name": "@screens",
+	"name": "@forms",
 	"version": "1.0.0",
 	"main": "build/index.js",
 	"types": "build/index.d.ts",
@@ -9,7 +9,6 @@
 		"clean": "rm -rf build tsconfig.tsbuildinfo"
 	},
 	"dependencies": {
-		"@forms": "workspace:*",
 		"@services": "workspace:*",
 		"@types": "workspace:*",
 		"@ui": "workspace:*"

@@ -1,4 +1,4 @@
-import type { StackProps } from '../components/Stack'
+import type { StackProps } from '../components/Grid'
 
 export const mapPaddingToStyleObject = (
     padding: NonNullable<StackProps['padding']>

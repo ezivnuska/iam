@@ -1,111 +1,33 @@
-// packages/screens/src/screens/LoginScreen.tsx
+// packages/screens/src/screens/HomeScreen.tsx
 
-import React from 'react'
-import { View, Text, TextInput, Button, StyleSheet, ActivityIndicator, Alert } from 'react-native'
-import { useForm, Controller } from 'react-hook-form'
-import { api, login as loginUser } from '@services'
+import React, { useCallback } from 'react'
+import { useNavigation } from '@react-navigation/native'
+import type { StackNavigationProp } from '@react-navigation/stack'
+import type { RootStackParamList } from '@types'
+import { Button, PageHeader, PageLayout, Stack } from '@ui'
+import { LoginForm } from '@forms'
 
-// Optional: validation with zod
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-
-const schema = z.object({
-	email: z.string().email(),
-	password: z.string().min(6, 'Password must be at least 6 characters'),
-})
-
-type LoginForm = z.infer<typeof schema>
-// Without zod:
-// type LoginForm = { email: string; password: string }
+type LoginScreenNavProp = StackNavigationProp<RootStackParamList, 'Login'>
 
 export const LoginScreen = () => {
-	const {
-		control,
-		handleSubmit,
-		formState: { errors, isSubmitting },
-	} = useForm<LoginForm>({
-		resolver: zodResolver(schema), // remove if not using zod
-	})
+	const navigation = useNavigation<LoginScreenNavProp>()
 
-	const onSubmit = async (data: LoginForm) => {
-		try {
-		const res = await api.post('/auth/login', data)
-		const token = res.data?.token
-		if (token) {
-			await loginUser(token)
-		} else {
-			Alert.alert('Login failed', 'No token received')
-		}
-		} catch (err: any) {
-		console.error(err)
-		Alert.alert('Login failed', err?.response?.data?.message || 'Something went wrong')
-		}
-	}
+	const goToHome = useCallback(() => {
+		navigation.navigate('Home')
+	}, [navigation])
 
-  	return (
-		<View style={styles.container}>
-			<Text style={styles.title}>Log In</Text>
+	const goToRegister = useCallback(() => {
+		navigation.navigate('Register')
+	}, [navigation])
 
-			<Controller
-				control={control}
-				name="email"
-				render={({ field: { value, onChange } }) => (
-				<TextInput
-					placeholder="Email"
-					value={value}
-					onChangeText={onChange}
-					autoCapitalize="none"
-					keyboardType="email-address"
-					style={styles.input}
-				/>
-				)}
-			/>
-			{errors.email && <Text style={styles.error}>{errors.email.message}</Text>}
-
-			<Controller
-				control={control}
-				name="password"
-				render={({ field: { value, onChange } }) => (
-				<TextInput
-					placeholder="Password"
-					value={value}
-					onChangeText={onChange}
-					secureTextEntry
-					style={styles.input}
-				/>
-				)}
-			/>
-			{errors.password && <Text style={styles.error}>{errors.password.message}</Text>}
-
-			{isSubmitting ? (
-				<ActivityIndicator style={{ marginTop: 20 }} />
-			) : (
-				<Button title="Log In" onPress={handleSubmit(onSubmit)} />
-			)}
-		</View>
+	return (
+		<PageLayout>
+			<PageHeader title='Login' />
+            <LoginForm />
+            <Stack spacing={10}>
+                <Button label='Home' onPress={goToHome} />
+                <Button label='Register' onPress={goToRegister} />
+            </Stack>
+		</PageLayout>
 	)
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		padding: 24,
-		justifyContent: 'center',
-	},
-	title: {
-		fontSize: 28,
-		fontWeight: '600',
-		marginBottom: 24,
-	},
-	input: {
-		borderWidth: 1,
-		borderColor: '#aaa',
-		padding: 12,
-		marginBottom: 12,
-		borderRadius: 8,
-	},
-	error: {
-		color: 'red',
-		marginBottom: 8,
-	},
-})

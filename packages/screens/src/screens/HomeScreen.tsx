@@ -1,11 +1,10 @@
 // packages/screens/src/screens/HomeScreen.tsx
 
 import React, { useCallback } from 'react'
-import { View, Text, Button } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import type { StackNavigationProp } from '@react-navigation/stack'
 import type { RootStackParamList } from '@types'
-import { PageLayout } from '@ui'
+import { Button, PageHeader, PageLayout, Stack } from '@ui'
 
 type HomeScreenNavProp = StackNavigationProp<RootStackParamList, 'Home'>
 
@@ -16,14 +15,17 @@ export const HomeScreen = () => {
 		navigation.navigate('Details', { id: '123' })
 	}, [navigation])
 
+	const goToLogin = useCallback(() => {
+		navigation.navigate('Login')
+	}, [navigation])
+
 	return (
-		<PageLayout
-			header={<View style={{ backgroundColor: 'red' }}>Header</View>}
-			footer={<View style={{ backgroundColor: 'green' }}>Footer</View>}
-			padding={{ sm: 12, md: 24 }}
-		>
-			<Text>Home</Text>
-			<Button title="Go to Details" onPress={goToDetails} />
+		<PageLayout>
+			<PageHeader title='Home' />
+            <Stack spacing={10}>
+                <Button label='Go to Details' onPress={goToDetails} />
+                <Button label='Login' onPress={goToLogin} />
+            </Stack>
 		</PageLayout>
 	)
 }
