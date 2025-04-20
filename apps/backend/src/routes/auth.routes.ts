@@ -1,6 +1,6 @@
 // apps/backend/src/routes/auth.routes.ts
 
-import { Router } from 'express'
+import express, { Router } from 'express'
 import {
   signup,
   signin,
@@ -11,7 +11,7 @@ import {
   resetPassword
 } from '../controllers/auth.controller'
 
-const router: ReturnType<typeof Router> = Router()
+const router: express.Router = Router()
 
 router.post('/signup', signup)
 router.post('/signin', signin)

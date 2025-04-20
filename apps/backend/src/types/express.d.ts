@@ -1,11 +1,13 @@
-// types/express.d.ts
+// apps/backend/src/types/express.d.ts
 
-import { AuthPayload } from '../middlewares/authMiddleware'
+import { User } from '@types/user'
+
+import type { TokenPayload } from '@auth'
 
 declare global {
 	namespace Express {
 		interface Request {
-			user?: AuthPayload
+			user?: TokenPayload
 		}
 	}
 }

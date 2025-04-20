@@ -1,0 +1,17 @@
+{
+	"name": "@screens",
+	"version": "1.0.0",
+	"main": "build/index.js",
+	"types": "build/index.d.ts",
+	"scripts": {
+		"build": "tsc --build",
+		"dev": "tsc --build -w",
+		"clean": "rm -rf build tsconfig.tsbuildinfo"
+	},
+	"dependencies": {
+		"@navigation": "workspace:*",
+		"@services": "workspace:*",
+		"@types": "workspace:*",
+		"@ui": "workspace:*"
+	}
+}

@@ -1,10 +1,10 @@
 // apps/backend/src/routes/profile.routes.ts
 
-import { Router } from 'express'
+import express, { Router } from 'express'
 import { requireAuth } from '../middleware/authMiddleware'
 import { updateSelf, changePassword, getProfile } from '../controllers/profile.controller'
 
-const router: ReturnType<typeof Router> = Router()
+const router: express.Router = Router()
 
 router.get('/', requireAuth(), getProfile)
 router.put('/', requireAuth(), updateSelf)

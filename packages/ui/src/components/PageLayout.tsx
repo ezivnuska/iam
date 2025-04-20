@@ -1,3 +1,5 @@
+// packages/ui/src/components/PageLayout.tsx
+
 import React from 'react'
 import {
 	View,
@@ -94,8 +96,6 @@ const styles = StyleSheet.create({
 	},
 	header: {
 		flexShrink: 0,
-		// paddingVertical: 12,
-		// paddingHorizontal: 16,
 		backgroundColor: 'red',
 	},
 	main: {
@@ -104,8 +104,6 @@ const styles = StyleSheet.create({
 	},
 	footer: {
 		flexShrink: 0,
-		// paddingVertical: 12,
-		// paddingHorizontal: 16,
 		backgroundColor: 'green',
 	},
 	maxWidthContainer: {

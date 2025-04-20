@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"description": "",
 	"scripts": {
-		"start:dev": "webpack serve --mode=development --config webpack.config.js",
+		"dev": "webpack serve --mode=development --config webpack.config.js",
 		"build": "pnpm run clean && webpack --mode=production --stats-error-details --config webpack.config.js",
 		"clean": "rm -rf build tsconfig.tsbuildinfo dist .parcel-cache"
 	},
@@ -14,6 +14,7 @@
 	"packageManager": "pnpm@10.8.0",
 	"devDependencies": {
 		"@babel/plugin-transform-runtime": "^7.26.10",
+		"@babel/preset-env": "^7.26.9",
 		"@babel/preset-typescript": "^7.27.0",
 		"@parcel/resolver-default": "^2.14.4",
 		"@types/react": "^19.1.2",
@@ -41,11 +42,13 @@
 		"@babel/runtime": "^7.27.0",
 		"@navigation": "workspace:*",
 		"@ui": "workspace:*",
+		"@services": "workspace:*",
+		"@types": "workspace:*",
+		"@validation": "workspace:*",
 		"axios": "^0.27.2",
 		"expo": "^52.0.46",
 		"expo-modules-core": "^2.2.3",
 		"process": "^0.11.10",
-		"url": "^0.11.4",
-		"validation": "workspace:*"
+		"url": "^0.11.4"
 	}
 }

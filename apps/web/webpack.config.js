@@ -28,9 +28,11 @@ const babelLoaderConfig = {
 		const sourcesToCompile = [
 			path.resolve(__dirname, 'src'),
 			path.resolve(__dirname, '../../packages/ui/src'),
-			path.resolve(__dirname, '../../packages/types/src'),
 			path.resolve(__dirname, '../../packages/auth/src'),
 			path.resolve(__dirname, '../../packages/navigation/src'),
+			path.resolve(__dirname, '../../packages/screens/src'),
+			path.resolve(__dirname, '../../packages/services/src'),
+			path.resolve(__dirname, '../../packages/types/src'),
 			path.resolve(__dirname, '../../packages/validation/src'),
 			...compileNodeModules,
 		]
@@ -127,9 +129,11 @@ export default {
 			// 'react-native-safe-area-context': 'expo-dev-menu/vendored/react-native-safe-area-context/src',
 			"@auth": path.resolve(__dirname, "../../packages/auth/src"),
 			"@navigation": path.resolve(__dirname, "../../packages/navigation/src"),
-			"@ui": path.resolve(__dirname, "../../packages/ui/src"),
+			"@screens": path.resolve(__dirname, "../../packages/screens/src"),
+			"@services": path.resolve(__dirname, "../../packages/services/src"),
 			"@types": path.resolve(__dirname, "../../packages/types/src"),
-			"validation": path.resolve(__dirname, "../../packages/validation/src"),
+			"@ui": path.resolve(__dirname, "../../packages/ui/src"),
+			"@validation": path.resolve(__dirname, "../../packages/validation/src"),
 		},
 		extensions: [
 			// '.mjs',

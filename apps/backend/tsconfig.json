@@ -8,18 +8,18 @@
 		"declaration": true,
 		"declarationDir": "build",
 		"emitDeclarationOnly": false,
-		"jsx": "preserve",
 		"typeRoots": [
+			"./src/types",
 			"./node_modules/@types",
-			"./src/types"
+			"../../node_modules/@types"
 		],
-		"types": ["node", "express"]
+		"types": ["express"]
 	},
 	"include": ["src"],
 	"exclude": ["node_modules", "build"],
 	"references": [
+		{ "path": "../../packages/auth" },
 		{ "path": "../../packages/types" },
-		{ "path": "../../packages/validation" },
-		{ "path": "../../packages/auth" }
+		{ "path": "../../packages/validation" }
 	]
 }

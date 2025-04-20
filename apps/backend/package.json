@@ -7,7 +7,7 @@
 		"clean": "rm -rf build tsconfig.tsbuildinfo",
 		"build": "tsc --build",
 		"start": "node src/index.ts",
-		"start:dev": "nodemon"
+		"dev": "nodemon"
 	},
 	"keywords": [],
 	"author": "",
@@ -25,7 +25,9 @@
 		"ts-node": "^10.9.2"
 	},
 	"dependencies": {
+		"@auth": "workspace:*",
 		"@types": "workspace:*",
+		"@validation": "workspace:*",
 		"bcryptjs": "^3.0.2",
 		"body-parser": "^1.20.3",
 		"cors": "^2.8.5",
@@ -35,7 +37,6 @@
 		"jsonwebtoken": "^9.0.2",
 		"mongoose": "^8.13.2",
 		"socket.io": "^4.8.1",
-		"typescript": "^5.8.3",
-		"validation": "workspace:*"
+		"typescript": "^5.8.3"
 	}
 }

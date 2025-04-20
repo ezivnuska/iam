@@ -1,71 +1,93 @@
 // apps/backend/src/services/auth.service.ts
 
-import { User } from '../models/user.model'
-import jwt from 'jsonwebtoken'
+import { UserModel } from '../models/user.model'
 import { hashPassword, comparePassword } from '../utils/password'
-import { generateToken, generateRefreshToken } from '../utils/jwt'
+import { createPayload, TokenPayload, generateToken, generateRefreshToken, verifyToken } from '@auth'
 import crypto from 'crypto'
+import { Request, Response } from 'express'
 
-export const registerUser = async (email: string, username: string, password: string) => {
-	const existing = await User.findOne({ email })
+export const registerUser = async (
+	email: string,
+	username: string,
+	password: string
+) => {
+	const existing = await UserModel.findOne({ email })
 	if (existing) throw new Error('User already exists')
 
 	const hashed = await hashPassword(password)
 
 	const verifyToken = crypto.randomBytes(32).toString('hex')
-	const user = new User({
+	const user = new UserModel({
 		email,
 		username,
 		password: hashed,
 		verifyToken,
-		verifyTokenExpires: Date.now() + 3600000
+		verifyTokenExpires: Date.now() + 3600000, // 1 hour
 	})
 
 	await user.save()
-	// TODO: send email with link
 
-	const token = generateToken({ _id: user._id, email, role: user.role })
-	const refreshToken = generateRefreshToken({ _id: user._id, email, role: user.role })
+	const payload = createPayload(user)
+	const token = generateToken(payload)
+	const refreshToken = generateRefreshToken(payload)
 
 	return { token, refreshToken }
 }
 
-export const loginUser = async (email: string, password: string, res: any) => {
-	const user = await User.findOne({ email })
+export const loginUser = async (
+	email: string,
+	password: string,
+	res: Response
+) => {
+	const user = await UserModel.findOne({ email })
 	if (!user) throw new Error('Invalid credentials')
 
 	const match = await comparePassword(password, user.password)
 	if (!match) throw new Error('Invalid credentials')
-
-	const accessToken = generateToken({ _id: user._id, email, role: user.role })
-	const refreshToken = generateRefreshToken({ _id: user._id, email, role: user.role })
+	
+	const payload = createPayload(user)
+	const accessToken = generateToken(payload)
+	const refreshToken = generateRefreshToken(payload)
 
 	res.cookie('refreshToken', refreshToken, {
 		httpOnly: true,
 		sameSite: 'strict',
 		secure: process.env.NODE_ENV === 'production',
-		maxAge: 7 * 24 * 60 * 60 * 1000
+		maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
 	})
 
 	return { accessToken }
 }
 
-export const refreshAccessToken = (req: any, res: any) => {
+export const refreshAccessToken = async (
+	req: Request,
+	res: Response
+) => {
 	const token = req.cookies.refreshToken
 	if (!token) return res.status(401).json({ message: 'No refresh token' })
 
 	try {
-		const decoded = jwt.verify(token, process.env.JWT_SECRET!)
-		const accessToken = generateToken(decoded)
+		const decoded = verifyToken(token)
+
+		if (typeof decoded !== 'object' || !('_id' in decoded)) {
+			throw new Error('Invalid token payload')
+		}
+
+		const payload = decoded as TokenPayload
+		const accessToken = generateToken(payload)
+
 		return res.json({ accessToken })
 	} catch {
-		return res.status(403).json({ message: 'Invalid refresh token' })
+		return res.status(403).json({ message: 'Invalid or expired refresh token' })
 	}
 }
 
-export const verifyEmailToken = async (req: any, res: any, next: any) => {
+export const verifyEmailToken = async (
+	req: Request,
+	res: Response,
+) => {
 	const { token } = req.query
-	const user = await User.findOne({
+	const user = await UserModel.findOne({
 		verifyToken: token,
 		verifyTokenExpires: { $gt: Date.now() }
 	})
@@ -80,8 +102,11 @@ export const verifyEmailToken = async (req: any, res: any, next: any) => {
 	res.json({ message: 'Email verified' })
 }
 
-export const forgotPassword = async (req: any, res: any, next: any) => {
-	const user = await User.findOne({ email: req.body.email })
+export const forgotPassword = async (
+	req: Request,
+	res: Response
+) => {
+	const user = await UserModel.findOne({ email: req.body.email })
 	if (!user) return res.status(400).json({ message: 'No user' })
 
 	const token = crypto.randomBytes(32).toString('hex')
@@ -93,8 +118,11 @@ export const forgotPassword = async (req: any, res: any, next: any) => {
 	res.json({ message: 'Reset email sent' })
 }
 
-export const resetPassword = async (req: any, res: any, next: any) => {
-	const user = await User.findOne({
+export const resetPassword = async (
+	req: Request,
+	res: Response
+) => {
+	const user = await UserModel.findOne({
 		resetPasswordToken: req.body.token,
 		resetPasswordExpires: { $gt: Date.now() }
 	})

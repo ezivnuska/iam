@@ -1,9 +1,9 @@
 // controllers/user.controller.ts
 
-import { Request, Response, NextFunction } from 'express'
+import { Request, RequestHandler, Response, NextFunction } from 'express'
 import * as userService from '../services/user.service'
 
-export const getAllUsers = async (_req: Request, res: Response, next: NextFunction) => {
+export const getAllUsers: RequestHandler = async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
 	try {
 		const users = await userService.findAllUsers()
 		res.json(users)
@@ -12,7 +12,7 @@ export const getAllUsers = async (_req: Request, res: Response, next: NextFuncti
 	}
 }
 
-export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
+export const getUserById: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 	try {
 		const user = await userService.findUserById(req.params.id)
 		res.json(user)
@@ -21,7 +21,7 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
 	}
 }
 
-export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
+export const updateUser: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 	try {
 		const updatedUser = await userService.updateUser(req.params.id, req.body)
 		res.json(updatedUser)
@@ -30,7 +30,7 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
 	}
 }
 
-export const updateUserRole = async (req: Request, res: Response, next: NextFunction) => {
+export const updateUserRole: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 	try {
 		const updated = await userService.changeUserRole(req.params.id, req.body.role)
 		res.json(updated)
@@ -39,7 +39,7 @@ export const updateUserRole = async (req: Request, res: Response, next: NextFunc
 	}
 }
 
-export const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteUser: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 	try {
 		const result = await userService.removeUser(req.params.id)
 		res.json({ success: true, user: result })

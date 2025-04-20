@@ -12,10 +12,12 @@
 	"references": [
 	  { "path": "./apps/web" },
 	  { "path": "./apps/backend" },
-	  { "path": "./packages/ui" },
+	  { "path": "./packages/auth" },
 	  { "path": "./packages/navigation" },
+	  { "path": "./packages/ui" },
+	  { "path": "./packages/screens" },
+	  { "path": "./packages/services" },
 	  { "path": "./packages/types" },
-	  { "path": "./packages/validation" },
-	  { "path": "./packages/auth" }
+	  { "path": "./packages/validation" }
 	]
 }

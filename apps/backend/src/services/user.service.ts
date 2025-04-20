@@ -1,18 +1,18 @@
-import { User } from '../models/user.model'
+import { UserModel } from '../models/user.model'
 import { comparePassword, hashPassword } from '../utils/password'
 
 export const findAllUsers = async () => {
-	return await User.find().select('-password') // Exclude passwords
+	return await UserModel.find().select('-password') // Exclude passwords
 }
 
 export const findUserById = async (id: string) => {
-	const user = await User.findById(id).select('-password')
+	const user = await UserModel.findById(id).select('-password')
 	if (!user) throw new Error('User not found')
 	return user
 }
 
 export const changeUserRole = async (id: string, newRole: string) => {
-	const updated = await User.findByIdAndUpdate(id, { role: newRole }, { new: true }).select('-password')
+	const updated = await UserModel.findByIdAndUpdate(id, { role: newRole }, { new: true }).select('-password')
 	if (!updated) throw new Error('User not found or role update failed')
 	return updated
 }
@@ -30,7 +30,7 @@ export const updateUserSelf = async (
 		}
 	}
   
-	const updated = await User.findByIdAndUpdate(id, updates, { new: true }).select('-password')
+	const updated = await UserModel.findByIdAndUpdate(id, updates, { new: true }).select('-password')
 	if (!updated) throw new Error('User not found or update failed')
   
 	return updated
@@ -46,7 +46,7 @@ export const updateUser = async (id: string, data: Partial<{ email: string; user
 		}
 	}
   
-	const updated = await User.findByIdAndUpdate(id, updates, { new: true }).select('-password')
+	const updated = await UserModel.findByIdAndUpdate(id, updates, { new: true }).select('-password')
 	if (!updated) throw new Error('User not found or update failed')
   
 	return updated
@@ -54,13 +54,13 @@ export const updateUser = async (id: string, data: Partial<{ email: string; user
   
 
 export const removeUser = async (id: string) => {
-	const deleted = await User.findByIdAndDelete(id)
+	const deleted = await UserModel.findByIdAndDelete(id)
 	if (!deleted) throw new Error('User not found')
 	return deleted
 }
 
 export const changeUserPassword = async (userId: string, current: string, next: string) => {
-	const user = await User.findById(userId)
+	const user = await UserModel.findById(userId)
 	if (!user) throw new Error('User not found')
 
 	const valid = await comparePassword(current, user.password)

@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"start": "pnpm --stream -r start",
-		"start:dev": "pnpm --parallel --stream -r run start:dev",
+		"dev": "pnpm --parallel --stream -r run dev",
 		"build": "pnpm --stream -r run build",
 		"clean": "rm -rf .parcel-cache && pnpm -r run clean",
 		"lint": "eslint . --ext .ts,.tsx --fix",
@@ -16,6 +16,7 @@
 	"license": "ISC",
 	"packageManager": "pnpm@10.8.0",
 	"devDependencies": {
+		"@babel/preset-env": "^7.1.6",
 		"@types/cors": "^2.8.17",
 		"@types/express": "^5.0.1",
 		"@types/express-session": "^1.18.1",
@@ -28,12 +29,15 @@
 	},
 	"dependencies": {
 		"@babel/runtime": "^7.27.0",
+		"@hookform/resolvers": "^5.0.1",
 		"@react-navigation/core": "7.8.5",
 		"@react-navigation/native": "7.1.6",
 		"@react-navigation/stack": "^7.2.10",
+		"expo-secure-store": "^12.2.0",
 		"nodemailer": "^6.10.1",
 		"react": "^19.1.0",
 		"react-dom": "^19.1.0",
+		"react-hook-form": "^7.55.0",
 		"react-native": "^0.79.1",
 		"react-native-gesture-handler": "^2.25.0",
 		"react-native-pager-view": "^6.7.0",
@@ -41,6 +45,7 @@
 		"react-native-safe-area-context": "^5.4.0",
 		"react-native-screens": "^4.10.0",
 		"react-native-vector-icons": "^10.2.0",
-		"react-native-web": "^0.20.0"
+		"react-native-web": "^0.20.0",
+		"zod": "^3.24.3"
 	}
 }

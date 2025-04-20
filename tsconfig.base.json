@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"target": "ESNext",
 		"module": "ESNext",
-		"moduleResolution": "node",
+		"moduleResolution": "Node",
 		"allowJs": true,
 		"strict": true,
 		"resolveJsonModule": true,
@@ -10,16 +10,20 @@
 		"allowSyntheticDefaultImports": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
-		"typeRoots": ["./src/types", "./node_modules/@types"],
-		"types": ["node", "react"],
+        "declaration": true,
+        "declarationMap": true,
+		"typeRoots": ["./node_modules/@types"],
+		"types": ["node"],
 		"baseUrl": ".",
 		"paths": {
 			"react-native": ["node_modules/react-native-web"],
 			"@auth/*": ["packages/auth/src/*"],
 			"@navigation/*": ["packages/navigation/src/*"],
-			"@ui/*": ["packages/ui/src/*"],
+			"@screens/*": ["packages/screens/src/*"],
+			"@services/*": ["packages/services/src/*"],
 			"@types/*": ["packages/types/src/*"],
-			"validation/*": ["packages/validation/src/*"]
+			"@ui/*": ["packages/ui/src/*"],
+			"@validation/*": ["packages/validation/src/*"]
 		}
 	}
 }

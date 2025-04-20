@@ -9,14 +9,16 @@
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
-        "outDir": "./build",
+        "outDir": "build",
+        "rootDir": "src",
         "composite": true,
         "declaration": true,
         "declarationMap": true
     },
     "include": ["src"],
 	"references": [
-        { "path": "../types" },
-        { "path": "../ui" }
+        { "path": "../services" },
+        { "path": "../screens" },
+        { "path": "../types" }
 	]
 }

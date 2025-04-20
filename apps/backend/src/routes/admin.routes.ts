@@ -1,11 +1,12 @@
 // apps/backend/src/routes/admin.routes.ts
 
-import { Router } from 'express'
+import express, { Router } from 'express'
 import { getAdminDashboard } from '../controllers/admin.controller'
 import { requireAuth } from '../middleware/authMiddleware'
+import { UserRole } from '@auth'
 
-const router: ReturnType<typeof Router> = Router()
+const router: express.Router = Router()
 
-router.get('/dashboard', requireAuth(['admin']), getAdminDashboard)
+router.get('/dashboard', requireAuth([UserRole.Admin]), getAdminDashboard)
 
 export default router

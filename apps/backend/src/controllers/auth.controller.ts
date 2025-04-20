@@ -1,9 +1,9 @@
 // apps/backend/src/controllers/auth.controller.ts
 
-import { Request, Response, NextFunction } from 'express'
+import { Request, RequestHandler, Response, NextFunction } from 'express'
 import * as authService from '../services/auth.service'
 
-export const signup = async (req: Request, res: Response, next: NextFunction) => {
+export const signup: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 	try {
 		const { email, username, password } = req.body
 		const result = await authService.registerUser(email, username, password)
@@ -13,7 +13,7 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
 	}
 }
 
-export const signin = async (req: Request, res: Response, next: NextFunction) => {
+export const signin: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 	try {
 		const { email, password } = req.body
 		const result = await authService.loginUser(email, password, res)
@@ -23,22 +23,22 @@ export const signin = async (req: Request, res: Response, next: NextFunction) =>
 	}
 }
 
-export const refreshToken = (req: Request, res: Response) => {
+export const refreshToken: RequestHandler = (req: Request, res: Response) => {
 	authService.refreshAccessToken(req, res)
 }
 
-export const logout = (req: Request, res: Response) => {
+export const logout: RequestHandler = (req: Request, res: Response) => {
 	res.clearCookie('refreshToken').json({ message: 'Logged out' })
 }
 
-export const verifyEmail = (req: Request, res: Response, next: NextFunction) => {
-	authService.verifyEmailToken(req, res, next)
+export const verifyEmail: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
+	authService.verifyEmailToken(req, res)
 }
 
-export const forgotPassword = (req: Request, res: Response, next: NextFunction) => {
-	authService.forgotPassword(req, res, next)
+export const forgotPassword: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
+	authService.forgotPassword(req, res)
 }
 
-export const resetPassword = (req: Request, res: Response, next: NextFunction) => {
-	authService.resetPassword(req, res, next)
+export const resetPassword: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
+	authService.resetPassword(req, res)
 }

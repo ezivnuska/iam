@@ -10,9 +10,6 @@
 		"jsx": "react-native",
 		"composite": true
 	},
-		"include": ["src"],
-	"exclude": ["node_modules", "build"],
-	"references": [
-		{ "path": "../types" }
-	]
+	"include": ["src"],
+	"exclude": ["node_modules", "build"]
 }

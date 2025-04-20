@@ -1,10 +1,24 @@
-import jwt from 'jsonwebtoken'
-import type { TokenPayload } from '@types'
+// packages/auth/src/token.ts
 
-const JWT_SECRET = process.env.JWT_SECRET || 'secret-key'
+import jwt, { SignOptions } from 'jsonwebtoken'
+import type { TokenPayload } from './types'
 
-export const generateToken = (user: TokenPayload): string => {
-	return jwt.sign(user, JWT_SECRET, { expiresIn: '1d' })
+const JWT_SECRET = process.env.JWT_SECRET ?? 'insecure-dev-secret'
+
+const accessOptions: SignOptions = {
+	expiresIn: '15m',
+}
+
+const refreshOptions: SignOptions = {
+	expiresIn: '7d',
+}
+
+export const generateToken = (payload: TokenPayload): string => {
+	return jwt.sign(payload, JWT_SECRET, accessOptions)
+}
+
+export const generateRefreshToken = (payload: TokenPayload): string => {
+	return jwt.sign(payload, JWT_SECRET, refreshOptions)
 }
 
 export const verifyToken = (token: string): TokenPayload => {

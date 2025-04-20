@@ -1,12 +1,14 @@
 // apps/backend/src/models/user.model.ts
 
-import mongoose, { Schema, Document, Model } from 'mongoose'
+import mongoose, { Schema, Document } from 'mongoose'
+import { UserRole } from '@auth'
 
 export interface IUser extends Document {
-	email: string
+	_id: mongoose.Types.ObjectId
 	username: string
+	email: string
+	role: UserRole
 	password: string
-	role: string
 	verified: boolean
 	verifyToken?: string
 	verifyTokenExpires?: Date
@@ -15,22 +17,19 @@ export interface IUser extends Document {
 	createdAt: Date
 	updatedAt: Date
 }
+  
+const UserSchema = new Schema<IUser>({
+	username: { type: String, required: true },
+	email: { type: String, required: true, unique: true },
+	role: { type: String, enum: Object.values(UserRole), default: UserRole.User },
+	password: { type: String, required: true },
+	verified: { type: Boolean, default: false },
+	verifyToken: String,
+	verifyTokenExpires: Date,
+	resetPasswordToken: String,
+	resetPasswordExpires: Date,
+}, {
+	timestamps: true,
+})
 
-const UserSchema: Schema = new Schema(
-	{
-		email: { type: String, required: true, unique: true },
-		username: { type: String, required: true },
-		password: { type: String, required: true },
-		role: { type: String, default: 'user' },
-		verified: { type: Boolean, default: false },
-		verifyToken: { type: String },
-		verifyTokenExpires: { type: Date },
-		resetPasswordToken: { type: String },
-		resetPasswordExpires: { type: Date },
-	},
-	{
-		timestamps: true,
-	}
-)
-
-export const User: Model<IUser> = mongoose.model<IUser>('User', UserSchema)
+export const UserModel = mongoose.model<IUser>('User', UserSchema)

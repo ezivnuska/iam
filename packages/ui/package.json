@@ -12,10 +12,11 @@
   "scripts": {
     "clean": "rm -rf build tsconfig.tsbuildinfo",
     "build": "tsc --build",
-    "start:dev": "tsc --build -w"
+    "dev": "tsc --build -w"
   },
   "dependencies": {
     "@navigation": "workspace:*",
+    "@services": "workspace:*",
     "@types": "workspace:*"
   },
   "devDependencies": {

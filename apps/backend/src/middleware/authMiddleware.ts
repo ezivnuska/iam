@@ -1,18 +1,9 @@
-// /middlewares/authMiddleware.ts
+// apps/backend/src/middleware/authMiddleware.ts
 
 import { Request, Response, NextFunction, RequestHandler } from 'express'
-import jwt from 'jsonwebtoken'
+import { TokenPayload, verifyToken } from '@auth'
 
-const JWT_SECRET = process.env.JWT_SECRET!
-
-export interface AuthPayload {
-  _id: string
-  email: string
-  username: string
-  role: string
-}
-
-export const requireAuth = (roles: string[] = []): RequestHandler => {
+export const requireAuth = (roles: TokenPayload['role'][] = []): RequestHandler => {
 	return (req: Request, res: Response, next: NextFunction): void => {
 		const authHeader = req.headers.authorization
 
@@ -24,13 +15,14 @@ export const requireAuth = (roles: string[] = []): RequestHandler => {
 		const token = authHeader.split(' ')[1]
 
 		try {
-			const decoded = jwt.verify(token, JWT_SECRET) as AuthPayload
-			if (!decoded._id) throw new Error('Invalid token')
+			const payload = verifyToken(token)
 
-			if (roles.length > 0 && !roles.includes(decoded.role)) {
+			if (roles.length && !roles.includes(payload.role)) {
 				res.status(403).json({ message: 'Forbidden: Access denied' })
 				return
 			}
+
+			req.user = payload
 
 			next()
 		} catch (err) {

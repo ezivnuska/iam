@@ -1,10 +1,17 @@
-// packages/types/src/user.ts
+//packages/types/src/user.ts
 
-export type Role = 'user' | 'admin' | 'moderator'
+export type UserRole = 'user' | 'admin'
 
-export type UserInfo = {
-	_id: string
-	email: string
+export type User = {
+	id: string
 	username: string
-	role: Role
+	email: string
+	role: UserRole
+	verified: boolean
+	verifyToken?: string
+	verifyTokenExpires?: Date
+	resetPasswordToken?: string
+	resetPasswordExpires?: Date
+	createdAt: Date
+	updatedAt: Date
 }

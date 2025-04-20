@@ -5,13 +5,15 @@
 		"outDir": "build",
 		"rootDir": "src",
 		"skipDefaultLibCheck": true,
-		"jsx": "react",
+		"jsx": "react-jsx",
 		"isolatedModules": true
 	},
 	"include": [
 		"src",
 		"../../packages/auth/src",
 		"../../packages/navigation/src",
+		"../../packages/services/src",
+		"../../packages/types/src",
 		"../../packages/ui/src",
 		"../../packages/validation/src"
 	],
@@ -19,6 +21,7 @@
 	"references": [
 		{ "path": "../../packages/auth" },
 		{ "path": "../../packages/navigation" },
+		{ "path": "../../packages/services" },
 		{ "path": "../../packages/types" },
 		{ "path": "../../packages/ui" },
 		{ "path": "../../packages/validation" }

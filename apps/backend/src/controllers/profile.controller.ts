@@ -1,15 +1,19 @@
 // /controllers/profile.controller.ts
 
-import { Request, Response, NextFunction } from 'express'
+import { Request, RequestHandler, Response, NextFunction } from 'express'
 import * as userService from '../services/user.service'
 
-export const getProfile = async (req: Request, res: Response): Promise<void> => {
+export const getProfile: RequestHandler = async (req: Request, res: Response): Promise<void> => {
 	res.json(req.user)
 }
 
-export const updateSelf = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const updateSelf: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+	if (!req.user) {
+		res.status(401).json({ message: 'Unauthorized' })
+		return
+	}
 	try {
-		const userId = req.user._id
+		const userId = req.user.id
 		const updates = req.body
 		const updatedUser = await userService.updateUserSelf(userId, updates)
 		res.json(updatedUser)
@@ -18,9 +22,13 @@ export const updateSelf = async (req: Request, res: Response, next: NextFunction
 	}
 }
 
-export const changePassword = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const changePassword: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+	if (!req.user) {
+		res.status(401).json({ message: 'Unauthorized' })
+		return
+	}
 	try {
-		const userId = req.user._id
+		const userId = req.user.id
 		const { currentPassword, newPassword } = req.body
 	
 		if (!currentPassword || !newPassword) {
