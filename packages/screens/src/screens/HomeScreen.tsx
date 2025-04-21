@@ -19,12 +19,17 @@ export const HomeScreen = () => {
 		navigation.navigate('Login')
 	}, [navigation])
 
+    const goToRegister = useCallback(() => {
+		navigation.navigate('Register')
+	}, [navigation])
+
 	return (
 		<PageLayout>
 			<PageHeader title='Home' />
             <Stack spacing={10}>
                 <Button label='Go to Details' onPress={goToDetails} />
                 <Button label='Login' onPress={goToLogin} />
+                <Button label='Register' onPress={goToRegister} />
             </Stack>
 		</PageLayout>
 	)

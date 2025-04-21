@@ -2,12 +2,13 @@
 
 import React from 'react'
 import { SectionLayout } from './SectionLayout'
+import { FOOTER_BACKGROUND } from './constants'
 
 interface FooterProps {
-	title: string
+    title: string
 	subtitle?: string
 }
 
 export const Footer: React.FC<FooterProps> = (props) => {
-	return <SectionLayout {...props} backgroundColor='green' />
+	return <SectionLayout {...props} backgroundColor={FOOTER_BACKGROUND} />
 }

@@ -2,7 +2,7 @@
 
 import React, { ReactNode } from 'react'
 import { View, StyleSheet, ScrollView, ViewStyle, StyleProp } from 'react-native'
-import { MAX_WIDTH } from './constants'
+import { MAX_WIDTH, MAIN_BACKGROUND as backgroundColor } from './constants'
 
 export interface MainContentProps {
     children: ReactNode,
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     },
     main: {
         flexGrow: 1,
-        backgroundColor: 'yellow',
+        backgroundColor,
     },
     maxWidthContainer: {
         width: '100%',

@@ -10,7 +10,6 @@ module.exports = {
             alias: {
                 'react-native': 'react-native-web',
                 "@auth": path.resolve(__dirname, "../../packages/auth/src"),
-                "@forms": path.resolve(__dirname, "../../packages/forms/src"),
                 "@navigation": path.resolve(__dirname, "../../packages/navigation/src"),
                 "@screens": path.resolve(__dirname, "../../packages/screens/src"),
                 "@services": path.resolve(__dirname, "../../packages/services/src"),

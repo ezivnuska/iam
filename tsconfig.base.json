@@ -18,7 +18,6 @@
 		"paths": {
 			"react-native": ["node_modules/react-native-web"],
 			"@auth/*": ["packages/auth/src/*"],
-			"@forms/*": ["packages/forms/src/*"],
 			"@navigation/*": ["packages/navigation/src/*"],
 			"@screens/*": ["packages/screens/src/*"],
 			"@services/*": ["packages/services/src/*"],

@@ -129,7 +129,6 @@ export default {
 			'react-native-safe-area-context': 'react-native-safe-area-context',
 			// 'react-native-safe-area-context': 'expo-dev-menu/vendored/react-native-safe-area-context/src',
 			"@auth": path.resolve(__dirname, "../../packages/auth/src"),
-			"@forms": path.resolve(__dirname, "../../packages/forms/src"),
 			"@navigation": path.resolve(__dirname, "../../packages/navigation/src"),
 			"@screens": path.resolve(__dirname, "../../packages/screens/src"),
 			"@services": path.resolve(__dirname, "../../packages/services/src"),

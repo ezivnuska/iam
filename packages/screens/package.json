@@ -9,7 +9,6 @@
 		"clean": "rm -rf build tsconfig.tsbuildinfo"
 	},
 	"dependencies": {
-		"@forms": "workspace:*",
 		"@services": "workspace:*",
 		"@types": "workspace:*",
 		"@ui": "workspace:*"

@@ -1,7 +1,9 @@
 // packages/screens/src/forms/LoginForm.tsx
 
 import React from 'react'
-import { View, Text, TextInput, Button, StyleSheet, ActivityIndicator, Alert } from 'react-native'
+import { Text, TextInput, StyleSheet, ActivityIndicator, Alert } from 'react-native'
+import { FormLayout } from '.'
+import { Button } from '../components'
 import { useForm, Controller } from 'react-hook-form'
 import { api, login as loginUser } from '@services'
 
@@ -43,7 +45,7 @@ export const LoginForm = () => {
 	}
 
   	return (
-		<View style={styles.container}>
+		<FormLayout>
 			<Text style={styles.title}>Log In</Text>
 
 			<Controller
@@ -82,18 +84,13 @@ export const LoginForm = () => {
 			{isSubmitting ? (
 				<ActivityIndicator style={{ marginTop: 20 }} />
 			) : (
-				<Button title="Log In" onPress={handleSubmit(onSubmit)} />
+				<Button label='Log In' onPress={handleSubmit(onSubmit)} />
 			)}
-		</View>
+		</FormLayout>
 	)
 }
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		padding: 24,
-		justifyContent: 'center',
-	},
 	title: {
 		fontSize: 28,
 		fontWeight: '600',
