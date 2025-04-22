@@ -12,15 +12,17 @@
 		"src",
 		"../../packages/auth/src",
 		"../../packages/navigation/src",
+		"../../packages/providers/src",
 		"../../packages/services/src",
 		"../../packages/types/src",
 		"../../packages/ui/src",
 		"../../packages/validation/src"
-	],
+, "../../packages/providers/src"	],
 	"exclude": ["node_modules", "build"],
 	"references": [
 		{ "path": "../../packages/auth" },
 		{ "path": "../../packages/navigation" },
+		{ "path": "../../packages/providers" },
 		{ "path": "../../packages/services" },
 		{ "path": "../../packages/types" },
 		{ "path": "../../packages/ui" },

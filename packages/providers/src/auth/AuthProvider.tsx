@@ -3,7 +3,7 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react'
 import axios from 'axios'
 import { useNavigation, NavigationProp } from '@react-navigation/native'
-import type { RootStackParamList } from '@types'
+import type { RootStackParamList } from '@iam/types'
 
 interface AuthContextType {
 	user: any
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 		try {
 			await axios.post('https://your-backend.com/api/auth/logout', {}, { withCredentials: true })
 			setUser(null)
-			navigation.navigate('Login')
+			navigation.navigate('Signin')
 		} catch (err) {
 			console.error('Logout failed:', err)
 		}
@@ -48,10 +48,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 }
 
 // Custom hook to use the auth context
-export const useAuth = () => {
-	const context = useContext(AuthContext)
-	if (!context) {
-		throw new Error('useAuth must be used within an AuthProvider')
-	}
-	return context
-}
+// export const useAuth = () => {
+// 	const context = useContext(AuthContext)
+// 	if (!context) {
+// 		throw new Error('useAuth must be used within an AuthProvider')
+// 	}
+// 	return context
+// }

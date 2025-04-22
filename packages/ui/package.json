@@ -1,25 +1,27 @@
 {
-  "name": "@ui",
-  "version": "1.0.0",
-  "main": "src/index.js",
-  "types": "build/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./build/index.js",
-      "types": "./build/index.d.ts"
-    }
-  },
-  "scripts": {
-    "clean": "rm -rf build tsconfig.tsbuildinfo",
-    "build": "tsc --build",
-    "dev": "tsc --build -w"
-  },
-  "dependencies": {
-    "@navigation": "workspace:*",
-    "@services": "workspace:*",
-    "@types": "workspace:*"
-  },
-  "devDependencies": {
-    "@types/react": "^19.1.0"
-  }
+	"name": "@ui",
+	"version": "1.0.0",
+	"main": "src/index.js",
+	"types": "build/index.d.ts",
+	"exports": {
+		".": {
+		"import": "./build/index.js",
+		"types": "./build/index.d.ts"
+		}
+	},
+	"scripts": {
+		"clean": "rm -rf build tsconfig.tsbuildinfo",
+		"build": "tsc --build",
+		"dev": "tsc --build -w"
+	},
+	"dependencies": {
+		"@gorhom/bottom-sheet": "^5.1.2",
+		"@navigation": "workspace:*",
+		"@providers": "workspace:*",
+		"@services": "workspace:*",
+		"@iam/types": "workspace:*"
+	},
+	"devDependencies": {
+		"@types/react": "^19.1.0"
+	}
 }

@@ -1,6 +1,6 @@
 // apps/backend/src/types/express.d.ts
 
-import { User } from '@types/user'
+import { User } from '@iam/types/user'
 
 import type { TokenPayload } from '@auth'
 

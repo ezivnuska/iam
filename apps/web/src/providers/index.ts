@@ -1,1 +1,3 @@
-export * from './auth/AuthProvider'
+// apps/web/src/providers/index.ts
+
+export * from './AppProviders'

@@ -1,5 +1,5 @@
 {
-	"name": "@screens",
+	"name": "@providers",
 	"version": "1.0.0",
 	"main": "build/index.js",
 	"types": "build/index.d.ts",
@@ -9,9 +9,8 @@
 		"clean": "rm -rf build tsconfig.tsbuildinfo"
 	},
 	"dependencies": {
-		"@providers": "workspace:*",
-		"@services": "workspace:*",
+		"@gorhom/bottom-sheet": "^5.1.2",
 		"@iam/types": "workspace:*",
-		"@ui": "workspace:*"
+		"axios": "^1.8.4"
 	}
 }

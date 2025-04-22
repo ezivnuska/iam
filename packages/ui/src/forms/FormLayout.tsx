@@ -1,7 +1,7 @@
 // packages/ui/src/components/layouts/PageLayout/SectionLayout.tsx
 
 import React, { ReactNode } from 'react'
-import { View, StyleSheet } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { MAX_FORM_WIDTH as maxWidth } from './constants'
 
 export interface FormLayoutProps {
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     container: {
 		width: '100%',
 		maxWidth: maxWidth,
-		paddingHorizontal: 10,
+        minWidth: 300,
 		alignSelf: 'center',
     },
 })

@@ -31,6 +31,7 @@ const babelLoaderConfig = {
 			path.resolve(__dirname, '../../packages/auth/src'),
 			path.resolve(__dirname, '../../packages/forms/src'),
 			path.resolve(__dirname, '../../packages/navigation/src'),
+			path.resolve(__dirname, '../../packages/providers/src'),
 			path.resolve(__dirname, '../../packages/screens/src'),
 			path.resolve(__dirname, '../../packages/services/src'),
 			path.resolve(__dirname, '../../packages/types/src'),
@@ -40,7 +41,8 @@ const babelLoaderConfig = {
 
 		return sourcesToCompile.some(srcPath => filepath.startsWith(srcPath)) ||
 			filepath.includes(`node_modules/expo/`) ||
-			filepath.includes(`node_modules/expo-modules-core/`)
+			filepath.includes(`node_modules/expo-modules-core/`) ||
+            filepath.includes(`node_modules/react-native-reanimated/`)
 	},
 	use: {
 		loader: 'babel-loader',
@@ -130,9 +132,10 @@ export default {
 			// 'react-native-safe-area-context': 'expo-dev-menu/vendored/react-native-safe-area-context/src',
 			"@auth": path.resolve(__dirname, "../../packages/auth/src"),
 			"@navigation": path.resolve(__dirname, "../../packages/navigation/src"),
+			"@providers": path.resolve(__dirname, "../../packages/providers/src"),
 			"@screens": path.resolve(__dirname, "../../packages/screens/src"),
 			"@services": path.resolve(__dirname, "../../packages/services/src"),
-			"@types": path.resolve(__dirname, "../../packages/types/src"),
+			"@iam/types": path.resolve(__dirname, "../../packages/types/src"),
 			"@ui": path.resolve(__dirname, "../../packages/ui/src"),
 			"@validation": path.resolve(__dirname, "../../packages/validation/src"),
 		},

@@ -29,6 +29,7 @@
 	},
 	"dependencies": {
 		"@babel/runtime": "^7.27.0",
+		"@gorhom/bottom-sheet": "^5.1.2",
 		"@hookform/resolvers": "^5.0.1",
 		"@react-navigation/core": "7.8.5",
 		"@react-navigation/native": "7.1.6",

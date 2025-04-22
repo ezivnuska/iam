@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native'
 import { useRoute, useNavigation } from '@react-navigation/native'
-import type { RootStackParamList } from '@types'
+import type { RootStackParamList } from '@iam/types'
 import { StackNavigationProp } from '@react-navigation/stack'
 
 type ResetPasswordParams = {
@@ -51,7 +51,7 @@ export const ResetPasswordScreen = () => {
 			Alert.alert('Success', 'Your password has been reset', [
 				{
 					text: 'OK',
-					onPress: () => navigation.navigate('Login'),
+					onPress: () => navigation.navigate('Signin'),
 				},
 			])
 		} catch (err: any) {

@@ -4,7 +4,7 @@ import React, { useCallback } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { Button, PageHeader, PageLayout } from '@ui'
 import type { StackNavigationProp } from '@react-navigation/stack'
-import type { RootStackParamList } from '@types'
+import type { RootStackParamList } from '@iam/types'
 
 type DetailsScreenNavProp = StackNavigationProp<RootStackParamList, 'Details'>
 

@@ -10,7 +10,7 @@ export async function login(token: string) {
 
 export async function logout() {
 	await remove(TOKEN_KEY)
-	navigate('Login')
+	navigate('Signin')
 }
 
 export async function getToken(): Promise<string | null> {

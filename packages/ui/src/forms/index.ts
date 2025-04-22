@@ -1,6 +1,6 @@
 // packages/forms/src/index.ts
 
-export * from './LoginForm'
-export * from './RegisterForm'
-export * from './RegisterForm'
+export * from './SigninForm'
+export * from './SignupForm'
+export * from './SignupForm'
 export * from './FormLayout'

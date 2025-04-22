@@ -1,6 +1,6 @@
 // apps/backend/src/types/user.types.ts
 
-import { UserRole } from '@types'
+import { UserRole } from '@iam/types'
 
 export type AuthenticatedUser = {
 	_id: string

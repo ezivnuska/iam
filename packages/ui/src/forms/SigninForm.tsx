@@ -1,8 +1,8 @@
 // packages/screens/src/forms/LoginForm.tsx
 
 import React from 'react'
-import { Text, TextInput, StyleSheet, ActivityIndicator, Alert } from 'react-native'
-import { FormLayout } from '.'
+import { View, Text, TextInput, StyleSheet, ActivityIndicator, Alert } from 'react-native'
+import { FormLayout } from './FormLayout'
 import { Button } from '../components'
 import { useForm, Controller } from 'react-hook-form'
 import { api, login as loginUser } from '@services'
@@ -16,20 +16,20 @@ const schema = z.object({
 	password: z.string().min(6, 'Password must be at least 6 characters'),
 })
 
-type LoginFormProps = z.infer<typeof schema>
+type SigninFormProps = z.infer<typeof schema>
 // Without zod:
-// type LoginFormProps = { email: string; password: string }
+// type SigninFormProps = { email: string; password: string }
 
-export const LoginForm = () => {
+export const SigninForm = () => {
 	const {
 		control,
 		handleSubmit,
 		formState: { errors, isSubmitting },
-	} = useForm<LoginFormProps>({
+	} = useForm<SigninFormProps>({
 		resolver: zodResolver(schema), // remove if not using zod
 	})
 
-	const onSubmit = async (data: LoginFormProps) => {
+	const onSubmit = async (data: SigninFormProps) => {
 		try {
             const res = await api.post('/auth/login', data)
             const token = res.data?.token
@@ -91,6 +91,10 @@ export const LoginForm = () => {
 }
 
 const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		justifyContent: 'center',
+	},
 	title: {
 		fontSize: 28,
 		fontWeight: '600',
