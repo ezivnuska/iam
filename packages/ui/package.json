@@ -5,8 +5,8 @@
 	"types": "build/index.d.ts",
 	"exports": {
 		".": {
-		"import": "./build/index.js",
-		"types": "./build/index.d.ts"
+			"import": "./build/index.js",
+			"types": "./build/index.d.ts"
 		}
 	},
 	"scripts": {
@@ -15,11 +15,13 @@
 		"dev": "tsc --build -w"
 	},
 	"dependencies": {
+		"@auth": "workspace:*",
 		"@gorhom/bottom-sheet": "^5.1.2",
+		"@iam/types": "workspace:*",
 		"@navigation": "workspace:*",
 		"@providers": "workspace:*",
 		"@services": "workspace:*",
-		"@iam/types": "workspace:*"
+		"axios": "^1.8.4"
 	},
 	"devDependencies": {
 		"@types/react": "^19.1.0"

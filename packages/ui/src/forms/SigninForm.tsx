@@ -1,11 +1,13 @@
-// packages/screens/src/forms/LoginForm.tsx
+// packages/screens/src/forms/SigninForm.tsx
 
 import React from 'react'
 import { View, Text, TextInput, StyleSheet, ActivityIndicator, Alert } from 'react-native'
 import { FormLayout } from './FormLayout'
 import { Button } from '../components'
 import { useForm, Controller } from 'react-hook-form'
-import { api, login as loginUser } from '@services'
+import { signinWithToken, signinRequest } from '@services'
+import { NavigationProp, useNavigation } from '@react-navigation/native'
+import { RootStackParamList, User } from '@iam/types'
 
 // Optional: validation with zod
 import { z } from 'zod'
@@ -28,20 +30,22 @@ export const SigninForm = () => {
 	} = useForm<SigninFormProps>({
 		resolver: zodResolver(schema), // remove if not using zod
 	})
+	const navigation = useNavigation<NavigationProp<RootStackParamList>>()
 
 	const onSubmit = async (data: SigninFormProps) => {
 		try {
-            const res = await api.post('/auth/login', data)
-            const token = res.data?.token
-            if (token) {
-                await loginUser(token)
+            const { accessToken } = await signinRequest(data.email, data.password)
+    
+            if (accessToken) {
+                await signinWithToken(accessToken)
+                navigation.navigate('Home')
             } else {
-                Alert.alert('Login failed', 'No token received')
+                Alert.alert('Login failed', 'No access token received')
             }
-		} catch (err: any) {
+        } catch (err: any) {
             console.error(err)
             Alert.alert('Login failed', err?.response?.data?.message || 'Something went wrong')
-		}
+        }
 	}
 
   	return (

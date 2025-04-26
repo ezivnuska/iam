@@ -2,7 +2,8 @@ import express from 'express'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
 import mongoose from 'mongoose'
-import session from 'express-session'
+// import session from 'express-session'
+import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import path from 'path'
 import dotenv from 'dotenv'
@@ -21,19 +22,37 @@ const PORT = process.env.PORT || 4000
 //
 // Enables cross origin resource sharing so the frontend can us this REST API.
 //
+// app.use(cors({
+// 	origin: [
+// 		'*',
+// 		'http://localhost:3000',
+// 		'http://localhost:4000',
+// 		'https://iameric.me',
+// 	],
+// 	// alternatively use custom logic to determine the allowed origin
+// 	// origin: (origin, callback) => callback(null, true)
+// 	credentials: true,
+// 	methods: [ 'GET', 'POST' ],
+// 	allowedHeaders: [ 'Origin', 'X-Requested-With', 'Content-Type', 'Accept' ],
+// }))
+
 app.use(cors({
-	origin: [
-		'*',
-		'http://localhost:3000',
-		'http://localhost:4000',
-		'https://iameric.me',
-	],
-	// alternatively use custom logic to determine the allowed origin
-	// origin: (origin, callback) => callback(null, true)
+	origin: ['http://localhost:3000', 'https://iameric.me'],
 	credentials: true,
-	methods: [ 'GET', 'POST' ],
-	allowedHeaders: [ 'Origin', 'X-Requested-With', 'Content-Type', 'Accept' ],
+	methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+	allowedHeaders: ['Content-Type', 'Authorization'],
+	optionsSuccessStatus: 200,
 }))
+
+app.options('*', cors())
+
+app.use((req, res, next) => {
+	if (req.method === 'OPTIONS') {
+		res.sendStatus(200)
+	} else {
+		next()
+	}
+})
 
 const sessionSecret = process.env.JWT_SECRET!
 
@@ -62,6 +81,8 @@ app.use(express.urlencoded({ extended: true }))
 // Enables JSON in the request body.
 //
 app.use(express.json({ limit: '5mb' }))
+
+app.use(cookieParser())
 
 app.use(express.static('dist'))
 

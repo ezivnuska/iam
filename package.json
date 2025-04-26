@@ -17,6 +17,7 @@
 	"packageManager": "pnpm@10.8.0",
 	"devDependencies": {
 		"@babel/preset-env": "^7.1.6",
+		"@types/cookie-parser": "^1.4.8",
 		"@types/cors": "^2.8.17",
 		"@types/express": "^5.0.1",
 		"@types/express-session": "^1.18.1",
@@ -31,6 +32,7 @@
 		"@babel/runtime": "^7.27.0",
 		"@gorhom/bottom-sheet": "^5.1.2",
 		"@hookform/resolvers": "^5.0.1",
+		"@react-native-async-storage/async-storage": "^2.1.2",
 		"@react-navigation/core": "7.8.5",
 		"@react-navigation/native": "7.1.6",
 		"@react-navigation/stack": "^7.2.10",

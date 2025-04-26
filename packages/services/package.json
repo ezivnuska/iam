@@ -16,7 +16,6 @@
     },
     "dependencies": {
         "@hookform/resolvers": "^5.0.1",
-        "@navigation": "workspace:*",
         "@iam/types": "workspace:*",
         "axios": "^1.5.1",
         "expo-secure-store": "^12.2.0",

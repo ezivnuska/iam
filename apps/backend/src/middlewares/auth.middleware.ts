@@ -1,4 +1,4 @@
-// apps/backend/src/middleware/authMiddleware.ts
+// apps/backend/src/middleware/auth.middleware.ts
 
 import { Request, Response, NextFunction, RequestHandler } from 'express'
 import { TokenPayload, verifyToken } from '@auth'

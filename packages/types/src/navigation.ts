@@ -7,4 +7,6 @@ export type RootStackParamList = {
     Signin: undefined
     Signup: undefined
     ResetPassword: { token: string }
+    UserList: undefined
+    Protected: undefined
 }

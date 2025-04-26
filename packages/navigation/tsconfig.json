@@ -16,8 +16,8 @@
         "declarationMap": true
     },
     "include": ["src"],
+	"exclude": ["node_modules", "build"],
 	"references": [
-        { "path": "../services" },
         { "path": "../screens" },
         { "path": "../types" }
 	]

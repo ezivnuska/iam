@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
+import { createNavigationContainerRef } from '@react-navigation/native'
 import {
     DetailsScreen,
     ForgotPasswordScreen,
@@ -9,6 +10,7 @@ import {
     SigninScreen,
     SignupScreen,
     ResetPasswordScreen,
+    UserListScreen,
 } from '@screens'
 import type { RootStackParamList } from '@iam/types'
 
@@ -23,6 +25,44 @@ export const AppNavigator = () => {
             <Stack.Screen name="Signin" component={SigninScreen} />
             <Stack.Screen name="Signup" component={SignupScreen} />
             <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
+            <Stack.Screen name="UserList" component={UserListScreen} />
         </Stack.Navigator>
     )
+}
+
+export const navigationRef = createNavigationContainerRef<RootStackParamList>()
+
+export function navigate<RouteName extends keyof RootStackParamList>(
+    screen: RouteName,
+    ...[params]: RootStackParamList[RouteName] extends undefined
+        ? []
+        : [params: RootStackParamList[RouteName]]
+) {
+    if (navigationRef.isReady()) {
+        // @ts-ignore - force type to avoid version mismatch
+        navigationRef.navigate(screen, ...(params ? [params] : []))
+    }
+}
+
+export function resetTo<RouteName extends keyof RootStackParamList>(
+        screen: RouteName,
+        params?: RootStackParamList[RouteName]
+) {
+    if (navigationRef.isReady()) {
+        navigationRef.reset({
+            index: 0,
+            routes: [
+            params !== undefined
+                ? { name: screen, params }
+                : { name: screen },
+            ],
+        })
+    }
+}
+
+// Optional: goBack helper
+export function goBack() {
+    if (navigationRef.canGoBack()) {
+        navigationRef.goBack()
+    }
 }

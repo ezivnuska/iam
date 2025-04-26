@@ -29,7 +29,6 @@ const babelLoaderConfig = {
 			path.resolve(__dirname, 'src'),
 			path.resolve(__dirname, '../../packages/ui/src'),
 			path.resolve(__dirname, '../../packages/auth/src'),
-			path.resolve(__dirname, '../../packages/forms/src'),
 			path.resolve(__dirname, '../../packages/navigation/src'),
 			path.resolve(__dirname, '../../packages/providers/src'),
 			path.resolve(__dirname, '../../packages/screens/src'),
@@ -42,6 +41,7 @@ const babelLoaderConfig = {
 		return sourcesToCompile.some(srcPath => filepath.startsWith(srcPath)) ||
 			filepath.includes(`node_modules/expo/`) ||
 			filepath.includes(`node_modules/expo-modules-core/`) ||
+			filepath.includes(`node_modules/expo-secure-store/`) ||
             filepath.includes(`node_modules/react-native-reanimated/`)
 	},
 	use: {

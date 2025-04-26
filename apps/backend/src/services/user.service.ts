@@ -1,3 +1,5 @@
+// apps/backend/src/services/user.service.ts
+
 import { UserModel } from '../models/user.model'
 import { comparePassword, hashPassword } from '../utils/password'
 

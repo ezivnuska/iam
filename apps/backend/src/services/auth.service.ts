@@ -34,17 +34,13 @@ export const registerUser = async (
 	return { token, refreshToken }
 }
 
-export const loginUser = async (
-	email: string,
-	password: string,
-	res: Response
-) => {
-	const user = await UserModel.findOne({ email })
+export const loginUser = async (email: string, password: string, res: Response) => {
+	const user = await UserModel.findOne({ email }).select('+password')
 	if (!user) throw new Error('Invalid credentials')
 
-	const match = await comparePassword(password, user.password)
-	if (!match) throw new Error('Invalid credentials')
-	
+	const isMatch = await comparePassword(password, user.password)
+	if (!isMatch) throw new Error('Invalid credentials')
+
 	const payload = createPayload(user)
 	const accessToken = generateToken(payload)
 	const refreshToken = generateRefreshToken(payload)
@@ -56,7 +52,16 @@ export const loginUser = async (
 		maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
 	})
 
-	return { accessToken }
+	// return the user data you need too
+	const userResponse = {
+		id: user._id,
+		email: user.email,
+		username: user.username,
+		role: user.role,
+		verified: user.verified,
+	}
+
+	return { accessToken, user: userResponse }
 }
 
 export const refreshAccessToken = async (

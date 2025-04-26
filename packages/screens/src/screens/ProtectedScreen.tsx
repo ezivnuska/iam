@@ -1,0 +1,45 @@
+import { useEffect } from 'react'
+import { View, Text, ActivityIndicator } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
+import type { StackNavigationProp } from '@react-navigation/stack'
+import type { RootStackParamList } from '@iam/types'
+import { useAuth } from '@providers'
+
+type ProtectedScreenNavProp = StackNavigationProp<RootStackParamList, 'Protected'>
+
+export const ProtectedScreen = () => {
+	const { user, authReady, isAuthenticated } = useAuth()
+
+	const navigation = useNavigation<ProtectedScreenNavProp>()
+
+	useEffect(() => {
+		if (authReady && !isAuthenticated) {
+			navigation.navigate('Signin')
+		}
+	}, [authReady, isAuthenticated])
+
+	if (!authReady) {
+		// Still checking the auth state, show a loading spinner
+		return (
+			<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+				<ActivityIndicator size="large" />
+			</View>
+		)
+	}
+
+	if (!isAuthenticated) {
+		// Not logged in, maybe show a message or navigate them to Sign In
+		return (
+			<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+				<Text>You must be signed in to view this page.</Text>
+			</View>
+		)
+	}
+
+	// Otherwise, show the protected content!
+	return (
+		<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+			<Text>Welcome, {user?.username}!</Text>
+		</View>
+	)
+}

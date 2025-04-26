@@ -13,6 +13,7 @@
 	"include": ["src/**/*"],
 	"exclude": ["node_modules", "build"],
 	"references": [
+        { "path": "../auth" },
         { "path": "../services" },
         { "path": "../types" }
 	]

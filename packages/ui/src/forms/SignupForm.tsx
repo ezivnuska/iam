@@ -5,7 +5,7 @@ import { Text, TextInput, StyleSheet, Alert, ActivityIndicator } from 'react-nat
 import { FormLayout } from './FormLayout'
 import { Button } from '../components'
 import { useForm, Controller } from 'react-hook-form'
-import { api, login } from '@services'
+import { signinWithToken, signupRequest } from '@services'
 
 // Optional zod validation
 import { z } from 'zod'
@@ -32,13 +32,12 @@ export const SignupForm = () => {
 
 	const onSubmit = async (data: SignupFormProps) => {
 		try {
-		const res = await api.post('/auth/register', data)
-		const token = res.data?.token
-		if (token) {
-			await login(token)
-		} else {
-			Alert.alert('Registration failed', 'No token received')
-		}
+            const { accessToken } = await signupRequest(data.email, data.username, data.password)
+            if (accessToken) {
+                await signinWithToken(accessToken)
+            } else {
+                Alert.alert('Registration failed', 'No token received')
+            }
 		} catch (err: any) {
 			console.error(err)
 			Alert.alert('Registration error', err?.response?.data?.message || 'Something went wrong')

@@ -2,7 +2,7 @@
 
 import express, { Router } from 'express'
 import { getAdminDashboard } from '../controllers/admin.controller'
-import { requireAuth } from '../middleware/authMiddleware'
+import { requireAuth } from '../middlewares/auth.middleware'
 import { UserRole } from '@auth'
 
 const router: express.Router = Router()

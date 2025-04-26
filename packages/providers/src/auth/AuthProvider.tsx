@@ -1,57 +1,86 @@
-// apps/web/src/contexts/AuthProvider.tsx
+// packages/providers/src/auth/AuthProvider.tsx
 
-import React, { createContext, useState, useContext, ReactNode } from 'react'
-import axios from 'axios'
-import { useNavigation, NavigationProp } from '@react-navigation/native'
-import type { RootStackParamList } from '@iam/types'
+import React, { useEffect, useState, useCallback } from 'react'
+import { AuthContext } from './AuthContext'
+import { getToken, clearToken, logoutRequest, saveToken, api, getProfile, signinRequest } from '@services'
+import { NavigationProp, useNavigation } from '@react-navigation/native'
+import { RootStackParamList, User } from '@iam/types'
 
-interface AuthContextType {
-	user: any
-	login: (email: string, password: string) => Promise<void>
-	logout: () => Promise<void>
-}
+type AuthProviderProps = { children: React.ReactNode }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
-
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-	const [user, setUser] = useState<any>(null)
+export const AuthProvider = ({ children }: AuthProviderProps) => {
+	const [user, setUser] = useState<User | null>(null)
+	const [isAuthenticated, setIsAuthenticated] = useState(false)
+	const [authReady, setAuthReady] = useState(false)
 	const navigation = useNavigation<NavigationProp<RootStackParamList>>()
 
-	const login = async (email: string, password: string) => {
-		try {
-			const res = await axios.post('https://your-backend.com/api/auth/login', { email, password }, {
-				withCredentials: true, // If you're using cookies
-			})
-			// Set user data and navigate
-			setUser(res.data.user)
-			navigation.navigate('Home')
-		} catch (err) {
-			console.error('Login failed:', err)
-		}
+	const setAuthHeader = (token: string) => {
+		api.defaults.headers.common['Authorization'] = `Bearer ${token}`
 	}
 
-	const logout = async () => {
-		try {
-			await axios.post('https://your-backend.com/api/auth/logout', {}, { withCredentials: true })
-			setUser(null)
-			navigation.navigate('Signin')
-		} catch (err) {
-			console.error('Logout failed:', err)
-		}
+	const clearAuthHeader = () => {
+		delete api.defaults.headers.common['Authorization']
 	}
+
+	const initialize = useCallback(async () => {
+		try {
+			const token = await getToken()
+			if (!token) throw new Error('No token found')
+
+			setAuthHeader(token)
+
+			const profile = await getProfile()
+			setUser(profile)
+			setIsAuthenticated(true)
+			navigation.navigate('Home')
+		} catch (error: unknown) {
+			console.error('Auth initialization failed:', error)
+			await logoutRequest()
+			await clearToken()
+			setUser(null)
+			setIsAuthenticated(false)
+			navigation.navigate('Signin')
+		} finally {
+			setAuthReady(true)
+		}
+	}, [])
+
+	const login = useCallback(async (email: string, password: string) => {
+		try {
+			const { accessToken, user } = await signinRequest(email, password)
+			await saveToken(accessToken)
+			setAuthHeader(accessToken)
+
+			setUser(user)
+			setIsAuthenticated(true)
+			navigation.navigate('Home')
+		} catch (error: unknown) {
+			console.error('Login failed:', error)
+			throw error
+		}
+	}, [navigation])
+
+	const logout = useCallback(async () => {
+		try {
+			await logoutRequest()
+			await clearToken()
+		} catch (error) {
+			console.error('Logout failed:', error)
+		} finally {
+			clearAuthHeader()
+			setUser(null)
+			setIsAuthenticated(false)
+			navigation.navigate('Signin')
+		}
+	}, [navigation])
+
+	useEffect(() => {
+		initialize()
+	}, [initialize])
 
 	return (
-		<AuthContext.Provider value={{ user, login, logout }}>
+		<AuthContext.Provider value={{ user, isAuthenticated, authReady, login, logout }}>
 			{children}
 		</AuthContext.Provider>
 	)
 }
-
-// Custom hook to use the auth context
-// export const useAuth = () => {
-// 	const context = useContext(AuthContext)
-// 	if (!context) {
-// 		throw new Error('useAuth must be used within an AuthProvider')
-// 	}
-// 	return context
-// }
