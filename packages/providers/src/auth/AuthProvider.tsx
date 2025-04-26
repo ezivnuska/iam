@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react'
 import { AuthContext } from './AuthContext'
-import { getToken, clearToken, logoutRequest, saveToken, api, getProfile, signinRequest } from '@services'
+import { getToken, saveToken, clearToken, api, getProfile, signinRequest, logoutRequest, setAuthHeader, clearAuthHeader } from '@services'
 import { NavigationProp, useNavigation } from '@react-navigation/native'
 import { RootStackParamList, User } from '@iam/types'
 
@@ -13,14 +13,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 	const [isAuthenticated, setIsAuthenticated] = useState(false)
 	const [authReady, setAuthReady] = useState(false)
 	const navigation = useNavigation<NavigationProp<RootStackParamList>>()
-
-	const setAuthHeader = (token: string) => {
-		api.defaults.headers.common['Authorization'] = `Bearer ${token}`
-	}
-
-	const clearAuthHeader = () => {
-		delete api.defaults.headers.common['Authorization']
-	}
 
 	const initialize = useCallback(async () => {
 		try {
@@ -45,6 +37,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 		}
 	}, [])
 
+	useEffect(() => {
+		if (user) navigation.navigate('Home')
+	}, [user])
+
 	const login = useCallback(async (email: string, password: string) => {
 		try {
 			const { accessToken, user } = await signinRequest(email, password)
@@ -53,7 +49,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
 			setUser(user)
 			setIsAuthenticated(true)
-			navigation.navigate('Home')
 		} catch (error: unknown) {
 			console.error('Login failed:', error)
 			throw error

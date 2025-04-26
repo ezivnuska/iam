@@ -2,77 +2,67 @@
 
 import axios from 'axios'
 import { apiBaseUrl } from '../constants'
-import { getToken, saveToken } from '../tokenStorage'
+import { getToken, saveToken, clearToken } from '../tokenStorage'
 import { logoutRequest, refreshTokenRequest } from '.'
-
-const TOKEN_KEY = 'access_token'
 
 export const api = axios.create({
 	baseURL: apiBaseUrl,
 	withCredentials: true,
 })
 
-// Attach token on every request
-api.interceptors.request.use(async config => {
-	const token = await getToken()
-	if (token) {
-		config.headers.Authorization = `Bearer ${token}`
-	}
-	return config
-}, (error) => {
-	return Promise.reject(error)
-})
+// Set auth header
+export const setAuthHeader = (token: string) => {
+	api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+}
 
-// Handle 401 globally
+// Clear auth header
+export const clearAuthHeader = () => {
+	delete api.defaults.headers.common['Authorization']
+}
+
+// Attach token automatically before every request
+api.interceptors.request.use(
+	async (config) => {
+		const token = await getToken()
+		if (token) {
+			config.headers = config.headers || {}
+			config.headers['Authorization'] = `Bearer ${token}`
+		}
+		return config
+	},
+	(error) => Promise.reject(error)
+)
+
+// Auto-refresh token on 401 responses
 api.interceptors.response.use(
-    response => response,
-    async error => {
-      const originalRequest = error.config
-  
-      if (error.response?.status === 401 && !originalRequest._retry) {
-        originalRequest._retry = true
-        try {
-          const { accessToken } = await refreshTokenRequest()
-          await saveToken(accessToken)
-  
-          api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
-          originalRequest.headers['Authorization'] = `Bearer ${accessToken}`
-  
-          return api(originalRequest)
-        } catch (refreshError) {
-          console.error('Refresh token failed:', refreshError)
-          await logoutRequest()
-          window.location.reload() // or navigate to Signin
-        }
-      }
-  
-      return Promise.reject(error)
-    }
-  )
-// Handle 401 errors (expired token) and auto-refresh
-// api.interceptors.response.use((response) => {
-// 	return response
-// }, async (error) => {
-// 	const originalRequest = error.config
+	(response) => response,
+	async (error) => {
+		const originalRequest = error.config
 
-// 	if (error.response?.status === 401 && !originalRequest._retry) {
-// 		originalRequest._retry = true
+		// Prevent infinite loops
+		if (error.response?.status === 401 && !originalRequest._retry) {
+			originalRequest._retry = true
+			try {
+				const { accessToken } = await refreshTokenRequest()
 
-// 		try {
-// 			const accessToken = await refreshAccessToken()
+				await saveToken(accessToken)
+				setAuthHeader(accessToken) // Set globally
+				originalRequest.headers['Authorization'] = `Bearer ${accessToken}` // Set for retry
 
-// 			await saveToken(accessToken)
+				return api(originalRequest) // Retry original request
+			} catch (refreshError) {
+				console.error('Token refresh failed:', refreshError)
+				await clearToken()
+				await logoutRequest()
 
-// 			// Update Authorization header and retry original request
-// 			originalRequest.headers.Authorization = `Bearer ${accessToken}`
-// 			return api(originalRequest)
+				// You should navigate to login screen cleanly
+				if (typeof window !== 'undefined') {
+					window.location.reload() // Web fallback
+				}
+				// or trigger navigation programmatically if you're in React Native
+			}
+		}
 
-// 		} catch (refreshError) {
-// 			console.error('Refresh token failed:', refreshError)
-// 			await logoutRequest()
-// 			return Promise.reject(refreshError)
-// 		}
-// 	}
-
-// 	return Promise.reject(error)
-// })
+		return Promise.reject(error)
+	}
+)

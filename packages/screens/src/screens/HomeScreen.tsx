@@ -7,7 +7,6 @@ import type { StackNavigationProp } from '@react-navigation/stack'
 import type { RootStackParamList } from '@iam/types'
 import { Button, SigninForm, SignupForm, PageHeader, PageLayout, Row, Stack } from '@ui'
 import { useAuth, useModal } from '@providers'
-import { logoutRequest } from '@services'
 
 type HomeScreenNavProp = StackNavigationProp<RootStackParamList, 'Home'>
 
@@ -29,9 +28,7 @@ export const HomeScreen = () => {
 	}, [navigation])
 
     const logoutUser = useCallback(async () => {
-        await logoutRequest()
-        logout()
-		navigation.navigate('Signin')
+        await logout()
 	}, [navigation])
 
     const openSigninModal = () => {

@@ -1,17 +1,13 @@
-// packages/screens/src/forms/SigninForm.tsx
+// packages/ui/src/forms/SigninForm.tsx
 
-import React from 'react'
-import { View, Text, TextInput, StyleSheet, ActivityIndicator, Alert } from 'react-native'
-import { FormLayout } from './FormLayout'
-import { Button } from '../components'
+import React, { useRef } from 'react'
+import { Text, TextInput, StyleSheet, ActivityIndicator, Alert, TextInput as RNTextInput } from 'react-native'
 import { useForm, Controller } from 'react-hook-form'
-import { signinWithToken, signinRequest } from '@services'
-import { NavigationProp, useNavigation } from '@react-navigation/native'
-import { RootStackParamList, User } from '@iam/types'
-
-// Optional: validation with zod
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { FormLayout } from './FormLayout'
+import { Button } from '../components'
+import { useAuth } from '@providers'
 
 const schema = z.object({
 	email: z.string().email(),
@@ -19,86 +15,77 @@ const schema = z.object({
 })
 
 type SigninFormProps = z.infer<typeof schema>
-// Without zod:
-// type SigninFormProps = { email: string; password: string }
 
 export const SigninForm = () => {
-	const {
-		control,
-		handleSubmit,
-		formState: { errors, isSubmitting },
-	} = useForm<SigninFormProps>({
-		resolver: zodResolver(schema), // remove if not using zod
+	const { control, handleSubmit, formState: { errors, isSubmitting } } = useForm<SigninFormProps>({
+		resolver: zodResolver(schema),
 	})
-	const navigation = useNavigation<NavigationProp<RootStackParamList>>()
+	const { login } = useAuth()
+
+	const passwordInputRef = useRef<RNTextInput>(null)
 
 	const onSubmit = async (data: SigninFormProps) => {
 		try {
-            const { accessToken } = await signinRequest(data.email, data.password)
-    
-            if (accessToken) {
-                await signinWithToken(accessToken)
-                navigation.navigate('Home')
-            } else {
-                Alert.alert('Login failed', 'No access token received')
-            }
-        } catch (err: any) {
-            console.error(err)
-            Alert.alert('Login failed', err?.response?.data?.message || 'Something went wrong')
-        }
+			await login(data.email, data.password)
+		} catch (err: any) {
+			console.error('Signin error:', err)
+			Alert.alert('Login failed', err?.response?.data?.message || 'Something went wrong')
+		}
 	}
 
-  	return (
+	return (
 		<FormLayout>
 			<Text style={styles.title}>Log In</Text>
 
 			<Controller
 				control={control}
 				name="email"
-				render={({ field: { value, onChange } }) => (
-                    <TextInput
-                        placeholder="Email"
-                        value={value}
-                        onChangeText={onChange}
-                        autoCapitalize="none"
-                        keyboardType="email-address"
-                        style={styles.input}
-                    />
+				render={({ field: { value, onChange, onBlur } }) => (
+					<TextInput
+						placeholder="Email"
+						value={value}
+						onChangeText={onChange}
+						onBlur={onBlur}
+						autoCapitalize="none"
+						keyboardType="email-address"
+						returnKeyType="next"
+						onSubmitEditing={() => passwordInputRef.current?.focus()}
+						style={styles.input}
+					/>
 				)}
 			/>
-
 			{errors.email && <Text style={styles.error}>{errors.email.message}</Text>}
 
 			<Controller
 				control={control}
 				name="password"
-				render={({ field: { value, onChange } }) => (
-                    <TextInput
-                        placeholder="Password"
-                        value={value}
-                        onChangeText={onChange}
-                        secureTextEntry
-                        style={styles.input}
-                    />
+				render={({ field: { value, onChange, onBlur } }) => (
+					<TextInput
+						ref={passwordInputRef}
+						placeholder="Password"
+						value={value}
+						onChangeText={onChange}
+						onBlur={onBlur}
+						secureTextEntry
+						autoCapitalize="none"
+						returnKeyType="done"
+						onSubmitEditing={handleSubmit(onSubmit)}
+						style={styles.input}
+					/>
 				)}
 			/>
-            
 			{errors.password && <Text style={styles.error}>{errors.password.message}</Text>}
 
 			{isSubmitting ? (
 				<ActivityIndicator style={{ marginTop: 20 }} />
 			) : (
-				<Button label='Log In' onPress={handleSubmit(onSubmit)} />
+				<Button label="Log In" onPress={handleSubmit(onSubmit)} />
 			)}
 		</FormLayout>
 	)
 }
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		justifyContent: 'center',
-	},
 	title: {
 		fontSize: 28,
 		fontWeight: '600',
