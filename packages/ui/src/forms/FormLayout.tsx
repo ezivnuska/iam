@@ -18,7 +18,6 @@ export const FormLayout: React.FC<FormLayoutProps> = ({
                 flex={1}
                 spacing={10}
                 style={[styles.form, styles.shadow]}
-                justify='center'
             >
                 {children}
             </Stack>
@@ -32,7 +31,7 @@ const styles = StyleSheet.create({
         width: '100%',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
+        // justifyContent: 'center',
 		maxWidth: maxWidth,
         minWidth: 300,
 		alignSelf: 'center',

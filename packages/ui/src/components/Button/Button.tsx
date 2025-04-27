@@ -13,23 +13,25 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
 	return (
 		<Pressable
-		onPress={onPress}
-		disabled={disabled}
-		style={({ pressed }) => [
-			styles.base,
-			disabled && styles.disabled,
-			pressed && styles.pressed,
-			style,
-		]}
+            onPress={onPress}
+            disabled={disabled}
+            style={({ pressed }) => [
+                styles.base,
+                disabled && styles.disabled,
+                pressed && styles.pressed,
+                style,
+            ]}
 		>
-		<Text style={[styles.text, textStyle]}>{label}</Text>
+            <Text style={[styles.text, textStyle]}>{label}</Text>
 		</Pressable>
 	)
 }
 
 const styles = StyleSheet.create({
 	base: {
-		paddingVertical: 10,
+        // flex: 1,
+        width: '100%',
+		paddingVertical: 12,
 		paddingHorizontal: 16,
 		backgroundColor: '#333',
 		borderRadius: 12,

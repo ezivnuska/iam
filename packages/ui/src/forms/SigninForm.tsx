@@ -84,6 +84,14 @@ export const SigninForm = () => {
 
     const isFocused = (name: string): boolean => name === focused
     
+    // const handleBlur = (fieldName: keyof SigninFormProps) => {
+    //     const values = getValues()
+      
+    //     if (!values[fieldName]) {
+    //         focusFirstEmptyField()
+    //     }
+    // }
+
 	return (
 		<FormLayout>
 			<Text style={styles.title}>Sign In</Text>
@@ -96,17 +104,23 @@ export const SigninForm = () => {
                         ref={emailInputRef}
                         autoFocus
 						placeholder='Email'
+                        placeholderTextColor='#070'
 						value={value}
 						onChangeText={onChange}
                         onFocus={() => setFocused('email')}
-						onBlur={async () => {
+                        onBlur={() => {
                             onBlur()
                             setFocused(null)
-                            // const valid = await trigger('email')
-                            // if (!valid) {
-                            //     focusFirstError(errors)
-                            // }
+                            // handleBlur('email')
                         }}
+						// onBlur={async () => {
+                        //     onBlur()
+                        //     setFocused(null)
+                        //     // const valid = await trigger('email')
+                        //     // if (!valid) {
+                        //     //     focusFirstError(errors)
+                        //     // }
+                        // }}
 						autoCapitalize='none'
 						keyboardType='email-address'
 						returnKeyType='next'
@@ -124,17 +138,23 @@ export const SigninForm = () => {
 					<TextInput
 						ref={passwordInputRef}
 						placeholder='Password'
+                        placeholderTextColor='#070'
 						value={value}
 						onChangeText={onChange}
                         onFocus={() => setFocused('password')}
-						onBlur={async () => {
+                        onBlur={() => {
                             onBlur()
                             setFocused(null)
-                            // const valid = await trigger('password')
-                            // if (!valid) {
-                            //     focusFirstError(errors)
-                            // }
+                            // handleBlur('password')
                         }}
+						// onBlur={async () => {
+                        //     onBlur()
+                        //     setFocused(null)
+                        //     // const valid = await trigger('password')
+                        //     // if (!valid) {
+                        //     //     focusFirstError(errors)
+                        //     // }
+                        // }}
 						secureTextEntry
 						autoCapitalize='none'
 						returnKeyType='done'
@@ -148,7 +168,7 @@ export const SigninForm = () => {
 			{isSubmitting ? (
 				<ActivityIndicator style={{ marginTop: 20 }} />
 			) : (
-				<Button label='Log In' onPress={handleSubmit(onSubmit, onInvalid)} />
+				<Button label='Sign In' onPress={handleSubmit(onSubmit, onInvalid)} />
 			)}
 		</FormLayout>
 	)

@@ -115,6 +115,7 @@ export const SignupForm = () => {
                         ref={emailInputRef}
                         autoFocus
 						placeholder='email'
+                        placeholderTextColor='#070'
 						value={value}
 						onChangeText={onChange}
                         onFocus={() => setFocused('email')}
@@ -143,6 +144,7 @@ export const SignupForm = () => {
 					<TextInput
 						ref={usernameInputRef}
 						placeholder='username'
+                        placeholderTextColor='#070'
 						value={value}
 						onChangeText={onChange}
                         onFocus={() => setFocused('username')}
@@ -170,6 +172,7 @@ export const SignupForm = () => {
 					<TextInput
 						ref={passwordInputRef}
 						placeholder='password'
+                        placeholderTextColor='#070'
 						value={value}
 						onChangeText={onChange}
                         onFocus={() => setFocused('password')}
@@ -198,6 +201,7 @@ export const SignupForm = () => {
 					<TextInput
 						ref={confirmPasswordInputRef}
 						placeholder='password again'
+                        placeholderTextColor='#070'
 						value={value}
 						onChangeText={onChange}
                         onFocus={() => setFocused('confirmPassword')}
