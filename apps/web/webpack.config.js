@@ -2,7 +2,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import webpack from 'webpack'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
-import CopyPlugin from 'copy-webpack-plugin'
+// import CopyPlugin from 'copy-webpack-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import Dotenv from 'dotenv-webpack'
 
@@ -93,6 +93,7 @@ const plugins = [
 		path: path.resolve(__dirname, '.env'), // frontend-safe env
 		systemvars: true // optionally also pull from process.env
 	}),
+
 	// new CopyPlugin({
 	// 	patterns: [
 	// 		{ from: path.resolve(__dirname, 'src/assets'), to: 'assets' },

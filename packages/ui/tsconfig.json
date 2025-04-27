@@ -10,7 +10,7 @@
 		"jsx": "react-native",
 		"composite": true
 	},
-	"include": ["src"],
+	"include": ["src", "../providers/src/storage.ts"],
 	"exclude": ["node_modules", "build"],
 	"references": [
         { "path": "../auth" },

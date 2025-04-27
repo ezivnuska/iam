@@ -1,13 +1,13 @@
 // packages/ui/src/forms/SigninForm.tsx
 
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Text, TextInput, StyleSheet, ActivityIndicator, Alert, TextInput as RNTextInput } from 'react-native'
 import { useForm, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormLayout } from './FormLayout'
 import { Button } from '../components'
-import { useAuth } from '@providers'
+import { useAuth, useUser } from '@providers'
 
 const schema = z.object({
 	email: z.string().email(),
@@ -17,40 +17,101 @@ const schema = z.object({
 type SigninFormProps = z.infer<typeof schema>
 
 export const SigninForm = () => {
-	const { control, handleSubmit, formState: { errors, isSubmitting } } = useForm<SigninFormProps>({
-		resolver: zodResolver(schema),
-	})
-	const { login } = useAuth()
+    const { login } = useAuth()
+    const { email, setEmail } = useUser()
 
+	const { control, handleSubmit, formState: { errors, isSubmitting }, setError, trigger, getValues } = useForm<SigninFormProps>({
+		resolver: zodResolver(schema),
+        mode: 'onBlur',
+        defaultValues: {
+          email: email ?? '',
+          password: '',
+        },
+	})
+
+    const [focused, setFocused] = useState<string | null>(null)
+
+	const emailInputRef = useRef<RNTextInput>(null)
 	const passwordInputRef = useRef<RNTextInput>(null)
+    
+    const focusFirstError = (formErrors: typeof errors) => {
+        if (formErrors.email) {
+            emailInputRef.current?.focus()
+        } else if (formErrors.password) {
+            passwordInputRef.current?.focus()
+        }
+    }
+
+    const focusFirstEmptyField = () => {
+        const values = getValues()
+        if (!values.email.length) {
+            emailInputRef.current?.focus()
+        } else if (!values.password.length) {
+            passwordInputRef.current?.focus()
+        }
+    }
+
+    const onInvalid = () => {
+        focusFirstEmptyField()
+    }
+
+    useEffect(() => {
+        const validateOnMount = async () => {
+            const isValid = await trigger()
+            if (!isValid) {
+                focusFirstError(errors)
+            } else {
+                focusFirstEmptyField()
+            }
+        }
+        // emailInputRef.current?.focus()
+        focusFirstEmptyField()
+        // validateOnMount()
+    }, [])
 
 	const onSubmit = async (data: SigninFormProps) => {
 		try {
 			await login(data.email, data.password)
+            await setEmail(data.email)
 		} catch (err: any) {
-			console.error('Signin error:', err)
+            if (err?.response?.data?.message) {
+                const [fieldName, message] = err.response.data.message.split(':')
+                setError(fieldName, { message })
+            }
 			Alert.alert('Login failed', err?.response?.data?.message || 'Something went wrong')
 		}
 	}
 
+    const isFocused = (name: string): boolean => name === focused
+    
 	return (
 		<FormLayout>
-			<Text style={styles.title}>Log In</Text>
+			<Text style={styles.title}>Sign In</Text>
 
 			<Controller
 				control={control}
-				name="email"
+				name='email'
 				render={({ field: { value, onChange, onBlur } }) => (
 					<TextInput
-						placeholder="Email"
+                        ref={emailInputRef}
+                        autoFocus
+						placeholder='Email'
 						value={value}
 						onChangeText={onChange}
-						onBlur={onBlur}
-						autoCapitalize="none"
-						keyboardType="email-address"
-						returnKeyType="next"
+                        onFocus={() => setFocused('email')}
+						onBlur={async () => {
+                            onBlur()
+                            setFocused(null)
+                            // const valid = await trigger('email')
+                            // if (!valid) {
+                            //     focusFirstError(errors)
+                            // }
+                        }}
+						autoCapitalize='none'
+						keyboardType='email-address'
+						returnKeyType='next'
 						onSubmitEditing={() => passwordInputRef.current?.focus()}
-						style={styles.input}
+						style={[styles.input, styles.shadow, isFocused('email') && styles.inputFocused]}
 					/>
 				)}
 			/>
@@ -58,19 +119,27 @@ export const SigninForm = () => {
 
 			<Controller
 				control={control}
-				name="password"
+				name='password'
 				render={({ field: { value, onChange, onBlur } }) => (
 					<TextInput
 						ref={passwordInputRef}
-						placeholder="Password"
+						placeholder='Password'
 						value={value}
 						onChangeText={onChange}
-						onBlur={onBlur}
+                        onFocus={() => setFocused('password')}
+						onBlur={async () => {
+                            onBlur()
+                            setFocused(null)
+                            // const valid = await trigger('password')
+                            // if (!valid) {
+                            //     focusFirstError(errors)
+                            // }
+                        }}
 						secureTextEntry
-						autoCapitalize="none"
-						returnKeyType="done"
-						onSubmitEditing={handleSubmit(onSubmit)}
-						style={styles.input}
+						autoCapitalize='none'
+						returnKeyType='done'
+						onSubmitEditing={handleSubmit(onSubmit, onInvalid)}
+						style={[styles.input, styles.shadow, isFocused('password') && styles.inputFocused]}
 					/>
 				)}
 			/>
@@ -79,7 +148,7 @@ export const SigninForm = () => {
 			{isSubmitting ? (
 				<ActivityIndicator style={{ marginTop: 20 }} />
 			) : (
-				<Button label="Log In" onPress={handleSubmit(onSubmit)} />
+				<Button label='Log In' onPress={handleSubmit(onSubmit, onInvalid)} />
 			)}
 		</FormLayout>
 	)
@@ -92,14 +161,31 @@ const styles = StyleSheet.create({
 		marginBottom: 24,
 	},
 	input: {
-		borderWidth: 1,
-		borderColor: '#aaa',
+        width: '100%',
 		padding: 12,
 		marginBottom: 12,
 		borderRadius: 8,
-	},
+        overflow: 'hidden',
+    },
+    inputFocused: {
+        outlineWidth: 0,
+        outlineColor: 'transparent',
+        borderWidth: 0,
+        backgroundColor: '#ccffcc',
+        borderColor: 'transparent',
+    },
 	error: {
 		color: 'red',
 		marginBottom: 8,
 	},
+    shadow: {
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 1,
+            height: 2,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 6,
+        elevation: 2,
+    },
 })

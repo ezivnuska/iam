@@ -71,11 +71,24 @@ export const Navbar = ({ navItems, navigate }: NavbarProps) => {
                 </Row>
             )}
 
-            {isAuthenticated && (
-                <Pressable onPress={logout}>
-                    <Text style={styles.buttonLabel}>Sign Out</Text>
-                </Pressable>
-            )}
+            {isAuthenticated
+                ? (
+                    <Pressable onPress={logout}>
+                        <Text style={styles.buttonLabel}>Sign Out</Text>
+                    </Pressable>
+                )
+                : currentRoute === 'Signin'
+                    ? (
+                        <Pressable onPress={() => navigate('Signup')}>
+                            <Text style={styles.buttonLabel}>Sign Up</Text>
+                        </Pressable>
+                    )
+                    : (
+                        <Pressable onPress={() => navigate('Signin')}>
+                            <Text style={styles.buttonLabel}>Sign In</Text>
+                        </Pressable>
+                    )
+            }
 		</Row>
 	)
 }

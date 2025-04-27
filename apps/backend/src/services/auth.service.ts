@@ -12,7 +12,7 @@ export const registerUser = async (
 	password: string
 ) => {
 	const existing = await UserModel.findOne({ email })
-	if (existing) throw new Error('User already exists')
+	if (existing) throw new Error('email:Email already registered')
 
 	const hashed = await hashPassword(password)
 
@@ -36,10 +36,12 @@ export const registerUser = async (
 
 export const loginUser = async (email: string, password: string, res: Response) => {
 	const user = await UserModel.findOne({ email }).select('+password')
-	if (!user) throw new Error('Invalid credentials')
+	if (!user) {
+        throw new Error('email:Email is not registered')
+    }
 
 	const isMatch = await comparePassword(password, user.password)
-	if (!isMatch) throw new Error('Invalid credentials')
+	if (!isMatch) throw new Error('password:Invalid password')
 
 	const payload = createPayload(user)
 	const accessToken = generateToken(payload)

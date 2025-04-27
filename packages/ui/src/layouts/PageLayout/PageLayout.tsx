@@ -20,9 +20,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
 				contentContainerStyle={styles.scrollContent}
 				showsVerticalScrollIndicator={false}
 			>
-                {/* <View style={styles.content}> */}
-                    {children}
-                {/* </View> */}
+                {children}
 			</ScrollView>
 
 			<Footer />
