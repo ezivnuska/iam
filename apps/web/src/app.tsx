@@ -20,6 +20,7 @@ const linking = {
             Signup: 'signup',
             ResetPassword: 'reset-password/:token',
             UserList: 'users',
+            Profile: 'profile',
         },
     },
 }
@@ -40,6 +41,6 @@ export default function App() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'grey',
+        backgroundColor: '#000',
     },
 })  

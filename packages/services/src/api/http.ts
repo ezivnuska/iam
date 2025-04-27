@@ -38,11 +38,13 @@ api.interceptors.response.use(
 	(response) => response,
 	async (error) => {
 		const originalRequest = error.config
+        const isRefreshingRequest = originalRequest.url.includes('/auth/refresh-token')
 
 		// Prevent infinite loops
-		if (error.response?.status === 401 && !originalRequest._retry) {
+		if (error.response?.status === 401 && !originalRequest._retry && !isRefreshingRequest) {
 			originalRequest._retry = true
 			try {
+                console.log(':::API:refreshTokenRequest:::')
 				const { accessToken } = await refreshTokenRequest()
 
 				await saveToken(accessToken)

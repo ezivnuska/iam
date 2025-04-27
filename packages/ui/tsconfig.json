@@ -10,10 +10,11 @@
 		"jsx": "react-native",
 		"composite": true
 	},
-	"include": ["src/**/*"],
+	"include": ["src"],
 	"exclude": ["node_modules", "build"],
 	"references": [
         { "path": "../auth" },
+        { "path": "../providers" },
         { "path": "../services" },
         { "path": "../types" }
 	]

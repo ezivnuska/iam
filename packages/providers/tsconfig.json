@@ -7,7 +7,7 @@
       "composite": true,
       "jsx": "react-native"
     },
-    "include": ["src/**/*"],
+    "include": ["src"],
     "exclude": ["node_modules", "build"],
     "references": [
         { "path": "../services" },

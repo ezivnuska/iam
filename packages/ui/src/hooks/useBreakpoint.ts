@@ -18,7 +18,7 @@ export function useBreakpoint<T>(responsiveProp: ResponsiveProp<T>): T | undefin
 
 	for (const [key, minWidth] of sorted) {
 		if (width >= minWidth && typedProp[key] !== undefined) {
-		return typedProp[key]
+            return typedProp[key]
 		}
 	}
 

@@ -17,6 +17,7 @@ export async function clearToken() {
 }
 
 export async function refreshAccessToken(): Promise<string> {
+    console.log(':::refreshAccessToken:::')
 	const { accessToken } = await refreshTokenRequest()
 	if (!accessToken) throw new Error('No access token received')
 	return accessToken

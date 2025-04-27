@@ -21,7 +21,7 @@ export const SignupScreen = () => {
 
 	return (
 		<PageLayout>
-			<PageHeader title='Sign In' />
+			<PageHeader title='Sign Up' />
             <SignupForm />
             <Stack spacing={10}>
                 <Button label='Home' onPress={goToHome} />

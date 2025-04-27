@@ -1,12 +1,10 @@
-// packages/screens/src/screens/HomeScreen.tsx
-
-// apps/web/src/screens/HomeScreen.tsx
+// packages/screens/src/screens/UserListScreen.tsx
 
 import React, { useCallback } from 'react'
-import { FlatList, Text, View, ActivityIndicator } from 'react-native'
+import { FlatList, StyleSheet, Text, View, ActivityIndicator } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { usePaginatedFetch } from '@services/hooks/usePaginatedFetch'
-import { Button, PageLayout, Row } from '@ui'
+import { Button, PageHeader, PageLayout, Row } from '@ui'
 import type { StackNavigationProp } from '@react-navigation/stack'
 import type { RootStackParamList } from '@iam/types'
 
@@ -14,7 +12,6 @@ type UserListScreenNavProp = StackNavigationProp<RootStackParamList, 'UserList'>
 
 export const UserListScreen = () => {
 	const { data, fetchNextPage, loading } = usePaginatedFetch<any>('users')
-    console.log('data', data)
     const navigation = useNavigation<UserListScreenNavProp>()
     
     const goToHome = useCallback(() => {
@@ -23,28 +20,42 @@ export const UserListScreen = () => {
 
 	return (
         <PageLayout>
-            <View style={{ flex: 1 }}>
-                <FlatList
-                    data={data}
-                    keyExtractor={(item, index) => item.id || index.toString()}
-                    renderItem={({ item }) => (
-                        <View style={{ padding: 16 }}>
-                            <Text>{item.username || JSON.stringify(item)}</Text>
-                        </View>
-                    )}
-                    onEndReached={fetchNextPage}
-                    onEndReachedThreshold={0.5}
-                    ListFooterComponent={loading ? <ActivityIndicator /> : null}
-                />
-            </View>
-            <Row spacing={10}>
-                <Button label='Home' onPress={goToHome} />
-            </Row>
-
+                {loading
+                ? (
+                    <View style={styles.activity}>
+                        <ActivityIndicator size={50} />
+                    </View>
+                )
+                : (
+                    <FlatList
+                        style={{ flex: 1 }}
+                        contentContainerStyle={{ flexGrow: 1 }}
+                        data={data}
+                        keyExtractor={(item, index) => item.id || index.toString()}
+                        renderItem={({ item }) => (
+                            <View style={{ paddingVertical: 16 }}>
+                                <Text>{item.username || JSON.stringify(item)}</Text>
+                            </View>
+                        )}
+                        showsVerticalScrollIndicator={false}
+                        onEndReached={fetchNextPage}
+                        onEndReachedThreshold={0.5}
+                        // ListFooterComponent={loading ? <ActivityIndicator /> : null}
+                    />
+                )}
         </PageLayout>
 	)
 }
 
+const styles = StyleSheet.create({
+    activity: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+    },
+})
 
 // import React, { useCallback } from 'react'
 // import { View } from 'react-native'

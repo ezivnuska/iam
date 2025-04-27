@@ -8,5 +8,6 @@ export type RootStackParamList = {
     Signup: undefined
     ResetPassword: { token: string }
     UserList: undefined
+    Profile: undefined
     Protected: undefined
 }
