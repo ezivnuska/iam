@@ -1,24 +1,89 @@
 // packages/screens/src/screens/DetailsScreen.tsx
 
-import React, { useCallback } from 'react'
-import { useNavigation } from '@react-navigation/native'
-import { Button, PageHeader, PageLayout } from '@ui'
+import React, { useEffect, useState } from 'react'
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
+import { useNavigation, useRoute } from '@react-navigation/native'
+import { PageHeader, PageLayout, Row, Stack } from '@ui'
 import type { StackNavigationProp } from '@react-navigation/stack'
-import type { RootStackParamList } from '@iam/types'
+import { RootStackParamList, User } from '@iam/types'
+import { getUserById } from '@services'
+
+type DetailsParams = {
+    id: string
+}
 
 type DetailsScreenNavProp = StackNavigationProp<RootStackParamList, 'Details'>
 
 export const DetailsScreen = () => {
 	const navigation = useNavigation<DetailsScreenNavProp>()
+	const route = useRoute()
+    const { id } = route.params as DetailsParams
 
-	const goToHome = useCallback(() => {
-		navigation.navigate('Home')
-	}, [navigation])
+    const [userDetails, setUserDetails] = useState<User | null>(null)
+    const [loading, setLoading] = useState(false)
+
+    useEffect(() => {
+        const fetchDetails = async () => {
+            setLoading(true)
+            try {
+                const response = await getUserById(id)
+                setUserDetails(response)
+            } catch (error: any) {
+                throw new Error(error.message)
+            } finally {
+                setLoading(false)
+            }
+        }
+        fetchDetails()
+    }, [])
 
 	return (
-		<PageLayout>
-			<PageHeader title='Details' />
-			<Button label='Go Home' onPress={goToHome} />
-		</PageLayout>
-	)
+        <PageLayout>
+            {loading
+                ? (
+                    <View style={{
+                        flex: 1,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}>
+                        <ActivityIndicator size={50} />        
+                    </View>
+                    // <Row
+                    //     flex={1}
+                    //     align='center'
+                    //     justify='center'
+                    // >
+                    //     <ActivityIndicator />        
+                    // </Row>
+                ) : (
+                    <>
+                        <PageHeader title={`Profile: ${userDetails?.username || ''}`} />
+                        <Stack
+                            spacing={10}
+                            align='flex-start'
+                        >
+                            <Text style={[styles.text, styles.username]}>{userDetails?.username}</Text>
+                            <Text style={[styles.text, styles.email]}>{userDetails?.email}</Text>
+                        </Stack>
+                    </>
+                )
+            }
+        </PageLayout>
+    )
 }
+
+const styles = StyleSheet.create({
+    text: {
+        fontSize: 18,
+        textAlign: 'left',
+    },
+    username: {
+        flex: 1,
+        fontWeight: 'bold',
+    },
+    email: {
+        color: '#77f',
+        flex: 1,
+    },
+})
