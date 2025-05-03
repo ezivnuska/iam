@@ -7,7 +7,7 @@ import { logoutRequest, refreshTokenRequest } from '.'
 
 export const api = axios.create({
 	baseURL: apiBaseUrl,
-	withCredentials: true,  // Ensure that cookies are sent with requests
+	withCredentials: true, // Send cookies if needed
 })
 
 // Set auth header
@@ -18,6 +18,19 @@ export const setAuthHeader = (token: string) => {
 // Clear auth header
 export const clearAuthHeader = () => {
 	delete api.defaults.headers.common['Authorization']
+}
+
+// --- Token Refresh Queueing Logic ---
+let isRefreshing = false
+let refreshSubscribers: ((token: string) => void)[] = []
+
+function subscribeTokenRefresh(cb: (token: string) => void) {
+	refreshSubscribers.push(cb)
+}
+
+function onTokenRefreshed(token: string) {
+	refreshSubscribers.forEach(cb => cb(token))
+	refreshSubscribers = []
 }
 
 // Attach token automatically before every request
@@ -40,39 +53,43 @@ api.interceptors.response.use(
 		const originalRequest = error.config
 		const isRefreshEndpoint = originalRequest.url?.includes('/auth/refresh-token')
 		const isRetryAttempt = originalRequest._retry
-	
-		// Handle 401 errors when the refresh token fails
+
+		// Handle 401 errors only if not retrying or on refresh endpoint
 		if (error.response?.status === 401 && !isRetryAttempt && !isRefreshEndpoint) {
 			originalRequest._retry = true
-	
-			try {
-				// Try to refresh the access token
-				const { accessToken } = await refreshTokenRequest()
-	
-				// If refresh token is successful, save the new access token
-				await saveToken(accessToken)
-				setAuthHeader(accessToken)
-				originalRequest.headers['Authorization'] = `Bearer ${accessToken}`
-	
-				// Retry the original request with the new access token
-				return api(originalRequest)
-			} catch (refreshError) {
-				console.error('Token refresh failed:', refreshError)
-				await clearToken()
-				clearAuthHeader()
-	
-				// If the refresh token is invalid/expired, force the user to log in again
-				if (!isRefreshEndpoint) {
-					console.error('Token refresh failed:', refreshError)
+
+			if (!isRefreshing) {
+				isRefreshing = true
+				try {
+					const { accessToken } = await refreshTokenRequest()
+
+					await saveToken(accessToken)
+					setAuthHeader(accessToken)
+					isRefreshing = false
+					onTokenRefreshed(accessToken)
+
+					// Retry original request
+					originalRequest.headers['Authorization'] = `Bearer ${accessToken}`
+					return api(originalRequest)
+				} catch (refreshError) {
+					isRefreshing = false
+					refreshSubscribers = []
 					await clearToken()
+					clearAuthHeader()
 					await logoutRequest()
+					return Promise.reject(refreshError)
 				}
-	
-				// Reject the error and prevent further retries
-				return Promise.reject(refreshError)
 			}
+
+			// If already refreshing, queue this request
+			return new Promise((resolve, reject) => {
+				subscribeTokenRefresh((token: string) => {
+					originalRequest.headers['Authorization'] = `Bearer ${token}`
+					resolve(api(originalRequest))
+				})
+			})
 		}
-	
+
 		return Promise.reject(error)
 	}
 )
