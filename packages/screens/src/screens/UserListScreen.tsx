@@ -1,111 +1,186 @@
 // packages/screens/src/screens/UserListScreen.tsx
 
 import React from 'react'
-import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
-import { usePaginatedFetch } from '@services/hooks/usePaginatedFetch'
-import { PageLayout } from '@ui'
+import { View, Text, ScrollView, StyleSheet, Image, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { useAuth } from '@providers'
+import { usePaginatedFetch } from '@services'
 import type { StackNavigationProp } from '@react-navigation/stack'
+import { useNavigation } from '@react-navigation/native'
 import type { RootStackParamList } from '@iam/types'
+import { PageLayout } from '@ui'
 
 type UserListScreenNavProp = StackNavigationProp<RootStackParamList, 'UserList'>
 
 export const UserListScreen = () => {
+	const navigation = useNavigation<UserListScreenNavProp>()
+	const { user: currentUser } = useAuth()
 
 	const { data, fetchNextPage, loading } = usePaginatedFetch<any>('users')
-    const navigation = useNavigation<UserListScreenNavProp>()
-    
-    const goToDetails = (id: string) => {
-        console.log('id', id)
-        navigation.navigate('Details', { id })
-    }
+
+	if (!currentUser) {
+		return (
+		<View style={styles.centered}>
+			<Text style={styles.loadingText}>Loading profile...</Text>
+		</View>
+		)
+	}
+
+	// Only show other users, excluding yourself
+	const otherUsers = (data ?? []).filter((u) => u.email !== currentUser.email)
 
 	return (
         <PageLayout>
-            <View style={styles.container}>
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={styles.container}
+            >
+                {/* Current User Profile */}
+                <View style={styles.profileCard}>
+                    <ProfileImage
+                        url={currentUser?.avatar?.url}
+                        username={currentUser.username}
+                    />
+                    <Text style={styles.username}>{currentUser.username}</Text>
+                    <Text style={styles.email}>{currentUser.email}</Text>
+                    {currentUser.bio && <Text style={styles.bio}>{currentUser.bio}</Text>}
+                </View>
+
+                {/* Other Users */}
+                <Text style={styles.sectionTitle}>Other Users</Text>
+
                 <FlatList
-                    style={{ flex: 1 }}
-                    contentContainerStyle={{ flexGrow: 1 }}
-                    data={data}
-                    keyExtractor={(item, index) => `user-list-item-${item.username}`}
+                    data={otherUsers}
+                    keyExtractor={(item) => item.id || item.email}
+                    scrollEnabled={false}
                     renderItem={({ item }) => (
-                        <Pressable
-                            style={styles.listItem}
-                            onPress={() => goToDetails(item._id)}
-                        >
-                            <Text>{item.username || JSON.stringify(item)}</Text>
-                        </Pressable>
+                    <TouchableOpacity
+                        style={styles.otherUserCard}
+                        activeOpacity={0.7}
+                        onPress={() => navigation.navigate('Details', { id: item._id })}
+                    >
+                        <ProfileImage url={item.avatar?.url} username={item.username} small />
+                        <View style={{ marginLeft: 12 }}>
+                            <Text style={styles.otherUsername}>{item.username}</Text>
+                            <Text style={styles.otherEmail}>{item.email}</Text>
+                        </View>
+                    </TouchableOpacity>
                     )}
-                    showsVerticalScrollIndicator={false}
                     onEndReached={fetchNextPage}
                     onEndReachedThreshold={0.5}
-                    ListFooterComponent={loading ? <ActivityIndicator /> : null}
+                    ListFooterComponent={loading ? <ActivityIndicator style={{ marginVertical: 20 }} /> : null}
                 />
-            </View>
+            </ScrollView>
         </PageLayout>
 	)
 }
 
+const ProfileImage = ({
+	url,
+    username,
+	small = false,
+}: {
+    url?: string,
+    username: string,
+	small?: boolean
+}) => {
+	const size = small ? 48 : 120
+	return url ? (
+		<Image
+			source={{ uri: url }}
+			style={{
+                width: size,
+                height: size,
+                borderRadius: size / 2,
+                backgroundColor: '#ddd',
+			}}
+		/>
+	) : (
+		<View
+			style={{
+				width: size,
+				height: size,
+				borderRadius: size / 2,
+				backgroundColor: '#ccc',
+				justifyContent: 'center',
+				alignItems: 'center',
+			}}
+		>
+			<Text style={{ fontSize: small ? 20 : 48, color: '#555', fontWeight: 'bold' }}>
+				{username?.charAt(0).toUpperCase() || '?'}
+			</Text>
+		</View>
+	)
+}
+  
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '100%',
-    },
-    listItem: {
-        paddingVertical: 16,
-    },
+	container: {
+		padding: 24,
+		alignItems: 'center',
+		backgroundColor: '#fff',
+		minHeight: '100%',
+	},
+	profileCard: {
+		backgroundColor: '#f9f9f9',
+		padding: 24,
+		borderRadius: 16,
+		alignItems: 'center',
+		width: '100%',
+		maxWidth: 400,
+		marginBottom: 32,
+		shadowColor: '#000',
+		shadowOpacity: 0.05,
+		shadowOffset: { width: 0, height: 2 },
+		shadowRadius: 10,
+		elevation: 3,
+	},
+	username: {
+		fontSize: 24,
+		fontWeight: '700',
+		marginTop: 8,
+	},
+	email: {
+		fontSize: 16,
+		color: '#666',
+		marginBottom: 8,
+	},
+	bio: {
+		fontSize: 14,
+		color: '#777',
+		textAlign: 'center',
+		marginTop: 8,
+	},
+	sectionTitle: {
+		fontSize: 20,
+		fontWeight: '600',
+		alignSelf: 'flex-start',
+		marginBottom: 16,
+	},
+	otherUserCard: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		backgroundColor: '#fafafa',
+		padding: 12,
+		borderRadius: 12,
+		marginBottom: 12,
+		width: '100%',
+		maxWidth: 400,
+	},
+	otherUsername: {
+		fontSize: 18,
+		fontWeight: '500',
+	},
+	otherEmail: {
+		fontSize: 14,
+		color: '#777',
+	},
+	centered: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+		padding: 24,
+	},
+	loadingText: {
+		fontSize: 18,
+		color: '#888',
+	},
 })
-
-// import React, { useCallback } from 'react'
-// import { View } from 'react-native'
-// import { useNavigation } from '@react-navigation/native'
-// import type { StackNavigationProp } from '@react-navigation/stack'
-// import type { RootStackParamList } from '@iam/types'
-// import { Button, SigninForm, SignupForm, PageHeader, PageLayout, Row, Stack, PaginatedList } from '@ui'
-// import { useModal } from '@providers'
-
-// type UserListScreenNavProp = StackNavigationProp<RootStackParamList, 'Home'>
-
-// export const UserListScreen = () => {
-// 	const navigation = useNavigation<UserListScreenNavProp>()
-//     const { showModal, hideModal } = useModal()
-
-// 	const goToDetails = useCallback(() => {
-// 		navigation.navigate('Details', { id: '123' })
-// 	}, [navigation])
-
-// 	const goToSignin = useCallback(() => {
-// 		navigation.navigate('Signin')
-// 	}, [navigation])
-
-//     const goToSignup = useCallback(() => {
-// 		navigation.navigate('Signup')
-// 	}, [navigation])
-
-//     const openSigninModal = () => {
-//         console.log('Opening Signin Modal...')
-//         showModal(<SigninForm />)
-//     }
-    
-//     const openSignupModal = () => {
-//         console.log('Opening Signup Modal...');
-//         showModal(<SignupForm />)
-//     }
-
-// 	return (
-// 		<PageLayout>
-// 			<PageHeader title='Home' />
-//             <Row spacing={10}>
-//                 <Button label='Go to Details' onPress={goToDetails} />
-//                 <Button label='Sign In' onPress={goToSignin} />
-//                 <Button label='Sign Up' onPress={goToSignup} />
-//                 <Button label='Open Signin Modal' onPress={openSigninModal} />
-//                 <Button label='Open Signup Modal' onPress={openSignupModal} />
-//             </Row>
-//                 <PaginatedList />
-// 		</PageLayout>
-// 	)
-// }

@@ -1,80 +1,54 @@
-// packages/providers/src/auth/AuthProvider.tsx
-
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState } from 'react'
 import { AuthContext } from './AuthContext'
-import { getToken, saveToken, clearToken, api, getProfile, signinRequest, logoutRequest, setAuthHeader, clearAuthHeader } from '@services'
-import { NavigationProp, useNavigation } from '@react-navigation/native'
-import { RootStackParamList, User } from '@iam/types'
+import { saveToken, clearToken, signinRequest, logoutRequest, setAuthHeader, clearAuthHeader } from '@services'
+import { User } from '@iam/types'
+import { trySigninFromStoredToken } from '@services'
+import { navigate } from '@navigation'  // Assuming you've set up a custom navigation handler
 
 type AuthProviderProps = { children: React.ReactNode }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
 	const [user, setUser] = useState<User | null>(null)
 	const [isAuthenticated, setIsAuthenticated] = useState(false)
-	const [authReady, setAuthReady] = useState(false)
-	const navigation = useNavigation<NavigationProp<RootStackParamList>>()
-
-	const initialize = useCallback(async () => {
-		try {
-			const token = await getToken()
-			if (!token) throw new Error('No token found')
-
-			setAuthHeader(token)
-
-			const profile = await getProfile()
-			setUser(profile)
-			setIsAuthenticated(true)
-			navigation.navigate('Home')
-		} catch (error: unknown) {
-			console.error('Auth initialization failed:', error)
-			await logoutRequest()
-			await clearToken()
-			setUser(null)
-			setIsAuthenticated(false)
-			navigation.navigate('Signin')
-		} finally {
-			setAuthReady(true)
-		}
-	}, [])
-
-	useEffect(() => {
-		if (user) navigation.navigate('Home')
-	}, [user])
-
-	const login = useCallback(async (email: string, password: string) => {
-		try {
-			const { accessToken, user } = await signinRequest(email, password)
-			await saveToken(accessToken)
-			setAuthHeader(accessToken)
-
-			setUser(user)
-			setIsAuthenticated(true)
-		} catch (error: unknown) {
-			console.error('Login failed:', error)
-			throw error
-		}
-	}, [navigation])
-
-	const logout = useCallback(async () => {
-		try {
-			await logoutRequest()
-			await clearToken()
-		} catch (error) {
-			console.error('Logout failed:', error)
-		} finally {
-			clearAuthHeader()
-			setUser(null)
-			setIsAuthenticated(false)
-			navigation.navigate('Signin')
-		}
-	}, [navigation])
-
-	useEffect(() => {
-		initialize()
-	}, [initialize])
-
+  
+	// Login function
+	const login = async (email: string, password: string) => {
+        const { accessToken, user: userProfile } = await signinRequest(email, password)
+        await saveToken(accessToken)  // Save the token
+        setAuthHeader(accessToken)    // Set the token in headers
+        setUser(userProfile)  // Set the user state
+        setIsAuthenticated(true)  // Update authentication status
+        navigate('Home')
+    }
+  
+	// Logout function
+	const logout = async () => {
+        await logoutRequest()  // Make the logout request
+        await clearToken()  // Clear the stored token
+        clearAuthHeader()  // Remove the auth header
+        setIsAuthenticated(false)  // Update authentication status
+        setUser(null)  // Clear user info
+        navigate('Signin')
+    }
+    
+	// Initialize on mount, check stored token, and redirect if not signed in
+    useEffect(() => {
+        const initialize = async () => {
+            const profile = await trySigninFromStoredToken()  // Try to sign in from a stored token
+            if (profile) {
+                setUser(profile)  // Set the user info
+                setIsAuthenticated(true)  // Mark as authenticated
+                navigate('Home')
+            } else {
+                navigate('Signin')
+            }
+        }
+    
+        initialize()  // Call initialize
+    }, [])
+  
 	return (
-		<AuthContext.Provider value={{ user, isAuthenticated, authReady, login, logout }}>
+		<AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
 			{children}
 		</AuthContext.Provider>
 	)

@@ -8,24 +8,15 @@ import { useAuth } from '@providers'
 type ProtectedScreenNavProp = StackNavigationProp<RootStackParamList, 'Protected'>
 
 export const ProtectedScreen = () => {
-	const { user, authReady, isAuthenticated } = useAuth()
+	const { user, isAuthenticated } = useAuth()
 
 	const navigation = useNavigation<ProtectedScreenNavProp>()
 
 	useEffect(() => {
-		if (authReady && !isAuthenticated) {
+		if (!isAuthenticated) {
 			navigation.navigate('Signin')
 		}
-	}, [authReady, isAuthenticated])
-
-	if (!authReady) {
-		// Still checking the auth state, show a loading spinner
-		return (
-			<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-				<ActivityIndicator size="large" />
-			</View>
-		)
-	}
+	}, [isAuthenticated])
 
 	if (!isAuthenticated) {
 		// Not logged in, maybe show a message or navigate them to Sign In

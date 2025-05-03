@@ -10,13 +10,14 @@ import {
   forgotPassword,
   resetPassword
 } from '../controllers/auth.controller'
+import { requireRefreshToken } from '../middlewares/requireRefreshToken'
 
 const router: express.Router = Router()
 
 router.post('/signup', signup)
 router.post('/signin', signin)
-router.post('/refresh-token', refreshToken)
 router.post('/logout', logout)
+router.post('/refresh-token', requireRefreshToken, refreshToken)
 
 router.get('/verify', verifyEmail)
 router.post('/forgot-password', forgotPassword)

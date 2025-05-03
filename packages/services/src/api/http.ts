@@ -2,12 +2,12 @@
 
 import axios from 'axios'
 import { apiBaseUrl } from '../constants'
-import { getToken, saveToken, clearToken } from '../tokenStorage'
+import { getToken, saveToken, clearToken } from '../'
 import { logoutRequest, refreshTokenRequest } from '.'
 
 export const api = axios.create({
 	baseURL: apiBaseUrl,
-	withCredentials: true,
+	withCredentials: true,  // Ensure that cookies are sent with requests
 })
 
 // Set auth header
@@ -35,36 +35,44 @@ api.interceptors.request.use(
 
 // Auto-refresh token on 401 responses
 api.interceptors.response.use(
-	(response) => response,
+	response => response,
 	async (error) => {
 		const originalRequest = error.config
-        const isRefreshingRequest = originalRequest.url.includes('/auth/refresh-token')
-
-		// Prevent infinite loops
-		if (error.response?.status === 401 && !originalRequest._retry && !isRefreshingRequest) {
+		const isRefreshEndpoint = originalRequest.url?.includes('/auth/refresh-token')
+		const isRetryAttempt = originalRequest._retry
+	
+		// Handle 401 errors when the refresh token fails
+		if (error.response?.status === 401 && !isRetryAttempt && !isRefreshEndpoint) {
 			originalRequest._retry = true
+	
 			try {
-                console.log(':::API:refreshTokenRequest:::')
+				// Try to refresh the access token
 				const { accessToken } = await refreshTokenRequest()
-
+	
+				// If refresh token is successful, save the new access token
 				await saveToken(accessToken)
-				setAuthHeader(accessToken) // Set globally
-				originalRequest.headers['Authorization'] = `Bearer ${accessToken}` // Set for retry
-
-				return api(originalRequest) // Retry original request
+				setAuthHeader(accessToken)
+				originalRequest.headers['Authorization'] = `Bearer ${accessToken}`
+	
+				// Retry the original request with the new access token
+				return api(originalRequest)
 			} catch (refreshError) {
 				console.error('Token refresh failed:', refreshError)
 				await clearToken()
-				await logoutRequest()
-
-				// You should navigate to login screen cleanly
-				if (typeof window !== 'undefined') {
-					window.location.reload() // Web fallback
+				clearAuthHeader()
+	
+				// If the refresh token is invalid/expired, force the user to log in again
+				if (!isRefreshEndpoint) {
+					console.error('Token refresh failed:', refreshError)
+					await clearToken()
+					await logoutRequest()
 				}
-				// or trigger navigation programmatically if you're in React Native
+	
+				// Reject the error and prevent further retries
+				return Promise.reject(refreshError)
 			}
 		}
-
+	
 		return Promise.reject(error)
 	}
 )

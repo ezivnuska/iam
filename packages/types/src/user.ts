@@ -2,11 +2,22 @@
 
 export type UserRole = 'user' | 'admin'
 
+export type Image = {
+    id: string
+    filename: string
+    username: string
+    height: number
+    width: number
+    url: string
+}
+
 export type User = {
 	id: string
 	username: string
 	email: string
 	role: UserRole
+    avatar?: Image
+    bio: string
 	verified: boolean
 	verifyToken?: string
 	verifyTokenExpires?: Date

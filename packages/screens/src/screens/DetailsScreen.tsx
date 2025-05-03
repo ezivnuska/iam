@@ -2,20 +2,16 @@
 
 import React, { useEffect, useState } from 'react'
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
-import { useNavigation, useRoute } from '@react-navigation/native'
+import { useRoute } from '@react-navigation/native'
 import { PageHeader, PageLayout, Row, Stack } from '@ui'
-import type { StackNavigationProp } from '@react-navigation/stack'
-import { RootStackParamList, User } from '@iam/types'
+import { User } from '@iam/types'
 import { getUserById } from '@services'
 
 type DetailsParams = {
     id: string
 }
 
-type DetailsScreenNavProp = StackNavigationProp<RootStackParamList, 'Details'>
-
 export const DetailsScreen = () => {
-	const navigation = useNavigation<DetailsScreenNavProp>()
 	const route = useRoute()
     const { id } = route.params as DetailsParams
 
@@ -49,13 +45,6 @@ export const DetailsScreen = () => {
                     }}>
                         <ActivityIndicator size={50} />        
                     </View>
-                    // <Row
-                    //     flex={1}
-                    //     align='center'
-                    //     justify='center'
-                    // >
-                    //     <ActivityIndicator />        
-                    // </Row>
                 ) : (
                     <>
                         <PageHeader title={`Profile: ${userDetails?.username || ''}`} />

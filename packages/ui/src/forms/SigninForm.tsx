@@ -7,7 +7,8 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormLayout } from './FormLayout'
 import { Button } from '../components'
-import { useAuth, useUser } from '@providers'
+import { useAuth } from '@providers'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const schema = z.object({
 	email: z.string().email(),
@@ -17,14 +18,12 @@ const schema = z.object({
 type SigninFormProps = z.infer<typeof schema>
 
 export const SigninForm = () => {
-    const { login } = useAuth()
-    const { email, setEmail } = useUser()
-
-	const { control, handleSubmit, formState: { errors, isSubmitting }, setError, trigger, getValues } = useForm<SigninFormProps>({
+    const { login, user } = useAuth()  // no need for setUser anymore
+    const { control, handleSubmit, formState: { errors, isSubmitting }, setError, trigger, setValue, getValues } = useForm<SigninFormProps>({
 		resolver: zodResolver(schema),
         mode: 'onBlur',
         defaultValues: {
-          email: email ?? '',
+          email: user?.email ?? '',
           password: '',
         },
 	})
@@ -33,6 +32,22 @@ export const SigninForm = () => {
 
 	const emailInputRef = useRef<RNTextInput>(null)
 	const passwordInputRef = useRef<RNTextInput>(null)
+
+    useEffect(() => {
+        const loadStoredEmail = async () => {
+            try {
+                const storedEmail = await AsyncStorage.getItem('user_email')
+                if (storedEmail) {
+                    setValue('email', storedEmail)
+                }
+            } catch (err) {
+                console.warn('Failed to load stored email:', err)
+            }
+            focusFirstEmptyField()
+        }
+    
+        loadStoredEmail()
+    }, [])
     
     const focusFirstError = (formErrors: typeof errors) => {
         if (formErrors.email) {
@@ -55,24 +70,10 @@ export const SigninForm = () => {
         focusFirstEmptyField()
     }
 
-    useEffect(() => {
-        const validateOnMount = async () => {
-            const isValid = await trigger()
-            if (!isValid) {
-                focusFirstError(errors)
-            } else {
-                focusFirstEmptyField()
-            }
-        }
-        // emailInputRef.current?.focus()
-        focusFirstEmptyField()
-        // validateOnMount()
-    }, [])
-
 	const onSubmit = async (data: SigninFormProps) => {
 		try {
-			await login(data.email, data.password)
-            await setEmail(data.email)
+			await login(data.email, data.password)  // login will set the user state
+            await AsyncStorage.setItem('user_email', data.email)
 		} catch (err: any) {
             if (err?.response?.data?.message) {
                 const [fieldName, message] = err.response.data.message.split(':')
@@ -84,14 +85,6 @@ export const SigninForm = () => {
 
     const isFocused = (name: string): boolean => name === focused
     
-    // const handleBlur = (fieldName: keyof SigninFormProps) => {
-    //     const values = getValues()
-      
-    //     if (!values[fieldName]) {
-    //         focusFirstEmptyField()
-    //     }
-    // }
-
 	return (
 		<FormLayout>
 			<Text style={styles.title}>Sign In</Text>
@@ -111,16 +104,7 @@ export const SigninForm = () => {
                         onBlur={() => {
                             onBlur()
                             setFocused(null)
-                            // handleBlur('email')
                         }}
-						// onBlur={async () => {
-                        //     onBlur()
-                        //     setFocused(null)
-                        //     // const valid = await trigger('email')
-                        //     // if (!valid) {
-                        //     //     focusFirstError(errors)
-                        //     // }
-                        // }}
 						autoCapitalize='none'
 						keyboardType='email-address'
 						returnKeyType='next'
@@ -145,16 +129,7 @@ export const SigninForm = () => {
                         onBlur={() => {
                             onBlur()
                             setFocused(null)
-                            // handleBlur('password')
                         }}
-						// onBlur={async () => {
-                        //     onBlur()
-                        //     setFocused(null)
-                        //     // const valid = await trigger('password')
-                        //     // if (!valid) {
-                        //     //     focusFirstError(errors)
-                        //     // }
-                        // }}
 						secureTextEntry
 						autoCapitalize='none'
 						returnKeyType='done'

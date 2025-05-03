@@ -8,6 +8,7 @@ export interface IUser extends Document {
 	username: string
 	email: string
 	role: UserRole
+    bio: string
 	password: string
 	verified: boolean
 	verifyToken?: string
@@ -22,6 +23,7 @@ const UserSchema = new Schema<IUser>({
 	username: { type: String, required: true },
 	email: { type: String, required: true, unique: true },
 	role: { type: String, enum: Object.values(UserRole), default: UserRole.User },
+    bio: { type: String },
 	password: { type: String, required: true },
 	verified: { type: Boolean, default: false },
 	verifyToken: String,

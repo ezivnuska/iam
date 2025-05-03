@@ -3,6 +3,9 @@
 import { Request, RequestHandler, Response, NextFunction } from 'express'
 import * as authService from '../services/auth.service'
 
+import fs from 'fs'
+import path from 'path'
+
 export const signup: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 	try {
 		const { email, username, password } = req.body
@@ -41,4 +44,11 @@ export const forgotPassword: RequestHandler = (req: Request, res: Response, next
 
 export const resetPassword: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
 	authService.resetPassword(req, res)
+}
+
+export const deleteUserFolder = (username: string) => {
+    const dir = path.resolve(__dirname, '../../../uploads/users', username)
+    fs.rm(dir, { recursive: true, force: true }, (err) => {
+        if (err) console.error(`Failed to delete folder for ${username}:`, err)
+    })
 }

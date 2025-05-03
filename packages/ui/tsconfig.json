@@ -6,11 +6,11 @@
 		"declaration": true,
 		"declarationDir": "build",
 		"emitDeclarationOnly": false,
-		"types": ["react"],
+		"types": ["react", "node"],
 		"jsx": "react-native",
 		"composite": true
 	},
-	"include": ["src", "../providers/src/storage.ts"],
+	"include": ["src"],
 	"exclude": ["node_modules", "build"],
 	"references": [
         { "path": "../auth" },

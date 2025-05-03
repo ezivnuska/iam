@@ -7,7 +7,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormLayout } from './FormLayout'
 import { Button } from '../components'
-import { useAuth, useUser } from '@providers'
+import { useAuth } from '@providers'
 import { signupRequest } from '@services'
 
 const schema = z.object({
@@ -23,14 +23,13 @@ const schema = z.object({
 type SignupFormProps = z.infer<typeof schema>
 
 export const SignupForm = () => {
-	const { login } = useAuth()
-	const { email, setEmail } = useUser()
+	const { login, user } = useAuth()  // no need for setUser anymore
 	
     const { control, handleSubmit, formState: { errors, isSubmitting }, setError, trigger, getValues } = useForm<SignupFormProps>({
 		resolver: zodResolver(schema),
         mode: 'onBlur',
         defaultValues: {
-            email: email ?? '',
+            email: user?.email ?? '',
             username: '',
             password: '',
             confirmPassword: '',
@@ -84,14 +83,12 @@ export const SignupForm = () => {
         }
     
         focusFirstEmptyField()
-        // validateOnMount()
     }, [])
 
 	const onSubmit = async (data: SignupFormProps) => {
 		try {
-            await signupRequest(data.email, data.username, data.password)
-            await setEmail(data.email)
-			await login(data.email, data.password)
+            await signupRequest(data.email, data.username, data.password)  // sign up the user
+            await login(data.email, data.password)  // login will update the user context automatically
 		} catch (err: any) {
 			if (err?.response?.data?.message) {
                 const [fieldName, message] = err.response.data.message.split(':')
@@ -122,10 +119,6 @@ export const SignupForm = () => {
 						onBlur={async () => {
                             onBlur()
                             setFocused(null)
-                            // const valid = await trigger('email')
-                            // if (!valid) {
-                            //     focusFirstError(errors)
-                            // }
                         }}
 						autoCapitalize='none'
 						keyboardType='email-address'
@@ -151,10 +144,6 @@ export const SignupForm = () => {
 						onBlur={async () => {
                             onBlur()
                             setFocused(null)
-                            // const valid = await trigger('username')
-                            // if (!valid) {
-                            //     focusFirstError(errors)
-                            // }
                         }}
 						autoCapitalize='none'
 						returnKeyType='next'
@@ -179,10 +168,6 @@ export const SignupForm = () => {
 						onBlur={async () => {
                             onBlur()
                             setFocused(null)
-                            // const valid = await trigger('password')
-                            // if (!valid) {
-                            //     focusFirstError(errors)
-                            // }
                         }}
 						secureTextEntry
 						autoCapitalize='none'
@@ -208,10 +193,6 @@ export const SignupForm = () => {
 						onBlur={async () => {
                             onBlur()
                             setFocused(null)
-                            // const valid = await trigger('confirmPassword')
-                            // if (!valid) {
-                            //     focusFirstError(errors)
-                            // }
                         }}
 						secureTextEntry
 						autoCapitalize='none'

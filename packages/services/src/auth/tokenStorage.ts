@@ -1,26 +1,21 @@
 // packages/services/src/tokenStorage.ts
 
 import localStorage from '@react-native-async-storage/async-storage'
-import { refreshTokenRequest } from './api'
-import { TOKEN_KEY } from './constants'
+import { TOKEN_KEY } from '../constants'
 
+// Save token to storage
 export async function saveToken(token: string) {
 	localStorage.setItem(TOKEN_KEY, token)
 }
 
+// Get token from storage
 export async function getToken(): Promise<string | null> {
 	return localStorage.getItem(TOKEN_KEY)
 }
 
+// Clear token from storage
 export async function clearToken() {
 	localStorage.removeItem(TOKEN_KEY)
-}
-
-export async function refreshAccessToken(): Promise<string> {
-    console.log(':::refreshAccessToken:::')
-	const { accessToken } = await refreshTokenRequest()
-	if (!accessToken) throw new Error('No access token received')
-	return accessToken
 }
 
 export async function getUserFromToken(token: string): Promise<any> {

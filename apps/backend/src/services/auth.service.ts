@@ -49,9 +49,10 @@ export const loginUser = async (email: string, password: string, res: Response) 
 
 	res.cookie('refreshToken', refreshToken, {
 		httpOnly: true,
-		sameSite: 'strict',
+        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
 		secure: process.env.NODE_ENV === 'production',
 		maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        path: '/',
 	})
 
 	// return the user data you need too
@@ -65,15 +66,17 @@ export const loginUser = async (email: string, password: string, res: Response) 
 
 	return { accessToken, user: userResponse }
 }
-
+  
 export const refreshAccessToken = async (
 	req: Request,
 	res: Response
 ) => {
 	const token = req.cookies.refreshToken
-	if (!token) return res.status(401).json({ message: 'No refresh token' })
+    console.log('Cookies:', req.cookies)
+	if (!token) return res.status(401).json({ message: 'No refresh token provided' })
 
 	try {
+		// Verify refresh token
 		const decoded = verifyToken(token)
 
 		if (typeof decoded !== 'object' || !('_id' in decoded)) {
@@ -83,8 +86,17 @@ export const refreshAccessToken = async (
 		const payload = decoded as TokenPayload
 		const accessToken = generateToken(payload)
 
+		// Send new access token
 		return res.json({ accessToken })
-	} catch {
+	} catch (err) {
+		// Token invalid or expired, clear the refresh token cookie
+		res.clearCookie('refreshToken', {
+			httpOnly: true,
+			sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+			secure: process.env.NODE_ENV === 'production',
+			path: '/',
+		})
+
 		return res.status(403).json({ message: 'Invalid or expired refresh token' })
 	}
 }
