@@ -1,6 +1,7 @@
 // packages/types/src/navigation.ts
 
 export type RootStackParamList = {
+    Chat: undefined
     Details: { id: string }
     ForgotPassword: { token: string }
     Home: undefined

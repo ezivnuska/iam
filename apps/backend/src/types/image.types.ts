@@ -1,8 +1,9 @@
 // apps/backend/src/types/image.types.ts
 
-import { Document } from 'mongoose'
+import { Document, Types } from 'mongoose'
 
 export interface ImageDocument extends Document {
+    _id: Types.ObjectId
     filename: string
     username: string
     width: number,

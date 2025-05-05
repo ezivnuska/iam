@@ -8,13 +8,13 @@ export const findAllUsers = async () => {
 }
 
 export const findUserById = async (id: string) => {
-	const user = await UserModel.findById(id).select('-password')
+	const user = await UserModel.findById(id).select('-password').populate('avatar')
 	if (!user) throw new Error('User not found')
 	return user
 }
 
 export const changeUserRole = async (id: string, newRole: string) => {
-	const updated = await UserModel.findByIdAndUpdate(id, { role: newRole }, { new: true }).select('-password')
+	const updated = await UserModel.findByIdAndUpdate(id, { role: newRole }, { new: true }).select('-password').populate('avatar')
 	if (!updated) throw new Error('User not found or role update failed')
 	return updated
 }
@@ -32,7 +32,7 @@ export const updateUserSelf = async (
 		}
 	}
   
-	const updated = await UserModel.findByIdAndUpdate(id, updates, { new: true }).select('-password')
+	const updated = await UserModel.findByIdAndUpdate(id, updates, { new: true }).select('-password').populate('avatar')
 	if (!updated) throw new Error('User not found or update failed')
   
 	return updated
@@ -48,7 +48,7 @@ export const updateUser = async (id: string, data: Partial<{ email: string; user
 		}
 	}
   
-	const updated = await UserModel.findByIdAndUpdate(id, updates, { new: true }).select('-password')
+	const updated = await UserModel.findByIdAndUpdate(id, updates, { new: true }).select('-password').populate('avatar')
 	if (!updated) throw new Error('User not found or update failed')
   
 	return updated
@@ -56,13 +56,13 @@ export const updateUser = async (id: string, data: Partial<{ email: string; user
   
 
 export const removeUser = async (id: string) => {
-	const deleted = await UserModel.findByIdAndDelete(id)
+	const deleted = await UserModel.findByIdAndDelete(id).populate('avatar')
 	if (!deleted) throw new Error('User not found')
 	return deleted
 }
 
 export const changeUserPassword = async (userId: string, current: string, next: string) => {
-	const user = await UserModel.findById(userId)
+	const user = await UserModel.findById(userId).populate('avatar')
 	if (!user) throw new Error('User not found')
 
 	const valid = await comparePassword(current, user.password)

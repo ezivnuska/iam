@@ -19,22 +19,14 @@ build_once() {
 echo "Cleaning previous build outputs..."
 rm -rf apps/web/build
 rm -rf apps/backend/build
-rm -rf packages/ui/build
 rm -rf packages/auth/build
 rm -rf packages/types/build
-rm -rf packages/validation/build
 
 # Build the types package first since others depend on it
 build_once "packages/types"
 
-# Build the validation package (which depends on types)
-build_once "packages/validation"
-
 # Now, build auth (which depends on types)
 build_once "packages/auth"
-
-# Build ui (which depends on types, validation, and auth)
-build_once "packages/ui"
 
 # Now we can build the web app (which depends on ui)
 build_once "apps/web"
@@ -50,9 +42,7 @@ echo "Initial build complete!"
 # Start watching packages in development mode
 echo "Now watching the following packages for changes..."
 build_with_watch "packages/types" & # Watch types in background
-build_with_watch "packages/validation" & # Watch validation in background
 build_with_watch "packages/auth" & # Watch auth in background
-build_with_watch "packages/ui" & # Watch ui in background
 build_with_watch "apps/web" & # Watch web in background
 build_with_watch "apps/backend" # Watch backend (this will keep running)
 

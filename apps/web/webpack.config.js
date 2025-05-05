@@ -1,104 +1,93 @@
+// apps/web/webpack.config.js
+
 import path from 'path'
 import { fileURLToPath } from 'url'
 import webpack from 'webpack'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
-// import CopyPlugin from 'copy-webpack-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import Dotenv from 'dotenv-webpack'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-
 const isDev = process.env.NODE_ENV !== 'production'
 
-const compileNodeModules = [
-	// Add every react-native package that needs compiling
-	'react-native-screens',
-	'react-native-safe-area-context',
-	'react-native-gesture-handler',
-	'react-native-reanimated',
-	'react-native-pager-view',
-	'react-native-vector-icons',
-].map(moduleName => path.resolve(__dirname, `node_modules/${moduleName}`));
+const includedModules = (filepath) => {
+	const sourcesToCompile = [
+		path.resolve(__dirname, './src'),
+		path.resolve(__dirname, './src/assets/fonts'),
+		path.resolve(__dirname, '../../packages/auth/src'),
+		path.resolve(__dirname, '../../packages/services/src'),
+		path.resolve(__dirname, '../../packages/types/src'),
+	]
+
+	const nodeModulePackages = [
+		'react-native',
+		'react-native-web',
+		'react-native-screens',
+		'react-native-safe-area-context',
+		'react-native-gesture-handler',
+		'react-native-reanimated',
+		'react-native-pager-view',
+		'react-native-vector-icons',
+		'@expo',
+		'expo',
+	]
+
+	const matchesSources = sourcesToCompile.some(src => filepath.startsWith(src))
+
+	const matchesNodeModule = nodeModulePackages.some(pkg =>
+		filepath.includes(`node_modules/${pkg}`)
+	)
+
+	const returnValue = matchesSources || matchesNodeModule
+	if (!returnValue && filepath.includes('node_modules')) {
+		console.log(`Skipping: ${filepath}`)
+	}
+	return returnValue
+}
 
 const babelLoaderConfig = {
 	test: /\.[jt]sx?$/,
-	// Add every directory that needs to be compiled by Babel during the build.
-	include: (filepath) => {
-		const sourcesToCompile = [
-			path.resolve(__dirname, 'src'),
-			path.resolve(__dirname, '../../packages/ui/src'),
-			path.resolve(__dirname, '../../packages/auth/src'),
-			path.resolve(__dirname, '../../packages/navigation/src'),
-			path.resolve(__dirname, '../../packages/providers/src'),
-			path.resolve(__dirname, '../../packages/screens/src'),
-			path.resolve(__dirname, '../../packages/services/src'),
-			path.resolve(__dirname, '../../packages/types/src'),
-			path.resolve(__dirname, '../../packages/validation/src'),
-			...compileNodeModules,
-		]
-
-		return sourcesToCompile.some(srcPath => filepath.startsWith(srcPath)) ||
-			filepath.includes(`node_modules/expo/`) ||
-			filepath.includes(`node_modules/expo-modules-core/`) ||
-			filepath.includes(`node_modules/expo-secure-store/`) ||
-            filepath.includes(`node_modules/react-native-reanimated/`)
+	resolve: {
+		fullySpecified: false,
 	},
+	include: includedModules,
 	use: {
 		loader: 'babel-loader',
 		options: {
-			presets: [
-				"babel-preset-expo",
-				['@babel/preset-typescript', { allowDeclareFields: true }],
-			],
+			babelrc: true,
 		},
 	},
-}
+}  
 
 const imageLoaderConfig = {
 	test: /\.(png|jpe?g|gif|svg)$/i,
-	// include: [
-	// 	path.resolve(__dirname, 'node_modules/react-native-vector-icons'),
-	// 	path.resolve(__dirname, 'src/fonts'),
-	// ],
 	type: 'asset/resource',
-	// generator: {
-	// 	filename: 'src/fonts/[name].[hash][ext][query]',
-	// },
 }
 
 const fontLoaderConfig = {
 	test: /\.(ttf|eot|woff|woff2)$/i,
-	include: [
-		path.resolve(__dirname, 'node_modules/react-native-vector-icons'),
-		path.resolve(__dirname, 'src/fonts'),
-	],
 	type: 'asset/resource',
+	include: includedModules,
 	generator: {
-		filename: 'src/fonts/[name].[hash][ext][query]',
+		filename: 'assets/fonts/[name].[hash][ext]',
 	},
 }
 
 const plugins = [
 	new HtmlWebpackPlugin({
-		template: path.join(__dirname, 'index.html')
+		template: path.join(__dirname, 'index.html'),
 	}),
 	new webpack.DefinePlugin({
-		'__DEV__': JSON.stringify(isDev),
+		__DEV__: JSON.stringify(isDev),
 	}),
 	new webpack.ProvidePlugin({
 		process: 'process/browser',
 	}),
 	new Dotenv({
-		path: path.resolve(__dirname, '.env'), // frontend-safe env
-		systemvars: true // optionally also pull from process.env
+		path: path.resolve(__dirname, '.env'),
+		systemvars: true,
 	}),
-
-	// new CopyPlugin({
-	// 	patterns: [
-	// 		{ from: path.resolve(__dirname, 'src/assets'), to: 'assets' },
-	// 	],
-	// }),
 	...(process.env.ANALYZE === 'true' ? [new BundleAnalyzerPlugin()] : []),
 ]
 
@@ -115,7 +104,7 @@ export default {
 	module: {
 		rules: [
 			{
-				test: /\.js$/,
+				test: /\.[jt]sx?$/,
 				resolve: {
 					fullySpecified: false,
 				},
@@ -129,19 +118,14 @@ export default {
 	resolve: {
 		alias: {
 			'react-native$': 'react-native-web',
-			'react-native-safe-area-context': 'react-native-safe-area-context',
-			// 'react-native-safe-area-context': 'expo-dev-menu/vendored/react-native-safe-area-context/src',
-			"@auth": path.resolve(__dirname, "../../packages/auth/src"),
-			"@navigation": path.resolve(__dirname, "../../packages/navigation/src"),
-			"@providers": path.resolve(__dirname, "../../packages/providers/src"),
-			"@screens": path.resolve(__dirname, "../../packages/screens/src"),
-			"@services": path.resolve(__dirname, "../../packages/services/src"),
-			"@iam/types": path.resolve(__dirname, "../../packages/types/src"),
-			"@ui": path.resolve(__dirname, "../../packages/ui/src"),
-			"@validation": path.resolve(__dirname, "../../packages/validation/src"),
+			'react-native-vector-icons': '@expo/vector-icons',
+			// 'process': 'process/browser.js',
+			'@auth': path.resolve(__dirname, '../../packages/auth/src'),
+			'@services': path.resolve(__dirname, '../../packages/services/src'),
+			'@iam/types': path.resolve(__dirname, '../../packages/types/src'),
+			'@': path.resolve(__dirname, 'src'),
 		},
 		extensions: [
-			// '.mjs',
 			'.web.tsx',
 			'.tsx',
 			'.web.ts',
@@ -151,25 +135,27 @@ export default {
 			'.web.js',
 			'.js',
 			'.css',
-			'.json'
+			'.json',
+			'.ttf',
+			'.fx',
 		],
-		// fullySpecified: false,
+		fullySpecified: false,
 	},
 	devtool: isDev ? 'eval' : 'source-map',
 	devServer: {
 		compress: true,
 		port: process.env.PORT || 3000,
 		static: {
-		  directory: path.resolve(__dirname, 'dist'),
+			directory: path.resolve(__dirname, 'dist'),
 		},
 		historyApiFallback: true,
 		proxy: [
-		  {
-			context: ['/api'],
-			target: `http://localhost:${process.env.API_PORT || 4000}`,
-			secure: false,
-			changeOrigin: true,
-		  },
+			{
+				context: ['/api'],
+				target: `http://localhost:${process.env.API_PORT || 4000}`,
+				secure: false,
+				changeOrigin: true,
+			},
 		],
 	},
 }

@@ -18,13 +18,8 @@
 		"paths": {
 			"react-native": ["node_modules/react-native-web"],
 			"@auth/*": ["packages/auth/src/*"],
-			"@navigation/*": ["packages/navigation/src/*"],
-			"@providers/*": ["packages/providers/src/*"],
-			"@screens/*": ["packages/screens/src/*"],
 			"@services/*": ["packages/services/src/*"],
-			"@iam/types/*": ["packages/types/src/*"],
-			"@ui/*": ["packages/ui/src/*"],
-			"@validation/*": ["packages/validation/src/*"]
+			"@iam/types/*": ["packages/types/src/*"]
 		}
 	}
 }

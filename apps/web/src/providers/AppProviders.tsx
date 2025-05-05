@@ -1,12 +1,12 @@
 // apps/web/src/providers/AppProviders.tsx
 
-import { ReactNode } from 'react'
-import { AuthProvider, ModalProvider } from '@providers'
+import React, { ReactNode } from 'react'
+import { AuthProvider, ModalProvider } from '.'
 
 export const AppProviders = ({ children }: { children: ReactNode }) => (
-    <ModalProvider>
-        <AuthProvider>
+    <AuthProvider>
+        <ModalProvider>
             {children}
-        </AuthProvider>
-    </ModalProvider>
+        </ModalProvider>
+    </AuthProvider>
 )

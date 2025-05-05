@@ -13,12 +13,7 @@
 	  { "path": "./apps/web" },
 	  { "path": "./apps/backend" },
 	  { "path": "./packages/auth" },
-	  { "path": "./packages/navigation" },
-	  { "path": "./packages/providers" },
-	  { "path": "./packages/ui" },
-	  { "path": "./packages/screens" },
 	  { "path": "./packages/services" },
-	  { "path": "./packages/types" },
-	  { "path": "./packages/validation" }
+	  { "path": "./packages/types" }
 	]
 }

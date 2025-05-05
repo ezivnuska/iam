@@ -29,7 +29,6 @@
 	"dependencies": {
 		"@auth": "workspace:*",
 		"@iam/types": "workspace:*",
-		"@validation": "workspace:*",
 		"bcryptjs": "^3.0.2",
 		"body-parser": "^1.20.3",
 		"cookie-parser": "^1.4.7",

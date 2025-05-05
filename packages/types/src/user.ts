@@ -2,7 +2,7 @@
 
 export type UserRole = 'user' | 'admin'
 
-export type Image = {
+export interface Image {
     id: string
     filename: string
     username: string
@@ -17,7 +17,7 @@ export type User = {
 	email: string
 	role: UserRole
     avatar?: Image
-    bio: string
+    bio?: string
 	verified: boolean
 	verifyToken?: string
 	verifyTokenExpires?: Date

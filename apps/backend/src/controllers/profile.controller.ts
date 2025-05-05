@@ -2,9 +2,20 @@
 
 import { Request, RequestHandler, Response, NextFunction } from 'express'
 import * as userService from '../services/user.service'
+import { normalizeUser } from '../utils/normalizeUser'
 
-export const getProfile: RequestHandler = async (req: Request, res: Response): Promise<void> => {
-	res.json(req.user)
+export const getProfile: RequestHandler = async (req, res, next) => {
+	if (!req.user?.id) {
+		res.status(401).json({ message: 'Unauthorized' })
+		return
+	}
+
+	try {
+		const user = await userService.findUserById(req.user.id)
+		res.json(normalizeUser(user))
+	} catch (err) {
+		next(err)
+	}
 }
 
 export const updateSelf: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {

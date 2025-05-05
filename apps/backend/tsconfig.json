@@ -19,7 +19,6 @@
 	"exclude": ["node_modules", "build"],
 	"references": [
 		{ "path": "../../packages/auth" },
-		{ "path": "../../packages/types" },
-		{ "path": "../../packages/validation" }
+		{ "path": "../../packages/types" }
 	]
 }
