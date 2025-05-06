@@ -8,6 +8,7 @@ module.exports = {
 		'babel-preset-expo',
 		['@babel/preset-typescript', { allowDeclareFields: true }],
 		'@babel/preset-react',
+        '@babel/preset-env',
 	],
 	plugins: [
 		[
@@ -25,6 +26,11 @@ module.exports = {
 			},
 		],
 		'react-native-web',
+        '@babel/plugin-proposal-optional-chaining', // explicitly support optional chaining
+        // Ensure consistent 'loose' mode across related plugins
+        ['@babel/plugin-transform-class-properties', { loose: true }],
+        ['@babel/plugin-transform-private-methods', { loose: true }],
+        ['@babel/plugin-transform-private-property-in-object', { loose: true }],
 		'react-native-reanimated/plugin', // must be last in the list per reanimated docs
 	],
 }
