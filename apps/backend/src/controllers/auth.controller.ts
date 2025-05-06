@@ -47,7 +47,7 @@ export const resetPassword: RequestHandler = (req: Request, res: Response, next:
 }
 
 export const deleteUserFolder = (username: string) => {
-    const dir = path.resolve(__dirname, '../../../uploads/users', username)
+    const dir = path.resolve(__dirname, '../../../images/users', username)
     fs.rm(dir, { recursive: true, force: true }, (err) => {
         if (err) console.error(`Failed to delete folder for ${username}:`, err)
     })

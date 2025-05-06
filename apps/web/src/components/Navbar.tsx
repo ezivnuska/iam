@@ -41,7 +41,6 @@ export const Navbar = ({ navItems, navigate }: NavbarProps) => {
             align='center'
             justify='space-between'
             paddingHorizontal={16}
-            // paddingVertical={4}
             style={{ zIndex: 100 }}
         >
             <Brand onPress={() => navigate('Home')} />
@@ -116,10 +115,9 @@ const styles = StyleSheet.create({
     button: {
         paddingVertical: 8,
         paddingHorizontal: 12,
-        // backgroundColor: '#f0f0f0',
     },
     activeButton: {
-        // backgroundColor: '#007bff', // Blue when active
+        // backgroundColor: '#007bff',
     },
     buttonLabel: {
         fontSize: 16,

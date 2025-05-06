@@ -12,7 +12,8 @@
     "scripts": {
         "clean": "rm -rf build tsconfig.tsbuildinfo",
         "build": "tsc --build",
-        "dev": "tsc --build -w"
+        "dev": "tsc --build -w",
+        "test": "jest"
     },
     "dependencies": {
         "@hookform/resolvers": "^5.0.1",

@@ -29,7 +29,6 @@ export const Button: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
 	base: {
-        // flex: 1,
         width: '100%',
 		paddingVertical: 12,
 		paddingHorizontal: 16,

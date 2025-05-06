@@ -3,7 +3,7 @@
 import React from 'react'
 import { StyleSheet, Text, View, Pressable } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import { EditProfileForm, PageHeader, PageLayout, Column } from '../components'
+import { EditProfileForm, PageHeader, PageLayout, Column, UserImageManager } from '../components'
 import { useAuth, useModal } from '../hooks'
 import { Feather } from '@expo/vector-icons'
 import type { StackNavigationProp } from '@react-navigation/stack'
@@ -34,6 +34,9 @@ export const ProfileScreen = () => {
 						<Feather name='edit-3' size={18} color='#555' />
 					</Pressable>
 				</View>
+				<View style={styles.sectionContainer}>
+                    <UserImageManager />
+                </View>
 			</Column>
 		</PageLayout>
 	)
@@ -56,6 +59,11 @@ const styles = StyleSheet.create({
 		gap: 8,
 	},
 	editButton: {
-		marginLeft: 10,
+        marginLeft: 10,
 	},
+    sectionContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+    },
 })

@@ -10,7 +10,7 @@ import { AppNavigator, navigationRef } from './navigation'
 import * as Linking from 'expo-linking'
 
 const linking = {
-    prefixes: ['http://localhost:4000', 'https://iameric.me'],
+    prefixes: ['http://localhost:3000', 'https://iameric.me'],
     config: {
         screens: {
             Chat: 'chat',

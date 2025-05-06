@@ -39,11 +39,7 @@ const includedModules = (filepath) => {
 		filepath.includes(`node_modules/${pkg}`)
 	)
 
-	const returnValue = matchesSources || matchesNodeModule
-	if (!returnValue && filepath.includes('node_modules')) {
-		console.log(`Skipping: ${filepath}`)
-	}
-	return returnValue
+	return matchesSources || matchesNodeModule
 }
 
 const babelLoaderConfig = {
@@ -52,6 +48,7 @@ const babelLoaderConfig = {
 		fullySpecified: false,
 	},
 	include: includedModules,
+    // exclude: /node_modules\/(?!(react-native|@expo|react-native-vector-icons)\/).*/,
 	use: {
 		loader: 'babel-loader',
 		options: {
@@ -119,7 +116,6 @@ export default {
 		alias: {
 			'react-native$': 'react-native-web',
 			'react-native-vector-icons': '@expo/vector-icons',
-			// 'process': 'process/browser.js',
 			'@auth': path.resolve(__dirname, '../../packages/auth/src'),
 			'@services': path.resolve(__dirname, '../../packages/services/src'),
 			'@iam/types': path.resolve(__dirname, '../../packages/types/src'),
@@ -151,7 +147,7 @@ export default {
 		historyApiFallback: true,
 		proxy: [
 			{
-				context: ['/api'],
+				context: ['/api', '/images'],
 				target: `http://localhost:${process.env.API_PORT || 4000}`,
 				secure: false,
 				changeOrigin: true,

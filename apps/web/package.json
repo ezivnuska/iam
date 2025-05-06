@@ -5,7 +5,8 @@
 	"scripts": {
 		"dev": "webpack serve --mode=development --config webpack.config.js",
 		"build": "pnpm run clean && webpack --mode=production --stats-error-details --config webpack.config.js",
-		"clean": "rm -rf build tsconfig.tsbuildinfo dist .parcel-cache"
+		"clean": "rm -rf build tsconfig.tsbuildinfo dist .parcel-cache",
+        "test": "jest"
 	},
 	"keywords": [],
 	"author": "",
@@ -48,6 +49,7 @@
 		"@services": "workspace:*",
 		"axios": "^0.27.2",
 		"expo": "^52.0.46",
+		"expo-image-picker": "^16.1.4",
 		"expo-linking": "^7.0.5",
 		"expo-modules-core": "^2.2.3",
 		"metro": "^0.82.2",

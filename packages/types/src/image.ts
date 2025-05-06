@@ -6,3 +6,14 @@ export type ImageProps = {
     height: number
     width: number
 }
+
+export type ImageItem = {
+    _id: string
+    filename: string
+    username: string
+    alt: string
+    url: string
+    width: number
+    height: number
+  }
+  

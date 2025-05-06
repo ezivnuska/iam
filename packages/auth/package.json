@@ -5,15 +5,16 @@
     "types": "build/index.d.ts",
     "exports": {
     ".": {
-        "import": "./build/index.js",
-        "require": "./build/index.js",
-        "types": "./build/index.d.ts"
+            "import": "./build/index.js",
+            "require": "./build/index.js",
+            "types": "./build/index.d.ts"
         }
     },
     "scripts": {
         "clean": "rm -rf build tsconfig.tsbuildinfo",
         "build": "tsc --build",
-        "dev": "tsc --build -w"
+        "dev": "tsc --build -w",
+        "test": "jest"
     },
     "dependencies": {
         "bcryptjs": "^3.0.2",

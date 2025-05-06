@@ -25,7 +25,7 @@ export const UserListScreen = () => {
 		)
 	}
 
-	// Only show other users, excluding yourself
+	// Only show other users
 	const otherUsers = (data ?? []).filter((u) => u.email !== currentUser.email)
 
 	return (

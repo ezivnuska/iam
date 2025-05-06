@@ -55,7 +55,6 @@ export const loginUser = async (email: string, password: string, res: Response) 
         path: '/',
 	})
 
-	// return the user data you need too
 	const userResponse = {
 		id: user._id,
 		email: user.email,

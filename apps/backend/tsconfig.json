@@ -13,7 +13,7 @@
 			"./node_modules/@types",
 			"../../node_modules/@types"
 		],
-		"types": ["express"]
+		"types": ["express", "jest"]
 	},
 	"include": ["src"],
 	"exclude": ["node_modules", "build"],

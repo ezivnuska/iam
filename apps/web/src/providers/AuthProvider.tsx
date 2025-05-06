@@ -29,11 +29,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   
 	const login = async (email: string, password: string) => {
         const { accessToken, user: userProfile } = await signinRequest(email, password)
-        console.log('userProfile', userProfile)
         await saveToken(accessToken)
         setAuthHeader(accessToken)
         const profile = await getProfile()
-        console.log('profile', profile)
         setUser(profile)
         setIsAuthenticated(true)
         navigate('Home')
@@ -51,7 +49,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     useEffect(() => {
         const initialize = async () => {
             const profile = await trySigninFromStoredToken()
-            console.log('PROFILE', profile)
             if (profile) {
                 setUser(profile)
                 setIsAuthenticated(true)
@@ -63,10 +60,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     
         initialize()
     }, [])
-
-    useEffect(() => {
-        console.log('***', user)
-    }, [user])
   
 	return (
 		<AuthContext.Provider value={{ isAuthenticated, user, login, logout, setUser }}>

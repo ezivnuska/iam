@@ -15,7 +15,6 @@ export const logoutRequest = async () => {
   }
 }
 
-
 type RefreshTokenResponse = { accessToken: string }
 
 export const signinRequest = (email: string, password: string) =>
@@ -28,3 +27,6 @@ export const refreshTokenRequest = async (): Promise<RefreshTokenResponse> => {
 	const response = await api.post<RefreshTokenResponse>('/auth/refresh-token')
 	return response.data
 }
+
+export const resetPassword = (token: string, newPassword: string) =>
+	api.post('/auth/reset-password', { token, newPassword }).then(res => res.data)

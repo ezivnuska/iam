@@ -5,6 +5,7 @@ import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native'
 import { useRoute, useNavigation } from '@react-navigation/native'
 import type { RootStackParamList } from '@iam/types'
 import { StackNavigationProp } from '@react-navigation/stack'
+import { resetPassword } from '@services'
 
 type ResetPasswordParams = {
 	token: string
@@ -38,11 +39,7 @@ export const ResetPasswordScreen = () => {
 		setLoading(true)
 
 		try {
-			const res = await fetch('https://your-api.com/auth/reset-password', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ token, newPassword }),
-			})
+			const res = await resetPassword(token, newPassword)
 
 			const data = await res.json()
 

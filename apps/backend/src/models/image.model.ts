@@ -20,7 +20,7 @@ const ImageSchema = new Schema<ImageDocument>(
 )
 
 ImageSchema.virtual('url').get(function (this: ImageDocument) {
-	return `/images/${this.username}/${this.filename}`
+	return `/images/users/${this.username}/${this.filename}`
 })
 
 export const Image = model('Image', ImageSchema)

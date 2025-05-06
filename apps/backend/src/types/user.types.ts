@@ -8,9 +8,3 @@ export type AuthenticatedUser = {
 	email: string
 	role: UserRole
 }
-
-// import { IUser } from '../models/user.model'
-
-// export type AuthenticatedUser = Pick<IUser, 'username' | 'email' | 'role'> & {
-// 	_id: string
-// }
