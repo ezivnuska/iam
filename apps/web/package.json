@@ -6,7 +6,7 @@
 		"dev": "webpack serve --mode=development --config webpack.config.js",
 		"build": "pnpm run clean && webpack --mode=production --stats-error-details --config webpack.config.js",
 		"clean": "rm -rf build tsconfig.tsbuildinfo dist .parcel-cache",
-        "test": "jest"
+		"test": "jest"
 	},
 	"keywords": [],
 	"author": "",
@@ -24,6 +24,7 @@
 		"@types/react-dom": "^19.1.2",
 		"babel-loader": "^10.0.0",
 		"babel-plugin-module-resolver": "^5.0.2",
+		"babel-plugin-react-native-web": "^0.20.0",
 		"babel-plugin-transform-typescript-metadata": "^0.3.2",
 		"babel-preset-expo": "^12.0.11",
 		"buffer": "^6.0.3",
@@ -62,6 +63,7 @@
 		"react-native-safe-area-context": "^5.4.0",
 		"react-native-screens": "^4.10.0",
 		"react-native-vector-icons": "^10.2.0",
+		"react-native-web": "^0.20.0",
 		"socket.io-client": "^4.8.1",
 		"url": "^0.11.4"
 	}

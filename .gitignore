@@ -9,6 +9,13 @@
 # Ignore tsbuildinfo
 *.tsbuildinfo
 
+# Ignore bash scripts
+deploy.sh
+sync-deploy-files.sh
+
+#Ignore git webhook
+webhook.js
+
 # Ignore log files
 *.log
 

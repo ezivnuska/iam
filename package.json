@@ -11,7 +11,8 @@
 		"lint": "eslint . --ext .ts,.tsx --fix",
 		"format": "prettier --write .",
 		"test": "jest",
-		"webhook:start": "node webhook.js"
+		"webhook:start": "node webhook.js",
+        "sync:deploy": "bash sync-deploy-files.sh"
 	},
 	"keywords": [],
 	"author": "",
