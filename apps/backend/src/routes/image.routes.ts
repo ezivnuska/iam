@@ -9,6 +9,6 @@ const router: Router = Router()
 
 router.post('/upload', requireAuth(), uploadMemory.single('image'), uploadImage)
 router.get('/', requireAuth(), getImages)
-router.delete('/delete/:imageId', requireAuth(), deleteImageController)
+router.delete('/:imageId', requireAuth(), deleteImageController)
 
 export default router
