@@ -4,3 +4,4 @@ approval:
     - "@swc/core"
     - "lmdb"
     - "msgpackr-extract"
+    - "sharp"
