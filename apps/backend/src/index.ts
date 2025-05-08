@@ -49,6 +49,11 @@ app.use((err: any, _req: any, res: any, _next: any) => {
     res.status(500).json({ message: err.message || 'Unexpected error' })
 })
 
+// Health check endpoint
+app.get('/health', (_req, res) => {
+    res.status(200).send('OK')
+})
+
 io.on('connection', (socket) => {
 	console.log(`Socket connected: ${socket.id}`)
 	registerChatHandlers(io, socket)
