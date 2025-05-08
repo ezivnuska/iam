@@ -67,35 +67,45 @@ const ImageUpload = ({ onUploadSuccess }: ImageUploadProps) => {
 	}
 
 	const handleSubmit = async () => {
-		if (!file) return
-
-		const formData = new FormData()
-		
-		if (file.raw) {
-			formData.append('image', file.raw)
-		} else {
-			console.error('No file object found for web upload')
-			setError('Upload failed: missing file data')
-			return
-		}
-	
-		setIsUploading(true)
-		setError(null)
-	
-		try {
+        if (!file) return
+    
+        const formData = new FormData()
+    
+        if (Platform.OS === 'web') {
+            if (file.raw) {
+                formData.append('image', file.raw)
+            } else {
+                console.error('No file object found for web upload')
+                setError('Upload failed: missing file data')
+                return
+            }
+        } else {
+            formData.append('image', {
+                uri: file.uri,
+                name: file.name,
+                type: file.type,
+            } as any) // 👈 necessary for React Native's FormData
+        }
+    
+        // Optionally include other fields
+        // formData.append('username', 'eric') // or dynamically use current user
+    
+        setIsUploading(true)
+        setError(null)
+    
+        try {
             const response = await uploadImage(formData)
             const data: ImageItem = response.data
-          
+    
             onUploadSuccess(data)
             setFile(null)
-          
         } catch (err) {
             console.error('Upload failed:', err)
             setError('Upload failed. Please try again.')
         } finally {
-			setIsUploading(false)
-		}
-	}	
+            setIsUploading(false)
+        }
+    }    
 
 	return (
 		<Column spacing={10}>

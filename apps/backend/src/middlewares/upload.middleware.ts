@@ -8,7 +8,7 @@ import fs from 'fs'
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 const IMAGE_DIR_ROOT =
 	process.env.IMAGE_UPLOAD_DIR ||
-	path.resolve(__dirname, '../../images/users')
+	path.resolve(__dirname, '../../../images/users')
 const ALLOWED_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp'])
 const VALID_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 
