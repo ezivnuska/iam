@@ -16,8 +16,11 @@ import profileRoutes from './routes/profile.routes'
 import userRoutes from './routes/user.routes'
 import imageRoutes from './routes/image.routes'
 
-dotenv.config({ path: path.resolve(__dirname, '../../../.env') })
-dotenv.config({ path: path.resolve(__dirname, '../.env') })
+const envPath = process.env.NODE_ENV === 'production'
+  ? path.resolve(__dirname, '../.env.production')
+  : path.resolve(__dirname, '../.env.development')
+
+dotenv.config({ path: envPath })
 
 const PORT = process.env.PORT || 4000
 
