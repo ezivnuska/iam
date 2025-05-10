@@ -6,15 +6,15 @@ module.exports = {
 			name: 'iam-backend',
 			script: 'apps/backend/build/index.js',
 			interpreter: `${process.env.HOME}/.nvm/versions/node/v22.14.0/bin/node`,
-			env: {
+			env_production: {
 				NODE_ENV: 'production',
-			},
+			}
 		},
 		{
 			name: 'iam-webhook',
 			script: './scripts/webhook.js',
 			interpreter: `${process.env.HOME}/.nvm/versions/node/v22.14.0/bin/node`,
-			env: {
+			env_production: {
 				NODE_ENV: 'production',
 			},
 		},
