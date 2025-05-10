@@ -1,14 +1,11 @@
-// apps/web/webpack.config.js
+// apps/web/webpack.config.js (CommonJS version)
 
-import path from 'path'
-import { fileURLToPath } from 'url'
-import webpack from 'webpack'
-import HtmlWebpackPlugin from 'html-webpack-plugin'
-import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
-import Dotenv from 'dotenv-webpack'
+const path = require('path')
+const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+const Dotenv = require('dotenv-webpack')
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
 const isDev = process.env.NODE_ENV !== 'production'
 
 const includedModules = (filepath) => {
@@ -48,14 +45,13 @@ const babelLoaderConfig = {
 		fullySpecified: false,
 	},
 	include: includedModules,
-    // exclude: /node_modules\/(?!(react-native|@expo|react-native-vector-icons)\/).*/,
 	use: {
 		loader: 'babel-loader',
 		options: {
 			babelrc: true,
 		},
 	},
-}  
+}
 
 const imageLoaderConfig = {
 	test: /\.(png|jpe?g|gif|svg)$/i,
@@ -88,7 +84,7 @@ const plugins = [
 	...(process.env.ANALYZE === 'true' ? [new BundleAnalyzerPlugin()] : []),
 ]
 
-export default {
+module.exports = {
 	target: 'web',
 	mode: isDev ? 'development' : 'production',
 	entry: {
