@@ -15,7 +15,7 @@ sync-deploy-files.sh
 ecosystem.config.js
 
 #Ignore git webhook
-webhook.js
+scripts/
 
 # Ignore log files
 *.log
