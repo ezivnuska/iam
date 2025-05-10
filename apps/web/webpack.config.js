@@ -73,6 +73,8 @@ const plugins = [
 	}),
 	new webpack.DefinePlugin({
 		__DEV__: JSON.stringify(isDev),
+        'process.env.API_PATH': JSON.stringify(process.env.API_PATH),
+        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
 	}),
 	new webpack.ProvidePlugin({
 		process: 'process/browser',
