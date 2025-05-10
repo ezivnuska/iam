@@ -62,4 +62,4 @@ coverage/
 .parcel-cache
 
 # Ignore uploaded files
-apps/images/users/
+apps/images/
