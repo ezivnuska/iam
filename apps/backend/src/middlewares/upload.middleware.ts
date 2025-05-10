@@ -3,25 +3,16 @@
 import multer, { Options } from 'multer'
 import path from 'path'
 import fs from 'fs'
+import { getUserDir } from '../utils/imagePaths'
 
 // === Constants ===
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
-const PROJECT_ROOT = path.resolve(__dirname, '../../../../')
-const rawUploadDir = process.env.IMAGE_UPLOAD_DIR || 'apps/images/users'
-const IMAGE_DIR_ROOT = path.isAbsolute(rawUploadDir)
-  ? rawUploadDir
-  : path.resolve(PROJECT_ROOT, rawUploadDir)
 const ALLOWED_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp'])
 const VALID_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 
 // === Helpers ===
 const sanitizeUsername = (username: string) =>
 	username.replace(/[^a-zA-Z0-9_-]/g, '')
-
-const getUserDir = (username: string): string => {
-	const safeUsername = sanitizeUsername(username || 'unknown')
-	return path.join(IMAGE_DIR_ROOT, safeUsername)
-}
 
 const isValidExtension = (ext: string): boolean => ALLOWED_EXTENSIONS.has(ext.toLowerCase())
 

@@ -1,6 +1,5 @@
 // apps/backend/src/utils/file.ts
 
-import path from 'path'
 import { promises as fs } from 'fs'
 
 /**
@@ -8,14 +7,6 @@ import { promises as fs } from 'fs'
  */
 export const sanitizeUsername = (username: string): string =>
 	username.replace(/[^a-zA-Z0-9_-]/g, '')
-
-/**
- * Resolves the directory path for a given username.
- */
-export const getUserDir = (username: string): string => {
-	const safeUsername = sanitizeUsername(username)
-	return path.resolve(__dirname, '../../../images/users', safeUsername)
-}
 
 /**
  * Ensures a directory exists. Creates it recursively if not present.

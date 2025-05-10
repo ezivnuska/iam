@@ -12,7 +12,7 @@
         "format": "prettier --write .",
         "test": "jest",
         "webhook:start": "node scripts/webhook.js",
-        "sync:deploy": "bash sync-deploy-files.sh"
+        "sync:deploy": "bash scripts/sync-deploy-files.sh"
     },
     "keywords": [],
     "author": "",

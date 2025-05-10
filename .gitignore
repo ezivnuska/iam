@@ -11,10 +11,9 @@ node_modules/
 
 # Ignore bash scripts
 deploy.sh
-sync-deploy-files.sh
 
-#Ignore git webhook
-scripts/
+#Ignore scripts
+scripts/*
 
 # Ignore log files
 *.log
@@ -61,3 +60,6 @@ coverage/
 
 # Ignore parcel-cache
 .parcel-cache
+
+# Ignore uploaded files
+apps/images/users/

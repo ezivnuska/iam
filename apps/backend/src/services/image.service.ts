@@ -3,12 +3,8 @@
 import sharp from 'sharp'
 import path from 'path'
 import { Image } from '../models/image.model'
-import {
-	sanitizeUsername,
-	getUserDir,
-	ensureDir,
-	deleteFile,
-} from '../utils/file'
+import { sanitizeUsername, ensureDir, deleteFile } from '../utils/file'
+import { getUserDir } from '../utils/imagePaths'
 
 export const deleteImageFile = async (filename: string, username: string): Promise<boolean> => {
 	const imagePath = path.join(getUserDir(username), filename)

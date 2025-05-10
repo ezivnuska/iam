@@ -2,6 +2,7 @@
 
 import { Request, RequestHandler, Response, NextFunction } from 'express'
 import * as authService from '../services/auth.service'
+import { getUserDir } from '../utils/imagePaths'
 
 import fs from 'fs'
 import path from 'path'
@@ -47,8 +48,8 @@ export const resetPassword: RequestHandler = (req: Request, res: Response, next:
 }
 
 export const deleteUserFolder = (username: string) => {
-    const dir = path.resolve(__dirname, '../../../images/users', username)
-    fs.rm(dir, { recursive: true, force: true }, (err) => {
-        if (err) console.error(`Failed to delete folder for ${username}:`, err)
-    })
+	const dir = getUserDir(username)
+	fs.rm(dir, { recursive: true, force: true }, (err) => {
+		if (err) console.error(`Failed to delete folder for ${username}:`, err)
+	})
 }
