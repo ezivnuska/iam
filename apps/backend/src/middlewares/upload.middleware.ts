@@ -7,8 +7,10 @@ import fs from 'fs'
 // === Constants ===
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 const PROJECT_ROOT = path.resolve(__dirname, '../../../../')
-console.log('project root', PROJECT_ROOT)
-const IMAGE_DIR_ROOT = path.resolve(PROJECT_ROOT, process.env.IMAGE_UPLOAD_DIR || 'apps/images/users')
+const rawUploadDir = process.env.IMAGE_UPLOAD_DIR || 'apps/images/users'
+const IMAGE_DIR_ROOT = path.isAbsolute(rawUploadDir)
+  ? rawUploadDir
+  : path.resolve(PROJECT_ROOT, rawUploadDir)
 const ALLOWED_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp'])
 const VALID_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 
