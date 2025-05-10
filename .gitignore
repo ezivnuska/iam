@@ -12,6 +12,7 @@
 # Ignore bash scripts
 deploy.sh
 sync-deploy-files.sh
+ecosystem.config.js
 
 #Ignore git webhook
 webhook.js
