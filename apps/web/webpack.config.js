@@ -78,8 +78,8 @@ const plugins = [
 		process: 'process/browser',
 	}),
 	new Dotenv({
-		path: path.resolve(__dirname, '.env'),
-		systemvars: true,
+		path: path.resolve(__dirname, `.env.${process.env.NODE_ENV}`),
+        systemvars: true,
 	}),
 	...(process.env.ANALYZE === 'true' ? [new BundleAnalyzerPlugin()] : []),
 ]
@@ -141,13 +141,13 @@ module.exports = {
 			directory: path.resolve(__dirname, 'dist'),
 		},
 		historyApiFallback: true,
-		proxy: [
+		proxy: process.env.NODE_ENV === 'development' ? [
 			{
 				context: ['/api', '/images'],
 				target: `http://localhost:${process.env.API_PORT || 4000}`,
 				secure: false,
 				changeOrigin: true,
 			},
-		],
+		] : undefined,
 	},
 }

@@ -3,8 +3,8 @@
 	"version": "1.0.0",
 	"description": "",
 	"scripts": {
-		"dev": "webpack serve --mode=development --config webpack.config.js",
-		"build": "pnpm run clean && webpack --mode=production --stats-error-details --config webpack.config.js",
+		"dev": "NODE_ENV=development webpack serve",
+		"build": "pnpm run clean && NODE_ENV=production webpack --mode production",
 		"clean": "rm -rf build tsconfig.tsbuildinfo dist .parcel-cache",
 		"test": "jest"
 	},

@@ -19,8 +19,9 @@ webhook.js
 # Ignore log files
 *.log
 
-# Ignore environment variable files (make sure to add your .env files here)
-*.env
+# Ignore all .env files
+.env
+.env.*
 
 # Ignore temporary files created by IDEs/editors
 .vscode/
