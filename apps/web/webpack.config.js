@@ -78,7 +78,7 @@ const plugins = [
 		process: 'process/browser',
 	}),
 	new Dotenv({
-		path: path.resolve(__dirname, `.env.${process.env.NODE_ENV}`),
+		path: path.resolve(__dirname, `.env.${process.env.NODE_ENV || 'production'}`),
         systemvars: true,
 	}),
 	...(process.env.ANALYZE === 'true' ? [new BundleAnalyzerPlugin()] : []),
