@@ -1,7 +1,7 @@
 // ecosystem.config.js
 
 module.exports = {
-	apps: [
+    apps: [
 		{
 			name: 'iam-backend',
 			script: 'apps/backend/build/index.js',
@@ -24,5 +24,5 @@ module.exports = {
 				NODE_ENV: 'production',
 			},
 		},
-	],
+    ],
 }
