@@ -35,7 +35,9 @@ const ensureDirectoryExists = (dir: string): void => {
 const diskStorage = multer.diskStorage({
 	destination: (req, _file, cb) => {
 		try {
-			const dir = getUserDir(req.body.username)
+            const username = req.user?.username
+            if (!username) throw new Error('Missing authenticated username')
+            const dir = getUserDir(username)
 			ensureDirectoryExists(dir)
 			cb(null, dir)
 		} catch (err) {
