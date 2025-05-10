@@ -1,14 +1,22 @@
 // ecosystem.config.js
 
 module.exports = {
-    apps: [
+	apps: [
 		{
 			name: 'iam-backend',
 			script: 'apps/backend/build/index.js',
 			interpreter: `${process.env.HOME}/.nvm/versions/node/v22.14.0/bin/node`,
 			env: {
-				NODE_ENV: 'production'
-			}
-		}
-    ]
-}  
+				NODE_ENV: 'production',
+			},
+		},
+		{
+			name: 'iam-webhook',
+			script: 'scripts/webhook.js',
+			interpreter: `${process.env.HOME}/.nvm/versions/node/v22.14.0/bin/node`,
+			env: {
+				NODE_ENV: 'production',
+			},
+		},
+	],
+}

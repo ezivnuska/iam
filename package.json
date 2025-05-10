@@ -1,9 +1,9 @@
 {
-	"name": "@iam",
-	"version": "1.0.0",
-	"description": "",
-	"main": "index.js",
-	"scripts": {
+    "name": "@iam",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
 		"start": "pnpm --stream -r start",
 		"dev": "pnpm --parallel --stream -r run dev",
 		"build": "pnpm --stream -r run build",
@@ -11,14 +11,14 @@
 		"lint": "eslint . --ext .ts,.tsx --fix",
 		"format": "prettier --write .",
 		"test": "jest",
-		"webhook:start": "node webhook.js",
-        "sync:deploy": "bash sync-deploy-files.sh"
-	},
-	"keywords": [],
-	"author": "",
-	"license": "ISC",
-	"packageManager": "pnpm@10.8.0",
-	"devDependencies": {
+		"webhook:start": "node scripts/webhook.js",
+		"sync:deploy": "bash sync-deploy-files.sh"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "packageManager": "pnpm@10.8.0",
+    "devDependencies": {
 		"@babel/preset-env": "^7.1.6",
 		"@types/cookie-parser": "^1.4.8",
 		"@types/cors": "^2.8.17",
@@ -35,8 +35,8 @@
 		"jest": "^29.7.0",
 		"ts-jest": "^29.3.2",
 		"typescript": "^5.8.3"
-	},
-	"dependencies": {
+    },
+    "dependencies": {
 		"@babel/runtime": "^7.27.0",
 		"@gorhom/bottom-sheet": "^5.1.2",
 		"@hookform/resolvers": "^5.0.1",
@@ -53,5 +53,5 @@
 		"react-native": "^0.79.1",
 		"react-native-web": "^0.20.0",
 		"zod": "^3.24.3"
-	}
-}
+    }
+}  
