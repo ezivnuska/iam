@@ -114,4 +114,6 @@ process.on('SIGTERM', async () => {
 	}
 })
 
+console.log('MONGO_URI:', process.env.MONGO_URI)
+
 start()
