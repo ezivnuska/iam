@@ -21,13 +21,13 @@ const env = process.env.NODE_ENV || 'development'
 
 // Try local .env.{env} in backend dir first
 dotenv.config({
-    path: path.resolve(process.cwd(), `../.env.${env}`),
+    path: path.resolve(__dirname, `../.env.${env}`),
 })
 
 // Fallback to project root
 if (!process.env.MONGO_URI) {
     dotenv.config({
-        path: path.resolve(process.cwd(), `../../../.env.${env}`),
+        path: path.resolve(__dirname, `../../../.env.${env}`),
     })
 }
 
