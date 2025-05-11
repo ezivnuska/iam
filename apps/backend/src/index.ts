@@ -19,15 +19,13 @@ import imageRoutes from './routes/image.routes'
 // Default to development
 const env = process.env.NODE_ENV || 'development'
 
-// Try local .env.{env} in backend dir first
-dotenv.config({
-    path: path.resolve(__dirname, `../.env.${env}`),
-})
+// Try backend .env first, fallback only if not found
+const localPath = path.resolve(__dirname, `../.env.${env}`)
+const fallbackPath = path.resolve(__dirname, `../../../.env.${env}`)
 
-// Fallback to project root
-dotenv.config({
-    path: path.resolve(__dirname, `../../../.env.${env}`),
-})
+if (!dotenv.config({ path: localPath }).parsed) {
+    dotenv.config({ path: fallbackPath })
+}
 
 const API_PORT = process.env.API_PORT || 4000
 
@@ -75,6 +73,7 @@ io.on('connection', (socket) => {
 
 const start = async () => {
 	try {
+        console.log('MONGO_URI:', process.env.MONGO_URI)
 		await mongoose.connect(process.env.MONGO_URI!)
 		console.log('MongoDB connected')
         
