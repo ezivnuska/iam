@@ -39,13 +39,6 @@ export const ProfileScreen = () => {
                     url={user.avatar?.url}
                     username={user.username}
                 />
-                {/* {user?.avatar && (
-                    <Image
-                        source={{ uri: user.avatar.url }}
-                        style={styles.avatar}
-                        resizeMode="cover"
-                    />
-                )} */}
 				<View style={styles.sectionContainer}>
 					<Text style={styles.text}>{user?.bio || 'No bio yet.'}</Text>
 					<Pressable onPress={openEditModal} style={styles.editButton}>
