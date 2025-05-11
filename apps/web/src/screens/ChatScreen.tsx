@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { TextInput, Text, ScrollView, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { PageHeader, PageLayout } from '@/components'
 import { io } from 'socket.io-client'
 
@@ -44,7 +45,19 @@ export const ChatScreen = () => {
                 style={styles.container}
                 behavior={Platform.OS === 'ios' ? 'padding' : undefined}
             >
-                <ScrollView
+                <KeyboardAwareScrollView
+                    contentContainerStyle={{ flexGrow: 1 }}
+                    enableOnAndroid={true}
+                    extraScrollHeight={100}
+                    keyboardShouldPersistTaps="handled"
+                >
+                    {messages.map((msg, idx) => (
+                        <Text key={idx} style={styles.message}>
+                            {msg.text}
+                        </Text>
+                    ))}
+                </KeyboardAwareScrollView>
+                {/* <ScrollView
                     style={styles.messages}
                     contentContainerStyle={{ padding: 10 }}
                 >
@@ -53,7 +66,7 @@ export const ChatScreen = () => {
                             {msg.text}
                         </Text>
                     ))}
-                </ScrollView>
+                </ScrollView> */}
                 <TextInput
                     value={input}
                     onChangeText={setInput}
