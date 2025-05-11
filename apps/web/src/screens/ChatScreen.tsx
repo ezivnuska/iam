@@ -7,11 +7,11 @@ import { io } from 'socket.io-client'
 
 // const socket = io('http://localhost:4000', {
 // 	withCredentials: true,
-// 	transports: ['websocket'],
+	// transports: ['websocket'],
 // })
 const socket = io(
     process.env.SOCKET_URL || 'http://localhost:4000',
-    { withCredentials: true }
+    { withCredentials: true, transports: ['websocket'] }
 )
 
 export const ChatScreen = () => {

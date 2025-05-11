@@ -16,12 +16,25 @@ import profileRoutes from './routes/profile.routes'
 import userRoutes from './routes/user.routes'
 import imageRoutes from './routes/image.routes'
 
-dotenv.config({ path: path.resolve(__dirname, `../.env.${process.env.NODE_ENV || 'production'}`) })
+// Default to development
+const env = process.env.NODE_ENV || 'development'
 
-const PORT = process.env.PORT || 4000
+// Try local .env.{env} in backend dir first
+dotenv.config({
+    path: path.resolve(__dirname, `../.env.${env}`),
+})
+
+// Optional fallback to root .env.{env}
+if (!process.env.MONGO_URI) {
+    dotenv.config({
+        path: path.resolve(__dirname, `../../../.env.${env}`),
+    })
+}
+
+const API_PORT = process.env.API_PORT || 4000
 
 const corsOptions = {
-	origin: ['http://localhost:3000', 'https://iameric.me'],
+	origin: process.env.CORS_ORIGIN,
 	credentials: true,
 }
 
@@ -67,8 +80,8 @@ const start = async () => {
 		await mongoose.connect(process.env.MONGO_URI!)
 		console.log('MongoDB connected')
         
-        server.listen(PORT, () => {
-            console.log(`Server running on http://localhost:${PORT}`)
+        server.listen(API_PORT, () => {
+            console.log(`Server running on http://localhost:${API_PORT}`)
         })
 	} catch (err) {
 		console.error('MongoDB connection error:', err)
@@ -100,5 +113,5 @@ process.on('SIGTERM', async () => {
 		process.exit(1)
 	}
 })
-  
+
 start()

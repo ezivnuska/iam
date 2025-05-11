@@ -5,8 +5,34 @@ const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const Dotenv = require('dotenv-webpack')
+const fs = require('fs')
 
-const isDev = process.env.NODE_ENV !== 'production'
+const env = process.env.NODE_ENV || 'production'
+
+// Paths to .env files
+const sharedEnvPath = path.resolve(__dirname, '../../.env.' + env)
+const localEnvPath = path.resolve(__dirname, `.env.${env}`)
+
+// Function to conditionally load Dotenv plugin
+const dotenvPlugins = []
+
+if (fs.existsSync(sharedEnvPath)) {
+    dotenvPlugins.push(
+        new Dotenv({
+            path: sharedEnvPath,
+            systemvars: true,
+        })
+    )
+}
+  
+if (fs.existsSync(localEnvPath)) {
+    dotenvPlugins.push(
+        new Dotenv({
+            path: localEnvPath,
+            systemvars: true,
+        })
+    )
+}
 
 const includedModules = (filepath) => {
 	const sourcesToCompile = [
@@ -72,21 +98,18 @@ const plugins = [
 		template: path.join(__dirname, 'index.html'),
 	}),
 	new webpack.DefinePlugin({
-		__DEV__: JSON.stringify(isDev),
+		__DEV__: process.env.NODE_ENV !== 'production',
 	}),
 	new webpack.ProvidePlugin({
 		process: 'process/browser',
 	}),
-	new Dotenv({
-		path: path.resolve(__dirname, `.env.${process.env.NODE_ENV || 'production'}`),
-        systemvars: true,
-	}),
+	...dotenvPlugins,
 	...(process.env.ANALYZE === 'true' ? [new BundleAnalyzerPlugin()] : []),
 ]
 
 module.exports = {
 	target: 'web',
-	mode: isDev ? 'development' : 'production',
+	mode: env,
 	entry: {
 		app: path.join(__dirname, 'src/index.ts'),
 	},
@@ -133,7 +156,7 @@ module.exports = {
 		],
 		fullySpecified: false,
 	},
-	devtool: isDev ? 'eval' : 'source-map',
+	devtool: env !== 'production' ? 'eval' : 'source-map',
 	devServer: {
 		compress: true,
 		port: process.env.PORT || 3000,

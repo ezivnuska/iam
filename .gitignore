@@ -1,65 +1,55 @@
-# Ignore all node_modules directories (root and nested)
+# Node modules (root and nested)
 node_modules/
 **/node_modules/
 
-# Ignore build/compiled output directories
-/**/*/dist/
-/**/*/build/
+# Build/compiled output
+**/dist/
+**/build/
+.build/
 
-# Ignore tsbuildinfo
+# TypeScript artifacts
 *.tsbuildinfo
 
-# Ignore bash scripts
-deploy.sh
-
-#Ignore scripts
-scripts/*
-
-# Ignore log files
+# Log files and system junk
 *.log
+.DS_Store
 
-# Ignore all .env files
+# Bash scripts
+deploy.sh
+scripts/*.sh
+scripts/.env
+
+# Ignore all .env files, including nested
 .env
 .env.*
+**/.env
+**/.env.*
 
-# Ignore temporary files created by IDEs/editors
+# Editor/IDE configs
 .vscode/
 .idea/
 *.sublime-workspace
 *.sublime-project
 
-# Ignore Mac OS specific files
-.DS_Store
-
-# Ignore pnpm-lock.yaml
+# pnpm and yarn locks (optional, if not using lockfile sync)
 pnpm-lock.yaml
+yarn.lock
 
-# Ignore frontend-specific files (Webpack, Babel cache)
+# Frontend caches
 /apps/web/.cache/
 /apps/web/.webpack/
+/apps/web/.parcel-cache/
 
-# Ignore backend-specific files (server logs, etc.)
-apps/backend/.env
+# Backend runtime data
 apps/backend/logs/
 apps/backend/tmp/
 
-# Ignore generated documentation (if any)
-docs/
+# Uploaded media (if not versioned)
+apps/images/
 
-# Ignore test coverage directories
+# Docs & coverage
+docs/
 coverage/
 
-# Ignore build directories for CI/CD
-.build/
-
-# macOS
-.DS_Store
-
-# Ignore htaccess vars
+# Web server files
 .htaccess
-
-# Ignore parcel-cache
-.parcel-cache
-
-# Ignore uploaded files
-apps/images/

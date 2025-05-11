@@ -5,8 +5,6 @@ import { apiBaseUrl } from '../constants'
 import { getToken, saveToken, clearToken } from '../'
 import { logoutRequest, refreshTokenRequest } from '.'
 
-console.log(apiBaseUrl)
-
 export const api = axios.create({
 	baseURL: apiBaseUrl,
 	withCredentials: true, // Send cookies if needed
