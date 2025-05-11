@@ -28,7 +28,7 @@ export const ProfileScreen = () => {
 				<Text style={[styles.text, styles.username]}>{user?.username}</Text>
 				<Text style={[styles.text, styles.email]}>{user?.email}</Text>
 
-				<View style={styles.bioContainer}>
+				<View style={styles.sectionContainer}>
 					<Text style={styles.text}>{user?.bio || 'No bio yet.'}</Text>
 					<Pressable onPress={openEditModal} style={styles.editButton}>
 						<Feather name='edit-3' size={18} color='#555' />
@@ -52,11 +52,6 @@ const styles = StyleSheet.create({
 	},
 	email: {
 		color: '#77f',
-	},
-	bioContainer: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		gap: 8,
 	},
 	editButton: {
         marginLeft: 10,
