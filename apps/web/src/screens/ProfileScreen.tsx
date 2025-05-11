@@ -23,7 +23,7 @@ export const ProfileScreen = () => {
 
 	return (
 		<PageLayout>
-			<PageHeader title={`Profile: ${user?.username || ''}`} />
+			<PageHeader title={`${user?.username || 'Profile'}`} />
 			<Column spacing={10} align='flex-start'>
 				<Text style={[styles.text, styles.username]}>{user?.username}</Text>
 				<Text style={[styles.text, styles.email]}>{user?.email}</Text>
