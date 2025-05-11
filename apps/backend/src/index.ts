@@ -25,11 +25,9 @@ dotenv.config({
 })
 
 // Fallback to project root
-if (!process.env.MONGO_URI) {
-    dotenv.config({
-        path: path.resolve(__dirname, `../../../.env.${env}`),
-    })
-}
+dotenv.config({
+    path: path.resolve(__dirname, `../../../.env.${env}`),
+})
 
 const API_PORT = process.env.API_PORT || 4000
 
@@ -76,7 +74,6 @@ io.on('connection', (socket) => {
 })
 
 const start = async () => {
-    console.log('MONGO_URI:', process.env.MONGO_URI)
 	try {
 		await mongoose.connect(process.env.MONGO_URI!)
 		console.log('MongoDB connected')

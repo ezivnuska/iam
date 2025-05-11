@@ -9,10 +9,11 @@ import { io } from 'socket.io-client'
 // 	withCredentials: true,
 	// transports: ['websocket'],
 // })
-const socket = io(
-    process.env.SOCKET_URL || 'http://localhost:4000',
-    { withCredentials: true, transports: ['websocket'] }
-)
+const socket = io(process.env.SOCKET_URL, {
+    path: '/socket.io',
+    withCredentials: true,
+    transports: ['websocket'],
+})
 
 export const ChatScreen = () => {
 	
