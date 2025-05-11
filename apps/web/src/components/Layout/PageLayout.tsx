@@ -1,43 +1,29 @@
 import React from 'react'
-import {
-	StyleSheet,
-	Keyboard,
-	TouchableWithoutFeedback,
-	Platform,
-} from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { View, ScrollView, StyleSheet } from 'react-native'
 import { Header, Footer } from '.'
-import Column from '@/components/Layout/Column'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { MAX_WIDTH } from './constants'
+import { useDeviceInfo } from '@/hooks'
 
 interface PageLayoutProps {
 	children: React.ReactNode
 }
 
 export const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
+	const { height } = useDeviceInfo()
 	return (
-		<SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
-			<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-				<Column flex={1}>
-					<Header />
+		<SafeAreaView style={styles.container}>
+			<Header />
 
-					<KeyboardAwareScrollView
-						style={styles.scroll}
-						contentContainerStyle={styles.scrollContent}
-						extraScrollHeight={Platform.OS === 'ios' ? 80 : 100}
-						enableOnAndroid
-						keyboardShouldPersistTaps='handled'
-						showsVerticalScrollIndicator={false}
-					>
-						<Column flex={1} style={styles.content}>
-							{children}
-						</Column>
-					</KeyboardAwareScrollView>
+			<ScrollView
+				style={[styles.mainContent, { maxHeight: height - 100 }]}
+				contentContainerStyle={styles.scrollContent}
+				showsVerticalScrollIndicator={false}
+			>
+                {children}
+			</ScrollView>
 
-					<Footer />
-				</Column>
-			</TouchableWithoutFeedback>
+			<Footer />
 		</SafeAreaView>
 	)
 }
@@ -45,18 +31,19 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#fff',
+        backgroundColor: '#fff',
 	},
-	scroll: {
+	mainContent: {
 		flex: 1,
+		// backgroundColor: '#777',
+        // margin: 0,
+        // padding: 0,
 	},
 	scrollContent: {
-		flexGrow: 1,
-	},
-	content: {
+		flex: 1,
 		width: '100%',
 		maxWidth: MAX_WIDTH,
-		alignSelf: 'center',
-		paddingHorizontal: 16,
+		marginHorizontal: 'auto',
+        paddingHorizontal: 16,
 	},
 })
