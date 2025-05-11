@@ -2,6 +2,7 @@
 
 export * from './Layout'
 export * from './PageHeader'
+export * from './ProfileImage'
 export * from './Navbar'
 export * from './forms'
 

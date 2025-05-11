@@ -7,7 +7,7 @@ import { usePaginatedFetch } from '@services'
 import type { StackNavigationProp } from '@react-navigation/stack'
 import { useNavigation } from '@react-navigation/native'
 import type { RootStackParamList } from '@iam/types'
-import { PageLayout } from '../components'
+import { PageLayout, ProfileImage } from '@/components'
 
 type UserListScreenNavProp = StackNavigationProp<RootStackParamList, 'UserList'>
 
@@ -71,44 +71,6 @@ export const UserListScreen = () => {
                 />
             </ScrollView>
         </PageLayout>
-	)
-}
-
-const ProfileImage = ({
-	url,
-    username,
-	small = false,
-}: {
-    url?: string,
-    username: string,
-	small?: boolean
-}) => {
-	const size = small ? 48 : 120
-	return url ? (
-		<Image
-			source={{ uri: url }}
-			style={{
-                width: size,
-                height: size,
-                borderRadius: size / 2,
-                backgroundColor: '#ddd',
-			}}
-		/>
-	) : (
-		<View
-			style={{
-				width: size,
-				height: size,
-				borderRadius: size / 2,
-				backgroundColor: '#ccc',
-				justifyContent: 'center',
-				alignItems: 'center',
-			}}
-		>
-			<Text style={{ fontSize: small ? 20 : 48, color: '#555', fontWeight: 'bold' }}>
-				{username?.charAt(0).toUpperCase() || '?'}
-			</Text>
-		</View>
 	)
 }
   
