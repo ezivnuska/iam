@@ -52,19 +52,22 @@ export const UserListScreen = () => {
                     data={otherUsers}
                     keyExtractor={(item) => item.id || item.email}
                     scrollEnabled={false}
-                    renderItem={({ item }) => (
-                    <TouchableOpacity
-                        style={styles.otherUserCard}
-                        activeOpacity={0.7}
-                        onPress={() => navigation.navigate('Details', { id: item._id })}
-                    >
-                        <ProfileImage url={item.avatar?.url} username={item.username} small />
-                        <View style={{ marginLeft: 12 }}>
-                            <Text style={styles.otherUsername}>{item.username}</Text>
-                            <Text style={styles.otherEmail}>{item.email}</Text>
-                        </View>
-                    </TouchableOpacity>
-                    )}
+                    renderItem={({ item }) => {
+                        console.log('item', item)
+                        return (
+                            <TouchableOpacity
+                                style={styles.otherUserCard}
+                                activeOpacity={0.7}
+                                onPress={() => navigation.navigate('Details', { id: item._id })}
+                            >
+                                <ProfileImage url={item.avatar?.url} username={item.username} small />
+                                <View style={{ marginLeft: 12 }}>
+                                    <Text style={styles.otherUsername}>{item.username}</Text>
+                                    <Text style={styles.otherEmail}>{item.email}</Text>
+                                </View>
+                            </TouchableOpacity>
+                        )
+                    }}
                     onEndReached={fetchNextPage}
                     onEndReachedThreshold={0.5}
                     ListFooterComponent={loading ? <ActivityIndicator style={{ marginVertical: 20 }} /> : null}

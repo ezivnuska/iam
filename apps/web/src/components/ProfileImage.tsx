@@ -1,13 +1,7 @@
 // app/web/src/components/ProfileImage.tsx
 
 import React from 'react'
-import { View, Text, ScrollView, StyleSheet, Image, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native'
-import { useAuth } from '../hooks'
-import { usePaginatedFetch } from '@services'
-import type { StackNavigationProp } from '@react-navigation/stack'
-import { useNavigation } from '@react-navigation/native'
-import type { RootStackParamList } from '@iam/types'
-import { PageLayout } from '../components'
+import { View, Text, StyleSheet, Image } from 'react-native'
 
 export const ProfileImage = ({
     url,

@@ -5,7 +5,7 @@ import { Image } from '../models/image.model'
 import { comparePassword, hashPassword } from '../utils/password'
 
 export const findAllUsers = async () => {
-	return await UserModel.find().select('-password') // Exclude passwords
+	return await UserModel.find().select('-password').populate('avatar') // Exclude passwords
 }
 
 export const findUserById = async (id: string) => {

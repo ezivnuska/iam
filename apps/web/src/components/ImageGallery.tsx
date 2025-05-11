@@ -15,7 +15,7 @@ const ImageGallery = ({ images, onDelete, onSetAvatar, currentAvatarId }: ImageG
 		<ScrollView contentContainerStyle={styles.gallery}>
 			{images.map((img, index) => {
 				const isAvatar = img._id === currentAvatarId
-
+                console.log('img', img)
 				return (
 					<Column
 						key={`${index}-${img._id}`}
