@@ -8,7 +8,7 @@ export const Footer = () => {
 	return (
         <View style={styles.container}>
             <View style={styles.maxWidthContainer}>
-                <Text style={styles.copy}>&copy;iameric</Text>
+                <Text style={styles.copy}>&copy; iameric</Text>
             </View>
         </View>
     )
