@@ -1,6 +1,7 @@
 // apps/backend/src/services/user.service.ts
 
 import { UserModel } from '../models/user.model'
+import { Image } from '../models/image.model'
 import { comparePassword, hashPassword } from '../utils/password'
 
 export const findAllUsers = async () => {
@@ -73,4 +74,22 @@ export const changeUserPassword = async (userId: string, current: string, next: 
 	await user.save()
 
 	return true
+}
+
+export const setAvatarImage = async (username: string, imageId: string) => {
+	const [user, image] = await Promise.all([
+		UserModel.findOne({ username }),
+		Image.findById(imageId),
+	])
+
+	if (!user) throw new Error('User not found')
+	if (!image) throw new Error('Image not found')
+	if (image.username !== username) {
+		throw new Error('You do not have permission to use this image')
+	}
+
+	user.avatar = image._id
+	await user.save()
+
+	return user
 }

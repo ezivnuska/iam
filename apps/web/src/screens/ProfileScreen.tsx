@@ -1,7 +1,7 @@
 // apps/web/src/screens/ProfileScreen.tsx
 
 import React from 'react'
-import { StyleSheet, Text, View, Pressable } from 'react-native'
+import { Image, StyleSheet, Text, View, Pressable } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { EditProfileForm, PageHeader, PageLayout, Column, UserImageManager } from '../components'
 import { useAuth, useModal } from '../hooks'
@@ -27,7 +27,13 @@ export const ProfileScreen = () => {
 			<Column spacing={10} align='flex-start'>
 				<Text style={[styles.text, styles.username]}>{user?.username}</Text>
 				<Text style={[styles.text, styles.email]}>{user?.email}</Text>
-
+                {user?.avatar && (
+                    <Image
+                        source={{ uri: user.avatar.url }}
+                        style={styles.avatar}
+                        resizeMode="cover"
+                    />
+                )}
 				<View style={styles.sectionContainer}>
 					<Text style={styles.text}>{user?.bio || 'No bio yet.'}</Text>
 					<Pressable onPress={openEditModal} style={styles.editButton}>
@@ -60,5 +66,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: 8,
+    },
+    avatar: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        marginBottom: 20,
+        alignSelf: 'center',
     },
 })

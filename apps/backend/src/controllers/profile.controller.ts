@@ -52,3 +52,17 @@ export const changePassword: RequestHandler = async (req: Request, res: Response
 		next(err)
 	}
 }
+
+export const setAvatarImage = async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.user) {
+		res.status(401).json({ message: 'Unauthorized' })
+		return
+	}
+    try {
+        const { imageId } = req.params
+        const updatedUser = await userService.setAvatarImage(req.user.username, imageId)
+        res.json(updatedUser)
+    } catch (err) {
+        next(err)
+    }
+}

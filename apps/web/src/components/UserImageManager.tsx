@@ -2,11 +2,13 @@
 
 import React, { useEffect, useState } from 'react'
 import { Text } from 'react-native'
-import { deleteImage, fetchUserImages } from '@services'
+import { getUserById, setAvatar, deleteImage, fetchUserImages } from '@services'
 import { ImageGallery, ImageUpload } from '.'
 import type { ImageItem } from '@iam/types'
+import { useAuth } from '@/hooks'
 
 const UserImageManager = () => {
+    const { user, setUser } = useAuth()
 	const [images, setImages] = useState<ImageItem[]>([])
     const [isLoading, setIsLoading] = useState(true)
 
@@ -18,6 +20,22 @@ const UserImageManager = () => {
             console.error('Error fetching images:', error)
 		}
 	}
+
+    const handleSetAvatar = async (imageId: string) => {
+        try {
+            await setAvatar(imageId)
+            if (!user) {
+                throw new Error('No user found')
+                return
+            }
+            const userWithAvatar = await getUserById(user.id)
+            setUser(userWithAvatar)
+            console.log('Avatar updated!')
+        } catch (err) {
+            console.error('Failed to set avatar:', err)
+            throw new Error('Error setting avatar')
+        }
+    }
 
     const handleDelete = async (id: string) => {
         try {
@@ -42,7 +60,12 @@ const UserImageManager = () => {
 			{isLoading ? (
                 <Text>Loading images...</Text>
             ) : (
-                <ImageGallery images={images} onDelete={handleDelete} />
+                <ImageGallery
+                    images={images}
+                    onDelete={handleDelete}
+                    onSetAvatar={handleSetAvatar}
+                    currentAvatarId={user?.avatar?.id}
+                />
             )}
 		</>
 	)

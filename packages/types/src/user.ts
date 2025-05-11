@@ -17,6 +17,7 @@ export type User = {
 	email: string
 	role: UserRole
     avatar?: Image
+    avatarUrl?: string
     bio?: string
 	verified: boolean
 	verifyToken?: string

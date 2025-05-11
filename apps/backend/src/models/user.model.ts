@@ -40,4 +40,9 @@ const UserSchema = new Schema<IUser>({
     },
 })
 
+UserSchema.virtual('avatarUrl').get(function () {
+	if (!this.avatar || !this.username) return null
+	return `/images/users/${this.username}/${this.avatar}.webp` // adapt as needed
+})
+
 export const UserModel = mongoose.model<IUser>('User', UserSchema)

@@ -6,7 +6,7 @@ import {
   getUserById,
   updateUser,
   updateUserRole,
-  deleteUser
+  deleteUser,
 } from '../controllers/user.controller'
 import { requireAuth } from '../middlewares/auth.middleware'
 import { UserRole } from '@auth'
@@ -16,10 +16,11 @@ const router: express.Router = Router()
 router.use(requireAuth())
 // router.use(requireAuth([UserRole.Admin]))
 
-router.get('/',         getAllUsers)
-router.get('/:id',      getUserById)
-router.put('/:id',      updateUser)
+router.get('/', getAllUsers)
+router.get('/:id', getUserById)
+router.put('/:id', updateUser)
 router.put('/:id/role', updateUserRole)
 router.delete('/:id',   deleteUser)
+
 
 export default router
