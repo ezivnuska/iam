@@ -4,10 +4,14 @@ import React, { useState, useEffect } from 'react'
 import { View, TextInput, Text, ScrollView, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native'
 import { io } from 'socket.io-client'
 
-const socket = io('http://localhost:4000', {
-	withCredentials: true,
-	transports: ['websocket'],
-})
+// const socket = io('http://localhost:4000', {
+// 	withCredentials: true,
+// 	transports: ['websocket'],
+// })
+const socket = io(
+    process.env.SOCKET_URL || 'http://localhost:4000',
+    { withCredentials: true }
+)
 
 export const ChatScreen = () => {
 	
