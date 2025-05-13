@@ -3,12 +3,21 @@
 import React from 'react'
 import { View, Text, StyleSheet, Pressable } from 'react-native'
 import { useNavigationState } from '@react-navigation/native'
-import { Button, Row, Column } from '.'
+import { Button, Row } from '.'
 import { useAuth } from '../hooks'
+import AntDesign from '@expo/vector-icons/AntDesign'
+import Ionicons from '@expo/vector-icons/Ionicons'
+import { resolveResponsiveProp } from '../styles'
+
+type AllowedIonicons =
+	| 'chatbubbles-outline'
+	| 'people-outline'
+	| 'person-circle-outline'
 
 type NavItem = {
 	label: string
 	routeName: string
+    iconName?: AllowedIonicons
 }
 
 type NavbarProps = {
@@ -34,10 +43,16 @@ export const Navbar = ({ navItems, navigate }: NavbarProps) => {
 
     const { logout, isAuthenticated } = useAuth()
 
+    const gotoSignIn = () => navigate('Signin')
+    const gotoSignUp = () => navigate('Signup')
+
+    const iconSize = resolveResponsiveProp({ sm: 24, md: 18, lg: 18 })
+    const showLabel = resolveResponsiveProp({ sm: false, md: true, lg: true })
+
 	return (
 		<Row
             flex={1}
-            spacing={10}
+            spacing={20}
             align='center'
             justify='space-between'
             paddingHorizontal={16}
@@ -48,44 +63,52 @@ export const Navbar = ({ navItems, navigate }: NavbarProps) => {
 			{isAuthenticated && (
                 <Row
                     flex={5}
-                    spacing={10}
+                    spacing={15}
                     align='center'
                     justify='flex-end'
                 >
                     {navItems.map((item, index) => {
                         const isActive = item.routeName === currentRoute
                         return (
-                            <Pressable
-                                key={index}
-                                style={[styles.button, isActive && styles.activeButton]}
-                                onPress={() => navigate(item.routeName)}
-                                disabled={isActive}
-                            >
-                                <Text style={[styles.buttonLabel, isActive && styles.activeButtonLabel]}>
-                                    {item.label}
-                                </Text>
-                            </Pressable>
+                            <View key={index}>
+                                <Button
+                                    label={item.label}
+                                    onPress={() => navigate(item.routeName)}
+                                    icon={item.iconName && <Ionicons name={item.iconName} size={iconSize} color='white' />}
+                                    active={isActive}
+                                    showLabel={showLabel}
+                                />
+                            </View>
                         )
                     })}
                 </Row>
             )}
 
             {isAuthenticated
-                ? (
-                    <Pressable onPress={logout}>
-                        <Text style={styles.buttonLabel}>Sign Out</Text>
-                    </Pressable>
+                ? (  
+                    <Button
+                        icon={<Ionicons name='exit-outline' size={iconSize} color='white' />}
+                        label='Sign Out'
+                        onPress={logout}
+                        showLabel={showLabel}
+                    />
                 )
                 : currentRoute === 'Signin'
                     ? (
-                        <Pressable onPress={() => navigate('Signup')}>
-                            <Text style={styles.buttonLabel}>Sign Up</Text>
-                        </Pressable>
+                        <Button
+                            icon={<AntDesign name='login' size={iconSize} color='white' />}
+                            label='Sign Up'
+                            onPress={gotoSignUp}
+                            showLabel={showLabel}
+                        />
                     )
                     : (
-                        <Pressable onPress={() => navigate('Signin')}>
-                            <Text style={styles.buttonLabel}>Sign In</Text>
-                        </Pressable>
+                        <Button
+                            icon={<AntDesign name='login' size={iconSize} color='white' />}
+                            label='Sign In'
+                            onPress={gotoSignIn}
+                            showLabel={showLabel}
+                        />
                     )
             }
 		</Row>
@@ -112,19 +135,4 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		gap: 16,
 	},
-    button: {
-        paddingVertical: 8,
-        paddingHorizontal: 12,
-    },
-    activeButton: {
-        // backgroundColor: '#007bff',
-    },
-    buttonLabel: {
-        fontSize: 16,
-        color: '#ddd',
-    },
-    activeButtonLabel: {
-        color: '#fff',
-        fontWeight: 'bold',
-    },
 })

@@ -5,6 +5,7 @@ import { View, StyleSheet } from 'react-native'
 import { MAX_WIDTH } from './constants'
 import { Navbar } from '..'
 import { useNavigation } from '@react-navigation/native'
+import Ionicons from '@expo/vector-icons/Ionicons'
 
 interface HeaderProps {
     children?: ReactNode
@@ -17,9 +18,9 @@ export const Header: React.FC<HeaderProps> = (props) => {
             <View style={styles.maxWidthContainer}>
                 <Navbar
                     navItems={[
-                        { label: 'Chat', routeName: 'Chat' },
-                        { label: 'Users', routeName: 'UserList' },
-                        { label: 'Profile', routeName: 'Profile' },
+                        { label: 'Chat', routeName: 'Chat', iconName: 'chatbubbles-outline' },
+                        { label: 'Users', routeName: 'UserList', iconName: 'people-outline' },
+                        { label: 'Profile', routeName: 'Profile', iconName: 'person-circle-outline' },
                     ]}
                     navigate={(routeName) => navigation.navigate(routeName as never)}
                 />

@@ -4,7 +4,7 @@ import { Dimensions } from 'react-native'
 
 export const breakpoints = {
 	sm: 0,
-	md: 600,
+	md: 500,
 	lg: 1024,
 } as const
 

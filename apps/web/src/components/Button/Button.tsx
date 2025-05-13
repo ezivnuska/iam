@@ -1,49 +1,81 @@
 // packages/ui/src/components/Button/Button.tsx
 
 import React from 'react'
-import { Pressable, Text, StyleSheet, StyleProp, ViewStyle, TextStyle } from 'react-native'
+import { Pressable, Text, StyleSheet } from 'react-native'
 import type { ButtonProps } from './Button.types'
+import { resolveResponsiveProp } from '../../styles'
+import { Column } from '../Layout'
 
 export const Button: React.FC<ButtonProps> = ({
 	label,
 	onPress,
 	disabled = false,
 	style,
-	textStyle,
+	active = false,
+	icon,
+	showLabel = true,
 }) => {
+	const shouldShowLabel = resolveResponsiveProp(showLabel)
+
 	return (
 		<Pressable
-            onPress={onPress}
-            disabled={disabled}
-            style={({ pressed }) => [
-                styles.base,
-                disabled && styles.disabled,
-                pressed && styles.pressed,
-                style,
-            ]}
+			onPress={onPress}
+			disabled={disabled}
+			style={({ pressed }) => [
+				styles.button,
+				disabled && styles.disabled,
+				pressed && styles.pressed,
+				active && styles.activeButton,
+			]}
 		>
-            <Text style={[styles.text, textStyle]}>{label}</Text>
+			<Column spacing={4} align='center'>
+				{icon}
+				{shouldShowLabel && (
+					<Text
+						style={[
+							styles.buttonLabel,
+							active && styles.activeButtonLabel,
+						]}
+					>
+						{label}
+					</Text>
+				)}
+			</Column>
 		</Pressable>
 	)
 }
 
 const styles = StyleSheet.create({
-	base: {
-        // width: '100%',
-		paddingVertical: 12,
-		paddingHorizontal: 16,
-		backgroundColor: '#333',
-		borderRadius: 12,
+	content: {
 		alignItems: 'center',
+		justifyContent: 'center',
 	},
+	icon: {
+		marginBottom: 4,
+	},	
 	text: {
 		color: '#fff',
 		fontWeight: '600',
 	},
 	disabled: {
-		backgroundColor: '#999',
+		// backgroundColor: 'rgba(255, 255, 255, 0.25)',
 	},
 	pressed: {
 		opacity: 0.85,
 	},
+    button: {
+        // paddingVertical: 4,
+        // paddingHorizontal: 12,
+    },
+    activeButton: {
+		backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    },
+    buttonLabel: {
+        fontSize: 16,
+        color: '#ddd',
+    },
+    activeButtonLabel: {
+        color: '#fff',
+        fontWeight: 'bold',
+    },
 })
