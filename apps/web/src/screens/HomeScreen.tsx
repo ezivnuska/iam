@@ -1,7 +1,8 @@
 // packages/screens/src/screens/HomeScreen.tsx
 
-import React from 'react'
+import React, { useState } from 'react'
 import { PageHeader, PageLayout } from '../components'
+import { CreatePostForm, PostList } from '@/components'
 import { useAuth } from '../hooks'
 
 export const HomeScreen = () => {
@@ -10,6 +11,8 @@ export const HomeScreen = () => {
 	return (
 		<PageLayout>
 			<PageHeader title={`Home${isAuthenticated ? `: ${user?.username}` : ''}`} />
+            <CreatePostForm />
+            <PostList />
 		</PageLayout>
 	)
 }

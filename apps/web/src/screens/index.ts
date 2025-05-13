@@ -1,6 +1,7 @@
 
 export * from './ChatScreen'
 export * from './DetailsScreen'
+export * from './FeedScreen'
 export * from './ForgotPasswordScreen'
 export * from './HomeScreen'
 export * from './SigninScreen'

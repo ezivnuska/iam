@@ -7,17 +7,15 @@ import mongoose from 'mongoose'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import path from 'path'
-import fs from 'fs'
 import dotenv from 'dotenv'
 import { registerChatHandlers } from './controllers/chat.controller'
-import https from 'https'
-import { pipeline } from 'stream'
 
 import adminRoutes from './routes/admin.routes'
 import authRoutes from './routes/auth.routes'
 import profileRoutes from './routes/profile.routes'
 import userRoutes from './routes/user.routes'
 import imageRoutes from './routes/image.routes'
+import postRoutes from './routes/post.routes'
 
 // Default to development
 const env = process.env.NODE_ENV || 'development'
@@ -55,6 +53,7 @@ app.use('/api/auth', authRoutes)
 app.use('/api/profile', profileRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/images', imageRoutes)
+app.use('/api/posts', postRoutes)
 
 app.use((err: any, _req: any, res: any, _next: any) => {
     res.status(500).json({ message: err.message || 'Unexpected error' })

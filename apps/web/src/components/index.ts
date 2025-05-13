@@ -3,6 +3,7 @@
 export * from './Layout'
 export * from './PageHeader'
 export * from './ProfileImage'
+export * from './PostList'
 export * from './Navbar'
 export * from './forms'
 export * from './UserProfileCard'
