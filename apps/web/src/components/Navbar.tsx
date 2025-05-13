@@ -8,6 +8,7 @@ import { useAuth } from '../hooks'
 import AntDesign from '@expo/vector-icons/AntDesign'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { resolveResponsiveProp } from '../styles'
+import { IconButton } from './Button'
 
 type AllowedIonicons =
 	| 'chatbubbles-outline'
@@ -71,7 +72,7 @@ export const Navbar = ({ navItems, navigate }: NavbarProps) => {
                         const isActive = item.routeName === currentRoute
                         return (
                             <View key={index}>
-                                <Button
+                                <IconButton
                                     label={item.label}
                                     onPress={() => navigate(item.routeName)}
                                     icon={item.iconName && <Ionicons name={item.iconName} size={iconSize} color='white' />}
@@ -86,7 +87,7 @@ export const Navbar = ({ navItems, navigate }: NavbarProps) => {
 
             {isAuthenticated
                 ? (  
-                    <Button
+                    <IconButton
                         icon={<Ionicons name='exit-outline' size={iconSize} color='white' />}
                         label='Sign Out'
                         onPress={logout}
@@ -95,7 +96,7 @@ export const Navbar = ({ navItems, navigate }: NavbarProps) => {
                 )
                 : currentRoute === 'Signin'
                     ? (
-                        <Button
+                        <IconButton
                             icon={<AntDesign name='login' size={iconSize} color='white' />}
                             label='Sign Up'
                             onPress={gotoSignUp}
@@ -103,7 +104,7 @@ export const Navbar = ({ navItems, navigate }: NavbarProps) => {
                         />
                     )
                     : (
-                        <Button
+                        <IconButton
                             icon={<AntDesign name='login' size={iconSize} color='white' />}
                             label='Sign In'
                             onPress={gotoSignIn}

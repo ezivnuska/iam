@@ -9,6 +9,7 @@ export interface ButtonProps {
 	onPress: () => void
 	disabled?: boolean
 	style?: StyleProp<ViewStyle>
+	textStyle?: StyleProp<TextStyle>
 	icon?: ReactNode
 	active?: boolean
 	showLabel?: ResponsiveProp<boolean>
