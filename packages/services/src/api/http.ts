@@ -5,6 +5,12 @@ import { apiBaseUrl } from '../constants'
 import { getToken, saveToken, clearToken } from '../'
 import { logoutRequest, refreshTokenRequest } from '.'
 
+let onUnauthorized: (() => void) | null = null
+
+export const setUnauthorizedHandler = (handler: () => void) => {
+	onUnauthorized = handler
+}
+
 export const api = axios.create({
 	baseURL: apiBaseUrl,
 	withCredentials: true, // Send cookies if needed
@@ -20,7 +26,7 @@ export const clearAuthHeader = () => {
 	delete api.defaults.headers.common['Authorization']
 }
 
-// --- Token Refresh Queueing Logic ---
+// Token refresh queueing logic
 let isRefreshing = false
 let refreshSubscribers: ((token: string) => void)[] = []
 
@@ -77,6 +83,11 @@ api.interceptors.response.use(
 					await clearToken()
 					clearAuthHeader()
 					await logoutRequest()
+
+                    if (onUnauthorized) {
+                        onUnauthorized()
+                    }
+
 					return Promise.reject(refreshError)
 				}
 			}

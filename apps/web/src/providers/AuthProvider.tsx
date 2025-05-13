@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { saveToken, clearToken, signinRequest, logoutRequest, setAuthHeader, clearAuthHeader, getProfile } from '@services'
-import { trySigninFromStoredToken } from '@services'
+import { trySigninFromStoredToken, setUnauthorizedHandler } from '@services'
 import { navigate } from '../navigation'
 import { createContext } from 'react'
 import type { User } from '@iam/types'
+
+setUnauthorizedHandler(() => {
+	window.location.href = '/signin'
+})
 
 export type AuthContextType = {
 	isAuthenticated: boolean

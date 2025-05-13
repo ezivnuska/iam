@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
         // paddingHorizontal: 12,
     },
     activeButton: {
-		backgroundColor: 'rgba(255, 255, 255, 0.25)',
+		// backgroundColor: 'rgba(255, 255, 255, 0.25)',
     },
     buttonLabel: {
         fontSize: 16,

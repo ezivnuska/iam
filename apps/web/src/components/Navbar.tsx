@@ -52,7 +52,7 @@ export const Navbar = ({ navItems, navigate }: NavbarProps) => {
 	return (
 		<Row
             flex={1}
-            spacing={20}
+            spacing={25}
             align='center'
             justify='space-between'
             paddingHorizontal={16}
@@ -63,9 +63,9 @@ export const Navbar = ({ navItems, navigate }: NavbarProps) => {
 			{isAuthenticated && (
                 <Row
                     flex={5}
-                    spacing={15}
+                    spacing={30}
                     align='center'
-                    justify='flex-end'
+                    justify='center'
                 >
                     {navItems.map((item, index) => {
                         const isActive = item.routeName === currentRoute
