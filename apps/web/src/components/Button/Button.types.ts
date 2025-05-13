@@ -5,7 +5,7 @@ import { GestureResponderEvent, StyleProp, ViewStyle, TextStyle } from 'react-na
 import { ResponsiveProp } from '@/types'
 
 export interface ButtonProps {
-	label: string
+	label?: string
 	onPress: () => void
 	disabled?: boolean
 	style?: StyleProp<ViewStyle>

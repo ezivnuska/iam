@@ -3,11 +3,12 @@
 import React, { useEffect, useState } from 'react'
 import { Text } from 'react-native'
 import { Column, ImageGallery, ImageManagerHeader } from '.'
-import { useImages } from '@/providers'
+import { useImage, useModal } from '@/hooks'
 
 
 const UserImageManager = () => {
-	const { images, isLoading, deleteImage, setAvatar, currentAvatarId, addImage, loadImages } = useImages()
+	const { images, isLoading, deleteImage, setAvatar, currentAvatarId, loadImages } = useImage()
+	const { hideModal } = useModal()
 	const [hasLoaded, setHasLoaded] = useState(false)
 	const [error, setError] = useState<string | null>(null)
 
@@ -19,6 +20,32 @@ const UserImageManager = () => {
 		}
 	}, [hasLoaded])
 
+    const handleDelete = async (id: string) => {
+        try {
+            // If the image to be deleted is the current avatar, unset the avatar first
+            if (id === currentAvatarId) {
+                await setAvatar(undefined)  // Ensure setAvatar can handle setting avatar to undefined
+            }
+        
+            // Proceed with deleting the image
+            await deleteImage(id)
+            hideModal()
+        } catch (err) {
+            console.log('Failed to delete image:', err)
+            setError('Failed to delete image.')
+        }
+    }        
+
+    const handleSetAvatar = async (id: string) => {
+        try {
+            await setAvatar(id)
+            hideModal()
+        } catch (err) {
+            console.log('Failed to set avatar')
+            setError('Failed to set avatar.')
+        }
+    }
+
 	return (
 		<Column spacing={10}>
 			<ImageManagerHeader />
@@ -29,8 +56,8 @@ const UserImageManager = () => {
 			) : (
 				<ImageGallery
 					images={images}
-					onDelete={deleteImage}
-					onSetAvatar={setAvatar}
+					onDelete={handleDelete}
+					onSetAvatar={handleSetAvatar}
 					currentAvatarId={currentAvatarId}
 				/>
 			)}

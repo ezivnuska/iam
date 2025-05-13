@@ -34,13 +34,15 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
 		<ModalContext.Provider value={{ showModal, hideModal, content }}>
 			{children}
 			{content && (
-				<View style={styles.modalOverlay}>
-					<Pressable style={styles.backdrop} onPress={hideModal} />
-					<View style={styles.modalContent}>
-						{content}
-					</View>
-				</View>
-			)}
+                <View style={styles.modalOverlay}>
+                    <Pressable style={styles.backdrop} onPress={hideModal} />
+                    {typeof content === 'string' ? (
+                        <View style={styles.modalContent}>{content}</View>
+                    ) : (
+                        content
+                    )}
+                </View>
+            )}
 		</ModalContext.Provider>
 	)
 }
@@ -68,7 +70,7 @@ const styles = StyleSheet.create({
 	},
 	backdrop: {
 		...StyleSheet.absoluteFillObject,
-		backgroundColor: 'rgba(0,0,0,0.5)',
+		backgroundColor: 'rgba(0, 0, 0, 1.0)',
 	},
 	modalContent: {
 		backgroundColor: '#fff',

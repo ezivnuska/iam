@@ -1,11 +1,12 @@
 // apps/web/src/components/ImageUplad.tsx
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Text, Platform, Image } from 'react-native'
 import { Button, Column } from '.'
 import * as ImagePicker from 'expo-image-picker'
 import { uploadImage } from '@services'
 import type { ImageItem } from '@iam/types'
+import { useImage, useModal } from '@/hooks'
 
 type NativeImageFile = {
 	uri: string
@@ -23,14 +24,21 @@ type WebImageFile = {
 
 type ImageFile = NativeImageFile | WebImageFile
 
-type ImageUploadProps = {
-    onUploadSuccess: (image: ImageItem) => void
-}
-
-const ImageUpload = ({ onUploadSuccess }: ImageUploadProps) => {
+const ImageUpload = () => {
+    const { addImage } = useImage()
+    const { hideModal } = useModal()
 	const [file, setFile] = useState<ImageFile | null>(null)
 	const [isUploading, setIsUploading] = useState(false)
 	const [error, setError] = useState<string | null>(null)
+
+    useEffect(() => {
+        handlePickImage()
+    }, [])
+
+    const handleUploadSuccess = (newImage: ImageItem) => {
+        addImage(newImage)
+        hideModal()
+    }
 
 	const handlePickImage = async () => {
 		if (Platform.OS === 'web') {
@@ -84,11 +92,8 @@ const ImageUpload = ({ onUploadSuccess }: ImageUploadProps) => {
                 uri: file.uri,
                 name: file.name,
                 type: file.type,
-            } as any) // 👈 necessary for React Native's FormData
+            } as any)
         }
-    
-        // Optionally include other fields
-        // formData.append('username', 'eric') // or dynamically use current user
     
         setIsUploading(true)
         setError(null)
@@ -97,19 +102,19 @@ const ImageUpload = ({ onUploadSuccess }: ImageUploadProps) => {
             const response = await uploadImage(formData)
             const data: ImageItem = response.data
     
-            onUploadSuccess(data)
             setFile(null)
+            handleUploadSuccess(data)
         } catch (err) {
             console.error('Upload failed:', err)
             setError('Upload failed. Please try again.')
         } finally {
             setIsUploading(false)
         }
-    }    
+    }
 
 	return (
 		<Column spacing={10}>
-			<Button label='Pick Image' onPress={handlePickImage} />
+			{file && <Button label='Change Image' onPress={handlePickImage} />}
 			{file && (
 				<Column spacing={10}>
 					<Image
@@ -117,7 +122,6 @@ const ImageUpload = ({ onUploadSuccess }: ImageUploadProps) => {
 						style={{ width: 200, height: 200, borderRadius: 10 }}
 						resizeMode='cover'
 					/>
-                    <Text style={{ marginTop: 10 }}>Selected file: {file.name}</Text>
 					<Button
 						label={isUploading ? 'Uploading...' : 'Upload Image'}
 						onPress={handleSubmit}

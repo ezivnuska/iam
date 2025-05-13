@@ -10,7 +10,7 @@ export interface IUser extends Document {
 	email: string
 	role: UserRole
     bio: string
-    avatar: Types.ObjectId | ImageDocument
+    avatar?: Types.ObjectId | ImageDocument | null
 	password: string
 	verified: boolean
 	verifyToken?: string
@@ -26,7 +26,7 @@ const UserSchema = new Schema<IUser>({
 	email: { type: String, required: true, unique: true },
 	role: { type: String, enum: Object.values(UserRole), default: UserRole.User },
     bio: { type: String },
-    avatar: { type: Schema.Types.ObjectId, ref: 'Image' },
+    avatar: { type: Schema.Types.ObjectId, ref: 'Image', default: undefined },
 	password: { type: String, required: true },
 	verified: { type: Boolean, default: false },
 	verifyToken: String,

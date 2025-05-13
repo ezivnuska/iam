@@ -1,29 +1,22 @@
 // apps/web/src/components/ImageManagerHeader.tsx
 
-import React, { useState } from 'react'
-import { Text, StyleSheet } from 'react-native'
-import { Button, ImageUpload, Row } from '.'
-import type { ImageItem } from '@iam/types'
+import React from 'react'
+import { Text, StyleSheet, Pressable } from 'react-native'
+import { ImageUpload, Row } from '.'
 import { useModal } from '@/hooks'
+import Ionicons from '@expo/vector-icons/Ionicons'
 
 export const ImageManagerHeader = () => {
-    const { hideModal, showModal } = useModal()
+    const { showModal } = useModal()
 
-	const [images, setImages] = useState<ImageItem[]>([])
-
-	const handleUploadSuccess = (newImage: ImageItem) => {
-		setImages(prev => [newImage, ...prev])
-        hideModal()
-	}
-
-    const openImageUploadModal = () => {
-        showModal(<ImageUpload onUploadSuccess={handleUploadSuccess} />)
-    }
+    const openImageUploadModal = () => showModal(<ImageUpload />)
 
 	return (
 		<Row spacing={10}>
 			<Text style={styles.title}>Images</Text>
-            <Button label='Add Image' onPress={openImageUploadModal} />
+            <Pressable onPress={openImageUploadModal}>
+                <Ionicons name='add-circle-outline' size={30} color='black' />
+            </Pressable>
 		</Row>
 	)
 }

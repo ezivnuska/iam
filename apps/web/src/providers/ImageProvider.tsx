@@ -5,42 +5,50 @@ import { getUserById, setAvatar as apiSetAvatar, deleteImage as apiDeleteImage, 
 import { useAuth } from '@/hooks'
 import type { ImageItem } from '@iam/types'
 
-type ImageContextType = {
+export type ImageContextType = {
 	images: ImageItem[]
 	isLoading: boolean
 	currentAvatarId?: string
 	loadImages: () => Promise<void>
-	setAvatar: (imageId: string) => Promise<void>
+	setAvatar: (imageId: string | undefined) => Promise<void>
 	deleteImage: (id: string) => Promise<void>
 	addImage: (image: ImageItem) => void
 }
 
-const ImageContext = createContext<ImageContextType | null>(null)
+export const ImageContext = createContext<ImageContextType | null>(null)
 
 export const ImageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 	const { user, setUser } = useAuth()
 	const [images, setImages] = useState<ImageItem[]>([])
 	const [isLoading, setIsLoading] = useState(true)
 
-	const setAvatar = async (imageId: string) => {
-		try {
-			await apiSetAvatar(imageId)
-			if (!user) throw new Error('No user found')
-			const updatedUser = await getUserById(user.id)
-			setUser(updatedUser)
-		} catch (err) {
-			console.error('Failed to set avatar:', err)
-		}
-	}
+    const setAvatar = async (imageId: string | undefined) => {
+        try {
+            // Call the updated setAvatar function (which now handles undefined properly)
+            await apiSetAvatar(imageId);
+        
+            // After setting or unsetting the avatar, reload user data
+            if (!user) throw new Error('No user found');
+            const updatedUser = await getUserById(user.id);
+            setUser(updatedUser); // Update the local user state
+        } catch (err) {
+            console.error('Failed to set avatar:', err);
+        }
+    }    
 
 	const deleteImage = async (id: string) => {
-		try {
-			await apiDeleteImage(id)
-			setImages(prev => prev.filter(img => img._id !== id))
-		} catch (err) {
-			console.error('Failed to delete image:', err)
-		}
-	}
+        try {
+            await apiDeleteImage(id)
+            setImages(prev => prev.filter(img => img._id !== id))
+    
+            // If the deleted image is the current avatar, clear it
+            if (user?.avatar?.id === id) {
+                await setAvatar(undefined); // Remove the avatar
+            }
+        } catch (err) {
+            console.error('Failed to delete image:', err)
+        }
+    }    
 
 	const addImage = (image: ImageItem) => {
 		setImages(prev => [image, ...prev])
@@ -69,8 +77,8 @@ export const ImageProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 	)
 }
 
-export const useImages = () => {
+export const useImageContext = () => {
 	const ctx = useContext(ImageContext)
-	if (!ctx) throw new Error('useImages must be used within a ImageProvider')
+	if (!ctx) throw new Error('useImageContext must be used within an ImageProvider')
 	return ctx
 }
