@@ -65,10 +65,6 @@ const ImageGallery = ({ images, onDelete, onSetAvatar, currentAvatarId }: ImageG
                 <View style={[styles.imageWrapper, isAvatar && styles.avatarHighlight]}>
                     <Image source={{ uri: item.url }} style={styles.image} resizeMode='cover' />
                 </View>
-                {/* <View style={styles.buttonRow}>
-                    <Button label='Delete' onPress={() => onDelete?.(item._id)} />
-                    {!isAvatar && <Button label='Set as Avatar' onPress={() => onSetAvatar?.(item._id)} />}
-                </View> */}
             </TouchableOpacity>
 		)
 	}
@@ -144,7 +140,7 @@ const styles = StyleSheet.create({
 		paddingVertical: IMAGE_MARGIN,
 	},
 	columnWrapper: {
-        justifyContent: 'space-between',
+        justifyContent: 'flex-start',
         marginBottom: IMAGE_MARGIN, // * 2,
         paddingHorizontal: IMAGE_MARGIN,
     },
@@ -157,6 +153,7 @@ const styles = StyleSheet.create({
 		overflow: 'hidden',
 		width: '100%',
 		aspectRatio: 1,
+        borderWidth: 1,
 	},
 	avatarHighlight: {
 		borderWidth: 3,
