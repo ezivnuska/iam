@@ -3,3 +3,4 @@
 export * from './AuthProvider'
 export * from './AppProviders'
 export * from './ModalProvider'
+export * from './ImageProvider'

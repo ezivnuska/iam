@@ -3,12 +3,11 @@
 import React from 'react'
 import { View, Text, StyleSheet, Pressable } from 'react-native'
 import { useNavigationState } from '@react-navigation/native'
-import { Button, Row } from '.'
+import { IconButton, Row } from '@/components'
 import { useAuth } from '../hooks'
 import AntDesign from '@expo/vector-icons/AntDesign'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { resolveResponsiveProp } from '../styles'
-import { IconButton } from './Button'
 
 type AllowedIonicons =
 	| 'chatbubbles-outline'

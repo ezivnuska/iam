@@ -1,13 +1,13 @@
 // packages/screens/src/screens/UserListScreen.tsx
 
 import React from 'react'
-import { View, Text, ScrollView, StyleSheet, Image, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { View, Text, ScrollView, StyleSheet, FlatList, ActivityIndicator } from 'react-native'
 import { useAuth } from '../hooks'
 import { usePaginatedFetch } from '@services'
 import type { StackNavigationProp } from '@react-navigation/stack'
 import { useNavigation } from '@react-navigation/native'
 import type { RootStackParamList } from '@iam/types'
-import { PageLayout, ProfileImage } from '@/components'
+import { PageLayout, UserProfileCard } from '@/components'
 
 type UserListScreenNavProp = StackNavigationProp<RootStackParamList, 'UserList'>
 
@@ -34,36 +34,15 @@ export const UserListScreen = () => {
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.container}
             >
-                {/* Current User Profile */}
-                <View style={styles.profileCard}>
-                    <ProfileImage
-                        url={currentUser?.avatar?.url}
-                        username={currentUser.username}
-                    />
-                    <Text style={styles.username}>{currentUser.username}</Text>
-                    <Text style={styles.email}>{currentUser.email}</Text>
-                    {currentUser.bio && <Text style={styles.bio}>{currentUser.bio}</Text>}
-                </View>
-
-                {/* Other Users */}
-                <Text style={styles.sectionTitle}>Other Users</Text>
-
                 <FlatList
                     data={otherUsers}
                     keyExtractor={(item) => item.id || item.email}
                     scrollEnabled={false}
                     renderItem={({ item }) => (
-                        <TouchableOpacity
-                            style={styles.otherUserCard}
-                            activeOpacity={0.7}
+                        <UserProfileCard
+                            user={item}
                             onPress={() => navigation.navigate('Details', { id: item._id })}
-                        >
-                            <ProfileImage url={item.avatar?.url} username={item.username} small />
-                            <View style={{ marginLeft: 12 }}>
-                                <Text style={styles.otherUsername}>{item.username}</Text>
-                                <Text style={styles.otherEmail}>{item.email}</Text>
-                            </View>
-                        </TouchableOpacity>
+                        />
                     )}
                     onEndReached={fetchNextPage}
                     onEndReachedThreshold={0.5}

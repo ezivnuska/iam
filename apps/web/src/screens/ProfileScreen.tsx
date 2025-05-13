@@ -1,9 +1,16 @@
 // apps/web/src/screens/ProfileScreen.tsx
 
 import React from 'react'
-import { Image, StyleSheet, Text, View, Pressable } from 'react-native'
+import { StyleSheet, Text, View, Pressable } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import { EditProfileForm, PageHeader, PageLayout, ProfileImage, Column, UserImageManager } from '@/components'
+import {
+    EditProfileForm,
+    PageLayout,
+    ProfileImage,
+    Column,
+    UserImageManager,
+    Row,
+} from '@/components'
 import { useAuth, useModal } from '../hooks'
 import { Feather } from '@expo/vector-icons'
 import type { StackNavigationProp } from '@react-navigation/stack'
@@ -31,30 +38,37 @@ export const ProfileScreen = () => {
 
 	return (
 		<PageLayout>
-			<PageHeader title={`${user.username || 'Profile'}`} />
-			<Column spacing={10} align='flex-start'>
-				<Text style={[styles.text, styles.username]}>{user?.username}</Text>
-				<Text style={[styles.text, styles.email]}>{user?.email}</Text>
-                <ProfileImage
-                    url={user.avatar?.url}
-                    username={user.username}
-                />
-				<View style={styles.sectionContainer}>
-					<Text style={styles.text}>{user?.bio || 'No bio yet.'}</Text>
-					<Pressable onPress={openEditModal} style={styles.editButton}>
-						<Feather name='edit-3' size={18} color='#555' />
-					</Pressable>
-				</View>
-				<View style={styles.sectionContainer}>
-                    <UserImageManager />
-                </View>
-			</Column>
+            <Column
+                paddingVertical={15}
+                flex={1}
+                spacing={15}
+            >
+                <Row spacing={15}>
+                    <ProfileImage
+                        url={user.avatar?.url}
+                        username={user.username}
+                        small
+                    />
+                    <Column spacing={5}>
+                        <Text style={[styles.text, styles.username]}>{user?.username}</Text>
+                        <Text style={[styles.text, styles.email]}>{user?.email}</Text>
+                    </Column>
+                </Row>
+                <Row spacing={10}>
+                    <Text style={styles.text}>{user?.bio || 'No bio yet.'}</Text>
+                    <Pressable onPress={openEditModal} style={styles.editButton}>
+                        <Feather name='edit-3' size={18} color='#555' />
+                    </Pressable>
+                </Row>
+                <UserImageManager />
+            </Column>
 		</PageLayout>
 	)
 }
 
 const styles = StyleSheet.create({
 	text: {
+        flex: 1,
 		fontSize: 18,
 		textAlign: 'left',
 	},
@@ -71,6 +85,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: 8,
+        borderWidth: 1,
     },
     avatar: {
         width: 100,

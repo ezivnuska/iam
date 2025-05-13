@@ -5,7 +5,7 @@ import { Dimensions } from 'react-native'
 export const breakpoints = {
 	sm: 0,
 	md: 500,
-	lg: 1024,
+	lg: 900,
 } as const
 
 export type Breakpoint = keyof typeof breakpoints

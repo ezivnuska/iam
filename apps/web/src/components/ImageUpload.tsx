@@ -109,13 +109,13 @@ const ImageUpload = ({ onUploadSuccess }: ImageUploadProps) => {
 
 	return (
 		<Column spacing={10}>
-			<Button label="Pick Image" onPress={handlePickImage} />
+			<Button label='Pick Image' onPress={handlePickImage} />
 			{file && (
 				<Column spacing={10}>
 					<Image
 						source={{ uri: file.uri }}
 						style={{ width: 200, height: 200, borderRadius: 10 }}
-						resizeMode="cover"
+						resizeMode='cover'
 					/>
                     <Text style={{ marginTop: 10 }}>Selected file: {file.name}</Text>
 					<Button
