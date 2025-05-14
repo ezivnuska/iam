@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
 	},
 	backdrop: {
 		...StyleSheet.absoluteFillObject,
-		backgroundColor: 'rgba(0, 0, 0, 1.0)',
+		backgroundColor: 'rgba(0, 0, 0, 0.5)',
 	},
 	modalContent: {
 		backgroundColor: '#fff',

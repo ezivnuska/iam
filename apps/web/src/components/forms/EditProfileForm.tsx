@@ -1,9 +1,9 @@
 // apps/web/src/components/forms/EditProfileForm.tsx
 
 import React, { useEffect, useRef } from 'react'
-import { View, TextInput, StyleSheet, Text, Alert, TextInput as RNTextInput } from 'react-native'
+import { TextInput, StyleSheet, Text, Alert, TextInput as RNTextInput } from 'react-native'
 import { Controller, useForm } from 'react-hook-form'
-import { Button } from '..'
+import { Button, FormLayout } from '..'
 import { useAuth, useModal } from '@/hooks'
 import { updateSelf } from '@services'
 
@@ -52,7 +52,7 @@ export const EditProfileForm = () => {
 	}
 
 	return (
-		<View style={styles.container}>
+		<FormLayout>
 			<Text style={styles.label}>Bio</Text>
 			<Controller
 				control={control}
@@ -76,7 +76,7 @@ export const EditProfileForm = () => {
 				onPress={handleSubmit(onSubmit, onInvalid)}
 				disabled={isSubmitting}
 			/>
-		</View>
+		</FormLayout>
 	)
 }
 

@@ -5,10 +5,10 @@ export type RootStackParamList = {
     Details: { id: string }
     ForgotPassword: { token: string }
     Home: undefined
-    Signin: undefined
-    Signup: undefined
-    ResetPassword: { token: string }
-    UserList: undefined
     Profile: undefined
     Protected: undefined
+    ResetPassword: { token: string }
+    Signin: undefined
+    Signup: undefined
+    UserList: undefined
 }

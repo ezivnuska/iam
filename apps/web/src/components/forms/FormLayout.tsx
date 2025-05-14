@@ -33,7 +33,7 @@ export const FormLayout: React.FC<FormLayoutProps> = ({
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        // flex: 1,
         width: '100%',
         flexDirection: 'row',
         alignItems: 'center',
@@ -42,12 +42,13 @@ const styles = StyleSheet.create({
 		alignSelf: 'center',
     },
     form: {
-        flex: 1,
+        // flex: 1,
         width: '100%',
         padding: 24,
         paddingBottom: 32,
         borderRadius: 24,
         marginHorizontal: 'auto',
+        backgroundColor: '#fff',
     },
     shadow: {
         shadowColor: '#000',
