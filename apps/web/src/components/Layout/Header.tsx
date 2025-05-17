@@ -1,9 +1,9 @@
-// packages/ui/src/components/layouts/PageLayout/Header.tsx
+// apps/web/src/components/layouts/PageLayout/Header.tsx
 
 import React, { ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { MAX_WIDTH } from './constants'
-import { IconButton, Row, SigninForm } from '@/components'
+import { IconButton, ProfileImage, Row, SigninForm } from '@/components'
 import { useNavigation, useNavigationState } from '@react-navigation/native'
 import AntDesign from '@expo/vector-icons/AntDesign'
 import Ionicons from '@expo/vector-icons/Ionicons'
@@ -14,22 +14,35 @@ interface HeaderProps {
     children?: ReactNode
 }
 
-const Brand = ({...props}) => (
+const Brand = ({ ...props }) => (
     <Pressable onPress={props.onPress}>
-        <Row>
-            <Text style={styles.iam}>iam</Text>
-            <Text style={styles.eric}>eric</Text>
+        <Row spacing={10} style={{ flexShrink: 1 }} wrap={false}>
+            {props.user && (
+                <ProfileImage
+                    url={props.user.avatar?.url}
+                    username={props.user.username}
+                    small
+                />
+            )}
+            <Row wrap={true} style={{ flexShrink: 1, minWidth: 50 }}>
+                <Text style={styles.iam}>iam</Text>
+                {!props.compress && <Text style={styles.eric}>{`${props.user ? props.user.username : 'eric'}`}</Text>}
+            </Row>
         </Row>
     </Pressable>
 )
 
 export const Header: React.FC<HeaderProps> = (props) => {
+    const { logout, isAuthenticated, user } = useAuth()
+    const { showModal } = useModal()
     const navigation = useNavigation()
+    
     const iconSize = resolveResponsiveProp({ sm: 24, md: 18, lg: 18 })
     const showLabel = resolveResponsiveProp({ sm: false, md: true, lg: true })
+    const navSpacing = resolveResponsiveProp({ sm: 24, md: 24, lg: 48 })
+    const compress = resolveResponsiveProp({ sm: true, md: false, lg: false })
     const currentRoute = useNavigationState((state) => state.routes[state.index].name)
-    const { logout, isAuthenticated } = useAuth()
-    const { showModal } = useModal()
+
     const showSigninModal = () => showModal(<SigninForm />)
 	return (
         <View style={styles.container}>
@@ -40,16 +53,23 @@ export const Header: React.FC<HeaderProps> = (props) => {
                     align='center'
                     justify='space-between'
                     paddingHorizontal={16}
-                    style={{ zIndex: 100 }}
+                    wrap={false}
+                    style={{ zIndex: 100, flexWrap: 'nowrap' }}
                 >
-                    <Brand onPress={() => navigation.navigate('Home' as never)} />
+                    <Brand
+                        user={user}
+                        onPress={() => navigation.navigate('Home' as never)}
+                        compress={compress}
+                    />
 
                     {isAuthenticated && (
                         <Row
                             flex={5}
-                            spacing={30}
+                            spacing={navSpacing}
                             align='center'
                             justify='center'
+                            wrap={false}
+                            style={styles.nav}
                         >
                             <IconButton
                                 label='Feed'
@@ -99,23 +119,6 @@ export const Header: React.FC<HeaderProps> = (props) => {
                                 showLabel={showLabel}
                             />
                         )
-                        // : currentRoute === 'Signin'
-                        //     ? (
-                        //         <IconButton
-                        //             icon={<AntDesign name='login' size={iconSize} color='white' />}
-                        //             label='Sign Up'
-                        //             onPress={gotoSignUp}
-                        //             showLabel={showLabel}
-                        //         />
-                        //     )
-                        //     : (
-                                // <IconButton
-                                //     icon={<AntDesign name='login' size={iconSize} color='white' />}
-                                //     label='Sign In'
-                                //     onPress={gotoSignIn}
-                                //     showLabel={showLabel}
-                                // />
-                        //     )
                     }
                 </Row>
             </View>
@@ -125,10 +128,10 @@ export const Header: React.FC<HeaderProps> = (props) => {
 
 const styles = StyleSheet.create({
     container: {
-        height: 50,
         width: '100%',
         flexDirection: 'row',
         alignItems: 'center',
+        paddingVertical: 10,
         backgroundColor: '#000',
     },
     maxWidthContainer: {
@@ -137,11 +140,6 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         marginHorizontal: 'auto',
     },
-    brand: {
-		fontSize: 20,
-		fontWeight: 'bold',
-        color: '#fff',
-	},
 	iam: {
 		fontSize: 28,
 		fontWeight: 'bold',
@@ -152,8 +150,9 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
         color: '#ddd',
 	},
-	navItems: {
-		flexDirection: 'row',
-		gap: 16,
-	},
+    nav: {
+        flexShrink: 0,
+        flexGrow: 0,
+        flexBasis: 'auto',
+    },
 })
