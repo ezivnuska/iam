@@ -17,14 +17,12 @@ export const UserProfileCard = ({
 }: UserProfileCardProps) => {
 	const Container = onPress ? Pressable : View
 
-	const imageUri = user.avatar?.filename
-		? `${process.env.ASSETS_BASE_PATH}/${user.username}/${user.avatar.filename}`
-		: getPlaceholder(user.username)
+	const uri = user.avatarUrl ?? getPlaceholder(user.username)
 
 	return (
 		<Container style={styles.container} onPress={onPress}>
 			<Image
-				source={{ uri: imageUri }}
+				source={{ uri }}
 				style={[
 					styles.avatar,
 					{

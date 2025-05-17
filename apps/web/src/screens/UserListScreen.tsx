@@ -39,15 +39,12 @@ export const UserListScreen = () => {
                     data={otherUsers}
                     keyExtractor={(item) => item.id || item.email}
                     scrollEnabled={false}
-                    renderItem={({ item }) => {
-                        console.log('USER', item)
-                        return (
-                            <UserProfileCard
-                                user={item}
-                                onPress={() => navigation.navigate('Details', { id: item._id })}
-                            />
-                        )
-                    }}
+                    renderItem={({ item }) => (
+                        <UserProfileCard
+                            user={item}
+                            onPress={() => navigation.navigate('Details', { id: item._id })}
+                        />
+                    )}
                     onEndReached={fetchNextPage}
                     onEndReachedThreshold={0.5}
                     ListFooterComponent={loading ? <ActivityIndicator style={{ marginVertical: 20 }} /> : null}
