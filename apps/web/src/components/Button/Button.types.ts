@@ -13,4 +13,5 @@ export interface ButtonProps {
 	icon?: ReactNode
 	active?: boolean
 	showLabel?: ResponsiveProp<boolean>
+	submitting?: boolean
 }

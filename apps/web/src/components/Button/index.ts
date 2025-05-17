@@ -2,4 +2,5 @@
 
 export * from './Button'
 export * from './IconButton'
+export * from './SubmitButton'
 export type { ButtonProps } from './Button.types'

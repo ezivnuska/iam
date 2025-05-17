@@ -10,6 +10,13 @@ export const shadows = {
         shadowRadius: 4,
         elevation: Platform.OS === 'android' ? 3 : 0,
     },
+    input: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.15,
+        shadowRadius: 4,
+        elevation: Platform.OS === 'android' ? 3 : 0,
+    },
     modal: {
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },

@@ -106,26 +106,24 @@ const FullScreenImage = ({
     isAvatar?: boolean;
 }) => {
     return (
-        <View style={StyleSheet.absoluteFill}>
-            <View style={styles.buttons}>
-				<Row justify='space-between' spacing={16} style={{ padding: 16 }}>
-                    <Row justify='flex-start' spacing={16} style={{ padding: 16 }}>
-                        {onDelete && (
-                            <Pressable onPress={onDelete}>
-                                <Ionicons name='trash-bin' size={28} color='white' />
-                            </Pressable>
-                        )}
-                        {!isAvatar && onSetAvatar && (
-                            <Pressable onPress={onSetAvatar}>
-                                <Ionicons name='person-circle-outline' size={28} color='white' />
-                            </Pressable>
-                        )}
-                    </Row>
-					<Pressable onPress={onClose}>
-						<Ionicons name='close-sharp' size={28} color='white' />
-					</Pressable>
-				</Row>
-			</View>
+        <View style={[StyleSheet.absoluteFill, styles.fullscreenContainer]}>
+            <View style={styles.header}>
+                <Row justify='flex-start' spacing={16}>
+                    {onDelete && (
+                        <Pressable onPress={onDelete}>
+                            <Ionicons name='trash-bin' size={28} color='white' />
+                        </Pressable>
+                    )}
+                    {!isAvatar && onSetAvatar && (
+                        <Pressable onPress={onSetAvatar}>
+                            <Ionicons name='person-circle-outline' size={28} color='white' />
+                        </Pressable>
+                    )}
+                </Row>
+                <Pressable onPress={onClose}>
+                    <Ionicons name='close-sharp' size={28} color='white' />
+                </Pressable>
+            </View>
             <Image
                 source={{ uri }}
                 style={StyleSheet.absoluteFill}
@@ -146,7 +144,6 @@ const styles = StyleSheet.create({
     },
 	imageBlock: {
         alignItems: 'center',
-        // marginBottom: IMAGE_MARGIN, // * 2,
     },
 	imageWrapper: {
 		borderRadius: 8,
@@ -163,28 +160,25 @@ const styles = StyleSheet.create({
 		width: '100%',
 		height: '100%',
 	},
-	buttonRow: {
-		flexDirection: 'row',
-		flexWrap: 'wrap',
-		gap: 8,
-		justifyContent: 'center',
-		marginTop: 8,
-	},
-    buttons: {
+    fullscreenContainer: {
+        backgroundColor: 'black',
+    },
+    header: {
 		position: 'absolute',
 		top: 0,
 		left: 0,
 		right: 0,
+        paddingHorizontal: 16,
+        height: 50,
 		zIndex: 1,
         backgroundColor: 'rgba(0,0,0,0.4)',
-        paddingTop: 40, // status bar safe zone
-		// backgroundColor: 'rgba(0,0,0,0.6)',
-		// borderRadius: 20,
-		// width: 40,
-		// height: 40,
-		// justifyContent: 'center',
-		// alignItems: 'center',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
 	},
+    controls: {
+
+    },
 	closeText: {
 		color: '#fff',
 		fontSize: 24,

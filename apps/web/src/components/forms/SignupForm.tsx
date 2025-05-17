@@ -1,14 +1,14 @@
 // packages/ui/src/forms/SignupForm.tsx
 
 import React, { useEffect, useRef, useState } from 'react'
-import { Text, TextInput, StyleSheet, ActivityIndicator, Alert, TextInput as RNTextInput } from 'react-native'
+import { Text, TextInput, StyleSheet, Alert, TextInput as RNTextInput } from 'react-native'
 import { useForm, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { FormLayout } from '.'
-import { Button } from '..'
-import { useAuth } from '@/hooks'
+import { Button, Column, FormHeader, FormLayout, SigninForm, SubmitButton } from '@/components'
+import { useAuth, useModal } from '@/hooks'
 import { signupRequest } from '@services'
+import { shadows } from '@/styles'
 
 const schema = z.object({
 	email: z.string().email(),
@@ -23,7 +23,8 @@ const schema = z.object({
 type SignupFormProps = z.infer<typeof schema>
 
 export const SignupForm = () => {
-	const { login, user } = useAuth()  // no need for setUser anymore
+	const { login, user } = useAuth()
+	const { hideModal, showModal } = useModal()
 	
     const { control, handleSubmit, formState: { errors, isSubmitting }, setError, trigger, getValues } = useForm<SignupFormProps>({
 		resolver: zodResolver(schema),
@@ -100,9 +101,11 @@ export const SignupForm = () => {
 
     const isFocused = (name: string): boolean => name === focused
 
+    const showSigninForm = () => showModal(<SigninForm />)
+
 	return (
 		<FormLayout>
-			<Text style={styles.title}>Create Account</Text>
+			<FormHeader title='Create Account' onCancel={hideModal} />
 
 			<Controller
 				control={control}
@@ -124,7 +127,7 @@ export const SignupForm = () => {
 						keyboardType='email-address'
 						returnKeyType='next'
 						onSubmitEditing={() => usernameInputRef.current?.focus()}
-						style={[styles.input, styles.shadow, isFocused('email') && styles.inputFocused]}
+						style={[styles.input, shadows.input, isFocused('email') && styles.inputFocused]}
 					/>
 				)}
 			/>
@@ -148,7 +151,7 @@ export const SignupForm = () => {
 						autoCapitalize='none'
 						returnKeyType='next'
 						onSubmitEditing={() => passwordInputRef.current?.focus()}
-						style={[styles.input, styles.shadow, isFocused('username') && styles.inputFocused]}
+						style={[styles.input, shadows.input, isFocused('username') && styles.inputFocused]}
 					/>
 				)}
 			/>
@@ -173,7 +176,7 @@ export const SignupForm = () => {
 						autoCapitalize='none'
 						returnKeyType='next'
 						onSubmitEditing={() => confirmPasswordInputRef.current?.focus()}
-						style={[styles.input, styles.shadow, isFocused('password') && styles.inputFocused]}
+						style={[styles.input, shadows.input, isFocused('password') && styles.inputFocused]}
 					/>
 				)}
 			/>
@@ -198,17 +201,16 @@ export const SignupForm = () => {
 						autoCapitalize='none'
 						returnKeyType='done'
 						onSubmitEditing={handleSubmit(onSubmit, onInvalid)}
-						style={[styles.input, styles.shadow, isFocused('confirmPassword') && styles.inputFocused]}
+						style={[styles.input, shadows.input, isFocused('confirmPassword') && styles.inputFocused]}
 					/>
 				)}
 			/>
 			{errors.confirmPassword && <Text style={styles.error}>{errors.confirmPassword.message}</Text>}
 
-			{isSubmitting ? (
-				<ActivityIndicator style={{ marginTop: 20 }} />
-			) : (
-				<Button label='Sign Up' onPress={handleSubmit(onSubmit, onInvalid)} />
-			)}
+			<Column spacing={10}>
+                <SubmitButton label='Sign Up' onPress={handleSubmit(onSubmit, onInvalid)} submitting={isSubmitting} />
+                <Button label='Sign In' onPress={showSigninForm} />
+            </Column>
 		</FormLayout>
 	)
 }
@@ -237,14 +239,4 @@ const styles = StyleSheet.create({
 		color: 'red',
 		marginBottom: 8,
 	},
-    shadow: {
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 1,
-            height: 2,
-        },
-        shadowOpacity: 0.3,
-        shadowRadius: 6,
-        elevation: 2,
-    },
 })

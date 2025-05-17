@@ -3,6 +3,7 @@
 import React, { ReactNode } from 'react'
 import { StyleSheet, View, ViewStyle } from 'react-native'
 import Column from '../Layout/Column'
+import { FlexBox } from '../Layout'
 
 const minWidth = 300
 const maxWidth = 500
@@ -20,44 +21,28 @@ export const FormLayout: React.FC<FormLayoutProps> = ({
 }) => {
 	return (
         <View style={[styles.container, style]}>
-            <Column
-                flex={1}
-                spacing={10}
-                style={[styles.form, styles.shadow, contentStyle]}
-            >
-                {children}
-            </Column>
+            <FlexBox>
+                <View style={styles.form}>
+                    {children}
+                </View>
+            </FlexBox>
         </View>
 	)
 }
 
 const styles = StyleSheet.create({
     container: {
-        // flex: 1,
+        flex: 1,
         width: '100%',
-        flexDirection: 'row',
-        alignItems: 'center',
-		maxWidth,
-        minWidth,
-		alignSelf: 'center',
+        backgroundColor: '#fff',
     },
     form: {
-        // flex: 1,
+        flex: 1,
         width: '100%',
         padding: 24,
         paddingBottom: 32,
-        borderRadius: 24,
-        marginHorizontal: 'auto',
-        backgroundColor: '#fff',
-    },
-    shadow: {
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 1,
-            height: 2,
-        },
-        shadowOpacity: 0.3,
-        shadowRadius: 6,
-        elevation: 2,
+		maxWidth,
+        minWidth,
+        alignSelf: 'center',
     },
 })

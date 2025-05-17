@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Pressable, StyleSheet, Text } from 'react-native'
-import { Column, CreatePostForm, PageLayout, PostList, Row } from '@/components'
+import { Column, CreatePostForm, PageHeader, PageLayout, PostList, Row } from '@/components'
 import { useModal } from '@/hooks'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { useAuth } from '../hooks'
@@ -20,17 +20,7 @@ export const HomeScreen = () => {
 
 	return (
 		<PageLayout>
-            <Column paddingVertical={15} spacing={15}>
-                <Row spacing={10}>
-                    <Text style={styles.title}>Feed</Text>
-                    {isAuthenticated && (
-                        <Pressable onPress={openCreatePostModal}>
-                            <Ionicons name='add-circle-outline' size={30} color='black' />
-                        </Pressable>
-                    )}
-                </Row>
-                <PostList key={reloadKey} />
-            </Column>
+            <PageHeader title='Home' />
 		</PageLayout>
 	)
 }

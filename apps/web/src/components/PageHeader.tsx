@@ -1,4 +1,4 @@
-// packages/ui/src/components/PageHeader/PageHeader.tsx
+// apps/web/src/components/PageHeader.tsx
 
 import React from 'react'
 import { View, Text, StyleSheet, StyleProp, TextStyle, ViewStyle } from 'react-native'

@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
 		// backgroundColor: 'rgba(255, 255, 255, 0.25)',
     },
     buttonLabel: {
-        fontSize: 16,
+        fontSize: 12,
         color: '#ddd',
     },
     activeButtonLabel: {

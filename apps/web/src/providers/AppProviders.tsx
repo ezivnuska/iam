@@ -5,12 +5,12 @@ import { AuthProvider, ImageProvider, ModalProvider, PostsProvider } from '.'
 
 export const AppProviders = ({ children }: { children: ReactNode }) => (
     <AuthProvider>
-        <ImageProvider>
-            <PostsProvider>
+        <PostsProvider>
+            <ImageProvider>
                 <ModalProvider>
                     {children}
                 </ModalProvider>
-            </PostsProvider>
-        </ImageProvider>
+            </ImageProvider>
+        </PostsProvider>
     </AuthProvider>
 )

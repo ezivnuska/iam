@@ -3,18 +3,20 @@ import { View, Text, ActivityIndicator } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import type { StackNavigationProp } from '@react-navigation/stack'
 import type { RootStackParamList } from '@iam/types'
-import { useAuth } from '../hooks'
+import { useAuth, useModal } from '../hooks'
+import { SigninForm } from '@/components'
 
 type ProtectedScreenNavProp = StackNavigationProp<RootStackParamList, 'Protected'>
 
 export const ProtectedScreen = () => {
 	const { user, isAuthenticated } = useAuth()
+	const { showModal } = useModal()
 
 	const navigation = useNavigation<ProtectedScreenNavProp>()
 
 	useEffect(() => {
 		if (!isAuthenticated) {
-			navigation.navigate('Signin')
+			showModal(<SigninForm />)
 		}
 	}, [isAuthenticated])
 

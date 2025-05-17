@@ -6,7 +6,7 @@ import { createContext } from 'react'
 import type { User } from '@iam/types'
 
 setUnauthorizedHandler(() => {
-	window.location.href = '/signin'
+	window.location.href = '/'
 })
 
 export type AuthContextType = {
@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         clearAuthHeader()
         setIsAuthenticated(false)
         setUser(null)
-        navigate('Signin')
+        navigate('Home')
     }
     
     useEffect(() => {
@@ -56,9 +56,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             if (profile) {
                 setUser(profile)
                 setIsAuthenticated(true)
-                // navigate('Home')
             } else {
-                navigate('Signin')
+                navigate('Home')
             }
         }
     

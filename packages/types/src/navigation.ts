@@ -3,12 +3,11 @@
 export type RootStackParamList = {
     Chat: undefined
     Details: { id: string }
+    Feed: undefined
     ForgotPassword: { token: string }
     Home: undefined
     Profile: undefined
     Protected: undefined
     ResetPassword: { token: string }
-    Signin: undefined
-    Signup: undefined
     UserList: undefined
 }

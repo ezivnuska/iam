@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from 'react'
 import { TextInput, StyleSheet, Text, Alert, TextInput as RNTextInput } from 'react-native'
 import { Controller, useForm } from 'react-hook-form'
-import { Button, FormLayout } from '..'
+import { Button, FormLayout, FormHeader } from '@/components'
 import { useAuth, useModal } from '@/hooks'
 import { updateSelf } from '@services'
 
@@ -53,7 +53,7 @@ export const EditProfileForm = () => {
 
 	return (
 		<FormLayout>
-			<Text style={styles.label}>Bio</Text>
+			<FormHeader title='Edit Bio' onCancel={hideModal} />
 			<Controller
 				control={control}
 				name='bio'

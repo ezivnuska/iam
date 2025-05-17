@@ -12,10 +12,9 @@ import {
 import { useForm, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { FormLayout } from './FormLayout'
-import { Button } from '..'
+import { Button, FormLayout, FormHeader } from '@/components'
 import * as postService from '@services'
-import { usePosts } from '@/hooks'
+import { useModal, usePosts } from '@/hooks'
 
 const schema = z.object({
 	content: z
@@ -27,6 +26,7 @@ const schema = z.object({
 type CreatePostFormProps = z.infer<typeof schema>
 
 export const CreatePostForm = ({ onPostCreated }: { onPostCreated?: () => void }) => {
+    const { hideModal } = useModal()
     const { addPost } = usePosts()
 	const {
 		control,
@@ -74,7 +74,7 @@ export const CreatePostForm = ({ onPostCreated }: { onPostCreated?: () => void }
 
 	return (
 		<FormLayout>
-			<Text style={styles.title}>Create Post</Text>
+			<FormHeader title='Create Post' onCancel={hideModal} />
 
 			<Controller
 				control={control}
