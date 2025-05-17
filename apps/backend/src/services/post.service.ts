@@ -2,9 +2,12 @@
 
 import PostModel from '../models/post.model'
 
-export const getAllPosts = () => PostModel.find().populate('user', 'username avatar').sort({ createdAt: -1 })
+export const getAllPosts = () => PostModel.find().populate({
+    path: 'user',
+    select: 'username avatar',
+  }).sort({ createdAt: -1 })
 
-export const getPostById = (id: string) => PostModel.findById(id).populate('user', 'username avatar')
+export const getPostById = (id: string) => PostModel.findById(id).populate('user')
 
 export const createPost = async (userId: string, content: string) => {
     const newPost = await PostModel.create({ user: userId, content })

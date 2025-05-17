@@ -17,6 +17,7 @@ export const PostList = () => {
 			keyExtractor={(item) => item._id}
 			renderItem={({ item }) => {
                 const isAuthor = user?.id === item.user._id
+                console.log('user', item.user)
                 return (
                     <Row spacing={10} align='flex-start'>
                         <ProfileImage

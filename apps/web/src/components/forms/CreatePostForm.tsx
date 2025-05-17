@@ -53,6 +53,7 @@ export const CreatePostForm = ({ onPostCreated }: { onPostCreated?: () => void }
 			onPostCreated?.()
 			setValue('content', '')
             addPost(newPost)
+            hideModal()
 		} catch (err: any) {
 			const message = err?.response?.data?.message || 'Something went wrong'
 			setError('content', { message })
