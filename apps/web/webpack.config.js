@@ -41,6 +41,8 @@ const includedModules = (filepath) => {
 		path.resolve(__dirname, '../../packages/auth/src'),
 		path.resolve(__dirname, '../../packages/services/src'),
 		path.resolve(__dirname, '../../packages/types/src'),
+		// path.resolve(__dirname, '../../packages/types/build'),
+		path.resolve(__dirname, '../../packages/utils/src'),
 	]
 
 	const nodeModulePackages = [
@@ -138,6 +140,7 @@ module.exports = {
 			'@auth': path.resolve(__dirname, '../../packages/auth/src'),
 			'@services': path.resolve(__dirname, '../../packages/services/src'),
 			'@iam/types': path.resolve(__dirname, '../../packages/types/src'),
+			'@utils': path.resolve(__dirname, '../../packages/utils/src'),
 			'@': path.resolve(__dirname, 'src'),
 		},
 		extensions: [

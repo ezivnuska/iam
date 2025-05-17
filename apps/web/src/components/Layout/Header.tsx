@@ -19,8 +19,7 @@ const Brand = ({ ...props }) => (
         <Row spacing={10} style={{ flexShrink: 1, flexWrap: 'nowrap' }} wrap={false}>
             {props.showAvatar && props.user && (
                 <ProfileImage
-                    url={props.user.avatar?.url}
-                    username={props.user.username}
+                    user={props.user}
                     size={props.size}
                 />
             )}
@@ -34,6 +33,7 @@ const Brand = ({ ...props }) => (
 
 export const Header: React.FC<HeaderProps> = (props) => {
     const { logout, isAuthenticated, user } = useAuth()
+    console.log('USER', user)
     const { showModal } = useModal()
     const navigation = useNavigation()
 

@@ -5,6 +5,7 @@ import { hashPassword, comparePassword } from '../utils/password'
 import { createPayload, TokenPayload, generateToken, generateRefreshToken, verifyToken } from '@auth'
 import crypto from 'crypto'
 import { Request, Response } from 'express'
+import { normalizeUser } from '@utils'
 
 export const registerUser = async (
 	email: string,
@@ -35,7 +36,7 @@ export const registerUser = async (
 }
 
 export const loginUser = async (email: string, password: string, res: Response) => {
-	const user = await UserModel.findOne({ email }).select('+password')
+	const user = await UserModel.findOne({ email }).select('+password').populate('avatar')
 	if (!user) {
         throw new Error('email:Email is not registered')
     }
@@ -55,15 +56,15 @@ export const loginUser = async (email: string, password: string, res: Response) 
         path: '/',
 	})
 
-	const userResponse = {
-		id: user._id,
-		email: user.email,
-		username: user.username,
-		role: user.role,
-		verified: user.verified,
-	}
+	// const userResponse = {
+	// 	id: user._id,
+	// 	email: user.email,
+	// 	username: user.username,
+	// 	role: user.role,
+	// 	verified: user.verified,
+	// }
 
-	return { accessToken, user: userResponse }
+	return { accessToken, user: normalizeUser(user) }
 }
   
 export const refreshAccessToken = async (

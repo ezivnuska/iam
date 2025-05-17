@@ -1,7 +1,7 @@
 // models/image.model.ts
 
 import { Schema, model } from 'mongoose'
-import type { ImageDocument } from '../types/image.types'
+import type { ImageDocument } from '@iam/types'
 
 const ImageSchema = new Schema<ImageDocument>(
 	{

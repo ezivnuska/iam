@@ -1,6 +1,6 @@
 // apps/backend/src/types/auth.types.ts
 
-import type { UserRole } from '@iam/types'
+import { UserRole } from '@iam/types'
 
 export type AuthPayload = {
 	_id: string

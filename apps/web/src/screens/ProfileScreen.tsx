@@ -45,8 +45,7 @@ export const ProfileScreen = () => {
             >
                 <Row spacing={15}>
                     <ProfileImage
-                        url={user.avatar?.url}
-                        username={user.username}
+                        user={user}
                         size='lg'
                     />
                     <Column spacing={5}>

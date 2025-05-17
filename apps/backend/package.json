@@ -30,6 +30,7 @@
 	},
 	"dependencies": {
 		"@auth": "workspace:*",
+		"@utils": "workspace:*",
 		"@iam/types": "workspace:*",
 		"bcryptjs": "^3.0.2",
 		"body-parser": "^1.20.3",

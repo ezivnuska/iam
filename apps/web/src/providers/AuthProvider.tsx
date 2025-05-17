@@ -4,6 +4,7 @@ import { trySigninFromStoredToken, setUnauthorizedHandler } from '@services'
 import { navigate } from '../navigation'
 import { createContext } from 'react'
 import type { User } from '@iam/types'
+import { normalizeUser } from '@utils'
 
 setUnauthorizedHandler(() => {
 	window.location.href = '/'
@@ -14,7 +15,7 @@ export type AuthContextType = {
 	user: User | null
 	login: (email: string, password: string) => Promise<void>
 	logout: () => Promise<void>
-    setUser: (user: User | null) => void
+	setUser: (user: User | null) => void
 }
 
 export const AuthContext = createContext<AuthContextType>({
@@ -35,8 +36,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         const { accessToken, user: userProfile } = await signinRequest(email, password)
         await saveToken(accessToken)
         setAuthHeader(accessToken)
-        const profile = await getProfile()
-        setUser(profile)
+        setUser(userProfile)
         setIsAuthenticated(true)
         navigate('Home')
     }

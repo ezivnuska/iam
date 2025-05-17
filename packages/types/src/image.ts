@@ -1,19 +1,25 @@
 // packages/types/src/image.ts
 
-export type ImageProps = {
-    url: string
-    username: string
-    height: number
-    width: number
+import { Document, Types } from 'mongoose'
+
+// DB-level schema
+export interface ImageDocument extends Document {
+	_id: Types.ObjectId
+	filename: string
+	username: string
+	width?: number
+	height?: number
+	alt?: string
+	url?: string
 }
 
-export type ImageItem = {
-    _id: string
-    filename: string
-    username: string
-    alt: string
-    url: string
-    width: number
-    height: number
-  }
-  
+// Normalized version for client use
+export interface Image {
+	id: string
+	filename: string
+	username: string
+	url: string
+	width?: number
+	height?: number
+	alt?: string
+}

@@ -2,7 +2,7 @@
 
 import { Request, RequestHandler, Response, NextFunction } from 'express'
 import * as userService from '../services/user.service'
-import { normalizeUser } from '../utils/normalizeUser'
+import { normalizeUser } from '@utils'
 
 export const getProfile: RequestHandler = async (req, res, next) => {
 	if (!req.user?.id) {

@@ -48,9 +48,9 @@ export const PostsProvider = ({ children }: { children: React.ReactNode }) => {
 		}
 	}
 
-	useEffect(() => {
-		refreshPosts()
-	}, [])
+	// useEffect(() => {
+	// 	refreshPosts()
+	// }, [])
 
 	return (
 		<PostsContext.Provider value={{ posts, loading, error, refreshPosts, addPost, setPosts, deletePost }}>

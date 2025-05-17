@@ -20,6 +20,7 @@ module.exports = {
 					'@': path.resolve(__dirname, './src'),
 					'@auth': path.resolve(__dirname, '../../packages/auth/src'),
 					'@services': path.resolve(__dirname, '../../packages/services/src'),
+					'@utils': path.resolve(__dirname, '../../packages/utils/src'),
 					'@iam/types': path.resolve(__dirname, '../../packages/types/src'),
 				},
 				extensions: ['.web.js', '.js', '.web.ts', '.ts', '.web.tsx', '.tsx', '.json'],

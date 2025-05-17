@@ -1,9 +1,6 @@
 // packages/auth/src/types.ts
 
-export enum UserRole {
-	User = 'user',
-	Admin = 'admin',
-}
+import type { UserRole } from '@iam/types'
 
 export type TokenPayload = {
     id: string

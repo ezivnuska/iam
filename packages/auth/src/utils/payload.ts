@@ -1,6 +1,7 @@
 // packages/auth/src/utils/payload.ts
 
-import type { TokenPayload, UserRole } from '../types'
+import type { TokenPayload } from '../types'
+import type { UserRole } from '@iam/types'
 
 export const createPayload = (user: {
 	_id: any

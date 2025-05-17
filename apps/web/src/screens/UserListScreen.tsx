@@ -8,6 +8,7 @@ import type { StackNavigationProp } from '@react-navigation/stack'
 import { useNavigation } from '@react-navigation/native'
 import type { RootStackParamList } from '@iam/types'
 import { PageLayout, UserProfileCard } from '@/components'
+import { normalizeUser } from '@utils'
 
 type UserListScreenNavProp = StackNavigationProp<RootStackParamList, 'UserList'>
 
@@ -19,9 +20,9 @@ export const UserListScreen = () => {
 
 	if (!currentUser) {
 		return (
-		<View style={styles.centered}>
-			<Text style={styles.loadingText}>Loading profile...</Text>
-		</View>
+            <View style={styles.centered}>
+                <Text style={styles.loadingText}>Loading profile...</Text>
+            </View>
 		)
 	}
 
@@ -38,12 +39,17 @@ export const UserListScreen = () => {
                     data={otherUsers}
                     keyExtractor={(item) => item.id || item.email}
                     scrollEnabled={false}
-                    renderItem={({ item }) => (
-                        <UserProfileCard
-                            user={item}
-                            onPress={() => navigation.navigate('Details', { id: item._id })}
-                        />
-                    )}
+                    renderItem={({ item }) => {
+                        console.log('...item...', item)
+                        const normalized = normalizeUser(item)
+                        console.log('...normalized...', normalized)
+                        return (
+                            <UserProfileCard
+                                user={normalized}
+                                onPress={() => navigation.navigate('Details', { id: item._id })}
+                            />
+                        )
+                    }}
                     onEndReached={fetchNextPage}
                     onEndReachedThreshold={0.5}
                     ListFooterComponent={loading ? <ActivityIndicator style={{ marginVertical: 20 }} /> : null}

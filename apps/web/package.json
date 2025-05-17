@@ -51,6 +51,7 @@
 		"@gorhom/bottom-sheet": "^5.1.2",
 		"@iam/types": "workspace:*",
 		"@services": "workspace:*",
+		"@utils": "workspace:*",
 		"axios": "^0.27.2",
 		"expo": "^52.0.46",
 		"expo-image-picker": "^16.1.4",

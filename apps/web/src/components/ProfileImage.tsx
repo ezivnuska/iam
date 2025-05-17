@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { View, Text, Image } from 'react-native'
+import type { User, PartialUser } from '@iam/types'
 
 type ProfileImageSize = 'xs' | 'sm' | 'md' | 'lg'
 
@@ -19,43 +20,50 @@ const fontSizeMap: Record<ProfileImageSize, number> = {
 	lg: 36,
 }
 
-export const ProfileImage = ({
-	url,
-	username,
-	size = 'md',
-}: {
-	url?: string
-	username: string
+interface ProfileImageProps {
+	user?: Pick<User, 'username' | 'avatarUrl'> | Pick<PartialUser, 'username' | 'avatar'>
 	size?: ProfileImageSize
-}) => {
+}
+  
+export const ProfileImage: React.FC<ProfileImageProps> = ({ user, size = 'md' }) => {
 	const imageSize = sizeMap[size]
 	const fontSize = fontSizeMap[size]
-    
-	return url ? (
-		<Image
-			source={{ uri: url }}
-			style={{
-				width: imageSize,
-				height: imageSize,
-				borderRadius: imageSize / 2,
-				backgroundColor: '#ddd',
-                alignSelf: 'flex-start',
-			}}
-		/>
-	) : (
+	const initials = user?.username?.charAt(0).toUpperCase() || '?'
+  
+	const avatarUrl =
+		user && 'avatarUrl' in user
+			? user.avatarUrl
+			: user && 'avatar' in user && user.avatar?.url
+			? user.avatar.url
+			: undefined
+  
+	if (avatarUrl) {
+		return (
+			<Image
+				source={{ uri: avatarUrl }}
+				style={{
+					width: imageSize,
+					height: imageSize,
+					borderRadius: imageSize / 2,
+					backgroundColor: '#ddd',
+					alignSelf: 'flex-start',
+				}}
+			/>
+		)
+	}
+  
+	return (
 		<View
 			style={{
-				width: imageSize,
-				height: imageSize,
-				borderRadius: imageSize / 2,
-				backgroundColor: '#ccc',
-				justifyContent: 'center',
-				alignItems: 'center',
+			width: imageSize,
+			height: imageSize,
+			borderRadius: imageSize / 2,
+			backgroundColor: '#ccc',
+			justifyContent: 'center',
+			alignItems: 'center',
 			}}
 		>
-            <Text style={{ fontSize, color: '#555', fontWeight: 'bold' }}>
-                {username?.charAt(0).toUpperCase() || '?'}
-            </Text>
+			<Text style={{ fontSize, color: '#555', fontWeight: 'bold' }}>{initials}</Text>
 		</View>
 	)
-}
+}  

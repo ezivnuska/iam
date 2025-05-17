@@ -18,7 +18,9 @@
     },
     "dependencies": {
         "bcryptjs": "^3.0.2",
-        "jsonwebtoken": "^9.0.2"
+        "jsonwebtoken": "^9.0.2",
+        "@iam/types": "workspace:*",
+        "@utils": "workspace:*"
     },
     "devDependencies": {
         "@types/bcrypt": "^5.0.2",

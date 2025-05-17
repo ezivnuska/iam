@@ -16,12 +16,14 @@
 		"src",
 		"../../packages/auth/src",
 		"../../packages/services/src",
-		"../../packages/types/src"
+		"../../packages/types/src",
+		"../../packages/utils/src"
     ],
 	"exclude": ["node_modules", "build"],
 	"references": [
 		{ "path": "../../packages/auth" },
 		{ "path": "../../packages/services" },
-		{ "path": "../../packages/types" }
+		{ "path": "../../packages/types" },
+		{ "path": "../../packages/utils" }
 	],
 }

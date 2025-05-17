@@ -1,27 +1,10 @@
 // apps/backend/src/models/user.model.ts
 
-import mongoose, { Schema, Document, Types } from 'mongoose'
-import { UserRole } from '@auth'
-import { ImageDocument } from '../types/image.types'
-
-export interface IUser extends Document {
-	_id: mongoose.Types.ObjectId
-	username: string
-	email: string
-	role: UserRole
-    bio: string
-    avatar?: Types.ObjectId | ImageDocument | null
-	password: string
-	verified: boolean
-	verifyToken?: string
-	verifyTokenExpires?: Date
-	resetPasswordToken?: string
-	resetPasswordExpires?: Date
-	createdAt: Date
-	updatedAt: Date
-}
+import mongoose, { Schema } from 'mongoose'
+import { UserDocument } from '@iam/types'
+import { UserRole } from '@iam/types'
   
-const UserSchema = new Schema<IUser>({
+const UserSchema = new Schema<UserDocument>({
 	username: { type: String, required: true },
 	email: { type: String, required: true, unique: true },
 	role: { type: String, enum: Object.values(UserRole), default: UserRole.User },
@@ -41,8 +24,8 @@ const UserSchema = new Schema<IUser>({
 })
 
 UserSchema.virtual('avatarUrl').get(function () {
-	if (!this.avatar || !this.username) return null
-	return `/images/users/${this.username}/${this.avatar}.webp` // adapt as needed
-})
+    if (!this.avatar || !this.username) return null
+    return `/images/users/${this.username}/${this.avatar}.webp`
+})  
 
-export const UserModel = mongoose.model<IUser>('User', UserSchema)
+export const UserModel = mongoose.model<UserDocument>('User', UserSchema)

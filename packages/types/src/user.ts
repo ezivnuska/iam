@@ -1,24 +1,22 @@
 //packages/types/src/user.ts
 
-export type UserRole = 'user' | 'admin'
+import { Document, Types } from 'mongoose'
+import type { Image, ImageDocument } from './image'
 
-export interface Image {
-    id: string
-    filename: string
-    username: string
-    height: number
-    width: number
-    url: string
+export enum UserRole {
+	User = 'user',
+	Admin = 'admin',
 }
 
-export type User = {
-	id: string
+// DB-level schema
+export interface UserDocument extends Document {
+	_id: Types.ObjectId
 	username: string
 	email: string
 	role: UserRole
-    avatar?: Image
-    avatarUrl?: string
-    bio?: string
+	bio: string
+	avatar?: Types.ObjectId | ImageDocument
+	password: string
 	verified: boolean
 	verifyToken?: string
 	verifyTokenExpires?: Date
@@ -26,4 +24,25 @@ export type User = {
 	resetPasswordExpires?: Date
 	createdAt: Date
 	updatedAt: Date
+}
+
+// Normalized version for client/API use
+export interface User {
+	id: string
+	username: string
+	email: string
+	role: UserRole
+	bio: string
+	avatar?: Image
+	avatarUrl?: string // optional if needed for UI
+	verified: boolean
+	createdAt: string
+	updatedAt: string
+}
+
+// Used in UI when only lightweight user data is needed
+export interface PartialUser {
+	username?: string
+	avatar?: Image
+    avatarUrl?: string
 }

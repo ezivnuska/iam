@@ -3,16 +3,16 @@
 import { api, clearToken, clearAuthHeader } from '../'
 
 export const logoutRequest = async () => {
-  try {
-    // Call the backend to clear the refresh token cookie
-    await api.post('/auth/logout')
+	try {
+		// Call the backend to clear the refresh token cookie
+		await api.post('/auth/logout')
 
-    // Clear token on the frontend (localStorage or AsyncStorage)
-    await clearToken()
-    clearAuthHeader()
-  } catch (error) {
-    console.error('Logout failed:', error)
-  }
+		// Clear token on the frontend (AsyncStorage)
+		await clearToken()
+		clearAuthHeader()
+	} catch (error) {
+		console.error('Logout failed:', error)
+	}
 }
 
 type RefreshTokenResponse = { accessToken: string }
