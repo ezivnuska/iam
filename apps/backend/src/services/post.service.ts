@@ -18,8 +18,8 @@ export const getAllPosts = async () => {
 	return posts
 }
 
-export const getPostById = (id: string) =>
-    PostModel.findById(id)
+export const getPostById = async (id: string) =>
+    await PostModel.findById(id)
         .populate({
             path: 'user',
             select: 'username avatar',

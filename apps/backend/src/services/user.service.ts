@@ -5,13 +5,16 @@ import { Image } from '../models/image.model'
 import { comparePassword, hashPassword } from '../utils/password'
 
 export const findAllUsers = async () => {
-	return await UserModel.find().select('-password')
+	return await UserModel.find()
+        .select('-password')
         .populate('avatar')
-        .lean({ virtuals: true })
 }
 
 export const findUserById = async (id: string) => {
-	const user = await UserModel.findById(id).select('-password').populate('avatar')
+	const user = await UserModel.findById(id)
+        .select('-password')
+        .populate('avatar')
+    
 	if (!user) throw new Error('User not found')
 	return user
 }
@@ -35,7 +38,10 @@ export const updateUserSelf = async (
 		}
 	}
   
-	const updated = await UserModel.findByIdAndUpdate(id, updates, { new: true }).select('-password').populate('avatar')
+	const updated = await UserModel.findByIdAndUpdate(id, updates, { new: true })
+        .select('-password')
+        .populate('avatar')
+    
 	if (!updated) throw new Error('User not found or update failed')
   
 	return updated
@@ -51,7 +57,10 @@ export const updateUser = async (id: string, data: Partial<{ email: string; user
 		}
 	}
   
-	const updated = await UserModel.findByIdAndUpdate(id, updates, { new: true }).select('-password').populate('avatar')
+	const updated = await UserModel.findByIdAndUpdate(id, updates, { new: true })
+        .select('-password')
+        .populate('avatar')
+    
 	if (!updated) throw new Error('User not found or update failed')
   
 	return updated
