@@ -12,12 +12,13 @@
         "format": "prettier --write .",
         "test": "jest",
         "webhook:start": "node scripts/webhook.js",
-        "sync:deploy": "bash scripts/sync-deploy-files.sh"
+        "sync:deploy": "bash scripts/sync-deploy-files.sh",
+        "sync:uploads": "bash scripts/sync-uploads.sh"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
-    "packageManager": "pnpm@10.8.0",
+    "packageManager": "pnpm@10.11.0",
     "devDependencies": {
         "@babel/preset-env": "^7.1.6",
         "@types/cookie-parser": "^1.4.8",
