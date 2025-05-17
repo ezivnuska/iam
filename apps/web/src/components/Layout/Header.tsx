@@ -36,10 +36,11 @@ export const Header: React.FC<HeaderProps> = (props) => {
     const { logout, isAuthenticated, user } = useAuth()
     const { showModal } = useModal()
     const navigation = useNavigation()
-    
+
+    const paddingHorizontal = resolveResponsiveProp({ xs: 8, sm: 8, md: 16, lg: 24 })
     const iconSize = resolveResponsiveProp({ xs: 24, sm: 24, md: 18, lg: 18 })
     const showLabel = resolveResponsiveProp({ xs: false, sm: true, md: true, lg: true })
-    const navSpacing = resolveResponsiveProp({ xs: 8, sm: 12, md: 24, lg: 48 })
+    const navSpacing = resolveResponsiveProp({ xs: 12, sm: 12, md: 24, lg: 48 })
     const showUsername = resolveResponsiveProp({ xs: false, sm: false, md: true, lg: true })
     const showAvatar = resolveResponsiveProp({ xs: false, sm: true, md: true, lg: true })
 
@@ -55,7 +56,7 @@ export const Header: React.FC<HeaderProps> = (props) => {
                     spacing={25}
                     align='center'
                     justify='space-between'
-                    paddingHorizontal={16}
+                    paddingHorizontal={paddingHorizontal}
                     wrap={false}
                     style={{ zIndex: 100, flexWrap: 'nowrap' }}
                 >

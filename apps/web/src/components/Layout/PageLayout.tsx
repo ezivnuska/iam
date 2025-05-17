@@ -4,6 +4,7 @@ import { Header, Footer } from '.'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { MAX_WIDTH } from './constants'
 import { useDeviceInfo } from '@/hooks'
+import { resolveResponsiveProp } from '@/styles'
 
 interface PageLayoutProps {
 	children: React.ReactNode
@@ -11,13 +12,14 @@ interface PageLayoutProps {
 
 export const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
 	const { height } = useDeviceInfo()
+    const paddingHorizontal = resolveResponsiveProp({ xs: 8, sm: 8, md: 16, lg: 24 })
 	return (
 		<SafeAreaView style={styles.container}>
 			<Header />
 
 			<ScrollView
 				style={[styles.mainContent, { maxHeight: height - 100 }]}
-				contentContainerStyle={styles.scrollContent}
+				contentContainerStyle={[styles.scrollContent, { paddingHorizontal }]}
 				showsVerticalScrollIndicator={false}
 			>
                 {children}
@@ -31,7 +33,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#000',
 	},
 	mainContent: {
 		flex: 1,
@@ -44,6 +46,6 @@ const styles = StyleSheet.create({
 		width: '100%',
 		maxWidth: MAX_WIDTH,
 		marginHorizontal: 'auto',
-        paddingHorizontal: 16,
+        // paddingHorizontal: 16,
 	},
 })
