@@ -30,7 +30,7 @@ export const ProfileImage = ({
 }) => {
 	const imageSize = sizeMap[size]
 	const fontSize = fontSizeMap[size]
-
+    
 	return url ? (
 		<Image
 			source={{ uri: url }}
@@ -39,6 +39,7 @@ export const ProfileImage = ({
 				height: imageSize,
 				borderRadius: imageSize / 2,
 				backgroundColor: '#ddd',
+                alignSelf: 'flex-start',
 			}}
 		/>
 	) : (
@@ -52,9 +53,9 @@ export const ProfileImage = ({
 				alignItems: 'center',
 			}}
 		>
-		<Text style={{ fontSize, color: '#555', fontWeight: 'bold' }}>
-			{username?.charAt(0).toUpperCase() || '?'}
-		</Text>
+            <Text style={{ fontSize, color: '#555', fontWeight: 'bold' }}>
+                {username?.charAt(0).toUpperCase() || '?'}
+            </Text>
 		</View>
 	)
 }

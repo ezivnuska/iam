@@ -1,22 +1,41 @@
 // apps/web/src/components/PostList.tsx
 
 import React from 'react'
-import { FlatList, Text, View } from 'react-native'
-import { usePosts } from '@/hooks'
+import { FlatList, Pressable, Text } from 'react-native'
+import { useAuth, usePosts } from '@/hooks'
+import { Column, ProfileImage, Row } from '@/components'
+// import { deletePost } from '@services'
+import Ionicons from '@expo/vector-icons/Ionicons'
 
 export const PostList = () => {
-	const { posts } = usePosts()
+	const { user } = useAuth()
+	const { posts, deletePost } = usePosts()
 
 	return (
 		<FlatList
 			data={posts}
 			keyExtractor={(item) => item._id}
-			renderItem={({ item }) => (
-                <View style={{ marginBottom: 15 }}>
-                    <Text style={{ fontWeight: 'bold' }}>{item.user.username}</Text>
-                    <Text>{item.content}</Text>
-                </View>
-            )}
+			renderItem={({ item }) => {
+                const isAuthor = user?.id === item.user._id
+                return (
+                    <Row spacing={10} align='flex-start'>
+                        <ProfileImage
+                            url={item.user.avatarUrl}
+                            username={item.user.username}
+                            size='xs'
+                        />
+                        <Column flex={1} spacing={10} paddingBottom={10}>
+                            <Text style={{ fontWeight: 'bold', lineHeight: 24 }}>{item.user.username}</Text>
+                            <Text>{item.content}</Text>
+                        </Column>
+                        {isAuthor && (
+                            <Pressable onPress={() => deletePost(item._id)} style={{ alignSelf: 'flex-start' }}>
+                                <Ionicons name='close-sharp' size={18} color='black' />
+                            </Pressable>
+                        )}
+                    </Row>
+                )
+            }}
 		/>
 	)
 }

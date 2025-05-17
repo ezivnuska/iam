@@ -9,5 +9,6 @@ export interface Post {
 		_id: string
 		username: string
 		avatar?: string
+		avatarUrl?: string
 	}
 }
