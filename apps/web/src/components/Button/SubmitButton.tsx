@@ -24,7 +24,7 @@ export const SubmitButton: React.FC<ButtonProps> = ({
             ]}
 		>
             {submitting ? (
-                <ActivityIndicator size='small' />
+                <ActivityIndicator color='#fff' size='small' />
             ) : (
                 <Text style={[styles.text, textStyle]}>{label}</Text>
             )}

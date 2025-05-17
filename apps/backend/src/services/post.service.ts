@@ -6,14 +6,13 @@ export const getAllPosts = async () => {
 	const posts = await PostModel.find()
 		.populate({
 			path: 'user',
-			select: 'username avatar',
+			select: 'username avatar avatarUrl',
 			populate: {
 				path: 'avatar',
 				select: '_id filename',
 			},
 		})
 		.sort({ createdAt: -1 })
-		.lean({ virtuals: true })
 
 	return posts
 }
@@ -22,13 +21,12 @@ export const getPostById = async (id: string) =>
     await PostModel.findById(id)
         .populate({
             path: 'user',
-            select: 'username avatar',
+            select: 'username avatar avatarUrl',
             populate: {
                 path: 'avatar',
                 select: '_id filename',
             },
         })
-        .lean({ virtuals: true })
           
 
 export const createPost = async (userId: string, content: string) => {
@@ -36,7 +34,7 @@ export const createPost = async (userId: string, content: string) => {
     return newPost
         .populate({
             path: 'user',
-            select: 'username avatar',
+            select: 'username avatar avatarUrl',
             populate: {
                 path: 'avatar',
                 select: '_id filename',
@@ -50,7 +48,7 @@ export const updatePost = async (id: string, userId: string, content: string) =>
     const post = await PostModel.findOne({ _id: id, user: userId })
         .populate({
             path: 'user',
-            select: 'username avatar',
+            select: 'username avatar avatarUrl',
             populate: {
                 path: 'avatar',
 				select: '_id filename',

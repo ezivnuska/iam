@@ -14,9 +14,7 @@ export const trySigninFromStoredToken = async (): Promise<User | null> => {
 		if (!token) return null
 
 		setAuthHeader(token)
-        console.log('trying signin from stored token')
 		const profile = await getProfile()
-        console.log('profile', profile)
 		return profile
 	} catch (err) {
 		await clearToken()
