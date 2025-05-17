@@ -40,12 +40,9 @@ export const UserListScreen = () => {
                     keyExtractor={(item) => item.id || item.email}
                     scrollEnabled={false}
                     renderItem={({ item }) => {
-                        console.log('...item...', item)
-                        const normalized = normalizeUser(item)
-                        console.log('...normalized...', normalized)
                         return (
                             <UserProfileCard
-                                user={normalized}
+                                user={item}
                                 onPress={() => navigation.navigate('Details', { id: item._id })}
                             />
                         )

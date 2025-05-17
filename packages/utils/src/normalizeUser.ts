@@ -8,6 +8,18 @@ function isImageDocument(obj: unknown): obj is ImageDocument {
 }
 
 export const normalizeUser = (user: Partial<UserDocument> & { _id: any }): User => {
+	const avatar = isImageDocument(user.avatar)
+		? {
+				id: user.avatar._id.toString(),
+				filename: user.avatar.filename,
+				username: user.avatar.username,
+				url: user.avatar.url || `/images/users/${user.avatar.username}/${user.avatar.filename}`,
+				width: user.avatar.width,
+				height: user.avatar.height,
+				alt: user.avatar.alt,
+			}
+		: undefined
+
 	return {
 		id: user._id.toString(),
 		username: user.username ?? '',
@@ -17,17 +29,9 @@ export const normalizeUser = (user: Partial<UserDocument> & { _id: any }): User 
 		verified: !!user.verified,
 		createdAt: new Date(user.createdAt ?? Date.now()).toISOString(),
 		updatedAt: new Date(user.updatedAt ?? Date.now()).toISOString(),
-		avatar: isImageDocument(user.avatar)
-			? {
-				id: user.avatar._id.toString(),
-				filename: user.avatar.filename,
-				username: user.avatar.username,
-				url: user.avatar.url || '',
-				width: user.avatar.width,
-				height: user.avatar.height,
-				alt: user.avatar.alt,
-			}
-			: undefined,
-		avatarUrl: user.avatarUrl,
+		avatar,
+		avatarUrl:
+			user.avatarUrl ??
+			(avatar?.url ?? undefined),
 	}
 }
