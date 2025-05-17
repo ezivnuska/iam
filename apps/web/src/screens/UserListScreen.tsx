@@ -40,6 +40,7 @@ export const UserListScreen = () => {
                     keyExtractor={(item) => item.id || item.email}
                     scrollEnabled={false}
                     renderItem={({ item }) => {
+                        console.log('USER', item)
                         return (
                             <UserProfileCard
                                 user={item}
