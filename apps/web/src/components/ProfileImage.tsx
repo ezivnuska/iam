@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { View, Text, Image } from 'react-native'
-import type { User, PartialUser } from '@iam/types'
+import type { User } from '@iam/types'
 
 type ProfileImageSize = 'xs' | 'sm' | 'md' | 'lg'
 
@@ -21,22 +21,20 @@ const fontSizeMap: Record<ProfileImageSize, number> = {
 }
 
 interface ProfileImageProps {
-	user?: Pick<User, 'username' | 'avatarUrl'> | Pick<PartialUser, 'username' | 'avatar'>
+	user?: {
+		username?: string
+		avatarUrl?: string
+	}
 	size?: ProfileImageSize
 }
-  
+
 export const ProfileImage: React.FC<ProfileImageProps> = ({ user, size = 'md' }) => {
 	const imageSize = sizeMap[size]
 	const fontSize = fontSizeMap[size]
 	const initials = user?.username?.charAt(0).toUpperCase() || '?'
-  
-	const avatarUrl =
-		user && 'avatarUrl' in user
-			? user.avatarUrl
-			: user && 'avatar' in user && user.avatar?.url
-			? user.avatar.url
-			: undefined
-  
+
+	const avatarUrl = user?.avatarUrl
+
 	if (avatarUrl) {
 		return (
 			<Image
@@ -51,19 +49,19 @@ export const ProfileImage: React.FC<ProfileImageProps> = ({ user, size = 'md' })
 			/>
 		)
 	}
-  
+
 	return (
 		<View
 			style={{
-			width: imageSize,
-			height: imageSize,
-			borderRadius: imageSize / 2,
-			backgroundColor: '#ccc',
-			justifyContent: 'center',
-			alignItems: 'center',
+				width: imageSize,
+				height: imageSize,
+				borderRadius: imageSize / 2,
+				backgroundColor: '#ccc',
+				justifyContent: 'center',
+				alignItems: 'center',
 			}}
 		>
 			<Text style={{ fontSize, color: '#555', fontWeight: 'bold' }}>{initials}</Text>
 		</View>
 	)
-}  
+}

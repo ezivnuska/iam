@@ -33,7 +33,6 @@ const Brand = ({ ...props }) => (
 
 export const Header: React.FC<HeaderProps> = (props) => {
     const { logout, isAuthenticated, user } = useAuth()
-    console.log('USER', user)
     const { showModal } = useModal()
     const navigation = useNavigation()
 

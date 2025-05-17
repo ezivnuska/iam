@@ -16,6 +16,7 @@ export interface UserDocument extends Document {
 	role: UserRole
 	bio: string
 	avatar?: Types.ObjectId | ImageDocument
+    avatarUrl?: string
 	password: string
 	verified: boolean
 	verifyToken?: string
