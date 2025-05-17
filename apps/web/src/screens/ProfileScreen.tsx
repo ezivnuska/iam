@@ -47,7 +47,7 @@ export const ProfileScreen = () => {
                     <ProfileImage
                         url={user.avatar?.url}
                         username={user.username}
-                        small
+                        size='lg'
                     />
                     <Column spacing={5}>
                         <Text style={[styles.text, styles.username]}>{user?.username}</Text>

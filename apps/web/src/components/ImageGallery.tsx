@@ -32,7 +32,7 @@ const ImageGallery = ({ images, onDelete, onSetAvatar, currentAvatarId }: ImageG
 	const { width: windowWidth } = useWindowDimensions()
 	const [containerWidth, setContainerWidth] = useState<number>(windowWidth)
 
-	const numColumns = resolveResponsiveProp({ xs: 1, sm: 2, md: 3, lg: 4 }) ?? 2
+	const numColumns = resolveResponsiveProp({ xs: 2, sm: 2, md: 3, lg: 4 }) ?? 2
 
 	const imageSize = useMemo(() => {
 		if (!containerWidth) return 0
@@ -105,9 +105,10 @@ const FullScreenImage = ({
     onSetAvatar?: () => void;
     isAvatar?: boolean;
 }) => {
+    const paddingHorizontal = resolveResponsiveProp({ xs: 8, sm: 8, md: 16, lg: 24 })
     return (
         <View style={[StyleSheet.absoluteFill, styles.fullscreenContainer]}>
-            <View style={styles.header}>
+            <View style={[styles.header, { paddingHorizontal }]}>
                 <Row justify='flex-start' spacing={16}>
                     {onDelete && (
                         <Pressable onPress={onDelete}>
@@ -139,11 +140,11 @@ const styles = StyleSheet.create({
 	},
 	columnWrapper: {
         justifyContent: 'flex-start',
-        marginBottom: IMAGE_MARGIN, // * 2,
-        paddingHorizontal: IMAGE_MARGIN,
+        marginBottom: IMAGE_MARGIN,
     },
 	imageBlock: {
         alignItems: 'center',
+        marginHorizontal: IMAGE_MARGIN / 2,
     },
 	imageWrapper: {
 		borderRadius: 8,

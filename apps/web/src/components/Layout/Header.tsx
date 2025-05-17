@@ -21,7 +21,7 @@ const Brand = ({ ...props }) => (
                 <ProfileImage
                     url={props.user.avatar?.url}
                     username={props.user.username}
-                    small
+                    size={props.size}
                 />
             )}
             <Row wrap={true} style={{ flexShrink: 1, minWidth: 50 }}>
@@ -42,7 +42,8 @@ export const Header: React.FC<HeaderProps> = (props) => {
     const showLabel = resolveResponsiveProp({ xs: false, sm: true, md: true, lg: true })
     const navSpacing = resolveResponsiveProp({ xs: 12, sm: 12, md: 24, lg: 48 })
     const showUsername = resolveResponsiveProp({ xs: false, sm: false, md: true, lg: true })
-    const showAvatar = resolveResponsiveProp({ xs: false, sm: true, md: true, lg: true })
+    const showAvatar = resolveResponsiveProp({ xs: true, sm: true, md: true, lg: true })
+    const avatarSize = resolveResponsiveProp({ xs: 'xs', sm: 'sm', md: 'md', lg: 'lg' })
 
     const currentRoute = useNavigationState((state) => state.routes[state.index].name)
 
@@ -65,6 +66,7 @@ export const Header: React.FC<HeaderProps> = (props) => {
                         onPress={() => navigation.navigate('Home' as never)}
                         showUsername={showUsername}
                         showAvatar={showAvatar}
+                        size={avatarSize}
                     />
 
                     {isAuthenticated && (

@@ -37,15 +37,12 @@ const styles = StyleSheet.create({
 	},
 	mainContent: {
 		flex: 1,
-		// backgroundColor: '#777',
-        // margin: 0,
-        // padding: 0,
+        backgroundColor: '#fff',
 	},
 	scrollContent: {
 		flex: 1,
 		width: '100%',
 		maxWidth: MAX_WIDTH,
 		marginHorizontal: 'auto',
-        // paddingHorizontal: 16,
 	},
 })
