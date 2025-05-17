@@ -3,7 +3,8 @@
 import { Dimensions } from 'react-native'
 
 export const breakpoints = {
-	sm: 0,
+    xs: 0,
+	sm: 370,
 	md: 500,
 	lg: 900,
 } as const
@@ -16,7 +17,8 @@ export function getCurrentBreakpoint(): Breakpoint {
 	const { width } = Dimensions.get('window')
 	if (width >= breakpoints.lg) return 'lg'
 	if (width >= breakpoints.md) return 'md'
-	return 'sm'
+	if (width >= breakpoints.sm) return 'sm'
+	return 'xs'
 }
 
 export function resolveResponsiveProp<T>(prop: ResponsiveProp<T>): T {
@@ -31,6 +33,7 @@ export function resolveResponsiveProp<T>(prop: ResponsiveProp<T>): T {
 		typedProp.lg ??
 		typedProp.md ??
 		typedProp.sm ??
+		typedProp.xs ??
 		Object.values(typedProp)[0]
 	) as T
 }

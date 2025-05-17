@@ -1,9 +1,10 @@
-// packages/ui/src/types/responsive.ts
+// apps/web/src/types/responsive.ts
 
 export const breakpoints = {
-    sm: 0,
-    md: 600,
-    lg: 1024,
+    xs: 0,
+    sm: 370,
+    md: 500,
+    lg: 900,
 } as const
   
 export type Breakpoint = keyof typeof breakpoints

@@ -15,9 +15,9 @@ interface HeaderProps {
 }
 
 const Brand = ({ ...props }) => (
-    <Pressable onPress={props.onPress}>
-        <Row spacing={10} style={{ flexShrink: 1 }} wrap={false}>
-            {props.user && (
+    <Pressable onPress={props.onPress} style={{ flexShrink: 1 }}>
+        <Row spacing={10} style={{ flexShrink: 1, flexWrap: 'nowrap' }} wrap={false}>
+            {props.showAvatar && props.user && (
                 <ProfileImage
                     url={props.user.avatar?.url}
                     username={props.user.username}
@@ -26,7 +26,7 @@ const Brand = ({ ...props }) => (
             )}
             <Row wrap={true} style={{ flexShrink: 1, minWidth: 50 }}>
                 <Text style={styles.iam}>iam</Text>
-                {!props.compress && <Text style={styles.eric}>{`${props.user ? props.user.username : 'eric'}`}</Text>}
+                {props.showUsername && <Text style={styles.eric}>{`${props.user ? props.user.username : 'eric'}`}</Text>}
             </Row>
         </Row>
     </Pressable>
@@ -37,13 +37,16 @@ export const Header: React.FC<HeaderProps> = (props) => {
     const { showModal } = useModal()
     const navigation = useNavigation()
     
-    const iconSize = resolveResponsiveProp({ sm: 24, md: 18, lg: 18 })
-    const showLabel = resolveResponsiveProp({ sm: false, md: true, lg: true })
-    const navSpacing = resolveResponsiveProp({ sm: 24, md: 24, lg: 48 })
-    const compress = resolveResponsiveProp({ sm: true, md: false, lg: false })
+    const iconSize = resolveResponsiveProp({ xs: 24, sm: 24, md: 18, lg: 18 })
+    const showLabel = resolveResponsiveProp({ xs: false, sm: true, md: true, lg: true })
+    const navSpacing = resolveResponsiveProp({ xs: 8, sm: 12, md: 24, lg: 48 })
+    const showUsername = resolveResponsiveProp({ xs: false, sm: false, md: true, lg: true })
+    const showAvatar = resolveResponsiveProp({ xs: false, sm: true, md: true, lg: true })
+
     const currentRoute = useNavigationState((state) => state.routes[state.index].name)
 
     const showSigninModal = () => showModal(<SigninForm />)
+
 	return (
         <View style={styles.container}>
             <View style={styles.maxWidthContainer}>
@@ -59,7 +62,8 @@ export const Header: React.FC<HeaderProps> = (props) => {
                     <Brand
                         user={user}
                         onPress={() => navigation.navigate('Home' as never)}
-                        compress={compress}
+                        showUsername={showUsername}
+                        showAvatar={showAvatar}
                     />
 
                     {isAuthenticated && (
@@ -74,7 +78,7 @@ export const Header: React.FC<HeaderProps> = (props) => {
                             <IconButton
                                 label='Feed'
                                 onPress={() => navigation.navigate('Feed' as never)}
-                                icon={<Ionicons name='chatbubbles-outline' size={iconSize} color='white' />}
+                                icon={<Ionicons name='list' size={iconSize} color='white' />}
                                 active={currentRoute === 'Feed'}
                                 showLabel={showLabel}
                             />

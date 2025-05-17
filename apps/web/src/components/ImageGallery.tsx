@@ -32,7 +32,7 @@ const ImageGallery = ({ images, onDelete, onSetAvatar, currentAvatarId }: ImageG
 	const { width: windowWidth } = useWindowDimensions()
 	const [containerWidth, setContainerWidth] = useState<number>(windowWidth)
 
-	const numColumns = resolveResponsiveProp({ sm: 2, md: 3, lg: 4 }) ?? 2
+	const numColumns = resolveResponsiveProp({ xs: 1, sm: 2, md: 3, lg: 4 }) ?? 2
 
 	const imageSize = useMemo(() => {
 		if (!containerWidth) return 0
