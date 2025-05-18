@@ -1,4 +1,4 @@
-// apps/backend/src/types/auth.types.ts
+// packages/types/src/types/auth.types.ts
 
 import { UserRole } from '@iam/types'
 

@@ -1,13 +1,15 @@
 // apps/backend/src/controllers/image.controller.ts
 
+import path from 'path'
 import { Request, Response } from 'express'
 import fs from 'fs/promises'
-import path from 'path'
 import {
 	getImagesByUsername,
 	processAndSaveImage,
 	deleteImage,
 } from '../services/image.service'
+import { ImageModel } from '../models/image.model'
+import { getUserDir } from '../utils/imagePaths'
 
 export const uploadImage = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -17,24 +19,18 @@ export const uploadImage = async (req: Request, res: Response): Promise<void> =>
 			return
 		}
 
-		if (!req.file || !req.file.path) {
+		if (!req.file || !req.file.buffer) {
 			res.status(400).json({ message: 'No file uploaded' })
 			return
 		}
 
-		// Read file from disk
-		const fileBuffer = await fs.readFile(req.file.path)
-
-		// Process and save image
 		const savedImage = await processAndSaveImage({
-			fileBuffer,
+			fileBuffer: req.file.buffer,
 			originalName: req.file.originalname,
 			username,
+			generateThumbnail: true,
 		})
-
-		// Delete temporary uploaded file (optional)
-		await fs.unlink(req.file.path)
-
+        
 		res.status(200).json(savedImage)
 	} catch (err) {
 		console.error('Error uploading image:', err)
@@ -62,19 +58,33 @@ export const deleteImageController = async (req: Request, res: Response): Promis
 	try {
 		const { imageId } = req.params
 		const username = req.user?.username
-        
+
 		if (!username) {
 			res.status(400).json({ message: 'Username is required' })
 			return
 		}
 
-		const isDeleted = await deleteImage(imageId, username)
+		const imageDoc = await ImageModel.findOne({ _id: imageId, username })
 
-		if (isDeleted) {
-			res.status(200).json({ message: 'Image deleted successfully' })
-		} else {
-			res.status(404).json({ message: 'Image not found or could not be deleted' })
+		if (!imageDoc) {
+			res.status(404).json({ message: 'Image not found' })
+			return
 		}
+
+		const userDir = getUserDir(username)
+		const originalPath = path.join(userDir, imageDoc.filename)
+		const thumbnailPath = path.join(userDir, `thumb-${imageDoc.filename}`)
+
+		// Delete original and thumbnail files if they exist
+		await Promise.allSettled([
+			fs.unlink(originalPath),
+			fs.unlink(thumbnailPath),
+		])
+
+		// Delete image from DB
+		await ImageModel.deleteOne({ _id: imageId })
+
+		res.status(200).json({ message: 'Image and thumbnail deleted successfully' })
 	} catch (err) {
 		console.error('Error deleting image:', err)
 		res.status(500).json({ message: 'Internal server error' })

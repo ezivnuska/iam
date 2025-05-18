@@ -2,14 +2,22 @@
 
 import React from 'react'
 import { Text, StyleSheet, Pressable } from 'react-native'
-import { ImageUpload, Row } from '.'
-import { useModal } from '@/hooks'
+import { ImageUploader, Row } from '.'
+import { useImage, useModal } from '@/hooks'
+import type { UploadedImage } from '@iam/types'
 import Ionicons from '@expo/vector-icons/Ionicons'
 
 export const ImageManagerHeader = () => {
-    const { showModal } = useModal()
 
-    const openImageUploadModal = () => showModal(<ImageUpload />)
+    const { addImage } = useImage()
+    const { hideModal, showModal } = useModal()
+
+    const handleUploadSuccess = (newImage: UploadedImage) => {
+        addImage(newImage)
+        hideModal()
+    }
+
+    const openImageUploadModal = () => showModal(<ImageUploader onUploaded={handleUploadSuccess} />)
 
 	return (
 		<Row spacing={10}>

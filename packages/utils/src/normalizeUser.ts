@@ -1,7 +1,7 @@
 // packages/utils/src/normalizeUser.ts
 
 import type { User } from '@iam/types'
-import { normalizeImage } from './normalizeImage'
+import { normalizeImage } from './'
 
 export function normalizeUser(user: any): User {
 	const normalizedAvatar = normalizeImage(user.avatar)

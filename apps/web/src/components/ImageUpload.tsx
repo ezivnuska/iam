@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { Text, Platform, Image } from 'react-native'
 import { Button, Column } from '.'
 import * as ImagePicker from 'expo-image-picker'
-import { uploadImage } from '@services'
+import { uploadAvatar } from '@services'
 import type { Image as ImageType } from '@iam/types'
 import { useImage, useModal } from '@/hooks'
 
@@ -108,7 +108,7 @@ const ImageUpload = () => {
         setError(null)
     
         try {
-            const response = await uploadImage(formData)
+            const response = await uploadAvatar(formData)
             const data: ImageType = response.data
     
             setFile(null)

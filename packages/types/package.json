@@ -1,6 +1,7 @@
 {
     "name": "@iam/types",
     "version": "1.0.0",
+    "type": "commonjs",
     "main": "build/index.ts",
     "types": "build/index.d.ts",
     "exports": {

@@ -1,7 +1,7 @@
 // apps/backend/src/services/user.service.ts
 
 import { UserModel } from '../models/user.model'
-import { Image } from '../models/image.model'
+import { ImageModel } from '../models/image.model'
 import { comparePassword, hashPassword } from '../utils/password'
 
 export const findAllUsers = async () => {
@@ -92,7 +92,7 @@ export const setAvatarImage = async (username: string, imageId?: string) => {
 	if (!user) throw new Error('User not found')
 
 	if (imageId) {
-		const image = await Image.findById(imageId)
+		const image = await ImageModel.findById(imageId)
 		if (!image) throw new Error('Image not found')
 		user.avatar = image._id
 	} else {

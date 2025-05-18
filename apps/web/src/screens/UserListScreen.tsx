@@ -8,7 +8,6 @@ import type { StackNavigationProp } from '@react-navigation/stack'
 import { useNavigation } from '@react-navigation/native'
 import type { RootStackParamList } from '@iam/types'
 import { PageLayout, UserProfileCard } from '@/components'
-import { normalizeUser } from '@utils'
 
 type UserListScreenNavProp = StackNavigationProp<RootStackParamList, 'UserList'>
 

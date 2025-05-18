@@ -7,6 +7,7 @@ export * from './PostList'
 export * from './forms'
 export * from './UserProfileCard'
 export * from './ImageManagerHeader'
+export * from './ImageUploader'
 export * from './Button'
 
 export { default as UserImageManager } from './UserImageManager'

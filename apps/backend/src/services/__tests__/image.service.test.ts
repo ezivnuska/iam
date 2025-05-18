@@ -1,7 +1,7 @@
 // apps/backend/src/services/__tests__/image.service.test.ts
 
 import * as fs from 'fs/promises'
-import { Image } from '../../models/image.model'
+import { ImageModel } from '../../models/image.model'
 import * as service from '../image.service'
 
 jest.mock('sharp', () => () => ({
@@ -96,7 +96,7 @@ describe('Image Service', () => {
 
 	describe('getImagesByUsername', () => {
 		it('should return sorted images', async () => {
-			(Image.find as jest.Mock).mockReturnValue({
+			(ImageModel.find as jest.Mock).mockReturnValue({
 				sort: jest.fn().mockResolvedValue([mockImage]),
 			})
 

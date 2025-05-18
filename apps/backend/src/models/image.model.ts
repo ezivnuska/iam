@@ -1,4 +1,4 @@
-// models/image.model.ts
+// apps/backend/src/models/image.model.ts
 
 import { Schema, model } from 'mongoose'
 import type { ImageDocument } from '@iam/types'
@@ -23,4 +23,4 @@ ImageSchema.virtual('url').get(function (this: ImageDocument) {
 	return `/images/users/${this.username}/${this.filename}`
 })
 
-export const Image = model('Image', ImageSchema)
+export const ImageModel = model('Image', ImageSchema)

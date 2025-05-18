@@ -13,7 +13,7 @@ import {
     TouchableOpacity,
 } from 'react-native'
 import { Row } from '.'
-import type { ImageItem } from '@iam/types'
+import type { Image as ImageItem } from '@iam/types'
 import { resolveResponsiveProp } from '../styles'
 import { useModal } from '@/hooks'
 import Ionicons from '@expo/vector-icons/Ionicons'
@@ -47,16 +47,15 @@ const ImageGallery = ({ images, onDelete, onSetAvatar, currentAvatarId }: ImageG
 	}
 
 	const renderItem = ({ item }: { item: ImageItem }) => {
-		const isAvatar = item._id === currentAvatarId
-
+		const isAvatar = item.id === currentAvatarId
 		return (
             <TouchableOpacity
                 onPress={() => showModal(
                     <FullScreenImage
                         uri={item.url}
                         onClose={hideModal}
-                        onDelete={() => onDelete?.(item._id)}
-                        onSetAvatar={() => onSetAvatar?.(item._id)}
+                        onDelete={() => onDelete?.(item.id)}
+                        onSetAvatar={() => onSetAvatar?.(item.id)}
                         isAvatar={isAvatar}
                     />
                 )}
@@ -78,7 +77,7 @@ const ImageGallery = ({ images, onDelete, onSetAvatar, currentAvatarId }: ImageG
 					key={`image-gallery-${numColumns}`}
 					data={images}
 					renderItem={renderItem}
-					keyExtractor={(item, index) => `${index}-${item._id}`}
+					keyExtractor={(item, index) => `${index}-${item.id}`}
 					numColumns={numColumns}
 					columnWrapperStyle={styles.columnWrapper}
 					contentContainerStyle={styles.gallery}

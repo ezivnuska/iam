@@ -4,7 +4,6 @@ import { trySigninFromStoredToken, setUnauthorizedHandler } from '@services'
 import { navigate } from '../navigation'
 import { createContext } from 'react'
 import type { User } from '@iam/types'
-import { normalizeUser } from '@utils'
 
 setUnauthorizedHandler(() => {
 	window.location.href = '/'

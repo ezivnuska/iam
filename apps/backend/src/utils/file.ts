@@ -11,19 +11,30 @@ export const sanitizeUsername = (username: string): string =>
 /**
  * Ensures a directory exists. Creates it recursively if not present.
  */
-export const ensureDir = async (dirPath: string) => {
+export const ensureDir = async (dirPath: string): Promise<void> => {
 	await fs.mkdir(dirPath, { recursive: true })
 }
 
 /**
  * Deletes a file if it exists.
+ * Returns true if the file was deleted,
+ * false if it didn't exist,
+ * otherwise throws the error.
  */
 export const deleteFile = async (filePath: string): Promise<boolean> => {
 	try {
 		await fs.unlink(filePath)
 		return true
-	} catch (err: any) {
-		if (err.code === 'ENOENT') return false // File doesn't exist
+	} catch (err: unknown) {
+		if (
+			err &&
+			typeof err === 'object' &&
+			'code' in err &&
+			(err as { code?: string }).code === 'ENOENT'
+		) {
+			// File doesn't exist
+			return false
+		}
 		throw err
 	}
 }

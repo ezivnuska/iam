@@ -1,5 +1,6 @@
 // apps/backend/src/middlewares/upload.middleware.ts
 
+import { RequestHandler } from 'express'
 import multer, { Options } from 'multer'
 import path from 'path'
 import fs from 'fs'
@@ -61,15 +62,36 @@ const limits: Options['limits'] = {
 	fileSize: MAX_FILE_SIZE,
 }
 
-// === Exported Upload Middleware ===
+// Disk-based single image upload
 export const uploadDisk = multer({
 	storage: diskStorage,
 	fileFilter,
 	limits,
 })
 
+// Memory-based single image upload
 export const uploadMemory = multer({
 	storage: memoryStorage,
 	fileFilter,
 	limits,
 })
+
+// Disk-based upload with fields
+export const uploadDiskFields: RequestHandler = multer({
+	storage: diskStorage,
+	fileFilter,
+	limits,
+}).fields([
+	{ name: 'image', maxCount: 1 },
+	{ name: 'thumbnail', maxCount: 1 },
+])
+
+// Memory-based upload with fields
+export const uploadMemoryFields: RequestHandler = multer({
+	storage: memoryStorage,
+	fileFilter,
+	limits,
+}).fields([
+	{ name: 'image', maxCount: 1 },
+	{ name: 'thumbnail', maxCount: 1 },
+])

@@ -23,3 +23,15 @@ export interface Image {
 	height?: number
 	alt?: string
 }
+
+export type UploadedImage = {
+    _id: string
+    filename: string
+    username: string
+    width: number
+    height: number
+    alt: string
+    url: string
+    createdAt: string
+    updatedAt: string
+}
