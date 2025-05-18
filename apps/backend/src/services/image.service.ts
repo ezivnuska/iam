@@ -58,14 +58,16 @@ export const processAndSaveImage = async ({
     const filename = `${Date.now()}-${Math.round(Math.random() * 1e6)}.webp`
     const outputPath = path.join(uploadDir, filename)
   
-    const imageSharp = sharp(fileBuffer).resize(600).webp({ quality: 80 })
+    const imageSharp = sharp(fileBuffer)
+        .resize(600, 600, { fit: 'inside' }) // or 'contain'
+        .webp({ quality: 80 })
     const { width = 0, height = 0 } = await imageSharp.metadata()
     await imageSharp.toFile(outputPath)
   
     if (generateThumbnail) {
         const thumbPath = path.join(uploadDir, `thumb-${filename}`)
         await sharp(fileBuffer)
-            .resize(200)
+            .resize(200, 200, { fit: 'inside' })
             .webp({ quality: 50 })
             .toFile(thumbPath)
     }

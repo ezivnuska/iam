@@ -12,6 +12,7 @@ export function normalizeImage(img?: any): Image | undefined {
 		filename: img.filename,
 		username: img.username,
 		url,
+        thumbUrl: img.thumbUrl,
 		width: img.width,
 		height: img.height,
 		alt: img.alt ?? '',
