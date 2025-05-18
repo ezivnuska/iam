@@ -5,7 +5,7 @@ import { Text, Platform, Image } from 'react-native'
 import { Button, Column } from '.'
 import * as ImagePicker from 'expo-image-picker'
 import { uploadImage } from '@services'
-import type { ImageItem } from '@iam/types'
+import type { Image as ImageType } from '@iam/types'
 import { useImage, useModal } from '@/hooks'
 
 type NativeImageFile = {
@@ -35,7 +35,7 @@ const ImageUpload = () => {
         handlePickImage()
     }, [])
 
-    const handleUploadSuccess = (newImage: ImageItem) => {
+    const handleUploadSuccess = (newImage: ImageType) => {
         addImage(newImage)
         hideModal()
     }
@@ -53,16 +53,25 @@ const ImageUpload = () => {
 						name: selectedFile.name,
 						type: selectedFile.type,
 						raw: selectedFile,
-					} as any)
+					})
 				}
 			}
 			input.click()
 		} else {
-			const result = await ImagePicker.launchImageLibraryAsync({
-				mediaTypes: 'images',
-				quality: 1,
-			})
-
+			// Ask for permissions
+			const permissionResult = await ImagePicker.requestCameraPermissionsAsync()
+			if (permissionResult.status !== 'granted') {
+				setError('Camera permission is required.')
+				return
+			}
+	
+			// Ask the user to choose between camera or library
+			const useCamera = confirm('Take a photo or choose from library?\nPress OK for camera, Cancel for library.')
+	
+			const result = useCamera
+				? await ImagePicker.launchCameraAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 1 })
+				: await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 1 })
+	
 			if (!result.canceled) {
 				const pickedFile: ImageFile = {
 					uri: result.assets[0].uri,
@@ -72,7 +81,7 @@ const ImageUpload = () => {
 				setFile(pickedFile)
 			}
 		}
-	}
+	}	
 
 	const handleSubmit = async () => {
         if (!file) return
@@ -100,7 +109,7 @@ const ImageUpload = () => {
     
         try {
             const response = await uploadImage(formData)
-            const data: ImageItem = response.data
+            const data: ImageType = response.data
     
             setFile(null)
             handleUploadSuccess(data)
