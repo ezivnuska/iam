@@ -23,4 +23,8 @@ ImageSchema.virtual('url').get(function (this: ImageDocument) {
 	return `/images/users/${this.username}/${this.filename}`
 })
 
+ImageSchema.virtual('thumbUrl').get(function (this: ImageDocument) {
+	return `/images/users/${this.username}/thumb-${this.filename}`
+})
+
 export const ImageModel = model('Image', ImageSchema)

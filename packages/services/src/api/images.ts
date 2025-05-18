@@ -32,10 +32,6 @@ export const uploadImage = async ({ imageData }: ImageUploadData) => {
         } as any)
     }
   
-    for (const [key, value] of formData.entries()) {
-        console.log('FormData entry:', key, value)
-    }
-  
     const response = await api.post('/images/upload', formData)
   
     return response.data

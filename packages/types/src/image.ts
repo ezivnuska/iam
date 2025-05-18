@@ -11,6 +11,7 @@ export interface ImageDocument extends Document {
 	height?: number
 	alt?: string
 	url?: string
+    thumbUrl?: string
 }
 
 // Normalized version for client use
@@ -19,6 +20,7 @@ export interface Image {
 	filename: string
 	username: string
 	url: string
+    thumbUrl: string
 	width?: number
 	height?: number
 	alt?: string
@@ -32,6 +34,7 @@ export type UploadedImage = {
     height: number
     alt: string
     url: string
+    thumbUrl: string
     createdAt: string
     updatedAt: string
 }
