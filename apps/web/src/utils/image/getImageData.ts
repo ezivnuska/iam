@@ -1,5 +1,7 @@
 // apps/web/src/utils/image/getImageData.ts
 
+import { supportsWebP } from './webpSupport'
+
 function applyOrientationTransform(
 	ctx: CanvasRenderingContext2D,
 	orientation: number,
@@ -18,7 +20,13 @@ function applyOrientationTransform(
 	}
 }
 
-type ImageDataResult = { uri: string; height: number; width: number }
+type ImageDataResult = {
+	uri: string
+	height: number
+	width: number
+	blob: Blob
+	file?: File
+}
 
 const imageDataCache = new Map<string, Promise<ImageDataResult>>()
 const MAX_CACHE_SIZE = 50
@@ -26,21 +34,28 @@ const MAX_CACHE_SIZE = 50
 export async function getImageData(
 	image: HTMLImageElement,
 	orientation: number,
-	maxWidth: number
+	maxWidth: number,
+	requestedFormat: 'webp' | 'jpeg' | 'png' = 'webp',
+	quality: number = 0.9
 ): Promise<ImageDataResult> {
-	const cacheKey = `${image.src}|${orientation}|${maxWidth}`
+	const useWebP = requestedFormat === 'webp' && (await supportsWebP())
+	const format = useWebP ? 'webp' : 'jpeg' // fallback if unsupported
+	const mime = `image/${format}`
+
+	const cacheKey = `${image.src}|${orientation}|${maxWidth}|${format}|${quality}`
+
 	if (imageDataCache.has(cacheKey)) {
-		// Move key to end to mark as recently used
 		const value = imageDataCache.get(cacheKey)!
 		imageDataCache.delete(cacheKey)
 		imageDataCache.set(cacheKey, value)
 		return value
 	}
 
-	// If cache limit reached, evict the oldest entry
 	if (imageDataCache.size >= MAX_CACHE_SIZE) {
 		const oldestKey = imageDataCache.keys().next().value
-		imageDataCache.delete(oldestKey as string)
+        if (typeof oldestKey === 'string') {
+            imageDataCache.delete(oldestKey)
+        }
 	}
 
 	const resultPromise = (async () => {
@@ -56,10 +71,9 @@ export async function getImageData(
 			[drawWidth, drawHeight] = [height, width]
 		}
 
-		if (drawWidth > maxWidth) {
-			drawHeight = (maxWidth / drawWidth) * drawHeight
-			drawWidth = maxWidth
-		}
+		const scaleRatio = Math.min(1, maxWidth / Math.max(drawWidth, drawHeight))
+		drawWidth = drawWidth * scaleRatio
+		drawHeight = drawHeight * scaleRatio
 
 		canvas.width = drawWidth
 		canvas.height = drawHeight
@@ -71,8 +85,19 @@ export async function getImageData(
 		}
 		ctx?.restore()
 
-		const uri = canvas.toDataURL('image/png')
-		return { uri, width: drawWidth, height: drawHeight }
+		const dataUrl = canvas.toDataURL(mime, quality)
+		const blob = await new Promise<Blob>((resolve) =>
+			canvas.toBlob((b) => resolve(b!), mime, quality)
+		)
+		const file = new File([blob], `image-${Date.now()}.${format}`, { type: mime })
+
+		return {
+			uri: dataUrl,
+			width: drawWidth,
+			height: drawHeight,
+			blob,
+			file,
+		}
 	})()
 
 	imageDataCache.set(cacheKey, resultPromise)

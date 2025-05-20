@@ -10,10 +10,10 @@ export async function handleImageData(
 	height: number
 	filename: string
 }> {
-	const srcOrientation = exif.Orientation || 1
+	const orientation = exif.Orientation || 1
 
-	const imageData = await getImageData(image, srcOrientation, 600)
-	const filename = `image-${Date.now()}.png`
+	const imageData = await getImageData(image, orientation, 600, 'webp')
+	const filename = `image-${Date.now()}.webp`
 
 	return {
 		...imageData,
