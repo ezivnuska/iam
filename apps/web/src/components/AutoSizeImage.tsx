@@ -17,7 +17,7 @@ type AutoSizeImageProps = {
   
 const AutoSizeImage = ({ image, style, resizeMode = 'cover' }: AutoSizeImageProps) => {
 	const bestUrl = useBestVariant(image)
-  
+    
 	if (!bestUrl) {
 		console.warn('No suitable image variant URL found.')
 		return null

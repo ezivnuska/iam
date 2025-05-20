@@ -28,9 +28,14 @@ const ImageSchema = new Schema<ImageDocument>(
 		toJSON: {
 			virtuals: true,
 			transform: (_doc, ret) => {
+				ret.id = ret._id.toString()
+				delete ret._id
+				delete ret.__v
+
 				if (Array.isArray(ret.variants)) {
 					ret.variants = ret.variants.map(({ url, ...rest }) => rest)
 				}
+
 				return ret
 			},
 		},

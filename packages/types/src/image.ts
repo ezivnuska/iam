@@ -28,12 +28,13 @@ export interface Image {
 }
 
 export type UploadedImage = {
-    _id: string
-    filename: string
-    username: string
-    alt: string
-    url: string
-    createdAt: string
-    updatedAt: string
-    variants: ImageVariant[]
+	id: string
+	filename: string
+	username: string
+	alt: string
+	url: string
+	createdAt: string
+	updatedAt: string
+	variants: ImageVariant[]
 }
+
