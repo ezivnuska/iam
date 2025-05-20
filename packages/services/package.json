@@ -19,6 +19,7 @@
     "dependencies": {
         "@hookform/resolvers": "^5.0.1",
         "@iam/types": "workspace:*",
+        "@utils": "workspace:*",
         "axios": "^1.5.1",
         "expo-secure-store": "^12.2.0",
         "react-hook-form": "^7.55.0",

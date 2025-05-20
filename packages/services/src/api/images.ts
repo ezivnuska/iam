@@ -2,7 +2,7 @@
 
 import { Platform } from 'react-native'
 import { api } from './http'
-import { normalizeImage } from '@utils/normalizeImage'
+import { normalizeImage } from '@utils'
 import type { Image, UploadedImage } from '@iam/types'
 
 type ImageData = {
@@ -28,18 +28,27 @@ export const uploadImage = async ({ imageData }: ImageUploadData): Promise<Uploa
 	const formData = new FormData()
 
 	if (Platform.OS === 'web') {
-		const blob = await (await fetch(imageData.uri)).blob()
-		const file = new File([blob], imageData.filename || 'upload.jpg', {
-			type: 'image/jpeg',
-		})
-		formData.append('image', file)
-	} else {
-		formData.append('image', {
-			uri: imageData.uri,
-			name: imageData.filename || 'upload.jpg',
-			type: 'image/jpeg',
-		} as any)
-	}
+        let file: File
+    
+        if (imageData.uri.startsWith('data:image')) {
+            // Convert base64 to Blob
+            const res = await fetch(imageData.uri)
+            const blob = await res.blob()
+            file = new File([blob], imageData.filename || 'upload.jpg', {
+                type: blob.type || 'image/jpeg',
+            })
+        } else {
+            // Assume it's a blob URL or regular URL
+            const res = await fetch(imageData.uri)
+            const blob = await res.blob()
+            file = new File([blob], imageData.filename || 'upload.jpg', {
+                type: blob.type || 'image/jpeg',
+            })
+        }
+    
+        formData.append('image', file)
+    }
+    
 
 	const res = await api.post('/images/upload', formData)
 	return res.data as UploadedImage

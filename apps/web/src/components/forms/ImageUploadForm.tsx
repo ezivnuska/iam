@@ -36,14 +36,42 @@ export const ImageUploadForm: React.FC<ImageUploaderProps> = ({ onUploaded }) =>
 	// 	handlePick()
 	// }, [])
 
-    const handleCapture = (uri: string) => {
-        const filename = uri.split('/').pop() || 'captured.jpg'
+    const handleCapture = async (uri: string) => {
+        const isBase64 = uri.startsWith('data:image/')
+        const filename = isBase64
+            ? `webcam_${Date.now()}.jpg`
+            : uri.split('/').pop() || 'captured.jpg'
+    
+        let width: number | undefined
+        let height: number | undefined
+    
+        // Get dimensions for preview sizing
+        await new Promise<void>((resolve) => {
+            const img = new window.Image()
+            img.onload = () => {
+                width = img.width
+                height = img.height
+                resolve()
+            }
+            img.onerror = () => {
+                console.warn('Could not load image for dimension detection')
+                resolve()
+            }
+            img.src = uri
+        })
+    
         setUpload({
             uri,
-            imageData: { uri, filename },
+            imageData: {
+                uri,
+                filename,
+                width,
+                height,
+            },
         })
+    
         setUseCamera(false)
-    }
+    }    
 
 	const handlePick = async () => {
 		try {

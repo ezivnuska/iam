@@ -37,11 +37,13 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
 	const takePicture = async () => {
 		if (Platform.OS === 'web') {
 			const imageSrc = webcamRef.current?.getScreenshot()
+			
 			if (!imageSrc) {
 				console.log('Webcam error: no image captured')
 				return
 			}
 			setUri(imageSrc)
+			onCapture(imageSrc)
 		} else {
 			const photo = await cameraRef.current?.takePictureAsync()
 			if (!photo) {
@@ -49,7 +51,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
 				return
 			}
 			setUri(photo.uri)
-		}
+		}		
 	}
 
 	const recordVideo = async () => {
@@ -90,7 +92,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
 						audio={false}
 						screenshotFormat='image/jpeg'
 						videoConstraints={{
-						facingMode: facing === 'back' ? 'environment' : 'user',
+							facingMode: { ideal: 'back' },
 						}}
 						style={{ width: '100%', height: '100%' }}
 					/>
