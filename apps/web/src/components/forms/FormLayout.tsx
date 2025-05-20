@@ -39,8 +39,7 @@ const styles = StyleSheet.create({
     form: {
         flex: 1,
         width: '100%',
-        padding: 24,
-        paddingBottom: 32,
+        paddingHorizontal: 16,
 		maxWidth,
         minWidth,
         alignSelf: 'center',

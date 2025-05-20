@@ -5,7 +5,7 @@ import { Dimensions, Image, StyleSheet, Text } from 'react-native'
 import { Button, Column, FormHeader, FormLayout, Row, SubmitButton } from '../'
 import { uploadImage } from '@services'
 import { selectImage } from '@/utils'
-import { useModal } from '@/hooks'
+import { useModal, useResponsiveImageSize } from '@/hooks'
 import type { UploadedImage } from '@iam/types'
 
 type ImageDataType = {
@@ -63,17 +63,10 @@ export const ImageUploadForm: React.FC<ImageUploaderProps> = ({ onUploaded }) =>
 		}
 	}
 
-	const SCREEN_WIDTH = Dimensions.get('window').width
-    const MAX_WIDTH = 600
-    const maxAllowedWidth = Math.min(MAX_WIDTH, SCREEN_WIDTH - 40) // give some margin
-
-    let imageWidth = maxAllowedWidth
-    let imageHeight = maxAllowedWidth
-
-    if (upload?.imageData.width && upload?.imageData.height) {
-        const { width, height } = upload.imageData
-        imageHeight = (height / width) * imageWidth
-    }
+    const { width: imageWidth, height: imageHeight } = useResponsiveImageSize(
+        upload?.imageData.width,
+        upload?.imageData.height
+    )
 
 	return (
 		<FormLayout>
@@ -81,10 +74,10 @@ export const ImageUploadForm: React.FC<ImageUploaderProps> = ({ onUploaded }) =>
             <Column spacing={10}>
                 {upload && (
                     <Image
-						source={{ uri: upload.uri }}
-						style={[styles.imagePreview, { width: imageWidth, height: imageHeight }]}
+                        source={{ uri: upload.uri }}
+                        style={[styles.imagePreview, { width: imageWidth, height: imageHeight }]}
                         resizeMode='contain'
-					/>
+                    />
                 )}
                 <Row spacing={10} style={styles.controls}>
                     <Button label='Select' onPress={handlePick} style={styles.button} />
