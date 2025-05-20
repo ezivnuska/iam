@@ -2,39 +2,38 @@
 
 import { Document, Types } from 'mongoose'
 
-// DB-level schema
+export interface ImageVariant {
+    size: string
+    filename: string     // add this line
+    width: number
+    height: number
+}
+
 export interface ImageDocument extends Document {
 	_id: Types.ObjectId
 	filename: string
 	username: string
-	width?: number
-	height?: number
 	alt?: string
 	url?: string
-    thumbUrl?: string
+    variants: ImageVariant[]
 }
 
-// Normalized version for client use
 export interface Image {
 	id: string
 	filename: string
 	username: string
 	url: string
-    thumbUrl: string
-	width?: number
-	height?: number
 	alt?: string
+    variants: ImageVariant[]
 }
 
 export type UploadedImage = {
     _id: string
     filename: string
     username: string
-    width: number
-    height: number
     alt: string
     url: string
-    thumbUrl: string
     createdAt: string
     updatedAt: string
+    variants: ImageVariant[]
 }

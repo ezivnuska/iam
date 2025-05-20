@@ -10,6 +10,7 @@ export * from './ImageManagerHeader'
 export * from './ImageUploader'
 export * from './Button'
 
+export { default as AutoSizeImage } from './AutoSizeImage'
 export { default as UserImageManager } from './UserImageManager'
 export { default as ImageUpload } from './ImageUpload'
 export { default as ImageGallery } from './ImageGallery'

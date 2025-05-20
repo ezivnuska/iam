@@ -26,9 +26,17 @@ export const selectImage = async () => {
 		const blob = await res.blob()
 		const exif = await extractExif(blob)
 		const image = await loadImage(uri)
+
+		const { width, height, filename } = await handleImageData(image, exif)
+
 		return {
 			uri,
-			...(await handleImageData(image, exif)),
+			imageData: {
+				uri,
+				width,
+				height,
+				filename: filename || `image-${Date.now()}.jpg`,
+			},
 		}
 	} else {
 		// Native — skip EXIF/canvas
@@ -40,8 +48,10 @@ export const selectImage = async () => {
 
 		return {
 			uri,
-			imageData: { ...image, filename: asset.fileName || `image-${Date.now()}.jpg` },
-			thumbData: { ...image, filename: `thumb-${Date.now()}.jpg` },
+			imageData: {
+				...image,
+				filename: asset.fileName || `image-${Date.now()}.jpg`,
+			},
 		}
 	}
 }

@@ -13,12 +13,8 @@ const UserImageManager = () => {
 	const [error, setError] = useState<string | null>(null)
 
 	useEffect(() => {
-		if (!hasLoaded) {
-			loadImages()
-				.then(() => setHasLoaded(true))
-				.catch(err => setError('Failed to load images.'))
-		}
-	}, [hasLoaded])
+        loadImages().catch(() => setError('Failed to load images.'))
+    }, [])
 
     const handleDelete = async (id: string) => {
         try {

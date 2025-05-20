@@ -4,31 +4,31 @@ import React, { useMemo, useState } from 'react'
 import {
 	View,
 	Text,
-	Image,
-    Pressable,
+	Pressable,
 	StyleSheet,
 	FlatList,
 	useWindowDimensions,
 	LayoutChangeEvent,
-    TouchableOpacity,
+	TouchableOpacity,
 } from 'react-native'
-import { Row } from '.'
-import type { Image as ImageItem } from '@iam/types'
+import { AutoSizeImage, Row } from '.'
+import type { Image } from '@iam/types'
 import { resolveResponsiveProp } from '../styles'
 import { useModal } from '@/hooks'
 import Ionicons from '@expo/vector-icons/Ionicons'
+import { useBestVariant } from '@/hooks'
 
 const IMAGE_MARGIN = 8
 
 type ImageGalleryProps = {
-	images: ImageItem[]
+	images: Image[]
 	currentAvatarId?: string
 	onDelete?: (id: string) => void
 	onSetAvatar?: (id: string) => void
 }
 
 const ImageGallery = ({ images, onDelete, onSetAvatar, currentAvatarId }: ImageGalleryProps) => {
-    const { showModal, hideModal } = useModal()
+	const { showModal, hideModal } = useModal()
 	const { width: windowWidth } = useWindowDimensions()
 	const [containerWidth, setContainerWidth] = useState<number>(windowWidth)
 
@@ -46,25 +46,28 @@ const ImageGallery = ({ images, onDelete, onSetAvatar, currentAvatarId }: ImageG
 		}
 	}
 
-	const renderItem = ({ item }: { item: ImageItem }) => {
+	const renderItem = ({ item }: { item: Image }) => {
 		const isAvatar = item.id === currentAvatarId
+
 		return (
-            <TouchableOpacity
-                onPress={() => showModal(
-                    <FullScreenImage
-                        uri={item.url}
-                        onClose={hideModal}
-                        onDelete={() => onDelete?.(item.id)}
-                        onSetAvatar={() => onSetAvatar?.(item.id)}
-                        isAvatar={isAvatar}
-                    />
-                )}
-                style={[styles.imageBlock, imageSize ? { width: imageSize } : null]}
-            >
-                <View style={[styles.imageWrapper, isAvatar && styles.avatarHighlight]}>
-                    <Image source={{ uri: item.url }} style={styles.image} resizeMode='cover' />
-                </View>
-            </TouchableOpacity>
+			<TouchableOpacity
+				onPress={() =>
+					showModal(
+						<FullScreenImage
+							image={item}
+							onClose={hideModal}
+							onDelete={() => onDelete?.(item.id)}
+							onSetAvatar={() => onSetAvatar?.(item.id)}
+							isAvatar={isAvatar}
+						/>
+					)
+				}
+				style={[styles.imageBlock, imageSize ? { width: imageSize } : null]}
+			>
+				<View style={[styles.imageWrapper, isAvatar && styles.avatarHighlight]}>
+					<AutoSizeImage image={item} />
+				</View>
+			</TouchableOpacity>
 		)
 	}
 
@@ -77,7 +80,7 @@ const ImageGallery = ({ images, onDelete, onSetAvatar, currentAvatarId }: ImageG
 					key={`image-gallery-${numColumns}`}
 					data={images}
 					renderItem={renderItem}
-					keyExtractor={(item, index) => `${index}-${item.id}`}
+					keyExtractor={(item) => item.id}
 					numColumns={numColumns}
 					columnWrapperStyle={styles.columnWrapper}
 					contentContainerStyle={styles.gallery}
@@ -92,45 +95,46 @@ const ImageGallery = ({ images, onDelete, onSetAvatar, currentAvatarId }: ImageG
 }
 
 const FullScreenImage = ({
-    uri,
+	image,
 	onClose,
 	onDelete,
 	onSetAvatar,
 	isAvatar,
 }: {
-    uri: string;
-    onClose: () => void;
-    onDelete?: () => void;
-    onSetAvatar?: () => void;
-    isAvatar?: boolean;
+	image: Image
+	onClose: () => void
+	onDelete?: () => void
+	onSetAvatar?: () => void
+	isAvatar?: boolean
 }) => {
-    const paddingHorizontal = resolveResponsiveProp({ xs: 8, sm: 8, md: 16, lg: 24 })
-    return (
-        <View style={[StyleSheet.absoluteFill, styles.fullscreenContainer]}>
-            <View style={[styles.header, { paddingHorizontal }]}>
-                <Row justify='flex-start' spacing={16}>
-                    {onDelete && (
-                        <Pressable onPress={onDelete}>
-                            <Ionicons name='trash-bin' size={28} color='white' />
-                        </Pressable>
-                    )}
-                    {!isAvatar && onSetAvatar && (
-                        <Pressable onPress={onSetAvatar}>
-                            <Ionicons name='person-circle-outline' size={28} color='white' />
-                        </Pressable>
-                    )}
-                </Row>
-                <Pressable onPress={onClose}>
-                    <Ionicons name='close-sharp' size={28} color='white' />
-                </Pressable>
-            </View>
-            <Image
-                source={{ uri }}
-                style={StyleSheet.absoluteFill}
-                resizeMode='contain'
-            />
-        </View>
-    )
+	const paddingHorizontal = resolveResponsiveProp({ xs: 8, sm: 8, md: 16, lg: 24 })
+
+	return (
+		<View style={[StyleSheet.absoluteFill, styles.fullscreenContainer]}>
+			<View style={[StyleSheet.absoluteFill, styles.fullscreenContainer]}>
+				<View style={[styles.header, { paddingHorizontal }]}>
+					<Row justify='flex-start' spacing={16}>
+						{onDelete && (
+							<Pressable onPress={onDelete}>
+								<Ionicons name='trash-bin' size={28} color='white' />
+							</Pressable>
+						)}
+						{!isAvatar && onSetAvatar && (
+							<Pressable onPress={onSetAvatar}>
+								<Ionicons name='person-circle-outline' size={28} color='white' />
+							</Pressable>
+						)}
+					</Row>
+					<Pressable onPress={onClose}>
+						<Ionicons name='close-sharp' size={28} color='white' />
+					</Pressable>
+				</View>
+				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+					<AutoSizeImage image={image} resizeMode='contain' />
+				</View>
+			</View>
+		</View>
+	)
 }
 
 const styles = StyleSheet.create({
@@ -138,51 +142,39 @@ const styles = StyleSheet.create({
 		paddingVertical: IMAGE_MARGIN,
 	},
 	columnWrapper: {
-        justifyContent: 'flex-start',
-        marginBottom: IMAGE_MARGIN,
-    },
+		justifyContent: 'flex-start',
+		marginBottom: IMAGE_MARGIN,
+	},
 	imageBlock: {
-        alignItems: 'center',
-        marginHorizontal: IMAGE_MARGIN / 2,
-    },
+		alignItems: 'center',
+		marginHorizontal: IMAGE_MARGIN / 2,
+	},
 	imageWrapper: {
 		borderRadius: 8,
 		overflow: 'hidden',
 		width: '100%',
-		aspectRatio: 1,
-        borderWidth: 1,
+		borderWidth: 1,
+		backgroundColor: '#eee',
 	},
 	avatarHighlight: {
 		borderWidth: 3,
 		borderColor: '#3498db',
 	},
-	image: {
-		width: '100%',
-		height: '100%',
+	fullscreenContainer: {
+		backgroundColor: 'black',
 	},
-    fullscreenContainer: {
-        backgroundColor: 'black',
-    },
-    header: {
+	header: {
 		position: 'absolute',
 		top: 0,
 		left: 0,
 		right: 0,
-        paddingHorizontal: 16,
-        height: 50,
+		paddingHorizontal: 16,
+		height: 50,
 		zIndex: 1,
-        backgroundColor: 'rgba(0,0,0,0.4)',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-	},
-    controls: {
-
-    },
-	closeText: {
-		color: '#fff',
-		fontSize: 24,
-		lineHeight: 24,
+		backgroundColor: 'rgba(0,0,0,0.4)',
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
 	},
 })
 

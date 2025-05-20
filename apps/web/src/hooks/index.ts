@@ -1,3 +1,6 @@
+// apps/web/src/hooks/index.ts
+
+export * from './useBestVariant'
 export * from './useBreakpoint'
 export * from './useDeviceInfo'
 export * from './useResponsiveStyles'

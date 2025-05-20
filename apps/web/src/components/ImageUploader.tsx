@@ -17,7 +17,6 @@ type ImageDataType = {
 type UploadType = {
 	uri: string
 	imageData: ImageDataType
-	thumbData?: ImageDataType
 }
 
 type ImageUploaderProps = {
@@ -27,6 +26,7 @@ type ImageUploaderProps = {
 export const ImageUploader: React.FC<ImageUploaderProps> = ({ onUploaded }) => {
 	const [error, setError] = useState<string | null>(null)
 	const [upload, setUpload] = useState<UploadType | null>(null)
+    const [uploadedImage, setUploadedImage] = useState<UploadedImage | null>(null)
 	const [uploading, setUploading] = useState(false)
 
 	useEffect(() => {
@@ -47,21 +47,21 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({ onUploaded }) => {
 	}
 
 	const handleSubmit = async () => {
-		if (!upload) return
-	
-		setUploading(true)
-		setError(null)
-	
-		try {
-			const response = await uploadImage({ imageData: upload.imageData })
-			onUploaded?.(response)
-		} catch (err) {
-			console.error('Upload failed:', err)
-			setError('Upload failed. Please try again.')
-		} finally {
-			setUploading(false)
-		}
-	}
+        if (!upload) return
+    
+        setUploading(true)
+        setError(null)
+    
+        try {
+            const response: UploadedImage = await uploadImage({ imageData: upload.imageData })
+            onUploaded?.(response)
+        } catch (err) {
+            console.error('Upload failed:', err)
+            setError('Upload failed. Please try again.')
+        } finally {
+            setUploading(false)
+        }
+    }  
 
 	return (
 		<View style={{ alignItems: 'center' }}>

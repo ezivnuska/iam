@@ -5,23 +5,10 @@ import path from 'path'
 import { ImageModel } from '../models/image.model'
 import { sanitizeUsername, ensureDir, deleteFile } from '../utils/file'
 import { getUserDir } from '../utils/imagePaths'
+import type { ImageVariant } from '@iam/types'
 
-export const deleteImageMetadata = async (imageId: string): Promise<void> => {
-    await ImageModel.deleteOne({ _id: imageId })
-}
-
-export const deleteImageFile = async (filename: string, username: string): Promise<boolean> => {
-	const uploadDir = getUserDir(username)
-
-	// Delete original image
-	const imagePath = path.join(uploadDir, filename)
-	const imageDeleted = await deleteFile(imagePath)
-
-	// Delete thumbnail if exists
-	const thumbPath = path.join(uploadDir, `thumb-${filename}`)
-	const thumbDeleted = await deleteFile(thumbPath).catch(() => false) // ignore errors if thumb doesn't exist
-
-	return imageDeleted || thumbDeleted
+export const getImagesByUsername = async (username: string) => {
+	return await ImageModel.find({ username }).sort({ createdAt: -1 })
 }
 
 export const deleteImage = async (imageId: string, username: string): Promise<boolean> => {
@@ -29,58 +16,68 @@ export const deleteImage = async (imageId: string, username: string): Promise<bo
 	if (!image) throw new Error('Image not found')
 	if (image.username !== username) throw new Error('You can only delete your own images')
 
-	const filesDeleted = await deleteImageFile(image.filename, image.username)
+	const uploadDir = getUserDir(image.username)
 
-	if (filesDeleted) {
-		await deleteImageMetadata(imageId)
-		return true
-	}
-	return false
+	const deleteResults = await Promise.all(
+		image.variants.map(variant =>
+			deleteFile(path.join(uploadDir, variant.filename)).catch(() => false)
+		)
+	)
+
+	await ImageModel.deleteOne({ _id: imageId })
+
+	return deleteResults.some(result => result)
 }
 
 export const processAndSaveImage = async ({
-    fileBuffer,
-    originalName,
-    username,
-    alt = '',
-    generateThumbnail = false,
+	fileBuffer,
+	originalName,
+	username,
+	alt = '',
+	generateThumbnail = false,
 }: {
-    fileBuffer: Buffer
-    originalName: string
-    username: string
-    alt?: string
-    generateThumbnail?: boolean
+	fileBuffer: Buffer
+	originalName: string
+	username: string
+	alt?: string
+	generateThumbnail?: boolean
 }) => {
-    const sanitizedUsername = sanitizeUsername(username)
-    const uploadDir = getUserDir(sanitizedUsername)
-    await ensureDir(uploadDir)
-  
-    const filename = `${Date.now()}-${Math.round(Math.random() * 1e6)}.webp`
-    const outputPath = path.join(uploadDir, filename)
-  
-    const imageSharp = sharp(fileBuffer)
-        .resize(600, 600, { fit: 'inside' }) // or 'contain'
-        .webp({ quality: 80 })
-    const { width = 0, height = 0 } = await imageSharp.metadata()
-    await imageSharp.toFile(outputPath)
-  
-    if (generateThumbnail) {
-        const thumbPath = path.join(uploadDir, `thumb-${filename}`)
-        await sharp(fileBuffer)
-            .resize(200, 200, { fit: 'inside' })
-            .webp({ quality: 50 })
-            .toFile(thumbPath)
-    }
-  
-    return await ImageModel.create({
-        filename,
-        username: sanitizedUsername,
-        width,
-        height,
-        alt,
-    })
-}
+	const VARIANTS = {
+		sm: 400,
+		md: 800,
+		lg: 1200,
+		thumb: 200,
+	}
 
-export const getImagesByUsername = async (username: string) => {
-	return await ImageModel.find({ username }).sort({ createdAt: -1 })
+	const sanitizedUsername = sanitizeUsername(username)
+	const uploadDir = getUserDir(sanitizedUsername)
+	await ensureDir(uploadDir)
+
+	const filenameBase = `${Date.now()}-${Math.round(Math.random() * 1e6)}.webp`
+	const variants: ImageVariant[] = []
+
+	for (const [size, width] of Object.entries(VARIANTS)) {
+		if (size === 'thumb' && !generateThumbnail) continue
+
+		const variantFilename = `${size}-${filenameBase}`
+		const outputPath = path.join(uploadDir, variantFilename)
+
+		const resizedSharp = sharp(fileBuffer).resize(width).webp({ quality: size === 'thumb' ? 50 : 80 })
+		const metadata = await resizedSharp.metadata()
+		await resizedSharp.toFile(outputPath)
+
+		variants.push({
+			size,
+			filename: variantFilename,
+			width: metadata.width || 0,
+			height: metadata.height || 0,
+		})
+	}
+
+	return await ImageModel.create({
+		filename: filenameBase,
+		username: sanitizedUsername,
+		alt,
+		variants,
+	})
 }

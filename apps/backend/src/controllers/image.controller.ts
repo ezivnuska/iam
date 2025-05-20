@@ -64,29 +64,17 @@ export const deleteImageController = async (req: Request, res: Response): Promis
 			return
 		}
 
-		const imageDoc = await ImageModel.findOne({ _id: imageId, username })
+		const success = await deleteImage(imageId, username)
 
-		if (!imageDoc) {
-			res.status(404).json({ message: 'Image not found' })
+		if (!success) {
+			res.status(404).json({ message: 'Image or files not found' })
 			return
 		}
 
-		const userDir = getUserDir(username)
-		const originalPath = path.join(userDir, imageDoc.filename)
-		const thumbnailPath = path.join(userDir, `thumb-${imageDoc.filename}`)
-
-		// Delete original and thumbnail files if they exist
-		await Promise.allSettled([
-			fs.unlink(originalPath),
-			fs.unlink(thumbnailPath),
-		])
-
-		// Delete image from DB
-		await ImageModel.deleteOne({ _id: imageId })
-
-		res.status(200).json({ message: 'Image and thumbnail deleted successfully' })
+		res.status(200).json({ message: 'Image and variants deleted successfully' })
 	} catch (err) {
 		console.error('Error deleting image:', err)
 		res.status(500).json({ message: 'Internal server error' })
 	}
 }
+

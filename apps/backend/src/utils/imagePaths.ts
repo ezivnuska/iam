@@ -1,4 +1,5 @@
 // apps/backend/src/utils/imagePaths.ts
+
 import path from 'path'
 import { sanitizeUsername } from './file'
 
