@@ -56,6 +56,9 @@ const includedModules = (filepath) => {
 		'react-native-vector-icons',
 		'@expo',
 		'expo',
+		'expo-camera',
+		'expo-image',
+        'expo-permissions',
 	]
 
 	const matchesSources = sourcesToCompile.some(src => filepath.startsWith(src))

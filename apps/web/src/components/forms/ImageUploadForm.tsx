@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { Dimensions, Image, StyleSheet, Text } from 'react-native'
-import { Button, Column, FormHeader, FormLayout, Row, SubmitButton } from '../'
+import { Button, CameraCapture, Column, FormHeader, FormLayout, Row, SubmitButton } from '../'
 import { uploadImage } from '@services'
 import { selectImage } from '@/utils'
 import { useModal, useResponsiveImageSize } from '@/hooks'
@@ -28,12 +28,22 @@ export const ImageUploadForm: React.FC<ImageUploaderProps> = ({ onUploaded }) =>
 	const [error, setError] = useState<string | null>(null)
 	const [upload, setUpload] = useState<UploadType | null>(null)
 	const [uploading, setUploading] = useState(false)
+    const [useCamera, setUseCamera] = useState(false)
 
 	const { hideModal } = useModal()
 
-	useEffect(() => {
-		handlePick()
-	}, [])
+	// useEffect(() => {
+	// 	handlePick()
+	// }, [])
+
+    const handleCapture = (uri: string) => {
+        const filename = uri.split('/').pop() || 'captured.jpg'
+        setUpload({
+            uri,
+            imageData: { uri, filename },
+        })
+        setUseCamera(false)
+    }
 
 	const handlePick = async () => {
 		try {
@@ -71,26 +81,31 @@ export const ImageUploadForm: React.FC<ImageUploaderProps> = ({ onUploaded }) =>
 	return (
 		<FormLayout>
 			<FormHeader title='Upload Image' onCancel={hideModal} />
-            <Column spacing={10}>
-                {upload && (
-                    <Image
-                        source={{ uri: upload.uri }}
-                        style={[styles.imagePreview, { width: imageWidth, height: imageHeight }]}
-                        resizeMode='contain'
-                    />
-                )}
-                <Row spacing={10} style={styles.controls}>
-                    <Button label='Select' onPress={handlePick} style={styles.button} />
+            {useCamera ? (
+                <CameraCapture onCapture={handleCapture} />
+            ) : (
+                <Column spacing={10}>
                     {upload && (
-                        <SubmitButton
-                            label='Upload'
-                            onPress={handleSubmit}
-                            submitting={uploading}
-                            style={styles.button}
+                        <Image
+                            source={{ uri: upload.uri }}
+                            style={[styles.imagePreview, { width: imageWidth, height: imageHeight }]}
+                            resizeMode='contain'
                         />
                     )}
-                </Row>
-            </Column>
+                    <Row spacing={10} style={styles.controls}>
+                        <Button label='Select' onPress={handlePick} style={styles.button} />
+                        <Button label="Use Camera" onPress={() => setUseCamera(true)} style={styles.button} />
+                        {upload && (
+                            <SubmitButton
+                                label='Upload'
+                                onPress={handleSubmit}
+                                submitting={uploading}
+                                style={styles.button}
+                            />
+                        )}
+                    </Row>
+                </Column>
+            )}
 			{error && <Text style={styles.errorText}>{error}</Text>}
 		</FormLayout>
 	)

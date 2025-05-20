@@ -10,6 +10,7 @@ export * from './ImageManagerHeader'
 export * from './Button'
 
 export { default as AutoSizeImage } from './AutoSizeImage'
+export { default as CameraCapture } from './CameraCapture'
 export { default as FullScreenImage } from './FullScreenImage'
 export { default as ImageGallery } from './ImageGallery'
 export { default as UserImageManager } from './UserImageManager'
