@@ -121,8 +121,8 @@ export const ImageUploadForm: React.FC<ImageUploaderProps> = ({ onUploaded }) =>
                         />
                     )}
                     <Row spacing={10} style={styles.controls}>
-                        <Button label='Select' onPress={handlePick} style={styles.button} />
-                        <Button label="Use Camera" onPress={() => setUseCamera(true)} style={styles.button} />
+                        <Button label='Library' onPress={handlePick} style={styles.button} />
+                        <Button label='Camera' onPress={() => setUseCamera(true)} style={styles.button} />
                         {upload && (
                             <SubmitButton
                                 label='Upload'

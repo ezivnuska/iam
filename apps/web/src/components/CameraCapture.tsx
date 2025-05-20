@@ -29,7 +29,6 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
 	const [permission, requestPermission] = useCameraPermissions()
 	const cameraRef = useRef<CameraView>(null)
 	const webcamRef = useRef<Webcam>(null)
-	const [uri, setUri] = useState<string | null>(null)
 	const [mode, setMode] = useState<CameraMode>('picture')
 	const [facing, setFacing] = useState<CameraType>('back')
 	const [recording, setRecording] = useState(false)
@@ -42,7 +41,6 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
 				console.log('Webcam error: no image captured')
 				return
 			}
-			setUri(imageSrc)
 			onCapture(imageSrc)
 		} else {
 			const photo = await cameraRef.current?.takePictureAsync()
@@ -50,7 +48,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
 				console.log('Camera Error: no photo taken.')
 				return
 			}
-			setUri(photo.uri)
+			onCapture(photo.uri)
 		}		
 	}
 
@@ -73,16 +71,6 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
 		setFacing((prev) => (prev === 'back' ? 'front' : 'back'))
 	}
 
-	const renderPicture = () => (
-		<View>
-			{uri && (
-				<Image source={{ uri }} style={{ width: 300, aspectRatio: 1 }} />
-			)}
-			<Button onPress={() => setUri(null)} label='Camera' />
-			{uri && <Button onPress={() => onCapture(uri)} label='Use Image' />}
-		</View>
-	)
-
 	const renderCamera = () => {
 		if (Platform.OS === 'web') {
 			return (
@@ -91,9 +79,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
 						ref={webcamRef}
 						audio={false}
 						screenshotFormat='image/jpeg'
-						videoConstraints={{
-							facingMode: { ideal: 'back' },
-						}}
+						videoConstraints={{ facingMode: { ideal: 'back' } }}
 						style={{ width: '100%', height: '100%' }}
 					/>
 					<View style={styles.shutterContainer}>
@@ -195,7 +181,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
 		}
 	}
 
-	return <View style={styles.container}>{uri ? renderPicture() : renderCamera()}</View>
+	return <View style={styles.container}>{renderCamera()}</View>
 }
 
 export default CameraCapture
