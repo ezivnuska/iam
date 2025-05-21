@@ -39,7 +39,7 @@ export const Header: React.FC<HeaderProps> = (props) => {
     const paddingHorizontal = resolveResponsiveProp({ xs: 8, sm: 8, md: 16, lg: 24 })
     const iconSize = resolveResponsiveProp({ xs: 24, sm: 24, md: 18, lg: 18 })
     const showLabel = resolveResponsiveProp({ xs: false, sm: true, md: true, lg: true })
-    const navSpacing = resolveResponsiveProp({ xs: Size.XS, sm: Size.S, md: Size.S, lg: Size.S })
+    const navSpacing = resolveResponsiveProp({ xs: Size.S, sm: Size.S, md: Size.M, lg: Size.L })
     const showUsername = resolveResponsiveProp({ xs: false, sm: false, md: true, lg: true })
     const showAvatar = resolveResponsiveProp({ xs: true, sm: true, md: true, lg: true })
     const avatarSize = resolveResponsiveProp({ xs: 'xs', sm: 'sm', md: 'md', lg: 'lg' })
