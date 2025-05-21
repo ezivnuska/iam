@@ -75,10 +75,7 @@ const WebCamera: React.FC<WebCameraProps> = ({ onCapture, onCancel }) => {
     }, [webcamRef, setCapturing, mediaRecorderRef, handleDataAvailable])
     
     const handleStopCaptureClick = React.useCallback(() => {
-        if (!mediaRecorderRef.current) {
-            alert('no media recorder ref')
-            return
-        }
+        if (!mediaRecorderRef.current) return
         mediaRecorderRef.current.stop()
         setCapturing(false)
     }, [mediaRecorderRef, webcamRef, setCapturing])
