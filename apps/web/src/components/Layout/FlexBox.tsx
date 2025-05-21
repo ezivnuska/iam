@@ -44,13 +44,13 @@ const FlexBox: React.FC<FlexBoxProps> = ({
 		gap: resolvedSpacing,
 
 		...getResolvedPadding({
-		padding,
-		paddingHorizontal,
-		paddingVertical,
-		paddingTop,
-		paddingBottom,
-		paddingLeft,
-		paddingRight,
+            padding,
+            paddingHorizontal,
+            paddingVertical,
+            paddingTop,
+            paddingBottom,
+            paddingLeft,
+            paddingRight,
 		}),
 	}
 

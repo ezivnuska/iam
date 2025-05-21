@@ -11,4 +11,4 @@ export enum Size {
 
 export type GridValue = Size | 0
 
-export const getSpacing = (value: number = 4) => value * 4
+export const getSpacing = (value: Size | number = Size.S) => value
