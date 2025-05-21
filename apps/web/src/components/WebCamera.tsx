@@ -75,7 +75,10 @@ const WebCamera: React.FC<WebCameraProps> = ({ onCapture, onCancel }) => {
     }, [webcamRef, setCapturing, mediaRecorderRef, handleDataAvailable])
     
     const handleStopCaptureClick = React.useCallback(() => {
-        if (!mediaRecorderRef.current) return
+        if (!mediaRecorderRef.current) {
+            alert('no media recorder ref')
+            return
+        }
         mediaRecorderRef.current.stop()
         setCapturing(false)
     }, [mediaRecorderRef, webcamRef, setCapturing])
@@ -146,14 +149,15 @@ const WebCamera: React.FC<WebCameraProps> = ({ onCapture, onCancel }) => {
                     )}
                 </Pressable>
                 {renderCaptureButton()}
-                <Pressable onPress={toggleFacing} disabled={devices.length > 1} style={{ opacity: devices.length > 1 ? 1 : 0}}>
+                <Pressable onPress={toggleFacing} disabled={devices.length > 1} style={{ opacity: devices.length > 1 ? 1 : 0.5 }}>
                     <FontAwesome6 name='rotate-left' size={32} color='#fff' />
                 </Pressable>
                 {recordedChunks.length > 0 && (
                     <Button onPress={handleDownload} label='Download' />
                 )}
             </View>
-        </View>)
+        </View>
+    )
 }
 
 export default WebCamera
@@ -161,6 +165,7 @@ export default WebCamera
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+        width: '100%',
 		backgroundColor: '#000',
 		alignItems: 'center',
 		justifyContent: 'center',

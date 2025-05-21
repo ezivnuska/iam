@@ -1,6 +1,6 @@
 // apps/web/src/components/ImageUploader.tsx
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Dimensions, Image, Platform, StyleSheet, Text } from 'react-native'
 import { Button, Column, FormHeader, FormLayout, NativeCamera, Row, SubmitButton, WebCamera } from '../'
 import { uploadImage } from '@services'
@@ -31,10 +31,6 @@ export const ImageUploadForm: React.FC<ImageUploaderProps> = ({ onUploaded }) =>
     const [useCamera, setUseCamera] = useState(false)
 
 	const { hideModal } = useModal()
-
-	// useEffect(() => {
-	// 	handlePick()
-	// }, [])
 
     const handleCapture = async (uri: string) => {
         const isBase64 = uri.startsWith('data:image/')
@@ -101,10 +97,19 @@ export const ImageUploadForm: React.FC<ImageUploaderProps> = ({ onUploaded }) =>
 		}
 	}
 
-    const { width: imageWidth, height: imageHeight } = useResponsiveImageSize(
+    const screenWidth = Dimensions.get('window').width
+    const screenHeight = Dimensions.get('window').height
+    const maxPreviewHeight = screenHeight * 0.6
+
+    const { width: rawWidth, height: rawHeight } = useResponsiveImageSize(
         upload?.imageData.width,
         upload?.imageData.height
     )
+
+    const aspectRatio = rawWidth && rawHeight ? rawWidth / rawHeight : 1
+
+    const imageWidth = screenWidth * 0.9
+    const imageHeight = Math.min(imageWidth / aspectRatio, maxPreviewHeight)
 
     const renderCamera = () => {
         if (Platform.OS === 'web') {
@@ -119,7 +124,7 @@ export const ImageUploadForm: React.FC<ImageUploaderProps> = ({ onUploaded }) =>
         : (
             <FormLayout>
                 <FormHeader title='Upload Image' onCancel={hideModal} />
-                <Column spacing={10}>
+                <Column spacing={10} style={styles.container}>
                     {upload && (
                         <Image
                             source={{ uri: upload.uri }}
@@ -148,11 +153,13 @@ export const ImageUploadForm: React.FC<ImageUploaderProps> = ({ onUploaded }) =>
 const styles = StyleSheet.create({
 	container: {
 		alignItems: 'center',
-		padding: 20,
 	},
 	imagePreview: {
-		borderRadius: 8,
-	},
+        borderRadius: 8,
+        maxWidth: '100%',
+        maxHeight: 400,
+        alignSelf: 'center',
+    },    
     controls: {
         //
     },
