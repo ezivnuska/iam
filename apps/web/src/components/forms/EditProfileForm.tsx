@@ -1,29 +1,43 @@
 // apps/web/src/components/forms/EditProfileForm.tsx
 
-import React, { useEffect, useRef } from 'react'
-import { TextInput, StyleSheet, Text, Alert, TextInput as RNTextInput } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
+import { TextInput, Text, Alert, TextInput as RNTextInput } from 'react-native'
 import { Controller, useForm } from 'react-hook-form'
-import { Button, FormLayout, FormHeader } from '@/components'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { FormLayout, FormHeader, SubmitButton } from '@/components'
 import { useAuth, useModal } from '@/hooks'
 import { updateSelf } from '@services'
+import { form as styles, shadows } from '@/styles'
+
+const schema = z.object({
+    bio: z.string(),
+})
+
+type EditProfileFormProps = z.infer<typeof schema>
 
 export const EditProfileForm = () => {
+
 	const { user, setUser } = useAuth()
 	const { hideModal } = useModal()
-
-	const { control, handleSubmit, formState: { errors, isSubmitting }, reset, getValues } = useForm({
-		defaultValues: {
+    
+    const { control, handleSubmit, formState: { errors, isSubmitting }, setError, trigger, getValues } = useForm<EditProfileFormProps>({
+        resolver: zodResolver(schema),
+        mode: 'onBlur',
+        defaultValues: {
 			bio: user?.bio ?? '',
-		}
-	})
+        },
+    })
+
+    const [focused, setFocused] = useState<string | null>(null)
 
     const bioInputRef = useRef<RNTextInput>(null)
 
-    useEffect(() => {
-        if (user?.bio !== undefined) {
-            reset({ bio: user.bio })
+    const focusFirstError = (formErrors: typeof errors) => {
+        if (formErrors.bio) {
+            bioInputRef.current?.focus()
         }
-    }, [user, reset])
+    }
 
     const focusFirstEmptyField = () => {
         const values = getValues()
@@ -35,6 +49,19 @@ export const EditProfileForm = () => {
     const onInvalid = () => {
         focusFirstEmptyField()
     }
+
+    useEffect(() => {
+        const validateOnMount = async () => {
+            const isValid = await trigger()
+            if (!isValid) {
+                focusFirstError(errors)
+            } else {
+                focusFirstEmptyField()
+            }
+        }
+    
+        focusFirstEmptyField()
+    }, [])
 
 	const onSubmit = async (data: { bio: string }) => {
 		if (!user?.id) {
@@ -51,6 +78,8 @@ export const EditProfileForm = () => {
 		}
 	}
 
+    const isFocused = (name: string): boolean => name === focused
+
 	return (
 		<FormLayout>
 			<FormHeader title='Edit Bio' onCancel={hideModal} />
@@ -60,18 +89,26 @@ export const EditProfileForm = () => {
 				render={({ field: { value, onChange, onBlur } }) => (
                     <TextInput
                         ref={bioInputRef}
+						placeholder='Who are you?'
+                        placeholderTextColor='#070'
                         value={value}
                         onChangeText={onChange}
-                        onBlur={onBlur}
+                        onFocus={() => setFocused('bio')}
+                        onBlur={async () => {
+                            onBlur()
+                            setFocused(null)
+                        }}
+						autoCapitalize='sentences'
+						returnKeyType='next'
+						onSubmitEditing={handleSubmit(onSubmit, onInvalid)}
+                        style={[styles.input, styles.textArea, shadows.input, isFocused('bio') && styles.inputFocused]}
                         multiline
-                        style={styles.textInput}
-                        placeholder='Tell us about yourself'
                     />
 				)}
 			/>
 			{errors.bio && <Text style={styles.error}>{errors.bio.message}</Text>}
 
-			<Button
+			<SubmitButton
 				label='Save'
 				onPress={handleSubmit(onSubmit, onInvalid)}
 				disabled={isSubmitting}
@@ -79,18 +116,3 @@ export const EditProfileForm = () => {
 		</FormLayout>
 	)
 }
-
-const styles = StyleSheet.create({
-	container: { padding: 16 },
-	label: { fontWeight: 'bold', marginBottom: 8 },
-	textInput: {
-		borderWidth: 1,
-		borderColor: '#ccc',
-		borderRadius: 8,
-		padding: 12,
-		height: 100,
-		textAlignVertical: 'top',
-		marginBottom: 16,
-	},
-	error: { color: 'red', marginBottom: 8 },
-})

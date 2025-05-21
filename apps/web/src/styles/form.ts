@@ -21,6 +21,10 @@ export const form: NamedStyles<any> = {
 		fontSize: 24,
 	} as TextStyle,
 
+	textArea: {
+		minHeight: 200,
+	} as TextStyle,
+
 	inputFocused: {
 		borderWidth: 1,
 		backgroundColor: '#ccffcc',
