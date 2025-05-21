@@ -1,8 +1,8 @@
 // apps/web/src/components/ImageUploader.tsx
 
 import React, { useEffect, useState } from 'react'
-import { Dimensions, Image, StyleSheet, Text } from 'react-native'
-import { Button, CameraCapture, Column, FormHeader, FormLayout, Row, SubmitButton } from '../'
+import { Dimensions, Image, Platform, StyleSheet, Text } from 'react-native'
+import { Button, Column, FormHeader, FormLayout, NativeCamera, Row, SubmitButton, WebCamera } from '../'
 import { uploadImage } from '@services'
 import { selectImage } from '@/utils'
 import { useModal, useResponsiveImageSize } from '@/hooks'
@@ -106,12 +106,19 @@ export const ImageUploadForm: React.FC<ImageUploaderProps> = ({ onUploaded }) =>
         upload?.imageData.height
     )
 
-	return (
-		<FormLayout>
-			<FormHeader title='Upload Image' onCancel={hideModal} />
-            {useCamera ? (
-                <CameraCapture onCapture={handleCapture} />
-            ) : (
+    const renderCamera = () => {
+        if (Platform.OS === 'web') {
+            return <WebCamera onCapture={handleCapture} onCancel={() => setUseCamera(false)} />
+        } else {
+            return <NativeCamera onCapture={handleCapture} onCancel={() => setUseCamera(false)} />
+        }
+    }
+
+	return useCamera
+        ? renderCamera()
+        : (
+            <FormLayout>
+                <FormHeader title='Upload Image' onCancel={hideModal} />
                 <Column spacing={10}>
                     {upload && (
                         <Image
@@ -133,10 +140,9 @@ export const ImageUploadForm: React.FC<ImageUploaderProps> = ({ onUploaded }) =>
                         )}
                     </Row>
                 </Column>
-            )}
-			{error && <Text style={styles.errorText}>{error}</Text>}
-		</FormLayout>
-	)
+                {error && <Text style={styles.errorText}>{error}</Text>}
+            </FormLayout>
+        )
 }
 
 const styles = StyleSheet.create({

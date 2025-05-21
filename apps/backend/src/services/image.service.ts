@@ -43,10 +43,10 @@ export const processAndSaveImage = async ({
 	generateThumbnail?: boolean
 }) => {
 	const VARIANTS = {
-		sm: 400,
-		md: 800,
-		lg: 1200,
-		thumb: 200,
+		sm: 300,
+		md: 600,
+		lg: 900,
+		thumb: 150,
 	}
 
 	const sanitizedUsername = sanitizeUsername(username)

@@ -1,4 +1,4 @@
-// apps/web/src/components/CameraCapture.tsx
+// apps/web/src/components/NativeCamera.tsx
 
 import React, { useEffect, useRef, useState } from 'react'
 import {
@@ -19,13 +19,15 @@ import { Button } from '@/components'
 import Webcam from 'react-webcam'
 import AntDesign from '@expo/vector-icons/AntDesign'
 import Feather from '@expo/vector-icons/Feather'
+import Ionicons from '@expo/vector-icons/Ionicons'
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6'
 
-type CameraCaptureProps = {
+type NativeCameraProps = {
 	onCapture: (uri: string) => void
+	onCancel: () => void
 }
 
-const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
+const NativeCamera: React.FC<NativeCameraProps> = ({ onCapture, onCancel }) => {
 	const [permission, requestPermission] = useCameraPermissions()
 	const cameraRef = useRef<CameraView>(null)
 	const webcamRef = useRef<Webcam>(null)
@@ -74,7 +76,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
 	const renderCamera = () => {
 		if (Platform.OS === 'web') {
 			return (
-				<View style={styles.camera}>
+				<View style={[StyleSheet.absoluteFill, styles.camera]}>
 					<Webcam
 						ref={webcamRef}
 						audio={false}
@@ -82,6 +84,9 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
 						videoConstraints={{ facingMode: { ideal: 'back' } }}
 						style={{ width: '100%', height: '100%' }}
 					/>
+					<Pressable onPress={onCancel} style={styles.closeButton}>
+						<Ionicons name='close-sharp' size={28} color='white' />
+					</Pressable>
 					<View style={styles.shutterContainer}>
 						<Pressable onPress={toggleMode}>
 							{mode === 'picture' ? (
@@ -122,13 +127,16 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
 		// Native Expo CameraView
 		return (
 			<CameraView
-				style={styles.camera}
+				style={[StyleSheet.absoluteFill, styles.camera]}
 				ref={cameraRef}
 				mode={mode}
 				facing={facing}
 				mute={false}
 				responsiveOrientationWhenOrientationLocked
 			>
+				<Pressable onPress={onCancel} style={styles.closeButton}>
+					<Ionicons name='close-sharp' size={28} color='white' />
+				</Pressable>
 				<View style={styles.shutterContainer}>
 					<Pressable onPress={toggleMode}>
 						{mode === 'picture' ? (
@@ -184,7 +192,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
 	return <View style={styles.container}>{renderCamera()}</View>
 }
 
-export default CameraCapture
+export default NativeCamera
 
 const styles = StyleSheet.create({
 	container: {
@@ -194,11 +202,16 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 	},
 	camera: {
-		width: 300,
-		height: 400,
-		borderRadius: 8,
-		overflow: 'hidden',
+		// width: 300,
+		// height: 400,
+		// borderRadius: 8,
+		// overflow: 'hidden',
 		position: 'relative',
+	},
+	closeButton: {
+		position: 'absolute',
+		top: 16,
+		left: 16,
 	},
 	shutterContainer: {
 		position: 'absolute',
