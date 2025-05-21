@@ -1,14 +1,14 @@
 // packages/ui/src/forms/SignupForm.tsx
 
 import React, { useEffect, useRef, useState } from 'react'
-import { Text, TextInput, StyleSheet, Alert, TextInput as RNTextInput } from 'react-native'
+import { Text, TextInput, Alert, TextInput as RNTextInput } from 'react-native'
 import { useForm, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, Column, FormHeader, FormLayout, SigninForm, SubmitButton } from '@/components'
 import { useAuth, useModal } from '@/hooks'
 import { signupRequest } from '@services'
-import { shadows } from '@/styles'
+import { form as styles, shadows } from '@/styles'
 
 const schema = z.object({
 	email: z.string().email(),
@@ -214,29 +214,3 @@ export const SignupForm = () => {
 		</FormLayout>
 	)
 }
-
-const styles = StyleSheet.create({
-	title: {
-		fontSize: 28,
-		fontWeight: '600',
-		marginBottom: 24,
-	},
-	input: {
-        width: '100%',
-		padding: 12,
-		marginBottom: 12,
-		borderRadius: 8,
-        overflow: 'hidden',
-    },
-    inputFocused: {
-        outlineWidth: 0,
-        outlineColor: 'transparent',
-        borderWidth: 0,
-        backgroundColor: '#ccffcc',
-        borderColor: 'transparent',
-    },
-	error: {
-		color: 'red',
-		marginBottom: 8,
-	},
-})

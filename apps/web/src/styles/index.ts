@@ -2,6 +2,7 @@
 
 export * from './breakpoints'
 export * from './colors'
+export * from './form'
 export * from './layout'
 export * from './padding'
 export * from './shadows'

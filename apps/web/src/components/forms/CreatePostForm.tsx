@@ -4,7 +4,6 @@ import React, { useRef, useState } from 'react'
 import {
 	Text,
 	TextInput,
-	StyleSheet,
 	ActivityIndicator,
 	Alert,
 	TextInput as RNTextInput,
@@ -15,6 +14,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, FormLayout, FormHeader } from '@/components'
 import * as postService from '@services'
 import { useModal, usePosts } from '@/hooks'
+import { form as styles, shadows } from '@/styles'
 
 const schema = z.object({
 	content: z
@@ -98,7 +98,7 @@ export const CreatePostForm = ({ onPostCreated }: { onPostCreated?: () => void }
 						onSubmitEditing={handleSubmit(onSubmit, onInvalid)}
 						style={[
 							styles.input,
-							styles.shadow,
+							shadows.input,
 							isFocused('content') && styles.inputFocused,
 						]}
 					/>
@@ -114,32 +114,3 @@ export const CreatePostForm = ({ onPostCreated }: { onPostCreated?: () => void }
 		</FormLayout>
 	)
 }
-
-const styles = StyleSheet.create({
-	title: {
-		fontSize: 24,
-		fontWeight: '600',
-		marginBottom: 16,
-	},
-	input: {
-		width: '100%',
-		padding: 12,
-		marginBottom: 12,
-		borderRadius: 8,
-		textAlignVertical: 'top',
-	},
-	inputFocused: {
-		backgroundColor: '#ccffcc',
-	},
-	error: {
-		color: 'red',
-		marginBottom: 8,
-	},
-	shadow: {
-		shadowColor: '#000',
-		shadowOffset: { width: 1, height: 2 },
-		shadowOpacity: 0.3,
-		shadowRadius: 6,
-		elevation: 2,
-	},
-})
