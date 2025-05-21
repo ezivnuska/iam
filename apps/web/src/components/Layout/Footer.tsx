@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         paddingVertical: 10,
-        backgroundColor: '#000',
+        backgroundColor: '#fff',
     },
     maxWidthContainer: {
         flexDirection: 'row',
@@ -44,6 +44,6 @@ const styles = StyleSheet.create({
     },
     copy: {
         fontSize: 18,
-        color: '#fff',
+        color: '#000',
     },
 })

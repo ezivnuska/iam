@@ -23,9 +23,9 @@ const Brand = ({ ...props }) => (
                     size={props.size}
                 />
             )}
-            <Row wrap={true} style={{ flexShrink: 1, minWidth: 50 }}>
-                <Text style={styles.iam}>iam</Text>
-                {props.showUsername && <Text style={styles.eric}>{`${props.user ? props.user.username : 'eric'}`}</Text>}
+            <Row wrap={true} style={{ flexShrink: 1, minWidth: 50, overflow: 'hidden' }}>
+                <Text style={[styles.iam, {lineHeight: props.size}]}>iam</Text>
+                {props.showUsername && <Text style={[styles.eric, {lineHeight: props.size}]}>{`${props.user ? props.user.username : 'eric'}`}</Text>}
             </Row>
         </Row>
     </Pressable>
@@ -80,28 +80,28 @@ export const Header: React.FC<HeaderProps> = (props) => {
                             <IconButton
                                 label='Feed'
                                 onPress={() => navigation.navigate('Feed' as never)}
-                                icon={<Ionicons name='list' size={iconSize} color='white' />}
+                                icon={<Ionicons name='list' size={iconSize} color='#777' />}
                                 active={currentRoute === 'Feed'}
                                 showLabel={showLabel}
                             />
                             <IconButton
                                 label='Chat'
                                 onPress={() => navigation.navigate('Chat' as never)}
-                                icon={<Ionicons name='chatbubbles-outline' size={iconSize} color='white' />}
+                                icon={<Ionicons name='chatbubbles-outline' size={iconSize} color='#777' />}
                                 active={currentRoute === 'Chat'}
                                 showLabel={showLabel}
                             />
                             <IconButton
                                 label='Users'
                                 onPress={() => navigation.navigate('UserList' as never)}
-                                icon={<Ionicons name='people-outline' size={iconSize} color='white' />}
+                                icon={<Ionicons name='people-outline' size={iconSize} color='#777' />}
                                 active={currentRoute === 'UserList'}
                                 showLabel={showLabel}
                             />
                             <IconButton
                                 label='Profile'
                                 onPress={() => navigation.navigate('Profile' as never)}
-                                icon={<Ionicons name='person-circle-outline' size={iconSize} color='white' />}
+                                icon={<Ionicons name='person-circle-outline' size={iconSize} color='#777' />}
                                 active={currentRoute === 'Profile'}
                                 showLabel={showLabel}
                             />
@@ -111,7 +111,7 @@ export const Header: React.FC<HeaderProps> = (props) => {
                     {isAuthenticated
                         ? (  
                             <IconButton
-                                icon={<Ionicons name='exit-outline' size={iconSize} color='white' />}
+                                icon={<Ionicons name='exit-outline' size={iconSize} color='#777' />}
                                 label='Sign Out'
                                 onPress={logout}
                                 showLabel={showLabel}
@@ -119,7 +119,7 @@ export const Header: React.FC<HeaderProps> = (props) => {
                         )
                         : (
                             <IconButton
-                                icon={<AntDesign name='login' size={iconSize} color='white' />}
+                                icon={<AntDesign name='login' size={iconSize} color='#777' />}
                                 label='Sign In'
                                 onPress={showSigninModal}
                                 showLabel={showLabel}
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         paddingVertical: 10,
-        backgroundColor: '#000',
+        backgroundColor: '#fff',
     },
     maxWidthContainer: {
         width: '100%',
@@ -149,12 +149,12 @@ const styles = StyleSheet.create({
 	iam: {
 		fontSize: 28,
 		fontWeight: 'bold',
-        color: '#fff',
+        color: '#000',
 	},
 	eric: {
 		fontSize: 28,
 		fontWeight: 'bold',
-        color: '#ddd',
+        color: '#777',
 	},
     nav: {
         flexShrink: 0,

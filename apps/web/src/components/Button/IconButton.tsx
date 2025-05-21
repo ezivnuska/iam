@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
 		marginBottom: 4,
 	},	
 	text: {
-		color: '#fff',
+		color: '#777',
 		fontWeight: '600',
 	},
 	disabled: {
@@ -71,11 +71,11 @@ const styles = StyleSheet.create({
 		// backgroundColor: 'rgba(255, 255, 255, 0.25)',
     },
     buttonLabel: {
-        fontSize: 12,
-        color: '#ddd',
+        fontSize: 16,
+        color: '#777',
     },
     activeButtonLabel: {
-        color: '#fff',
+        color: '#000',
         fontWeight: 'bold',
     },
 })
