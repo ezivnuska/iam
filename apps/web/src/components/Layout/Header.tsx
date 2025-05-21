@@ -7,7 +7,7 @@ import { IconButton, ProfileImage, Row, SigninForm } from '@/components'
 import { useNavigation, useNavigationState } from '@react-navigation/native'
 import AntDesign from '@expo/vector-icons/AntDesign'
 import Ionicons from '@expo/vector-icons/Ionicons'
-import { resolveResponsiveProp } from '@/styles'
+import { resolveResponsiveProp, Size } from '@/styles'
 import { useAuth, useModal } from '@/hooks'
 
 interface HeaderProps {
@@ -39,7 +39,7 @@ export const Header: React.FC<HeaderProps> = (props) => {
     const paddingHorizontal = resolveResponsiveProp({ xs: 8, sm: 8, md: 16, lg: 24 })
     const iconSize = resolveResponsiveProp({ xs: 24, sm: 24, md: 18, lg: 18 })
     const showLabel = resolveResponsiveProp({ xs: false, sm: true, md: true, lg: true })
-    const navSpacing = resolveResponsiveProp({ xs: 12, sm: 12, md: 24, lg: 48 })
+    const navSpacing = resolveResponsiveProp({ xs: Size.XS, sm: Size.S, md: Size.S, lg: Size.S })
     const showUsername = resolveResponsiveProp({ xs: false, sm: false, md: true, lg: true })
     const showAvatar = resolveResponsiveProp({ xs: true, sm: true, md: true, lg: true })
     const avatarSize = resolveResponsiveProp({ xs: 'xs', sm: 'sm', md: 'md', lg: 'lg' })
@@ -53,7 +53,7 @@ export const Header: React.FC<HeaderProps> = (props) => {
             <View style={styles.maxWidthContainer}>
                 <Row
                     flex={1}
-                    spacing={25}
+                    spacing={20}
                     align='center'
                     justify='space-between'
                     paddingHorizontal={paddingHorizontal}
