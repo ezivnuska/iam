@@ -32,9 +32,10 @@ const UserImageManager = () => {
         }
     }        
 
-    const handleSetAvatar = async (id: string) => {
+    const handleSetAvatar = async (id: string | undefined) => {
+        const newAvatarId = id === currentAvatarId ? undefined : id
         try {
-            await setAvatar(id)
+            await setAvatar(newAvatarId)
             hideModal()
         } catch (err) {
             console.log('Failed to set avatar')

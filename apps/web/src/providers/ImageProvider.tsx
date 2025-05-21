@@ -8,9 +8,9 @@ import type { Image } from '@iam/types'
 export type ImageContextType = {
 	images: Image[]
 	isLoading: boolean
-	currentAvatarId?: string
+	currentAvatarId?: string | null | undefined
 	loadImages: () => Promise<void>
-	setAvatar: (imageId?: string) => Promise<void>
+	setAvatar: (imageId?: string | null) => Promise<void>
 	deleteImage: (id: string) => Promise<void>
 	addImage: (image: Image) => void
 }
@@ -37,7 +37,7 @@ export const ImageProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 		}
 	}, [user])
 
-	const setAvatar = async (imageId?: string) => {
+	const setAvatar = async (imageId?: string | null | undefined) => {
 		if (!user) return
 
 		try {

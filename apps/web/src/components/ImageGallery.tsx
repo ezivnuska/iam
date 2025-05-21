@@ -19,9 +19,9 @@ const IMAGE_MARGIN = 8
 
 type ImageGalleryProps = {
 	images: Image[]
-	currentAvatarId?: string
+	currentAvatarId?: string | null | undefined
 	onDelete?: (id: string) => void
-	onSetAvatar?: (id: string) => void
+	onSetAvatar?: (id: string | undefined) => void
 }
 
 const ImageGallery = ({ images, onDelete, onSetAvatar, currentAvatarId }: ImageGalleryProps) => {
@@ -44,7 +44,8 @@ const ImageGallery = ({ images, onDelete, onSetAvatar, currentAvatarId }: ImageG
 	}
 
 	const renderItem = ({ item }: { item: Image }) => {
-		const isAvatar = item.id === currentAvatarId
+        const isAvatar = item.id === currentAvatarId
+		const newAvatarId = isAvatar ? undefined : item.id
 
 		return (
 			<TouchableOpacity
@@ -54,8 +55,8 @@ const ImageGallery = ({ images, onDelete, onSetAvatar, currentAvatarId }: ImageG
 							image={item}
 							onClose={hideModal}
 							onDelete={() => onDelete?.(item.id)}
-							onSetAvatar={() => onSetAvatar?.(item.id)}
-							isAvatar={isAvatar}
+							onSetAvatar={() => onSetAvatar?.(newAvatarId)}
+							isAvatar={item.id === currentAvatarId}
 						/>
 					)
 				}

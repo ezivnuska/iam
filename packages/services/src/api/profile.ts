@@ -4,7 +4,7 @@ import { api } from './http'
 
 export const getProfile = () => api.get('/profile').then(res => res.data)
 export const updateSelf = (data: any) => api.put(`/profile`, data).then(res => res.data)
-export const setAvatar = async (imageId: string | undefined) => {
+export const setAvatar = async (imageId: string | null | undefined) => {
     if (imageId === undefined) {
         // If the imageId is undefined, unset the avatar by making a DELETE request
         return api.delete('/profile/avatar')
