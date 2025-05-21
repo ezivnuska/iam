@@ -1,15 +1,8 @@
 // apps/web/src/components/Webcam.tsx
 
 import React, { useEffect, useRef, useState } from 'react'
-import {
-	Image,
-	Pressable,
-	StyleSheet,
-	Text,
-	View,
-	Platform,
-} from 'react-native'
-import { Button } from '@/components'
+import { Pressable, StyleSheet, View } from 'react-native'
+import { Button, PhotoCaptureButton, VideoCaptureButton } from '@/components'
 import Webcam from 'react-webcam'
 import AntDesign from '@expo/vector-icons/AntDesign'
 import Feather from '@expo/vector-icons/Feather'
@@ -47,16 +40,9 @@ const WebCamera: React.FC<WebCameraProps> = ({ onCapture, onCancel }) => {
         [setDevices]
     )    
     
-    useEffect(
-        () => {
-            navigator.mediaDevices.enumerateDevices().then(handleDevices);
-        },
-        [handleDevices]
-    )
-
     useEffect(() => {
-        console.log('devices', devices)
-    }, [devices])
+        navigator.mediaDevices.enumerateDevices().then(handleDevices)
+    }, [handleDevices])
     
     const handleDataAvailable = React.useCallback(
         ({ data }: BlobEvent) => {
@@ -68,10 +54,10 @@ const WebCamera: React.FC<WebCameraProps> = ({ onCapture, onCancel }) => {
     )
 
     const handleStartCaptureClick = React.useCallback(() => {
-        const stream = webcamRef.current?.stream;
+        const stream = webcamRef.current?.stream
         if (!stream) {
             console.error('No webcam stream available')
-            return;
+            return
         }
     
         setCapturing(true)
@@ -170,33 +156,6 @@ const WebCamera: React.FC<WebCameraProps> = ({ onCapture, onCancel }) => {
         </View>)
 }
 
-type PhotoCaptureButtonProps = {
-    onPress: () => void
-}
-const PhotoCaptureButton: React.FC<PhotoCaptureButtonProps> = ({ onPress }) => (
-    <Pressable onPress={onPress}>
-        {({ pressed }) => (
-            <View style={[styles.shutterBtn, { opacity: pressed ? 0.5 : 1 }]}>
-                <View style={[styles.shutterBtnInner, { backgroundColor: 'white' }]} />
-            </View>
-        )}
-    </Pressable>
-)
-
-type VideoCaptureButtonProps = {
-    capturing: boolean
-    onPress: () => void
-}
-const VideoCaptureButton: React.FC<VideoCaptureButtonProps> = ({ capturing, onPress }) => (
-    <Pressable onPress={onPress}>
-        {({ pressed }) => (
-            <View style={[styles.shutterBtn, { opacity: pressed ? 0.5 : 1 }]}>
-                <View style={[styles.shutterBtnInner, { backgroundColor: capturing ? 'red' : 'white' }]} />
-            </View>
-        )}
-    </Pressable>
-)
-
 export default WebCamera
 
 const styles = StyleSheet.create({
@@ -209,11 +168,6 @@ const styles = StyleSheet.create({
 	},
 	camera: {
         zIndex: 10,
-		// width: 300,
-		// height: 400,
-		// borderRadius: 8,
-		// overflow: 'hidden',
-		// position: 'relative',
 	},
 	closeButton: {
 		position: 'absolute',
@@ -231,20 +185,5 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		paddingHorizontal: 30,
         zIndex: 30,
-	},
-	shutterBtn: {
-		backgroundColor: 'transparent',
-		borderWidth: 5,
-		borderColor: 'white',
-		width: 55,
-		height: 55,
-		borderRadius: 30,
-		alignItems: 'center',
-		justifyContent: 'center',
-	},
-	shutterBtnInner: {
-		width: 40,
-		height: 40,
-		borderRadius: 20,
 	},
 })
