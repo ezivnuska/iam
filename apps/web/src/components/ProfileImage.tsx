@@ -34,7 +34,7 @@ export const ProfileImage: React.FC<ProfileImageProps> = ({ user, size = 'md' })
 	const fontSize = fontSizeMap[size]
 	const initials = user?.username?.charAt(0).toUpperCase() || '?'
     const avatar = user?.avatar
-
+    console.log('size', size)
 	if (avatar) {
 		return (
 			<View
