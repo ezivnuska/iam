@@ -13,7 +13,8 @@
         "format": "prettier --write .",
         "test": "jest",
         "webhook:start": "node scripts/webhook.js",
-        "sync:deploy": "bash scripts/sync-deploy-files.sh"
+        "sync:deploy": "bash scripts/sync-deploy-files.sh",
+        "postinstall": "pnpm --filter backend run postinstall"
     },
     "keywords": [],
     "author": "",
