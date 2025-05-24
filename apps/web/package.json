@@ -5,7 +5,7 @@
 	"type": "commonjs",
 	"scripts": {
 		"dev": "NODE_ENV=development webpack serve",
-		"build": "pnpm run clean && NODE_ENV=production webpack --mode production",
+        "build": "pnpm run clean && NODE_OPTIONS='--max-old-space-size=4096' webpack --mode production",
 		"clean": "rm -rf build tsconfig.tsbuildinfo dist .parcel-cache",
 		"test": "jest"
 	},

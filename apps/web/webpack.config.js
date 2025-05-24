@@ -162,7 +162,7 @@ module.exports = {
 		],
 		fullySpecified: false,
 	},
-	devtool: env !== 'production' ? 'eval' : 'source-map',
+    devtool: process.env.NODE_ENV === 'production' ? false : 'source-map',
 	devServer: {
 		compress: true,
 		port: process.env.PORT || 3000,
