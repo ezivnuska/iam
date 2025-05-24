@@ -15,27 +15,28 @@ interface HeaderProps {
     children?: ReactNode
 }
 
-const Brand = ({ ...props }) => (
-    <Pressable onPress={props.onPress} style={{ flex: 1, flexShrink: 1 }}>
-        <Row wrap={true} style={{ flexShrink: 1, minWidth: 50, overflow: 'hidden' }}>
-            <Text style={[styles.iam, { lineHeight: props.size }]}>iam</Text>
-            {props.showUsername && <Text style={[styles.eric, {lineHeight: props.size}]}>{`${props.user ? props.user.username : 'eric'}`}</Text>}
-        </Row>
-    </Pressable>
-)
+const Brand = ({ ...props }) => {
+    const fontSize = resolveResponsiveProp({ xs: 32, sm: 34, md: 36, lg: 38 })
+    return (
+        <Pressable onPress={props.onPress} style={{ flex: 1, flexShrink: 1 }}>
+            <Row wrap={true} style={{ flexShrink: 1, minWidth: 50, overflow: 'hidden' }}>
+                <Text style={[styles.iam, { fontSize, lineHeight: fontSize }]}>iam</Text>
+                {props.showUsername && <Text style={[styles.eric, { fontSize, lineHeight: fontSize }]}>{`${props.user ? props.user.username : 'eric'}`}</Text>}
+            </Row>
+        </Pressable>
+    )
+}
 
 export const Header: React.FC<HeaderProps> = (props) => {
     const { logout, isAuthenticated, user } = useAuth()
     const { showModal } = useModal()
     const navigation = useNavigation()
 
-    // const paddingHorizontal = resolveResponsiveProp({ xs: 8, sm: 8, md: 16, lg: 24 })
     const iconSize = resolveResponsiveProp({ xs: 24, sm: 24, md: 18, lg: 20 })
     const showLabel = resolveResponsiveProp({ xs: false, sm: true, md: true, lg: true })
     const navSpacing = resolveResponsiveProp({ xs: Size.M, sm: Size.M, md: Size.M, lg: Size.L })
-    const showUsername = resolveResponsiveProp({ xs: false, sm: false, md: true, lg: true })
-    const showAvatar = resolveResponsiveProp({ xs: true, sm: true, md: true, lg: true })
-    const avatarSize = resolveResponsiveProp({ xs: 'xs', sm: 'sm', md: 'md', lg: 'lg' }) as ProfileImageSize
+    const showUsername = resolveResponsiveProp({ xs: false, sm: true, md: true, lg: true })
+    const avatarSize = resolveResponsiveProp({ xs: 'sm', sm: 'md', md: 'md', lg: 'lg' }) as ProfileImageSize
 
     const currentRoute = useNavigationState((state) => state.routes[state.index].name)
 
@@ -55,8 +56,6 @@ export const Header: React.FC<HeaderProps> = (props) => {
                         user={user}
                         onPress={() => navigation.navigate('Home' as never)}
                         showUsername={showUsername}
-                        showAvatar={showAvatar}
-                        size={avatarSize}
                     />
 
                     {isAuthenticated ? (
@@ -127,12 +126,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
     },
 	iam: {
-		fontSize: 28,
 		fontWeight: 'bold',
         color: '#000',
 	},
 	eric: {
-		fontSize: 28,
 		fontWeight: 'bold',
         color: '#777',
 	},
