@@ -29,7 +29,7 @@ export const PostList = () => {
                             </View>
                         )}
                         <Column flex={1} spacing={10} paddingBottom={10}>
-                            <Text style={{ fontWeight: 'bold', lineHeight: 24 }}>{item.user.username}</Text>
+                            <Text style={{ fontSize: 24, fontWeight: 'bold', lineHeight: 24 }}>{item.user.username}</Text>
                             <Autolink
                                 text={item.content}
                                 component={View}
