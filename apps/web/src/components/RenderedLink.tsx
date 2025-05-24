@@ -28,6 +28,7 @@ export const RenderedLink: React.FC<RenderedLinkProps> = ({ url }) => {
 
     return data ? (
         <Column spacing={12}>
+            <Text>{url}</Text>
             <Text>{data.title}</Text>
             <Text>{data.description}</Text>
             <Image
