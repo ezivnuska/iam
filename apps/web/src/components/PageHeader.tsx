@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { View, Text, StyleSheet, StyleProp, TextStyle, ViewStyle } from 'react-native'
+import { Size } from '@/styles'
 
 export interface PageHeaderProps {
 	title: string
@@ -27,6 +28,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
 const styles = StyleSheet.create({
 	container: {
 		marginVertical: 16,
+        paddingHorizontal: Size.M,
 	},
 	title: {
 		fontSize: 24,
@@ -35,7 +37,7 @@ const styles = StyleSheet.create({
 	},
 	subtitle: {
 		marginTop: 4,
-		fontSize: 16,
+		fontSize: 14,
 		color: '#666',
 	},
 })

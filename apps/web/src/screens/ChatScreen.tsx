@@ -1,10 +1,11 @@
 // apps/web/src/screens/ChatScreen.tsx
 
 import React, { useRef, useState, useEffect } from 'react'
-import { TextInput, TextInput as RNTextInput, Text, StyleSheet } from 'react-native'
+import { TextInput, TextInput as RNTextInput, Text, StyleSheet, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { PageHeader, PageLayout } from '@/components'
+import { Column, PageLayout } from '@/components'
 import { io } from 'socket.io-client'
+import { horizontalPadding } from '@/styles'
 
 const socket = io(process.env.SOCKET_URL, {
     path: '/socket.io',
@@ -43,29 +44,30 @@ export const ChatScreen = () => {
 
 	return (
         <PageLayout>
-            <KeyboardAwareScrollView
-                style={styles.container}
-                contentContainerStyle={{ flexGrow: 1 }}
-                enableOnAndroid={true}
-                extraScrollHeight={100}
-                keyboardShouldPersistTaps="handled"
-            >
-                {messages.map((msg, idx) => (
-                    <Text key={idx} style={styles.message}>
-                        {msg.text}
-                    </Text>
-                ))}
-            </KeyboardAwareScrollView>
-            <TextInput
-                value={input}
-                onChangeText={setInput}
-                onSubmitEditing={sendMessage}
-                placeholder='Say something...'
-                style={styles.input}
-                returnKeyType='send'
-                onFocus={() => scrollToInput(inputRef)}
-                ref={inputRef}
-            />
+            <Column flex={1} style={horizontalPadding}>
+                <KeyboardAwareScrollView
+                    style={styles.container}
+                    enableOnAndroid={true}
+                    extraScrollHeight={100}
+                    keyboardShouldPersistTaps="handled"
+                >
+                    {messages.map((msg, idx) => (
+                        <Text key={idx} style={styles.message}>
+                            {msg.text}
+                        </Text>
+                    ))}
+                </KeyboardAwareScrollView>
+                <TextInput
+                    value={input}
+                    onChangeText={setInput}
+                    onSubmitEditing={sendMessage}
+                    placeholder='Say something...'
+                    style={styles.input}
+                    returnKeyType='send'
+                    onFocus={() => scrollToInput(inputRef)}
+                    ref={inputRef}
+                />
+            </Column>
         </PageLayout>
 	)
 }

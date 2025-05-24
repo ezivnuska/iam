@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 	},
 	icon: {
-		marginBottom: 4,
+		marginBottom: 0,
 	},	
 	text: {
 		color: '#777',
@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
     buttonLabel: {
         fontSize: 14,
         color: '#777',
+        lineHeight: 12,
     },
     activeButtonLabel: {
         color: '#000',

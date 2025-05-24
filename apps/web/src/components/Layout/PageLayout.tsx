@@ -19,7 +19,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
 
 			<ScrollView
 				style={[styles.mainContent, { maxHeight: height - 100 }]}
-				contentContainerStyle={[styles.scrollContent, { paddingHorizontal }]}
+				contentContainerStyle={styles.scrollContent}
 				showsVerticalScrollIndicator={false}
 			>
                 {children}

@@ -16,7 +16,6 @@ export interface UserDocument extends Document {
 	role: UserRole
 	bio: string
 	avatar?: Types.ObjectId | ImageDocument
-    avatarUrl?: string
 	password: string
 	verified: boolean
 	verifyToken?: string
@@ -35,7 +34,6 @@ export interface User {
 	role: UserRole
 	bio: string
 	avatar?: Image
-	avatarUrl?: string // optional if needed for UI
 	verified: boolean
 	createdAt: string
 	updatedAt: string
@@ -45,5 +43,4 @@ export interface User {
 export interface PartialUser {
 	username?: string
 	avatar?: Image
-    avatarUrl?: string
 }

@@ -43,6 +43,7 @@ const ImageSchema = new Schema<ImageDocument>(
 )
 
 ImageSchema.virtual('url').get(function (this: ImageDocument) {
+	if (!this.username || !this.filename) return ''
 	return `/images/users/${this.username}/${this.filename}`
 })
 

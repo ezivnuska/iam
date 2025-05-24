@@ -26,6 +26,7 @@ export const PostsProvider = ({ children }: { children: React.ReactNode }) => {
 		setError(null)
 		try {
 			const data = await postService.getAllPosts()
+            console.log('post data', data)
 			setPosts(data)
 		} catch (err: any) {
 			console.error('Failed to load posts:', err)

@@ -1,11 +1,12 @@
 // apps/web/src/components/PostList.tsx
 
 import React, { useEffect } from 'react'
-import { FlatList, Pressable, Text } from 'react-native'
+import { FlatList, Pressable, Text, View } from 'react-native'
 import { useAuth, usePosts } from '@/hooks'
 import { Column, ProfileImage, Row } from '@/components'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { PartialUser } from '@iam/types'
+import { Size } from '@/styles'
 
 export const PostList = () => {
 	const { user } = useAuth()
@@ -20,9 +21,11 @@ export const PostList = () => {
 			renderItem={({ item }) => {
                 const isAuthor = user?.id === item.user._id
                 return (
-                    <Row spacing={10} align='flex-start'>
+                    <Row spacing={10} paddingHorizontal={Size.M} align='flex-start'>
                         {item.user && (
-                            <ProfileImage user={item.user as PartialUser} size='xs' />
+                            <View style={{ alignSelf: 'flex-start' }}>
+                                <ProfileImage user={item.user as PartialUser} size='xs' />
+                            </View>
                         )}
                         <Column flex={1} spacing={10} paddingBottom={10}>
                             <Text style={{ fontWeight: 'bold', lineHeight: 24 }}>{item.user.username}</Text>

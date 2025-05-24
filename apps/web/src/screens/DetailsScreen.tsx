@@ -3,9 +3,10 @@
 import React, { useEffect, useState } from 'react'
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import { useRoute } from '@react-navigation/native'
-import { PageHeader, PageLayout, Row, Column } from '../components'
+import { PageLayout, ProfileImage, Row, Column } from '../components'
 import { User } from '@iam/types'
 import { getUserById } from '@services'
+import { Size } from '@/styles'
 
 type DetailsParams = {
     id: string
@@ -33,31 +34,45 @@ export const DetailsScreen = () => {
         fetchDetails()
     }, [])
 
+    if (loading) {
+        return (
+            <View
+                style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+            >
+                <ActivityIndicator size={50} />        
+            </View>
+        )
+    }
+
 	return (
         <PageLayout>
-            {loading
-                ? (
-                    <View style={{
-                        flex: 1,
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}>
-                        <ActivityIndicator size={50} />        
-                    </View>
-                ) : (
-                    <>
-                        <PageHeader title={`Profile: ${userDetails?.username || ''}`} />
-                        <Column
-                            spacing={10}
-                            align='flex-start'
-                        >
+            {userDetails && (
+                <Column
+                    paddingVertical={Size.S}
+                    paddingHorizontal={Size.M}
+                    flex={1}
+                    spacing={15}
+                >
+                    <Row spacing={15}>
+                        <ProfileImage
+                            user={userDetails}
+                            size='lg'
+                        />
+                        <Column spacing={5}>
                             <Text style={[styles.text, styles.username]}>{userDetails?.username}</Text>
                             <Text style={[styles.text, styles.email]}>{userDetails?.email}</Text>
                         </Column>
-                    </>
-                )
-            }
+                    </Row>
+                    <Row spacing={10}>
+                        <Text style={styles.text}>{userDetails?.bio || 'No bio yet.'}</Text>
+                    </Row>
+                </Column>
+            )}
         </PageLayout>
     )
 }

@@ -17,7 +17,7 @@ export const UserProfileCard = ({
 }: UserProfileCardProps) => {
 	const Container = onPress ? Pressable : View
 
-	const uri = user.avatarUrl ?? getPlaceholder(user.username)
+    const uri = user.avatar?.url ?? getPlaceholder(user.username)
 
 	return (
 		<Container style={styles.container} onPress={onPress}>

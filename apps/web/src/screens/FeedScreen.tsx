@@ -5,6 +5,7 @@ import { Pressable, StyleSheet, Text } from 'react-native'
 import { Column, CreatePostForm, PageLayout, PostList, Row } from '@/components'
 import { useAuth, useModal } from '@/hooks'
 import Ionicons from '@expo/vector-icons/Ionicons'
+import { Size } from '@/styles'
 
 export const FeedScreen = () => {
 
@@ -20,7 +21,7 @@ export const FeedScreen = () => {
 	return (
         <PageLayout>
             <Column paddingVertical={15} spacing={15}>
-                <Row spacing={10}>
+                <Row spacing={10} paddingHorizontal={Size.M}>
                     <Text style={styles.title}>Feed</Text>
                     {isAuthenticated && (
                         <Pressable onPress={openCreatePostModal}>

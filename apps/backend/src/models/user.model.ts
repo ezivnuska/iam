@@ -17,26 +17,7 @@ const UserSchema = new Schema<UserDocument>({
 	resetPasswordToken: String,
 	resetPasswordExpires: Date,
 }, {
-	timestamps: true,
-    toJSON: {
-        virtuals: true,
-    },
+	timestamps: true
 })
-
-function isPopulatedAvatar(
-	obj: unknown
-): obj is { filename: string } {
-	return typeof obj === 'object' && obj !== null && 'filename' in obj
-}
-
-UserSchema.virtual('avatarUrl').get(function () {
-	if (isPopulatedAvatar(this.avatar) && this.username) {
-		return `/images/users/${this.username}/${this.avatar.filename}`
-	}
-	return undefined
-})
-
-UserSchema.set('toJSON', { virtuals: true })
-UserSchema.set('toObject', { virtuals: true })
 
 export const UserModel = mongoose.model<UserDocument>('User', UserSchema)

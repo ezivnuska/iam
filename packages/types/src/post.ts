@@ -6,9 +6,16 @@ export interface Post {
 	createdAt: string
 	updatedAt: string
 	user: {
-		_id: string
-		username: string
-		avatar?: string
-		avatarUrl?: string
-	}
+        _id: string
+        username: string
+        avatar?: {
+            filename: string
+            variants?: {
+                size: string
+                filename: string
+                width: number
+                height: number
+            }[]
+        }
+    }    
 }

@@ -9,24 +9,17 @@ import AntDesign from '@expo/vector-icons/AntDesign'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { resolveResponsiveProp, Size } from '@/styles'
 import { useAuth, useModal } from '@/hooks'
+import type { ProfileImageSize } from '@/components'
 
 interface HeaderProps {
     children?: ReactNode
 }
 
 const Brand = ({ ...props }) => (
-    <Pressable onPress={props.onPress} style={{ flexShrink: 1 }}>
-        <Row spacing={10} style={{ flexShrink: 1, flexWrap: 'nowrap' }} wrap={false}>
-            {props.showAvatar && props.user && (
-                <ProfileImage
-                    user={props.user}
-                    size={props.size}
-                />
-            )}
-            <Row wrap={true} style={{ flexShrink: 1, minWidth: 50, overflow: 'hidden' }}>
-                <Text style={[styles.iam, {lineHeight: props.size}]}>iam</Text>
-                {props.showUsername && <Text style={[styles.eric, {lineHeight: props.size}]}>{`${props.user ? props.user.username : 'eric'}`}</Text>}
-            </Row>
+    <Pressable onPress={props.onPress} style={{ flex: 1, flexShrink: 1 }}>
+        <Row wrap={true} style={{ flexShrink: 1, minWidth: 50, overflow: 'hidden' }}>
+            <Text style={[styles.iam, { lineHeight: props.size }]}>iam</Text>
+            {props.showUsername && <Text style={[styles.eric, {lineHeight: props.size}]}>{`${props.user ? props.user.username : 'eric'}`}</Text>}
         </Row>
     </Pressable>
 )
@@ -36,13 +29,13 @@ export const Header: React.FC<HeaderProps> = (props) => {
     const { showModal } = useModal()
     const navigation = useNavigation()
 
-    const paddingHorizontal = resolveResponsiveProp({ xs: 8, sm: 8, md: 16, lg: 24 })
-    const iconSize = resolveResponsiveProp({ xs: 24, sm: 24, md: 18, lg: 18 })
+    // const paddingHorizontal = resolveResponsiveProp({ xs: 8, sm: 8, md: 16, lg: 24 })
+    const iconSize = resolveResponsiveProp({ xs: 24, sm: 24, md: 18, lg: 20 })
     const showLabel = resolveResponsiveProp({ xs: false, sm: true, md: true, lg: true })
     const navSpacing = resolveResponsiveProp({ xs: Size.M, sm: Size.M, md: Size.M, lg: Size.L })
     const showUsername = resolveResponsiveProp({ xs: false, sm: false, md: true, lg: true })
     const showAvatar = resolveResponsiveProp({ xs: true, sm: true, md: true, lg: true })
-    const avatarSize = resolveResponsiveProp({ xs: 'xs', sm: 'sm', md: 'md', lg: 'lg' })
+    const avatarSize = resolveResponsiveProp({ xs: 'xs', sm: 'sm', md: 'md', lg: 'lg' }) as ProfileImageSize
 
     const currentRoute = useNavigationState((state) => state.routes[state.index].name)
 
@@ -53,10 +46,8 @@ export const Header: React.FC<HeaderProps> = (props) => {
             <View style={styles.maxWidthContainer}>
                 <Row
                     flex={1}
-                    spacing={20}
                     align='center'
                     justify='space-between'
-                    paddingHorizontal={paddingHorizontal}
                     wrap={false}
                     style={{ zIndex: 100, flexWrap: 'nowrap' }}
                 >
@@ -68,7 +59,7 @@ export const Header: React.FC<HeaderProps> = (props) => {
                         size={avatarSize}
                     />
 
-                    {isAuthenticated && (
+                    {isAuthenticated ? (
                         <Row
                             flex={5}
                             spacing={navSpacing}
@@ -98,34 +89,22 @@ export const Header: React.FC<HeaderProps> = (props) => {
                                 active={currentRoute === 'UserList'}
                                 showLabel={showLabel}
                             />
-                            <IconButton
-                                label='Profile'
-                                onPress={() => navigation.navigate('Profile' as never)}
-                                icon={<Ionicons name='person-circle-outline' size={iconSize} color='#777' />}
-                                active={currentRoute === 'Profile'}
-                                showLabel={showLabel}
-                            />
+                            {user && (
+                                <ProfileImage
+                                    user={user}
+                                    size={avatarSize}
+                                    onPress={() => navigation.navigate('Profile' as never)}
+                                />
+                            )}
                         </Row>
+                    ) : (
+                        <IconButton
+                            icon={<AntDesign name='login' size={iconSize} color='#777' />}
+                            label='Sign In'
+                            onPress={showSigninModal}
+                            showLabel={showLabel}
+                        />
                     )}
-
-                    {isAuthenticated
-                        ? (  
-                            <IconButton
-                                icon={<Ionicons name='exit-outline' size={iconSize} color='#777' />}
-                                label='Sign Out'
-                                onPress={logout}
-                                showLabel={showLabel}
-                            />
-                        )
-                        : (
-                            <IconButton
-                                icon={<AntDesign name='login' size={iconSize} color='#777' />}
-                                label='Sign In'
-                                onPress={showSigninModal}
-                                showLabel={showLabel}
-                            />
-                        )
-                    }
                 </Row>
             </View>
         </View>
@@ -145,6 +124,7 @@ const styles = StyleSheet.create({
         maxWidth: MAX_WIDTH,
         alignSelf: 'center',
         marginHorizontal: 'auto',
+        paddingHorizontal: 16,
     },
 	iam: {
 		fontSize: 28,

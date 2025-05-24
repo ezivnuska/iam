@@ -4,10 +4,11 @@ import React from 'react'
 import { StyleSheet, Text, View, Pressable } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import {
+    Column,
     EditProfileForm,
+    IconButton,
     PageLayout,
     ProfileImage,
-    Column,
     UserImageManager,
     Row,
 } from '@/components'
@@ -15,11 +16,13 @@ import { useAuth, useModal } from '../hooks'
 import { Feather } from '@expo/vector-icons'
 import type { StackNavigationProp } from '@react-navigation/stack'
 import type { RootStackParamList } from '@iam/types'
+import Ionicons from '@expo/vector-icons/Ionicons'
+import { Size } from '@/styles'
 
 type ProfileScreenNavProp = StackNavigationProp<RootStackParamList, 'Profile'>
 
 export const ProfileScreen = () => {
-	const { user } = useAuth()
+	const { logout, user } = useAuth()
 	const navigation = useNavigation<ProfileScreenNavProp>()
 	const { showModal } = useModal()
 
@@ -36,19 +39,28 @@ export const ProfileScreen = () => {
 	return (
 		<PageLayout>
             <Column
-                paddingVertical={15}
+                paddingVertical={Size.S}
+                paddingHorizontal={Size.M}
                 flex={1}
                 spacing={15}
             >
-                <Row spacing={15}>
-                    <ProfileImage
-                        user={user}
-                        size='lg'
+                <Row>
+                    <Row flex={1} spacing={15}>
+                        <ProfileImage
+                            user={user}
+                            size='lg'
+                        />
+                        <Column spacing={5}>
+                            <Text style={[styles.text, styles.username]}>{user?.username}</Text>
+                            <Text style={[styles.text, styles.email]}>{user?.email}</Text>
+                        </Column>
+                    </Row>
+                    <IconButton
+                        icon={<Ionicons name='exit-outline' size={Size.L} color='#777' />}
+                        label='Sign Out'
+                        onPress={logout}
+                        showLabel={true}
                     />
-                    <Column spacing={5}>
-                        <Text style={[styles.text, styles.username]}>{user?.username}</Text>
-                        <Text style={[styles.text, styles.email]}>{user?.email}</Text>
-                    </Column>
                 </Row>
                 <Row spacing={10}>
                     <Text style={styles.text}>{user?.bio || 'No bio yet.'}</Text>

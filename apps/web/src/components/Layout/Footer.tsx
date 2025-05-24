@@ -4,10 +4,9 @@ import React from 'react'
 import { Text, StyleSheet, View } from 'react-native'
 import { Row } from '@/components'
 import { MAX_WIDTH } from './constants'
-import { resolveResponsiveProp } from '@/styles'
+import { Size } from '@/styles'
 
 export const Footer = () => {
-    const paddingHorizontal = resolveResponsiveProp({ xs: 8, sm: 8, md: 16, lg: 24 })
 	return (
         <View style={styles.container}>
             <View style={styles.maxWidthContainer}>
@@ -16,7 +15,7 @@ export const Footer = () => {
                     spacing={25}
                     align='center'
                     justify='space-between'
-                    paddingHorizontal={paddingHorizontal}
+                    paddingHorizontal={Size.M}
                     wrap={false}
                     style={{ zIndex: 200, flexWrap: 'nowrap' }}
                 >
@@ -32,7 +31,7 @@ const styles = StyleSheet.create({
         width: '100%',
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: 10,
+        paddingVertical: Size.S,
         backgroundColor: '#fff',
     },
     maxWidthContainer: {
