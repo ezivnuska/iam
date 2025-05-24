@@ -7,15 +7,18 @@ import {
 	createPost,
 	updatePost,
 	deletePost,
+    scrapePost,
 } from '../controllers/post.controller'
 import { requireAuth } from '../middlewares/auth.middleware'
+import { asyncHandler } from '../utils/asyncHandler'
 
 const router: Router = Router()
 
-router.get('/', getAllPosts)
-router.get('/:id', getPostById)
-router.post('/', requireAuth(), createPost)
-router.put('/:id', requireAuth(), updatePost)
-router.delete('/:id', requireAuth(), deletePost)
+router.post('/scrape', asyncHandler(scrapePost))
+router.get('/', asyncHandler(getAllPosts))
+router.get('/:id', asyncHandler(getPostById))
+router.post('/', requireAuth(), asyncHandler(createPost))
+router.put('/:id', requireAuth(), asyncHandler(updatePost))
+router.delete('/:id', requireAuth(), asyncHandler(deletePost))
 
 export default router

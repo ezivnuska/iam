@@ -26,7 +26,6 @@ export const PostsProvider = ({ children }: { children: React.ReactNode }) => {
 		setError(null)
 		try {
 			const data = await postService.getAllPosts()
-            console.log('post data', data)
 			setPosts(data)
 		} catch (err: any) {
 			console.error('Failed to load posts:', err)
@@ -48,10 +47,6 @@ export const PostsProvider = ({ children }: { children: React.ReactNode }) => {
 			throw err
 		}
 	}
-
-	// useEffect(() => {
-	// 	refreshPosts()
-	// }, [])
 
 	return (
 		<PostsContext.Provider value={{ posts, loading, error, refreshPosts, addPost, setPosts, deletePost }}>

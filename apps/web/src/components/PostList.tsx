@@ -3,10 +3,11 @@
 import React, { useEffect } from 'react'
 import { FlatList, Pressable, Text, View } from 'react-native'
 import { useAuth, usePosts } from '@/hooks'
-import { Column, ProfileImage, Row } from '@/components'
+import { Column, RenderedLink, ProfileImage, Row } from '@/components'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { PartialUser } from '@iam/types'
 import { Size } from '@/styles'
+import Autolink from 'react-native-autolink'
 
 export const PostList = () => {
 	const { user } = useAuth()
@@ -29,7 +30,11 @@ export const PostList = () => {
                         )}
                         <Column flex={1} spacing={10} paddingBottom={10}>
                             <Text style={{ fontWeight: 'bold', lineHeight: 24 }}>{item.user.username}</Text>
-                            <Text>{item.content}</Text>
+                            <Autolink
+                                text={item.content}
+                                component={View}
+                                renderLink={(text, match) => <RenderedLink url={match.getAnchorHref()} />}
+                            />
                         </Column>
                         {isAuthor && (
                             <Pressable onPress={() => deletePost(item._id)} style={{ alignSelf: 'flex-start' }}>

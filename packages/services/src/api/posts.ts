@@ -8,3 +8,4 @@ export const getPostById = async (id: string): Promise<Post> => api.get(`/posts/
 export const createPost = async (content: string): Promise<Post> => api.post('/posts', { content }, { withCredentials: true }).then((res) => res.data)
 export const updatePost = async (id: string, content: string): Promise<Post> => api.put(`/posts/${id}`, { content }, { withCredentials: true }).then((res) => res.data)
 export const deletePost = async (id: string): Promise<{ success: boolean }> => api.delete(`/posts/${id}`, { withCredentials: true }).then((res) => res.data)
+export const scrape = async (url: string) => api.post('/posts/scrape', { url }).then((res) => res.data)
