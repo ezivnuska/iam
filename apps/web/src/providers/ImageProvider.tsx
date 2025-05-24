@@ -41,8 +41,8 @@ export const ImageProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 		if (!user) return
 
 		try {
-			await apiSetAvatar(imageId)
-			const updatedUser = await getUserById(user.id)
+			const { id } = await apiSetAvatar(imageId)
+			const updatedUser = await getUserById(id)
 			setUser(updatedUser)
 		} catch (err) {
 			console.error('Failed to update avatar:', err)

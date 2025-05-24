@@ -76,7 +76,7 @@ export const clearAvatar: RequestHandler = async (req, res, next) => {
 	}
     
 	try {
-		const updatedUser = await userService.setAvatarImage(req.user.username, undefined)
+		const updatedUser = await userService.clearAvatar(req.user.username)
 		res.json(normalizeUser(updatedUser))
 	} catch (err) {
 		next(err)

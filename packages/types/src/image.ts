@@ -4,7 +4,7 @@ import { Document, Types } from 'mongoose'
 
 export interface ImageVariant {
     size: string
-    filename: string     // add this line
+    filename: string
     width: number
     height: number
 }

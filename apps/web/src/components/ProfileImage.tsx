@@ -35,32 +35,13 @@ export const ProfileImage: React.FC<ProfileImageProps> = ({ user, onPress = null
 	const fontSize = fontSizeMap[size]
 	const initials = user?.username?.charAt(0).toUpperCase() || '?'
     const avatar = user?.avatar
-	// if (avatar) {
-	// 	return (
-	// 		<Pressable
-    //             onPress={() => navigation.navigate('Profile' as never)}
-	// 			style={{
-	// 				width: imageSize,
-	// 				height: imageSize,
-	// 				borderRadius: imageSize / 2,
-	// 				overflow: 'hidden',
-	// 				backgroundColor: '#ddd',
-	// 				alignSelf: 'flex-start',
-	// 			}}
-	// 		>
-    //             <AutoSizeImage
-    //                 image={avatar}
-    //                 style={{ width: imageSize, height: imageSize }}
-    //             />
-    //         </Pressable>
-	// 	)
-	// }
 
     const renderAvatar = () =>
         avatar ? (
             <AutoSizeImage
                 image={avatar}
                 style={{ width: imageSize, height: imageSize }}
+                forceSquare
             />
         ) : <Text style={{ fontSize, color: '#555', fontWeight: 'bold' }}>{initials}</Text>
     
@@ -80,20 +61,6 @@ export const ProfileImage: React.FC<ProfileImageProps> = ({ user, onPress = null
             {renderAvatar()}
         </Pressable>
     )
-	// return (
-	// 	<View
-	// 		style={{
-	// 			width: imageSize,
-	// 			height: imageSize,
-	// 			borderRadius: imageSize / 2,
-	// 			backgroundColor: '#ccc',
-	// 			justifyContent: 'center',
-	// 			alignItems: 'center',
-	// 		}}
-	// 	>
-	// 		<Text style={{ fontSize, color: '#555', fontWeight: 'bold' }}>{initials}</Text>
-	// 	</View>
-	// )
 }
 
 const styles = StyleSheet.create({

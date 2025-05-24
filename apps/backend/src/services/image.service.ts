@@ -56,23 +56,37 @@ export const processAndSaveImage = async ({
 	const filenameBase = `${Date.now()}-${Math.round(Math.random() * 1e6)}.webp`
 	const variants: ImageVariant[] = []
 
-	for (const [size, width] of Object.entries(VARIANTS)) {
-		if (size === 'thumb' && !generateThumbnail) continue
-
-		const variantFilename = `${size}-${filenameBase}`
-		const outputPath = path.join(uploadDir, variantFilename)
-
-		const resizedSharp = sharp(fileBuffer).resize(width).webp({ quality: size === 'thumb' ? 50 : 80 })
-		const metadata = await resizedSharp.metadata()
-		await resizedSharp.toFile(outputPath)
-
-		variants.push({
-			size,
-			filename: variantFilename,
-			width: metadata.width || 0,
-			height: metadata.height || 0,
-		})
+	const originalMetadata = await sharp(fileBuffer).metadata()    
+	if (!originalMetadata.width || !originalMetadata.height) {
+		throw new Error('Could not get original image dimensions')
 	}
+
+	for (const [size, width] of Object.entries(VARIANTS)) {
+        if (size === 'thumb' && !generateThumbnail) continue
+    
+        if (width >= originalMetadata.width) continue
+    
+        const variantFilename = `${size}-${filenameBase}`
+        const outputPath = path.join(uploadDir, variantFilename)
+    
+        const resizedSharp = sharp(fileBuffer)
+            .resize({ width, withoutEnlargement: true })
+            .webp({ quality: size === 'thumb' ? 50 : 80 })
+    
+        await resizedSharp.toFile(outputPath)
+    
+        const resizedMetadata = await sharp(outputPath).metadata()
+        if (!resizedMetadata.width || !resizedMetadata.height) {
+            throw new Error(`Failed to get resized dimensions for ${size} variant`)
+        }
+    
+        variants.push({
+            size,
+            filename: variantFilename,
+            width: resizedMetadata.width,
+            height: resizedMetadata.height,
+        })
+    }    
 
 	return await ImageModel.create({
 		filename: filenameBase,

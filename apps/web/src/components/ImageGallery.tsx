@@ -43,6 +43,10 @@ const ImageGallery = ({ images, onDelete, onSetAvatar, currentAvatarId }: ImageG
 		}
 	}
 
+    const handleSetAvatar = (avatarId: string | undefined) => {
+        onSetAvatar?.(avatarId)
+    }
+
 	const renderItem = ({ item }: { item: Image }) => {
         const isAvatar = item.id === currentAvatarId
 		const newAvatarId = isAvatar ? undefined : item.id
@@ -52,17 +56,17 @@ const ImageGallery = ({ images, onDelete, onSetAvatar, currentAvatarId }: ImageG
 				onPress={() =>
 					showModal(
 						<FullScreenImage
-							image={item}
-							onClose={hideModal}
-							onDelete={() => onDelete?.(item.id)}
-							onSetAvatar={() => onSetAvatar?.(newAvatarId)}
-							isAvatar={item.id === currentAvatarId}
-						/>
+                            image={item}
+                            onClose={hideModal}
+                            onDelete={onDelete ? () => onDelete(item.id) : undefined}
+                            onSetAvatar={() => handleSetAvatar(newAvatarId)}
+                            isAvatar={isAvatar}
+                        />
 					)
 				}
 				style={[styles.imageBlock, imageSize ? { width: imageSize } : null]}
 			>
-				<View style={[styles.imageWrapper, isAvatar && styles.avatarHighlight]}>
+				<View style={[styles.imageWrapper, isAvatar && onSetAvatar && styles.avatarHighlight]}>
 					<AutoSizeImage image={item} />
 				</View>
 			</TouchableOpacity>
@@ -91,68 +95,6 @@ const ImageGallery = ({ images, onDelete, onSetAvatar, currentAvatarId }: ImageG
 		</View>
 	)
 }
-
-// const FullScreenImage = ({
-// 	image,
-// 	onClose,
-// 	onDelete,
-// 	onSetAvatar,
-// 	isAvatar,
-// }: {
-// 	image: Image
-// 	onClose: () => void
-// 	onDelete?: () => void
-// 	onSetAvatar?: () => void
-// 	isAvatar?: boolean
-// }) => {
-// 	const paddingHorizontal = resolveResponsiveProp({ xs: 8, sm: 8, md: 16, lg: 24 })
-
-// 	// Use original image dimensions from variants (choose best variant or fallback)
-// 	const originalWidth = image.variants?.[0]?.width ?? 0
-// 	const originalHeight = image.variants?.[0]?.height ?? 0
-
-// 	// Get responsive width and height
-// 	const { width, height } = useResponsiveImageSize(originalWidth, originalHeight, 40)
-
-// 	return (
-// 		<View style={[StyleSheet.absoluteFill, styles.fullscreenContainer]}>
-// 			<View style={[StyleSheet.absoluteFill, styles.fullscreenContainer]}>
-// 				<View style={[styles.header, { paddingHorizontal }]}>
-// 					<Row justify='flex-start' spacing={16}>
-// 						{onDelete && (
-// 							<Pressable onPress={onDelete}>
-// 								<Ionicons name='trash-bin' size={28} color='white' />
-// 							</Pressable>
-// 						)}
-// 						{!isAvatar && onSetAvatar && (
-// 							<Pressable onPress={onSetAvatar}>
-// 								<Ionicons name='person-circle-outline' size={28} color='white' />
-// 							</Pressable>
-// 						)}
-// 					</Row>
-// 					<Pressable onPress={onClose}>
-// 						<Ionicons name='close-sharp' size={28} color='white' />
-// 					</Pressable>
-// 				</View>
-// 				<View
-// 					style={{
-// 						flex: 1,
-// 						justifyContent: 'center',
-// 						alignItems: 'center',
-// 						paddingHorizontal,
-// 					}}
-// 				>
-// 					{/* Apply responsive width and height */}
-// 					<AutoSizeImage
-// 						image={image}
-// 						style={{ width, height }}
-// 						resizeMode='contain'
-// 					/>
-// 				</View>
-// 			</View>
-// 		</View>
-// 	)
-// }
 
 const styles = StyleSheet.create({
 	gallery: {

@@ -3,6 +3,7 @@
 import { UserModel } from '../models/user.model'
 import { ImageModel } from '../models/image.model'
 import { comparePassword, hashPassword } from '../utils/password'
+import { ObjectId } from 'mongoose'
 
 export const findAllUsers = async () => {
 	return await UserModel.find()
@@ -87,18 +88,9 @@ export const changeUserPassword = async (userId: string, current: string, next: 
 	return true
 }
 
-export const setAvatarImage = async (username: string, imageId?: string) => {
-	const user = await UserModel.findOne({ username })
-	if (!user) throw new Error('User not found')
+export const setAvatarImage = async (username: string, imageId?: string) => 
+    await UserModel.findOneAndUpdate({ username }, { avatar: imageId }).populate('avatar')
+	
 
-	if (imageId) {
-		const image = await ImageModel.findById(imageId)
-		if (!image) throw new Error('Image not found')
-		user.avatar = image._id
-	} else {
-		user.avatar = undefined // Remove avatar
-	}
-
-	await user.save()
-	return user
-}
+export const clearAvatar = async (username: string) => 
+    await UserModel.findOneAndUpdate({ username }, { avatar: null })

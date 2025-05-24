@@ -25,8 +25,12 @@ const FullScreenImage = ({
 	const paddingHorizontal = resolveResponsiveProp({ xs: 8, sm: 8, md: 16, lg: 24 })
 	const { width: screenWidth, height: screenHeight } = useWindowDimensions()
 
+	// Calculate responsive size preserving aspect ratio
+	let displayWidth = screenWidth - paddingHorizontal * 2
+	let displayHeight = screenHeight - paddingHorizontal * 2
+
 	// Get the best variant URL using your hook
-	const bestVariantUrl = useBestVariant(image)
+	const bestVariantUrl = useBestVariant(image, displayWidth)
 
 	// You can also get the variant details (width/height) from image.variants here if needed
 	// For example, find the variant matching bestVariantUrl:
@@ -34,10 +38,6 @@ const FullScreenImage = ({
 		// Assuming getBestVariantUrl returns a URL that includes the variant filename
 		return bestVariantUrl.includes(variant.filename)
 	})
-
-	// Calculate responsive size preserving aspect ratio
-	let displayWidth = screenWidth - paddingHorizontal * 2
-	let displayHeight = screenHeight - paddingHorizontal * 2
 
 	if (bestVariant?.width && bestVariant?.height) {
 		const aspectRatio = bestVariant.width / bestVariant.height
@@ -53,28 +53,28 @@ const FullScreenImage = ({
 		<View style={[StyleSheet.absoluteFill, styles.fullscreenContainer]}>
 			<View style={[StyleSheet.absoluteFill, styles.fullscreenContainer]}>
 				<View style={[styles.header, { paddingHorizontal }]}>
-					<Row justify="flex-start" spacing={16}>
+					<Row justify='flex-start' spacing={16}>
 						{onDelete && (
 							<Pressable onPress={onDelete}>
-								<Ionicons name="trash-bin" size={28} color="white" />
+								<Ionicons name='trash-bin' size={28} color='white' />
 							</Pressable>
 						)}
 						{onSetAvatar && (
 							<Pressable onPress={onSetAvatar}>
-								<FontAwesome name="user-circle-o" size={24} color={isAvatar ? '#3498db' : '#fff'} />
-								{/* <Ionicons name="person-circle-outline" size={28} color="white" /> */}
+								<FontAwesome name='user-circle-o' size={24} color={isAvatar ? '#3498db' : '#fff'} />
+								{/* <Ionicons name='person-circle-outline' size={28} color='white' /> */}
 							</Pressable>
 						)}
 					</Row>
 					<Pressable onPress={onClose}>
-						<Ionicons name="close-sharp" size={28} color="white" />
+						<Ionicons name='close-sharp' size={28} color='white' />
 					</Pressable>
 				</View>
 				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 					<AutoSizeImage
 						image={image}
-						style={{ width: displayWidth, height: displayHeight }}
-						resizeMode="contain"
+						resizeMode='contain'
+                        style={{ width: displayWidth, height: displayHeight }}
 					/>
 				</View>
 			</View>

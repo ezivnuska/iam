@@ -1,37 +1,35 @@
 import React from 'react'
 import { StyleSheet, Text, View, Image, Pressable } from 'react-native'
 import { User } from '@iam/types'
+import { AutoSizeImage, Row } from '@/components'
 
 type UserProfileCardProps = {
 	user: User
 	onPress?: () => void
 	showEmail?: boolean
-	avatarSize?: number
 }
+
+const AVATAR_SIZE = 50
 
 export const UserProfileCard = ({
 	user,
 	onPress,
 	showEmail = true,
-	avatarSize = 64,
 }: UserProfileCardProps) => {
 	const Container = onPress ? Pressable : View
 
-    const uri = user.avatar?.url ?? getPlaceholder(user.username)
-
 	return (
 		<Container style={styles.container} onPress={onPress}>
-			<Image
-				source={{ uri }}
-				style={[
-					styles.avatar,
-					{
-						width: avatarSize,
-						height: avatarSize,
-						borderRadius: avatarSize / 2,
-					},
-				]}
-			/>
+			{user.avatar ? (
+				<View style={styles.avatarContainer}>
+					<AutoSizeImage image={user.avatar} forceSquare />
+				</View>
+			) : (
+				<Image
+					source={{ uri: getPlaceholder(user.username) }}
+					style={styles.avatar}
+				/>
+			)}
 			<View style={styles.info}>
 				<Text style={styles.username}>{user.username}</Text>
 				{showEmail && <Text style={styles.email}>{user.email}</Text>}
@@ -56,9 +54,20 @@ const styles = StyleSheet.create({
 		shadowRadius: 2,
 		elevation: 2,
 		marginBottom: 8,
+		gap: 16,
+	},
+	avatarContainer: {
+		width: AVATAR_SIZE,
+		height: AVATAR_SIZE,
+		borderRadius: AVATAR_SIZE / 2,
+		overflow: 'hidden',
+		backgroundColor: '#ddd',
 	},
 	avatar: {
-		marginRight: 12,
+		width: AVATAR_SIZE,
+		height: AVATAR_SIZE,
+		borderRadius: AVATAR_SIZE / 2,
+		overflow: 'hidden',
 		backgroundColor: '#ddd',
 	},
 	info: {

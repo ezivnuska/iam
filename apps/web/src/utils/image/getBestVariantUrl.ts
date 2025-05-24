@@ -15,10 +15,8 @@ export function getBestVariantUrl(
     const effectivePixelRatio = pixelRatio ?? PixelRatio.get()
     const effectiveWidth = targetWidth * effectivePixelRatio
 
-    // Sort variants ascending by width
     const sorted = variants.slice().sort((a, b) => a.width - b.width)
 
-    // Find first variant width >= effectiveWidth or fallback to largest
     const bestFit = sorted.find(v => v.width >= effectiveWidth) ?? sorted[sorted.length - 1]
 
     return buildVariantUrl(baseUrl, bestFit.size)

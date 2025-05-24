@@ -3,10 +3,11 @@
 import React, { useEffect, useState } from 'react'
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import { useRoute } from '@react-navigation/native'
-import { PageLayout, ProfileImage, Row, Column } from '../components'
+import { PageLayout, ProfileImage, Row, Column, ImageGallery } from '../components'
 import { User } from '@iam/types'
 import { getUserById } from '@services'
 import { Size } from '@/styles'
+import { useUserImages } from '@/hooks'
 
 type DetailsParams = {
     id: string
@@ -19,12 +20,15 @@ export const DetailsScreen = () => {
     const [userDetails, setUserDetails] = useState<User | null>(null)
     const [loading, setLoading] = useState(false)
 
+    const { images, isLoading, loadUserImages } = useUserImages()
+
     useEffect(() => {
         const fetchDetails = async () => {
             setLoading(true)
             try {
                 const response = await getUserById(id)
                 setUserDetails(response)
+                loadUserImages(response.username)
             } catch (error: any) {
                 throw new Error(error.message)
             } finally {
@@ -71,6 +75,7 @@ export const DetailsScreen = () => {
                     <Row spacing={10}>
                         <Text style={styles.text}>{userDetails?.bio || 'No bio yet.'}</Text>
                     </Row>
+                    <ImageGallery images={images} />
                 </Column>
             )}
         </PageLayout>

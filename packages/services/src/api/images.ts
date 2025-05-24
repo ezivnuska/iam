@@ -19,8 +19,9 @@ export const uploadAvatar = async (formData: FormData): Promise<Image> => {
 	return normalizeImage(res.data)!
 }
 
-export const fetchUserImages = async (): Promise<Image[]> => {
-	const res = await api.get<UploadedImage[]>('/images')
+export const fetchUserImages = async (userId?: string): Promise<Image[]> => {
+	const endpoint = userId ? `/images/${userId}` : `/images`
+	const res = await api.get<UploadedImage[]>(endpoint)
 	return res.data.map(normalizeImage).filter(Boolean) as Image[]
 }
 
