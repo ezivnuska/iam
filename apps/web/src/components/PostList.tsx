@@ -61,6 +61,7 @@ export const PostList = () => {
 			viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
 			// viewabilityConfigCallbackPairs={viewabilityCallbackPair}
 			initialNumToRender={5}
+            contentContainerStyle={{ paddingVertical: Size.S }}
 			renderItem={({ item }) => {
 				const firstUrl = extractFirstUrl(item.content)
 				return (

@@ -24,8 +24,8 @@ export const RenderedLink: React.FC<RenderedLinkProps> = ({ url }) => {
 	const [data, setData] = useState<ScraperProps | null>(null)
 	const [aspectRatio, setAspectRatio] = useState<number | undefined>(1)
     const [windowWidth, setWindowWidth] = useState(Dimensions.get('window').width)
-    const horizontalImagePadding = useMemo(
-        () => resolveResponsiveProp({ xs: 0, sm: 0, md: Size.M, lg: Size.M }),
+    const maxWidth = useMemo(
+        () => resolveResponsiveProp({ xs: 500, sm: 500, md: 500 - Size.M * 2, lg: 500 - Size.M * 2 }),
         [windowWidth]
     )
     
@@ -91,13 +91,11 @@ export const RenderedLink: React.FC<RenderedLinkProps> = ({ url }) => {
 		<TouchableOpacity onPress={openExternalUrl}>
 			<Column spacing={16}>
 				{data.image && (
-					<View style={[styles.imageContainer, { marginHorizontal: horizontalImagePadding }]}>
-						<Image
-							source={{ uri: data.image }}
-							style={{ width: '100%', maxWidth: 500, aspectRatio }}
-							resizeMode='contain'
-						/>
-					</View>
+                    <Image
+                        source={{ uri: data.image }}
+                        style={{ width: '100%', maxWidth, aspectRatio, marginHorizontal: 'auto' }}
+                        resizeMode='contain'
+                    />
 				)}
 				<Column spacing={Size.XS} paddingHorizontal={Size.M}>
 					{data.title && <Text style={styles.heading}>{data.title}</Text>}
@@ -115,10 +113,6 @@ export const RenderedLink: React.FC<RenderedLinkProps> = ({ url }) => {
 }
 
 const styles = StyleSheet.create({
-    imageContainer: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-    },
 	heading: {
 		fontSize: 16,
 		fontWeight: '700',
@@ -134,8 +128,4 @@ const styles = StyleSheet.create({
 		fontSize: 14,
         paddingHorizontal: Size.M,
 	},
-	link: {
-		color: '#007aff',
-		textDecorationLine: 'underline',
-	}
 })
