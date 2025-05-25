@@ -108,6 +108,11 @@ const getContent = async (url: string, maxRetries = 3): Promise<{ html: string; 
 		try {
 			const page = await browser.newPage()
 
+            const contentType = await page.evaluate(() => document.contentType)
+            if (!contentType.includes('text/html')) {
+                throw new Error(`Invalid content type: ${contentType}`)
+            }
+
             await page.setUserAgent(
                 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
                 'AppleWebKit/537.36 (KHTML, like Gecko) ' +
@@ -158,20 +163,19 @@ const metascraper = require('metascraper')([
 function normalizeUrl(url: string): string {
     try {
         const u = new URL(url)
-        // Replace mobile subdomains like m.youtube.com -> www.youtube.com
         if (u.hostname.startsWith('m.')) {
             u.hostname = u.hostname.replace(/^m\./, 'www.')
-            return u.toString()
         }
-        return url
-    } catch {
-        return url
+        return u.toString()
+    } catch (e) {
+        throw new Error(`Invalid URL provided: ${url}`)
     }
 }
 
 // Main scrape handler
 export const scrapePost = async (req: Request, res: Response): Promise<void> => {
 	const { url } = req.body
+    console.log('url', url)
 
 	if (!url) {
 		res.status(400).json({ message: 'URL is required' })
@@ -179,14 +183,14 @@ export const scrapePost = async (req: Request, res: Response): Promise<void> => 
 	}
 
     const normalizedUrl = normalizeUrl(url)
-
+    console.log('normalizedUrl', normalizedUrl)
 	try {
 		const { html } = await getContent(normalizedUrl)
-		const metadata = await metascraper({ html, normalizedUrl })
+		const metadata = await metascraper({ html, url: normalizedUrl })
 
 		res.status(200).json({ response: metadata })
 	} catch (error) {
-		console.error('Error scraping URL:', error)
+		console.error('Error scraping URL:', normalizedUrl, error)
 		res.status(500).json({ message: 'Failed to scrape metadata' })
 	}
 }

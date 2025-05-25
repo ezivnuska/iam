@@ -124,12 +124,12 @@ module.exports = {
 		path: path.resolve(__dirname, 'dist'),
 	},
     optimization: {
-        minimize: true,//process.env.NODE_ENV === 'production',
+        minimize: process.env.NODE_ENV === 'production',
         minimizer: [new TerserPlugin({
             terserOptions: {
-                compress: {
-                    drop_console: true,
-                },
+                // compress: {
+                //     drop_console: true,
+                // },
             },
         })],
     },

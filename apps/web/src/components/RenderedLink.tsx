@@ -20,6 +20,8 @@ type ScraperProps = {
 	image?: string
 }
 
+const memoryCache = new Map<string, ScraperProps>()
+
 export const RenderedLink: React.FC<RenderedLinkProps> = ({ url }) => {
 	const [data, setData] = useState<ScraperProps | null>(null)
 	const [aspectRatio, setAspectRatio] = useState<number | undefined>(1)
@@ -28,7 +30,7 @@ export const RenderedLink: React.FC<RenderedLinkProps> = ({ url }) => {
         () => resolveResponsiveProp({ xs: 500, sm: 500, md: 500 - Size.M * 2, lg: 500 - Size.M * 2 }),
         [windowWidth]
     )
-    
+
     useEffect(() => {
         const onChange = ({ window }: { window: { width: number } }) => setWindowWidth(window.width)
         const subscription = Dimensions.addEventListener('change', onChange)
@@ -40,12 +42,19 @@ export const RenderedLink: React.FC<RenderedLinkProps> = ({ url }) => {
 
 		const init = async () => {
 			const cacheKey = `link-metadata:${url}`
+
+            if (memoryCache.has(url)) {
+                setData(memoryCache.get(url)!)
+                return
+            }
+        
 			try {
 				// Try loading from AsyncStorage
 				const cached = await AsyncStorage.getItem(cacheKey)
 				if (cached) {
 					const parsed = JSON.parse(cached)
 					setData(parsed)
+                    memoryCache.set(url, parsed)
 					if (parsed.image) {
 						Image.getSize(
 							parsed.image,
@@ -58,9 +67,12 @@ export const RenderedLink: React.FC<RenderedLinkProps> = ({ url }) => {
 
 				// Debounce: wait 300ms before fetching
 				timeoutId = setTimeout(async () => {
+                    console.log('url to scrape', url)
 					const { response } = await scrape(url)
+                    console.log('scraper response', response)
 					if (response) {
 						setData(response)
+                        memoryCache.set(url, response)
 						if (response.image) {
 							Image.getSize(
 								response.image,
