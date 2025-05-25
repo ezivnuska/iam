@@ -2,30 +2,28 @@
 
 import mongoose from 'mongoose'
 import PostModel from '../models/post.model'
-import { IPost } from '../models/post.model'
 
 export const getAllPosts = async (currentUserId?: string) => {
 	const posts = await PostModel.find()
 		.populate({
 			path: 'author',
 			select: 'username avatar',
-			populate: {
-                path: 'avatar',
-                select: '_id filename variants username',
-            },
+			populate: { path: 'avatar', select: '_id filename variants username' },
 		})
 		.sort({ createdAt: -1 })
 
 	return posts.map(post => {
-		const json = post.toJSON({ virtuals: true })
+		const json = post.toJSON()
+
 		return {
 			...json,
 			likes: json.likes.map((id: mongoose.Types.ObjectId) => id.toString()),
-			likedByCurrentUser: currentUserId ? json.likes.some((id: mongoose.Types.ObjectId) => id.equals(currentUserId)) : false
+			likedByCurrentUser: currentUserId
+                ? json.likes.some((id: mongoose.Types.ObjectId) => id.equals(currentUserId))
+                : false,
 		}
 	})
 }
-
 
 export const getPostById = async (id: string) =>
     await PostModel.findById(id)

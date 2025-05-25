@@ -17,8 +17,9 @@ export const createPost = async (req: Request, res: Response): Promise<void> => 
 }
 
 export const getAllPosts = async (req: Request, res: Response) => {
-	const posts = await postService.getAllPosts(req.user?.id)
-	res.json(posts)
+    const userId = req.user?.id
+    const posts = await postService.getAllPosts(userId)
+    res.json(posts)
 }
 
 export const getPostById = async (req: Request, res: Response): Promise<void> => {

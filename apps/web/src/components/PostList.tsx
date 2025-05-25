@@ -71,6 +71,7 @@ export const PostList = () => {
 			initialNumToRender={5}
             contentContainerStyle={{ paddingVertical: Size.S }}
 			renderItem={({ item }) => {
+                console.log('item', item)
 				const firstUrl = extractFirstUrl(item.content)
                 const liked = item.likedByCurrentUser
                 const likeCount = item.likes.length
@@ -94,7 +95,7 @@ export const PostList = () => {
                             <Text>{likeCount} {likeCount === 1 ? 'like' : 'likes'}</Text>
                             {isAuthenticated && (
                                 <Pressable onPress={() => onToggleLike(item._id)}>
-                                    <Text style={{ color: liked ? 'red' : 'gray' }}>{liked ? '♥' : '♡'}</Text>
+                                    <Text style={{ fontSize: 16, color: liked ? 'red' : 'gray' }}>{liked ? '♥' : '♡'}</Text>
                                 </Pressable>
                             )}
                         </Row>

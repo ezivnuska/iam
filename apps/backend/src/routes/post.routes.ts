@@ -11,13 +11,14 @@ import {
     toggleLike,
 	updatePost,
 } from '../controllers/post.controller'
+import { optionalAuth } from '../middlewares/optionalAuth.middleware'
 import { requireAuth } from '../middlewares/auth.middleware'
 import { asyncHandler } from '../utils/asyncHandler'
 
 const router: Router = Router()
 
 router.post('/scrape', asyncHandler(scrapePost))
-router.get('/', asyncHandler(getAllPosts))
+router.get('/', optionalAuth, asyncHandler(getAllPosts))
 router.get('/:id', asyncHandler(getPostById))
 router.post('/', requireAuth(), asyncHandler(createPost))
 router.put('/:id', requireAuth(), asyncHandler(updatePost))

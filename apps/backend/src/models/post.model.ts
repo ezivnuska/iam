@@ -1,6 +1,6 @@
 // apps/backend/src/models/post.model.ts
 
-import mongoose, { Schema, model, Types, Document } from 'mongoose'
+import { Schema, model, Types, Document } from 'mongoose'
 
 export interface IPost extends Document {
     author: Types.ObjectId
@@ -17,9 +17,5 @@ const postSchema = new Schema<IPost>(
     },
     { timestamps: true }
 )
-
-postSchema.virtual('likedByCurrentUser').get(function (this: IPost) {
-	return undefined // placeholder
-})
 
 export default model<IPost>('Post', postSchema)

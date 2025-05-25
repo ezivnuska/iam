@@ -18,6 +18,6 @@ export interface Post {
             }[]
         }
     }
-    likes: string[] // user IDs who liked the post
+    likes: string[]
     likedByCurrentUser: boolean
 }
