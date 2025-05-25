@@ -1,11 +1,11 @@
 // apps/web/src/components/RenderedLink.tsx
 
-import React, { useEffect, useState } from 'react'
-import { ActivityIndicator, Image, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useMemo, useState } from 'react'
+import { ActivityIndicator, Dimensions, Image, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Column, Row } from './Layout'
 import { scrape } from '@services'
-import { shadows, Size } from '@/styles'
+import { resolveResponsiveProp, Size } from '@/styles'
 import { format } from 'date-fns'
 
 type RenderedLinkProps = {
@@ -23,12 +23,22 @@ type ScraperProps = {
 export const RenderedLink: React.FC<RenderedLinkProps> = ({ url }) => {
 	const [data, setData] = useState<ScraperProps | null>(null)
 	const [aspectRatio, setAspectRatio] = useState<number | undefined>(1)
+    const [windowWidth, setWindowWidth] = useState(Dimensions.get('window').width)
+    const horizontalImagePadding = useMemo(
+        () => resolveResponsiveProp({ xs: 0, sm: 0, md: Size.M, lg: Size.M }),
+        [windowWidth]
+    )
+    
+    useEffect(() => {
+        const onChange = ({ window }: { window: { width: number } }) => setWindowWidth(window.width)
+        const subscription = Dimensions.addEventListener('change', onChange)
+        return () => subscription.remove?.()
+    }, [])
 
 	useEffect(() => {
 		let timeoutId: NodeJS.Timeout
 
 		const init = async () => {
-			console.log('RenderedLink mounted with:', url)
 			const cacheKey = `link-metadata:${url}`
 			try {
 				// Try loading from AsyncStorage
@@ -81,7 +91,7 @@ export const RenderedLink: React.FC<RenderedLinkProps> = ({ url }) => {
 		<TouchableOpacity onPress={openExternalUrl}>
 			<Column spacing={16}>
 				{data.image && (
-					<View style={[shadows.image, styles.imageContainer]}>
+					<View style={[styles.imageContainer, { marginHorizontal: horizontalImagePadding }]}>
 						<Image
 							source={{ uri: data.image }}
 							style={{ width: '100%', maxWidth: 500, aspectRatio }}

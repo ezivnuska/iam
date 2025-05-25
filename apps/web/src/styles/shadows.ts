@@ -12,9 +12,9 @@ export const shadows = {
     },
     image: {
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
+        shadowOffset: { width: 4, height: 4 },
         shadowOpacity: 0.15,
-        shadowRadius: 4,
+        shadowRadius: 6,
         elevation: Platform.OS === 'android' ? 6 : 0,
     },
     input: {
