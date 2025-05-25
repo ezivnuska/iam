@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { FlatList, Pressable, Text, View, ViewToken } from 'react-native'
 import { useAuth, usePosts } from '@/hooks'
-import { Column, ProfileImage, RenderedLink, Row } from '@/components'
+import { Column, LinkPreview, ProfileImage, Row } from '@/components'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { PartialUser, Post } from '@iam/types'
 import { toggleLike } from '@services'
@@ -56,7 +56,6 @@ export const PostList = () => {
 	// ]).current
 
     const onToggleLike = async (postId: string) => {
-        console.log('Toggling like for post:', postId)
         await toggleLike(postId)
         await refreshPosts()
     }
@@ -88,7 +87,7 @@ export const PostList = () => {
 							style={{ paddingHorizontal: Size.M }}
 						/>
 						{loadedLinkIds.has(item._id) && firstUrl && (
-							<RenderedLink url={firstUrl} />
+							<LinkPreview url={firstUrl} />
 						)}
                         <Row paddingHorizontal={Size.M} spacing={8}>
                             <Text>{likeCount} {likeCount === 1 ? 'like' : 'likes'}</Text>

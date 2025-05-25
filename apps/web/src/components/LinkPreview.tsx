@@ -1,4 +1,4 @@
-// apps/web/src/components/RenderedLink.tsx
+// apps/web/src/components/LinkPreview.tsx
 
 import React, { useEffect, useMemo, useState } from 'react'
 import { ActivityIndicator, Dimensions, Image, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
@@ -8,7 +8,7 @@ import { scrape } from '@services'
 import { resolveResponsiveProp, Size } from '@/styles'
 import { format } from 'date-fns'
 
-type RenderedLinkProps = {
+type LinkPreviewProps = {
 	url: string
 }
 
@@ -22,7 +22,7 @@ type ScraperProps = {
 
 const memoryCache = new Map<string, ScraperProps>()
 
-export const RenderedLink: React.FC<RenderedLinkProps> = ({ url }) => {
+export const LinkPreview: React.FC<LinkPreviewProps> = ({ url }) => {
 	const [data, setData] = useState<ScraperProps | null>(null)
 	const [aspectRatio, setAspectRatio] = useState<number | undefined>(1)
     const [windowWidth, setWindowWidth] = useState(Dimensions.get('window').width)
