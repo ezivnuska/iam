@@ -49,7 +49,6 @@ export const CreatePostForm = ({ onPostCreated }: { onPostCreated?: () => void }
 	const onSubmit = async (data: CreatePostFormProps) => {
 		try {
 			const newPost = await postService.createPost(data.content)
-            console.log('newPost', newPost)
 			onPostCreated?.()
 			setValue('content', '')
             addPost(newPost)

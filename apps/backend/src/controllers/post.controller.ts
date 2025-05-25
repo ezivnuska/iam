@@ -169,7 +169,6 @@ function normalizeUrl(url: string): string {
 // Main scrape handler
 export const scrapePost = async (req: Request, res: Response): Promise<void> => {
 	const { url } = req.body
-    console.log('url', url)
 
 	if (!url) {
 		res.status(400).json({ message: 'URL is required' })
@@ -177,7 +176,7 @@ export const scrapePost = async (req: Request, res: Response): Promise<void> => 
 	}
 
     const normalizedUrl = normalizeUrl(url)
-    console.log('normalizedUrl', normalizedUrl)
+    
 	try {
 		const { html } = await getContent(normalizedUrl)
 		const metadata = await metascraper({ html, url: normalizedUrl })

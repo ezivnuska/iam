@@ -8,7 +8,6 @@ export const fetchComments = async (postId: string) => {
 }
 
 export const addComment = async (postId: string, content: string) => {
-    console.log('📌 addComment: postId =', postId)
 	const res = await api.post('/comments', { postId, content })
 	return res.data
 }

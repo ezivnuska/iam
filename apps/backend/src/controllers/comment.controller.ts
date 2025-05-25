@@ -15,8 +15,6 @@ export const addComment = async (req: Request, res: Response) => {
 		return
 	}
 
-    console.log('🔍 postId in controller:', postId)
-
 	const comment = await commentService.createComment(postId, req.user.id, content)
 	res.status(201).json(comment)
 }

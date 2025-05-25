@@ -67,9 +67,7 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url }) => {
 
 				// Debounce: wait 300ms before fetching
 				timeoutId = setTimeout(async () => {
-                    console.log('url to scrape', url)
 					const { response } = await scrape(url)
-                    console.log('scraper response', response)
 					if (response) {
 						setData(response)
                         memoryCache.set(url, response)
