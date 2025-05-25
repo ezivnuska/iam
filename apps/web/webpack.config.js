@@ -3,6 +3,7 @@
 const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const Dotenv = require('dotenv-webpack')
 const fs = require('fs')
@@ -122,6 +123,16 @@ module.exports = {
 		filename: '[name].bundle.js',
 		path: path.resolve(__dirname, 'dist'),
 	},
+    optimization: {
+        minimize: true,//process.env.NODE_ENV === 'production',
+        minimizer: [new TerserPlugin({
+            terserOptions: {
+                compress: {
+                    drop_console: true,
+                },
+            },
+        })],
+    },
 	module: {
 		rules: [
 			{
