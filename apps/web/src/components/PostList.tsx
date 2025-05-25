@@ -36,16 +36,18 @@ export const PostList = () => {
 	).current	
 
 	const extractFirstUrl = (text: string): string | null => {
-        const urlRegex = /(?:https?:\/\/)?(?:www\.)?[a-zA-Z0-9.-]+\.[a-z]{2,}(\/\S*)?/g
+        const urlRegex = /(?:https?:\/\/)?(?:[a-zA-Z0-9-]+\.)+[a-z]{2,}(?:\/[^\s]*)?/gi
         const match = text.match(urlRegex)
         if (!match) return null
     
         let url = match[0]
+    
         if (!url.startsWith('http')) {
             url = 'https://' + url
         }
+    
         return url
-    }
+    }    
     
 	// posible fix for non-rendering items
 	// const viewabilityConfig = { itemVisiblePercentThreshold: 50 }
