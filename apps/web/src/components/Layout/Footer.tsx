@@ -12,10 +12,8 @@ export const Footer = () => {
             <View style={styles.maxWidthContainer}>
                 <Row
                     flex={1}
-                    spacing={25}
                     align='center'
                     justify='space-between'
-                    paddingHorizontal={Size.M}
                     wrap={false}
                     style={{ zIndex: 200, flexWrap: 'nowrap' }}
                 >
@@ -35,11 +33,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     maxWidthContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
         width: '100%',
         maxWidth: MAX_WIDTH,
-        alignSelf: 'center',
+        marginHorizontal: 'auto',
+        paddingHorizontal: Size.M,
     },
     copy: {
         fontSize: 18,

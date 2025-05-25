@@ -1,10 +1,10 @@
 import React from 'react'
-import { View, ScrollView, StyleSheet } from 'react-native'
+import { ScrollView, StyleSheet } from 'react-native'
 import { Header, Footer } from '.'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { MAX_WIDTH } from './constants'
 import { useDeviceInfo } from '@/hooks'
-import { resolveResponsiveProp } from '@/styles'
+import { resolveResponsiveProp, Size } from '@/styles'
 
 interface PageLayoutProps {
 	children: React.ReactNode
@@ -44,5 +44,6 @@ const styles = StyleSheet.create({
 		width: '100%',
 		maxWidth: MAX_WIDTH,
 		marginHorizontal: 'auto',
+		paddingVertical: Size.S,
 	},
 })

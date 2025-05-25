@@ -8,6 +8,7 @@ import type { StackNavigationProp } from '@react-navigation/stack'
 import { useNavigation } from '@react-navigation/native'
 import type { RootStackParamList } from '@iam/types'
 import { PageLayout, UserProfileCard } from '@/components'
+import { Size } from '@/styles'
 
 type UserListScreenNavProp = StackNavigationProp<RootStackParamList, 'UserList'>
 
@@ -30,35 +31,32 @@ export const UserListScreen = () => {
 
 	return (
         <PageLayout>
-            <ScrollView
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={styles.container}
-            >
-                <FlatList
-                    data={otherUsers}
-                    keyExtractor={(item) => item.id || item.email}
-                    scrollEnabled={false}
-                    renderItem={({ item }) => (
-                        <UserProfileCard
-                            user={item}
-                            onPress={() => navigation.navigate('Details', { id: item._id })}
-                        />
-                    )}
-                    onEndReached={fetchNextPage}
-                    onEndReachedThreshold={0.5}
-                    ListFooterComponent={loading ? <ActivityIndicator style={{ marginVertical: 20 }} /> : null}
-                />
-            </ScrollView>
+            <FlatList
+                data={otherUsers}
+                keyExtractor={(item) => item.id || item.email}
+                scrollEnabled={false}
+                renderItem={({ item }) => (
+                    <UserProfileCard
+                        user={item}
+                        onPress={() => navigation.navigate('Details', { id: item._id })}
+                    />
+                )}
+                onEndReached={fetchNextPage}
+                onEndReachedThreshold={0.5}
+                ListFooterComponent={loading ? <ActivityIndicator style={{ marginVertical: 20 }} /> : null}
+                style={styles.container}
+                contentContainerStyle={styles.contentContainer}
+            />
         </PageLayout>
 	)
 }
   
 const styles = StyleSheet.create({
 	container: {
-		padding: 24,
-		alignItems: 'center',
-		backgroundColor: '#fff',
-		minHeight: '100%',
+        
+	},
+	contentContainer: {
+        paddingHorizontal: Size.M,
 	},
 	profileCard: {
 		backgroundColor: '#f9f9f9',

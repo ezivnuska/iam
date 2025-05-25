@@ -115,15 +115,14 @@ const styles = StyleSheet.create({
         width: '100%',
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: 10,
+        paddingVertical: Size.S,
         backgroundColor: '#fff',
     },
     maxWidthContainer: {
         width: '100%',
         maxWidth: MAX_WIDTH,
-        alignSelf: 'center',
         marginHorizontal: 'auto',
-        paddingHorizontal: 16,
+        paddingHorizontal: Size.M,
     },
 	iam: {
 		fontWeight: 'bold',
