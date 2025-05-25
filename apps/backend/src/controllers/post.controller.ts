@@ -98,18 +98,36 @@ const getContent = async (url: string, maxRetries = 3): Promise<{ html: string; 
 	let lastError: unknown
 
 	while (attempt < maxRetries) {
+        
+        const browser = await puppeteer.launch({
+            headless: true,
+            args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        })
+
 		try {
-			const browser = await puppeteer.launch({ headless: true })
 			const page = await browser.newPage()
+
+            await page.setUserAgent(
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
+                'AppleWebKit/537.36 (KHTML, like Gecko) ' +
+                'Chrome/115.0.0.0 Safari/537.36'
+            )
 
 			await page.goto(url, {
 				timeout: 45000,
 				waitUntil: 'domcontentloaded',
 			})
 
+            const canonical = await page.$eval('link[rel="canonical"]', el => el.href).catch(() => null)
+            const finalUrl = canonical && canonical !== url ? canonical : url
+
+            if (finalUrl !== url) {
+                await page.goto(finalUrl, { waitUntil: 'domcontentloaded' })
+            }
+
 			const html = await page.content()
-			await browser.close()
-			return { html, url }
+
+			return { html, url: finalUrl }
 		} catch (error) {
 			lastError = error
 			console.warn(`Attempt ${attempt + 1} failed:`, error)
@@ -117,7 +135,9 @@ const getContent = async (url: string, maxRetries = 3): Promise<{ html: string; 
 			// Delay before retrying
 			const delay = 1000 * 2 ** attempt // exponential backoff: 1s, 2s, 4s...
 			await new Promise((resolve) => setTimeout(resolve, delay))
-		}
+		} finally {
+			await browser.close()
+        }
 
 		attempt++
 	}
@@ -134,6 +154,20 @@ const metascraper = require('metascraper')([
 	require('metascraper-title')(),
 ])
 
+function normalizeUrl(url: string): string {
+    try {
+        const u = new URL(url)
+        // Replace mobile subdomains like m.youtube.com -> www.youtube.com
+        if (u.hostname.startsWith('m.')) {
+            u.hostname = u.hostname.replace(/^m\./, 'www.')
+            return u.toString()
+        }
+        return url
+    } catch {
+        return url
+    }
+}
+
 // Main scrape handler
 export const scrapePost = async (req: Request, res: Response): Promise<void> => {
 	const { url } = req.body
@@ -143,9 +177,11 @@ export const scrapePost = async (req: Request, res: Response): Promise<void> => 
 		return
 	}
 
+    const normalizedUrl = normalizeUrl(url)
+
 	try {
-		const { html } = await getContent(url)
-		const metadata = await metascraper({ html, url })
+		const { html } = await getContent(normalizedUrl)
+		const metadata = await metascraper({ html, normalizedUrl })
 
 		res.status(200).json({ response: metadata })
 	} catch (error) {
