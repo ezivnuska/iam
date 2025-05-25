@@ -13,7 +13,7 @@ import {
 import { AutoSizeImage, FullScreenImage } from '.'
 import type { Image } from '@iam/types'
 import { resolveResponsiveProp } from '../styles'
-import { useModal } from '@/hooks'
+import { useAuth, useModal } from '@/hooks'
 
 const IMAGE_MARGIN = 8
 
@@ -25,6 +25,7 @@ type ImageGalleryProps = {
 }
 
 const ImageGallery = ({ images, onDelete, onSetAvatar, currentAvatarId }: ImageGalleryProps) => {
+	const { user } = useAuth()
 	const { showModal, hideModal } = useModal()
 	const { width: windowWidth } = useWindowDimensions()
 	const [containerWidth, setContainerWidth] = useState<number>(windowWidth)
@@ -59,7 +60,7 @@ const ImageGallery = ({ images, onDelete, onSetAvatar, currentAvatarId }: ImageG
                             image={item}
                             onClose={hideModal}
                             onDelete={onDelete ? () => onDelete(item.id) : undefined}
-                            onSetAvatar={() => handleSetAvatar(newAvatarId)}
+                            onSetAvatar={user?.username === item.username ? () => handleSetAvatar(newAvatarId) : undefined}
                             isAvatar={isAvatar}
                         />
 					)
