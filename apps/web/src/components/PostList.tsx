@@ -1,7 +1,7 @@
 // apps/web/src/components/PostList.tsx
 
 import React, { useState } from 'react'
-import { FlatList, Pressable, Text, ViewToken } from 'react-native'
+import { FlatList, Pressable, StyleSheet, Text, ViewToken } from 'react-native'
 import { useAuth, useModal, usePosts } from '@/hooks'
 import { AddCommentForm, Column, CommentSection, LinkPreview, ProfileImage, Row } from '@/components'
 import Ionicons from '@expo/vector-icons/Ionicons'
@@ -17,6 +17,7 @@ export const PostList = () => {
 
 	const [loadedLinkIds, setLoadedLinkIds] = useState<Set<string>>(new Set())
     const [commentsByPostId, setCommentsByPostId] = useState<Record<string, Comment[]>>({})
+    const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set())
 
 	const { isAuthenticated, user } = useAuth()
 	const { showModal } = useModal()
@@ -25,6 +26,18 @@ export const PostList = () => {
 	useEffect(() => {
 		refreshPosts()
 	}, [])
+
+    const toggleComments = (postId: string) => {
+        setExpandedComments((prev) => {
+            const next = new Set(prev)
+            if (next.has(postId)) {
+                next.delete(postId)
+            } else {
+                next.add(postId)
+            }
+            return next
+        })
+    }
 
 	const onViewableItemsChanged = useRef(
         ({ viewableItems }: { viewableItems: Array<ViewToken> }) => {
@@ -107,22 +120,37 @@ export const PostList = () => {
 						)}
                         <Row paddingHorizontal={Size.M} spacing={8}>
                             <Row spacing={8}>
-                                <Text>{likeCount} {likeCount === 1 ? 'like' : 'likes'}</Text>
+                                <Text style={styles.bottomButtons}>{likeCount} {likeCount === 1 ? 'like' : 'likes'}</Text>
                                 {isAuthenticated && (
                                     <Pressable onPress={() => onToggleLike(item._id)}>
-                                        <Text style={{ fontSize: 16, color: liked ? 'red' : 'gray' }}>{liked ? '♥' : '♡'}</Text>
+                                        <Text style={[styles.bottomButtons, { color: liked ? 'red' : 'gray' }]}>{liked ? '♥' : '♡'}</Text>
                                     </Pressable>
                                 )}
                             </Row>
+                            {(loadedLinkIds.has(item._id) && commentsByPostId[item._id]?.length > 0) && (
+                                <>
+                                    <Pressable
+                                        onPress={() => toggleComments(item._id)}
+                                        style={{ paddingHorizontal: Size.M }}
+                                        disabled={!isAuthenticated}
+                                    >
+                                        <Text style={[styles.bottomButtons, { color: isAuthenticated ? '#007aff' : '#ccc' }]}>
+                                            {expandedComments.has(item._id)
+                                                ? 'Hide Comments'
+                                                : `${commentsByPostId[item._id]?.length || 0} comment${commentsByPostId[item._id]?.length === 1 ? '' : 's'}`}
+                                        </Text>
+                                    </Pressable>
+                                    {expandedComments.has(item._id) && (
+                                        <CommentSection comments={commentsByPostId[item._id] ?? []} />
+                                    )}
+                                </>
+                            )}
                             {isAuthenticated && (
                                 <Pressable onPress={() => openCommentForm(item._id)}>
-                                    <Text>Add Comment</Text>
+                                    <Text style={styles.bottomButtons}>Add Comment</Text>
                                 </Pressable>
                             )}
                         </Row>
-                        {loadedLinkIds.has(item._id) && (
-                            <CommentSection comments={commentsByPostId[item._id] ?? []} />
-                        )}
 					</Column>
 				)
 			}}
@@ -151,3 +179,9 @@ export const PostList = () => {
 		)
 	}
 }
+
+const styles = StyleSheet.create({
+    bottomButtons: {
+        fontSize: 16,
+    },
+})

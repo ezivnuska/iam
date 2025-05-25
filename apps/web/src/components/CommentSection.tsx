@@ -5,6 +5,7 @@
 import React from 'react'
 import { Text, View, FlatList } from 'react-native'
 import type { Comment } from '@iam/types'
+import { Size } from '@/styles'
 
 type CommentSectionProps = {
 	comments: Comment[]
@@ -12,7 +13,7 @@ type CommentSectionProps = {
 
 export const CommentSection = ({ comments }: CommentSectionProps) => {
 	return (
-		<View>
+		<View style={{ paddingHorizontal: Size.M }}>
 			<FlatList
 				data={comments}
 				keyExtractor={(item) => item._id}
