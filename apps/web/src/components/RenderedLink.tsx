@@ -28,7 +28,7 @@ export const RenderedLink: React.FC<RenderedLinkProps> = ({ url }) => {
 		let timeoutId: NodeJS.Timeout
 
 		const init = async () => {
-			// console.log('RenderedLink mounted with:', url)
+			console.log('RenderedLink mounted with:', url)
 			const cacheKey = `link-metadata:${url}`
 			try {
 				// Try loading from AsyncStorage
@@ -81,22 +81,22 @@ export const RenderedLink: React.FC<RenderedLinkProps> = ({ url }) => {
 		<TouchableOpacity onPress={openExternalUrl}>
 			<Column spacing={16}>
 				{data.image && (
-					<View style={[shadows.image,  { borderWidth: 1, borderColor: '#ccc' }]}>
+					<View style={[shadows.image, styles.imageContainer]}>
 						<Image
 							source={{ uri: data.image }}
-							style={{ width: '100%', maxWidth: 600, aspectRatio }}
+							style={{ width: '100%', maxWidth: 500, aspectRatio }}
 							resizeMode='contain'
 						/>
 					</View>
 				)}
-				<Column spacing={Size.M} paddingHorizontal={Size.M}>
-					<Text style={styles.heading}>{data.title}</Text>
+				<Column spacing={Size.XS} paddingHorizontal={Size.M}>
+					{data.title && <Text style={styles.heading}>{data.title}</Text>}
 					<Row flex={1} spacing={16}>
 						{data.author && <Text style={styles.author}>{data.author}</Text>}
 						{data.date && <Text style={styles.date}>{format(new Date(data.date), 'MMM ddd yyyy')}</Text>}
 					</Row>
-					<Text style={styles.description}>{data.description}</Text>
 				</Column>
+                <Text style={styles.description}>{data.description}</Text>
 			</Column>
 		</TouchableOpacity>
 	) : (
@@ -105,9 +105,14 @@ export const RenderedLink: React.FC<RenderedLinkProps> = ({ url }) => {
 }
 
 const styles = StyleSheet.create({
+    imageContainer: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+    },
 	heading: {
 		fontSize: 16,
 		fontWeight: '700',
+        lineHeight: 20,
 	},
 	author: {
 		fontSize: 12,
@@ -117,6 +122,7 @@ const styles = StyleSheet.create({
 	},
 	description: {
 		fontSize: 14,
+        paddingHorizontal: Size.M,
 	},
 	link: {
 		color: '#007aff',

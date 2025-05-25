@@ -35,23 +35,31 @@ export const PostList = () => {
 	).current	
 
 	const extractFirstUrl = (text: string): string | null => {
-		const match = text.match(/https?:\/\/[^\s]+/)
-		return match ? match[0] : null
-	}
+        const urlRegex = /(?:https?:\/\/)?(?:www\.)?[a-zA-Z0-9.-]+\.[a-z]{2,}(\/\S*)?/g
+        const match = text.match(urlRegex)
+        if (!match) return null
+    
+        let url = match[0]
+        if (!url.startsWith('http')) {
+            url = 'https://' + url
+        }
+        return url
+    }
+    
 
 	// posible fix for non-rendering items
-	const viewabilityConfig = { itemVisiblePercentThreshold: 50 }
-	const viewabilityCallbackPair = useRef([
-		{ viewabilityConfig, onViewableItemsChanged }
-	]).current
+	// const viewabilityConfig = { itemVisiblePercentThreshold: 50 }
+	// const viewabilityCallbackPair = useRef([
+	// 	{ viewabilityConfig, onViewableItemsChanged }
+	// ]).current
 
 	return (
 		<FlatList
 			data={posts}
 			keyExtractor={(item) => item._id}
-			// onViewableItemsChanged={onViewableItemsChanged}
-			// viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
-			viewabilityConfigCallbackPairs={viewabilityCallbackPair}
+			onViewableItemsChanged={onViewableItemsChanged}
+			viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
+			// viewabilityConfigCallbackPairs={viewabilityCallbackPair}
 			initialNumToRender={5}
 			renderItem={({ item }) => {
 				const firstUrl = extractFirstUrl(item.content)
@@ -80,7 +88,7 @@ export const PostList = () => {
 	function renderHeader(item: Post) {
 		const isAuthor = user?.id === item.user._id
 		return (
-			<Row spacing={16} paddingHorizontal={Size.M}>
+			<Row spacing={16} paddingHorizontal={Size.M} align='center'>
 				<ProfileImage user={item.user as PartialUser} size='md' />
 				<Column flex={1} spacing={2}>
 					<Text style={{ fontSize: 20, fontWeight: 'bold', lineHeight: 22 }}>
@@ -92,7 +100,7 @@ export const PostList = () => {
 				</Column>
 				{isAuthor && (
 					<Pressable onPress={() => deletePost(item._id)} style={{ alignSelf: 'flex-start' }}>
-						<Ionicons name='close-sharp' size={18} color='black' />
+						<Ionicons name='close-sharp' size={24} color='black' />
 					</Pressable>
 				)}
 			</Row>

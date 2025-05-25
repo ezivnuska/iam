@@ -5,7 +5,6 @@ import { createStackNavigator } from '@react-navigation/stack'
 import {
     ChatScreen,
     DetailsScreen,
-    FeedScreen,
     ForgotPasswordScreen,
     HomeScreen,
     ResetPasswordScreen,
@@ -21,7 +20,6 @@ export const AppNavigator = () => {
         <Stack.Navigator initialRouteName='Home' screenOptions={{ headerShown: false }}>
             <Stack.Screen name='Chat' component={ChatScreen} />
             <Stack.Screen name='Details' component={DetailsScreen} />
-            <Stack.Screen name='Feed' component={FeedScreen} />
             <Stack.Screen name='ForgotPassword' component={ForgotPasswordScreen} />
             <Stack.Screen name='Home' component={HomeScreen} />
             <Stack.Screen name='ResetPassword' component={ResetPasswordScreen} />

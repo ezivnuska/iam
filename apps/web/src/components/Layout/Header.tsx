@@ -32,7 +32,7 @@ export const Header: React.FC<HeaderProps> = (props) => {
     const { showModal } = useModal()
     const navigation = useNavigation()
 
-    const iconSize = resolveResponsiveProp({ xs: 24, sm: 24, md: 18, lg: 20 })
+    const iconSize = resolveResponsiveProp({ xs: 24, sm: 18, md: 18, lg: 20 })
     const showLabel = resolveResponsiveProp({ xs: false, sm: true, md: true, lg: true })
     const navSpacing = resolveResponsiveProp({ xs: Size.M, sm: Size.M, md: Size.M, lg: Size.L })
     const showUsername = resolveResponsiveProp({ xs: false, sm: true, md: true, lg: true })
@@ -67,13 +67,6 @@ export const Header: React.FC<HeaderProps> = (props) => {
                             wrap={false}
                             style={styles.nav}
                         >
-                            <IconButton
-                                label='Feed'
-                                onPress={() => navigation.navigate('Feed' as never)}
-                                icon={<Ionicons name='list' size={iconSize} color='#777' />}
-                                active={currentRoute === 'Feed'}
-                                showLabel={showLabel}
-                            />
                             <IconButton
                                 label='Chat'
                                 onPress={() => navigation.navigate('Chat' as never)}

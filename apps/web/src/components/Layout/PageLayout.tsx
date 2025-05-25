@@ -44,6 +44,5 @@ const styles = StyleSheet.create({
 		width: '100%',
 		maxWidth: MAX_WIDTH,
 		marginHorizontal: 'auto',
-		paddingVertical: Size.S,
 	},
 })

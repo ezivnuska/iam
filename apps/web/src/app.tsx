@@ -15,7 +15,6 @@ const linking = {
         screens: {
             Chat: 'chat',
             Details: 'details',
-            Feed: 'feed',
             ForgotPassword: 'forgot-password',
             Home: '/',
             ResetPassword: 'reset-password/:token',
