@@ -6,16 +6,14 @@ import { Post } from '@iam/types'
 export const getAllPosts = async (): Promise<Post[]> => api.get('/posts').then((res) => res.data)
 export const getPostById = async (id: string): Promise<Post> => api.get(`/posts/${id}`).then((res) => res.data)
 export const createPost = async (content: string): Promise<Post> => api.post('/posts', { content }, { withCredentials: true }).then((res) => res.data)
+export const toggleLike = async (postId: string): Promise<Post> => api.post(`/posts/${postId}/like`, { withCredentials: true }).then((res) => res.data)
 export const updatePost = async (id: string, content: string): Promise<Post> => api.put(`/posts/${id}`, { content }, { withCredentials: true }).then((res) => res.data)
 export const deletePost = async (id: string): Promise<{ success: boolean }> => api.delete(`/posts/${id}`, { withCredentials: true }).then((res) => res.data)
-// export const scrape = async (url: string) => api.post('/posts/scrape', { url }).then((res) => res.data)
 
 export const scrape = async (url: string) => {
-	console.log('Scraping:', url)
 
 	try {
 		const { data } = await api.post('/posts/scrape', { url })
-		console.log('Scrape result:', data)
 		return data
 	} catch (err) {
 		console.error('Scrape failed:', err)

@@ -1,11 +1,12 @@
 // apps/web/src/components/PostList.tsx
 
 import React, { useState } from 'react'
-import { FlatList, Pressable, Text, ViewToken } from 'react-native'
+import { FlatList, Pressable, Text, View, ViewToken } from 'react-native'
 import { useAuth, usePosts } from '@/hooks'
 import { Column, ProfileImage, RenderedLink, Row } from '@/components'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { PartialUser, Post } from '@iam/types'
+import { toggleLike } from '@services'
 import { Size } from '@/styles'
 import Autolink from 'react-native-autolink'
 import { formatRelative } from 'date-fns'
@@ -15,7 +16,7 @@ export const PostList = () => {
 
 	const [loadedLinkIds, setLoadedLinkIds] = useState<Set<string>>(new Set())
 
-	const { user } = useAuth()
+	const { isAuthenticated, user } = useAuth()
 	const { posts, deletePost, refreshPosts } = usePosts()
 
 	useEffect(() => {
@@ -46,12 +47,17 @@ export const PostList = () => {
         return url
     }
     
-
 	// posible fix for non-rendering items
 	// const viewabilityConfig = { itemVisiblePercentThreshold: 50 }
 	// const viewabilityCallbackPair = useRef([
 	// 	{ viewabilityConfig, onViewableItemsChanged }
 	// ]).current
+
+    const onToggleLike = async (postId: string) => {
+        console.log('Toggling like for post:', postId)
+        await toggleLike(postId)
+        await refreshPosts()
+    }
 
 	return (
 		<FlatList
@@ -64,6 +70,8 @@ export const PostList = () => {
             contentContainerStyle={{ paddingVertical: Size.S }}
 			renderItem={({ item }) => {
 				const firstUrl = extractFirstUrl(item.content)
+                const liked = item.likedByCurrentUser
+                const likeCount = item.likes.length
 				return (
 					<Column flex={1} spacing={Size.M} paddingBottom={Size.L}>
 						{renderHeader(item)}
@@ -80,6 +88,14 @@ export const PostList = () => {
 						{loadedLinkIds.has(item._id) && firstUrl && (
 							<RenderedLink url={firstUrl} />
 						)}
+                        <Row paddingHorizontal={Size.M} spacing={8}>
+                            <Text>{likeCount} {likeCount === 1 ? 'like' : 'likes'}</Text>
+                            {isAuthenticated && (
+                                <Pressable onPress={() => onToggleLike(item._id)}>
+                                    <Text style={{ color: liked ? 'red' : 'gray' }}>{liked ? '♥' : '♡'}</Text>
+                                </Pressable>
+                            )}
+                        </Row>
 					</Column>
 				)
 			}}
@@ -87,13 +103,13 @@ export const PostList = () => {
 	)
 
 	function renderHeader(item: Post) {
-		const isAuthor = user?.id === item.user._id
+		const isAuthor = user?.id === item.author._id
 		return (
 			<Row spacing={16} paddingHorizontal={Size.M} align='center'>
-				<ProfileImage user={item.user as PartialUser} size='md' />
+				<ProfileImage user={item.author as PartialUser} size='md' />
 				<Column flex={1} spacing={2}>
 					<Text style={{ fontSize: 20, fontWeight: 'bold', lineHeight: 22 }}>
-						{item.user.username}
+						{item.author.username}
 					</Text>
 					<Text style={{ fontSize: 14, lineHeight: 16 }}>
 						{formatRelative(new Date(item.createdAt), new Date())}

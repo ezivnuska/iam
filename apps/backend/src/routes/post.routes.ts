@@ -2,12 +2,14 @@
 
 import express, { Router } from 'express'
 import {
+	createPost,
+	deletePost,
 	getAllPosts,
 	getPostById,
-	createPost,
-	updatePost,
-	deletePost,
+    getPostLikes,
     scrapePost,
+    toggleLike,
+	updatePost,
 } from '../controllers/post.controller'
 import { requireAuth } from '../middlewares/auth.middleware'
 import { asyncHandler } from '../utils/asyncHandler'
@@ -20,5 +22,7 @@ router.get('/:id', asyncHandler(getPostById))
 router.post('/', requireAuth(), asyncHandler(createPost))
 router.put('/:id', requireAuth(), asyncHandler(updatePost))
 router.delete('/:id', requireAuth(), asyncHandler(deletePost))
+router.get('/:postId/likes', requireAuth(), asyncHandler(getPostLikes))
+router.post('/:postId/like', requireAuth(), asyncHandler(toggleLike))
 
 export default router

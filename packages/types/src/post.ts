@@ -5,7 +5,7 @@ export interface Post {
 	content: string
 	createdAt: string
 	updatedAt: string
-	user: {
+	author: {
         _id: string
         username: string
         avatar?: {
@@ -17,5 +17,7 @@ export interface Post {
                 height: number
             }[]
         }
-    }    
+    }
+    likes: string[] // user IDs who liked the post
+    likedByCurrentUser: boolean
 }

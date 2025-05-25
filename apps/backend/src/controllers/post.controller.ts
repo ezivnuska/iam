@@ -16,18 +16,24 @@ export const createPost = async (req: Request, res: Response): Promise<void> => 
 	res.status(201).json(post)
 }
 
-export const getAllPosts = async (_req: Request, res: Response) => {
-	const posts = await postService.getAllPosts()
+export const getAllPosts = async (req: Request, res: Response) => {
+	const posts = await postService.getAllPosts(req.user?.id)
 	res.json(posts)
 }
 
 export const getPostById = async (req: Request, res: Response): Promise<void> => {
 	const post = await postService.getPostById(req.params.id)
+    const currentUserId = req.user?.id
+
 	if (!post) {
 		res.status(404).json({ message: 'Post not found' })
 		return
 	}
-	res.json(post)
+
+	const enrichedPost = post.toJSON()
+    enrichedPost.likedByCurrentUser = post.likes.some(id => id.equals(currentUserId))
+
+    res.json(enrichedPost)
 }
 
 export const updatePost = async (req: Request, res: Response) => {
@@ -41,6 +47,37 @@ export const updatePost = async (req: Request, res: Response) => {
 		res.status(404).json({ message: 'Post not found' })
         return 
 	}
+	res.json(post)
+}
+
+export const getPostLikes = async (req: Request, res: Response) => {
+	const postId = req.params.postId
+
+	const likes = await postService.getPostLikes(postId)
+	if (!likes) {
+		res.status(404).json({ message: 'Post not found' })
+		return
+	}
+
+	res.json(likes)
+}
+
+export const toggleLike = async (req: Request, res: Response): Promise<void> => {
+    if (!req.user?.id) {
+		res.status(401).json({ message: 'Unauthorized' })
+        return
+	}
+
+    const userId = req.user.id
+    const postId = req.params.postId
+	
+    const post = await postService.toggleLike(userId, postId)
+	
+    if (!post) {
+		res.status(404).json({ message: 'Post not found' })
+		return
+	}
+
 	res.json(post)
 }
 
