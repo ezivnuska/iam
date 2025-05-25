@@ -43,7 +43,7 @@ type AutoSizeImageProps = {
 	const bestUrl = useBestVariant(image, widthToUse ?? 0)
   
 	if (widthToUse === undefined) {
-	  return <View onLayout={onLayout} style={style}><ActivityIndicator /></View>
+	  return <View onLayout={onLayout} style={style} />
 	}
   
 	if (!bestUrl) {

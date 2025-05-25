@@ -8,4 +8,17 @@ export const getPostById = async (id: string): Promise<Post> => api.get(`/posts/
 export const createPost = async (content: string): Promise<Post> => api.post('/posts', { content }, { withCredentials: true }).then((res) => res.data)
 export const updatePost = async (id: string, content: string): Promise<Post> => api.put(`/posts/${id}`, { content }, { withCredentials: true }).then((res) => res.data)
 export const deletePost = async (id: string): Promise<{ success: boolean }> => api.delete(`/posts/${id}`, { withCredentials: true }).then((res) => res.data)
-export const scrape = async (url: string) => api.post('/posts/scrape', { url }).then((res) => res.data)
+// export const scrape = async (url: string) => api.post('/posts/scrape', { url }).then((res) => res.data)
+
+export const scrape = async (url: string) => {
+	console.log('Scraping:', url)
+
+	try {
+		const { data } = await api.post('/posts/scrape', { url })
+		console.log('Scrape result:', data)
+		return data
+	} catch (err) {
+		console.error('Scrape failed:', err)
+		return {}
+	}
+}

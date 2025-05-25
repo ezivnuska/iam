@@ -56,20 +56,42 @@ export const deletePost = async (req: Request, res: Response) => {
 
 // -------------------- SCRAPING LOGIC --------------------
 
-const getContent = async (url: string) => {
-	const browser = await puppeteer.launch({ headless: true })
-	const page = await browser.newPage()
+const getContent = async (url: string, maxRetries = 3): Promise<{ html: string; url: string }> => {
+	let attempt = 0
+	let lastError: unknown
 
-	await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 })
-	const html = await page.content()
+	while (attempt < maxRetries) {
+		try {
+			const browser = await puppeteer.launch({ headless: true })
+			const page = await browser.newPage()
 
-	await browser.close()
-	return { html, url }
+			await page.goto(url, {
+				timeout: 45000,
+				waitUntil: 'domcontentloaded',
+			})
+
+			const html = await page.content()
+			await browser.close()
+			return { html, url }
+		} catch (error) {
+			lastError = error
+			console.warn(`Attempt ${attempt + 1} failed:`, error)
+
+			// Delay before retrying
+			const delay = 1000 * 2 ** attempt // exponential backoff: 1s, 2s, 4s...
+			await new Promise((resolve) => setTimeout(resolve, delay))
+		}
+
+		attempt++
+	}
+
+	throw new Error(`Failed to load URL after ${maxRetries} attempts: ${url}\nLast error: ${lastError}`)
 }
-
 
 // Metascraper setup
 const metascraper = require('metascraper')([
+	require('metascraper-author')(),
+	require('metascraper-date')(),
 	require('metascraper-description')(),
 	require('metascraper-image')(),
 	require('metascraper-title')(),

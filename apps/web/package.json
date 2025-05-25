@@ -5,7 +5,7 @@
 	"type": "commonjs",
 	"scripts": {
 		"dev": "NODE_ENV=development webpack serve",
-        "build": "pnpm run clean && NODE_OPTIONS='--max-old-space-size=4096' webpack --mode production",
+		"build": "pnpm run clean && NODE_OPTIONS='--max-old-space-size=4096' webpack --mode production",
 		"clean": "rm -rf build tsconfig.tsbuildinfo dist .parcel-cache",
 		"test": "jest"
 	},
@@ -54,6 +54,7 @@
 		"@services": "workspace:*",
 		"@utils": "workspace:*",
 		"axios": "^0.27.2",
+		"date-fns": "^4.1.0",
 		"exif-js": "^2.3.0",
 		"expo": "^52.0.46",
 		"expo-image-picker": "^16.1.4",
