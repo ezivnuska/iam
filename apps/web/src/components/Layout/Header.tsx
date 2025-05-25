@@ -16,7 +16,7 @@ interface HeaderProps {
 }
 
 const Brand = ({ ...props }) => {
-    const fontSize = resolveResponsiveProp({ xs: 32, sm: 34, md: 36, lg: 38 })
+    const fontSize = resolveResponsiveProp({ xs: 34, sm: 34, md: 36, lg: 40 })
     return (
         <Pressable onPress={props.onPress} style={{ flex: 1, flexShrink: 1 }}>
             <Row wrap={true} style={{ flexShrink: 1, minWidth: 50, overflow: 'hidden' }}>

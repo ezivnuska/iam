@@ -1,12 +1,13 @@
 // apps/web/src/components/PostList.tsx
 
 import React, { useState } from 'react'
-import { FlatList, Pressable, Text, View, ViewToken } from 'react-native'
-import { useAuth, usePosts } from '@/hooks'
-import { Column, LinkPreview, ProfileImage, Row } from '@/components'
+import { FlatList, Pressable, Text, ViewToken } from 'react-native'
+import { useAuth, useModal, usePosts } from '@/hooks'
+import { AddCommentForm, Column, CommentSection, LinkPreview, ProfileImage, Row } from '@/components'
 import Ionicons from '@expo/vector-icons/Ionicons'
-import { PartialUser, Post } from '@iam/types'
-import { toggleLike } from '@services'
+import { Comment, PartialUser, Post } from '@iam/types'
+import { fetchComments, toggleLike } from '@services'
+import {  } from '@services'
 import { Size } from '@/styles'
 import Autolink from 'react-native-autolink'
 import { formatRelative } from 'date-fns'
@@ -15,8 +16,10 @@ import { useEffect, useRef } from 'react'
 export const PostList = () => {
 
 	const [loadedLinkIds, setLoadedLinkIds] = useState<Set<string>>(new Set())
+    const [commentsByPostId, setCommentsByPostId] = useState<Record<string, Comment[]>>({})
 
 	const { isAuthenticated, user } = useAuth()
+	const { showModal } = useModal()
 	const { posts, deletePost, refreshPosts } = usePosts()
 
 	useEffect(() => {
@@ -24,16 +27,21 @@ export const PostList = () => {
 	}, [])
 
 	const onViewableItemsChanged = useRef(
-		({ viewableItems }: { viewableItems: Array<ViewToken> }) => {
-			setLoadedLinkIds((prev) => {
-				const updated = new Set(prev)
-				viewableItems.forEach(({ item }) => {
-					updated.add((item as Post)._id)
-				})
-				return updated
-			})
-		}
-	).current	
+        ({ viewableItems }: { viewableItems: Array<ViewToken> }) => {
+            setLoadedLinkIds((prev) => {
+                const updated = new Set(prev)
+                viewableItems.forEach(({ item }) => {
+                    const post = item as Post
+                    updated.add(post._id)
+    
+                    if (!commentsByPostId[post._id]) {
+                        loadComments(post._id)
+                    }
+                })
+                return updated
+            })
+        }
+    ).current    
 
 	const extractFirstUrl = (text: string): string | null => {
         const urlRegex = /(?:https?:\/\/)?(?:[a-zA-Z0-9-]+\.)+[a-z]{2,}(?:\/[^\s]*)?/gi
@@ -59,6 +67,14 @@ export const PostList = () => {
         await toggleLike(postId)
         await refreshPosts()
     }
+
+    const loadComments = async (postId: string) => {
+        const data = await fetchComments(postId)
+        setCommentsByPostId(prev => ({ ...prev, [postId]: data }))
+    }    
+
+    const openCommentForm = (postId: string) =>
+        showModal(<AddCommentForm postId={postId} onCommentAdded={() => loadComments(postId)} />)    
 
 	return (
 		<FlatList
@@ -90,13 +106,23 @@ export const PostList = () => {
 							<LinkPreview url={firstUrl} />
 						)}
                         <Row paddingHorizontal={Size.M} spacing={8}>
-                            <Text>{likeCount} {likeCount === 1 ? 'like' : 'likes'}</Text>
+                            <Row spacing={8}>
+                                <Text>{likeCount} {likeCount === 1 ? 'like' : 'likes'}</Text>
+                                {isAuthenticated && (
+                                    <Pressable onPress={() => onToggleLike(item._id)}>
+                                        <Text style={{ fontSize: 16, color: liked ? 'red' : 'gray' }}>{liked ? '♥' : '♡'}</Text>
+                                    </Pressable>
+                                )}
+                            </Row>
                             {isAuthenticated && (
-                                <Pressable onPress={() => onToggleLike(item._id)}>
-                                    <Text style={{ fontSize: 16, color: liked ? 'red' : 'gray' }}>{liked ? '♥' : '♡'}</Text>
+                                <Pressable onPress={() => openCommentForm(item._id)}>
+                                    <Text>Add Comment</Text>
                                 </Pressable>
                             )}
                         </Row>
+                        {loadedLinkIds.has(item._id) && (
+                            <CommentSection comments={commentsByPostId[item._id] ?? []} />
+                        )}
 					</Column>
 				)
 			}}
@@ -108,7 +134,7 @@ export const PostList = () => {
 		return (
 			<Row spacing={16} paddingHorizontal={Size.M} align='center'>
 				<ProfileImage user={item.author as PartialUser} size='md' />
-				<Column flex={1} spacing={2}>
+				<Column flex={1}>
 					<Text style={{ fontSize: 20, fontWeight: 'bold', lineHeight: 22 }}>
 						{item.author.username}
 					</Text>

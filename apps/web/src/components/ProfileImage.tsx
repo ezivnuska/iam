@@ -15,10 +15,10 @@ const sizeMap: Record<ProfileImageSize, number> = {
 }
 
 const fontSizeMap: Record<ProfileImageSize, number> = {
-	xs: 12,
-	sm: 18,
-	md: 24,
-	lg: 36,
+	xs: 14,
+	sm: 12,
+	md: 26,
+	lg: 32,
 }
 
 interface ProfileImageProps {

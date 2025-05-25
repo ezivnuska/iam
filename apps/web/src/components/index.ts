@@ -1,5 +1,7 @@
 // packages/ui/src/components/index.ts
 
+export * from './Button'
+export * from './CommentSection'
 export * from './Layout'
 export * from './PageHeader'
 export * from './ProfileImage'
@@ -8,7 +10,6 @@ export * from './forms'
 export * from './LinkPreview'
 export * from './UserProfileCard'
 export * from './ImageManagerHeader'
-export * from './Button'
 
 export { default as AutoSizeImage } from './AutoSizeImage'
 export { default as NativeCamera } from './NativeCamera'
