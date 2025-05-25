@@ -103,15 +103,11 @@ const getContent = async (url: string, maxRetries = 3): Promise<{ html: string; 
         const browser = await puppeteer.launch({
             headless: true,
             args: ['--no-sandbox', '--disable-setuid-sandbox'],
+            timeout: 20000,
         })
 
 		try {
 			const page = await browser.newPage()
-
-            const contentType = await page.evaluate(() => document.contentType)
-            if (!contentType.includes('text/html')) {
-                throw new Error(`Invalid content type: ${contentType}`)
-            }
 
             await page.setUserAgent(
                 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
@@ -119,16 +115,14 @@ const getContent = async (url: string, maxRetries = 3): Promise<{ html: string; 
                 'Chrome/115.0.0.0 Safari/537.36'
             )
 
-			await page.goto(url, {
-				timeout: 45000,
-				waitUntil: 'domcontentloaded',
-			})
-
             const canonical = await page.$eval('link[rel="canonical"]', el => el.href).catch(() => null)
             const finalUrl = canonical && canonical !== url ? canonical : url
 
             if (finalUrl !== url) {
-                await page.goto(finalUrl, { waitUntil: 'domcontentloaded' })
+                await page.goto(finalUrl, {
+                    timeout: 15000,
+                    waitUntil: 'domcontentloaded',
+                })
             }
 
 			const html = await page.content()

@@ -71,7 +71,6 @@ export const PostList = () => {
 			initialNumToRender={5}
             contentContainerStyle={{ paddingVertical: Size.S }}
 			renderItem={({ item }) => {
-                console.log('item', item)
 				const firstUrl = extractFirstUrl(item.content)
                 const liked = item.likedByCurrentUser
                 const likeCount = item.likes.length
