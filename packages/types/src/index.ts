@@ -1,3 +1,4 @@
+export * from './bond'
 export * from './comment'
 export * from './image'
 export * from './navigation'

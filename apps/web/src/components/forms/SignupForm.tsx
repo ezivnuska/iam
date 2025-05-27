@@ -5,7 +5,7 @@ import { Text, TextInput, Alert, TextInput as RNTextInput } from 'react-native'
 import { useForm, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Button, Column, FormHeader, FormLayout, SigninForm, SubmitButton } from '@/components'
+import { FormHeader, FormLayout, SigninForm, SubmitButton } from '@/components'
 import { useAuth, useModal } from '@/hooks'
 import { signupRequest } from '@services'
 import { form as styles, shadows } from '@/styles'
@@ -207,10 +207,7 @@ export const SignupForm = () => {
 			/>
 			{errors.confirmPassword && <Text style={styles.error}>{errors.confirmPassword.message}</Text>}
 
-			<Column spacing={10}>
-                <SubmitButton label='Sign Up' onPress={handleSubmit(onSubmit, onInvalid)} submitting={isSubmitting} />
-                <Button label='Sign In' onPress={showSigninForm} />
-            </Column>
+            <SubmitButton label='Sign Up' onPress={handleSubmit(onSubmit, onInvalid)} submitting={isSubmitting} />
 		</FormLayout>
 	)
 }

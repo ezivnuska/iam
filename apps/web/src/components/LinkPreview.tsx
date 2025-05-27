@@ -14,8 +14,6 @@ type LinkPreviewProps = {
 
 type ScraperProps = {
 	title?: string
-	author?: string
-	date?: string
 	description?: string
 	image?: string
 }
@@ -109,12 +107,8 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url }) => {
 				)}
 				<Column spacing={Size.XS} paddingHorizontal={Size.M}>
 					{data.title && <Text style={styles.heading}>{data.title}</Text>}
-					<Row flex={1} spacing={16}>
-						{data.author && <Text style={styles.author}>{data.author}</Text>}
-						{data.date && <Text style={styles.date}>{format(new Date(data.date), 'MMM ddd yyyy')}</Text>}
-					</Row>
+                    <Text style={styles.description}>{data.description}</Text>
 				</Column>
-                <Text style={styles.description}>{data.description}</Text>
 			</Column>
 		</TouchableOpacity>
 	) : (
@@ -136,6 +130,5 @@ const styles = StyleSheet.create({
 	},
 	description: {
 		fontSize: 14,
-        paddingHorizontal: Size.M,
 	},
 })

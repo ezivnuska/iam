@@ -3,13 +3,12 @@
 import React, { ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { MAX_WIDTH } from './constants'
-import { IconButton, ProfileImage, Row, SigninForm } from '@/components'
+import { IconButton, ProfileImage, Row, SigninForm, SignupForm } from '@/components'
 import { useNavigation, useNavigationState } from '@react-navigation/native'
-import AntDesign from '@expo/vector-icons/AntDesign'
-import Ionicons from '@expo/vector-icons/Ionicons'
-import { resolveResponsiveProp, Size } from '@/styles'
 import { useAuth, useModal } from '@/hooks'
+import Ionicons from '@expo/vector-icons/Ionicons'
 import type { ProfileImageSize } from '@/components'
+import { resolveResponsiveProp, Size } from '@/styles'
 
 interface HeaderProps {
     children?: ReactNode
@@ -27,8 +26,8 @@ const Brand = ({ ...props }) => {
     )
 }
 
-export const Header: React.FC<HeaderProps> = (props) => {
-    const { logout, isAuthenticated, user } = useAuth()
+export const Header: React.FC<HeaderProps> = () => {
+    const { isAuthenticated, user } = useAuth()
     const { showModal } = useModal()
     const navigation = useNavigation()
 
@@ -41,6 +40,7 @@ export const Header: React.FC<HeaderProps> = (props) => {
     const currentRoute = useNavigationState((state) => state.routes[state.index].name)
 
     const showSigninModal = () => showModal(<SigninForm />)
+    const showSignupModal = () => showModal(<SignupForm />)
 
 	return (
         <View style={styles.container}>
@@ -90,12 +90,14 @@ export const Header: React.FC<HeaderProps> = (props) => {
                             )}
                         </Row>
                     ) : (
-                        <IconButton
-                            icon={<AntDesign name='login' size={iconSize} color='#777' />}
-                            label='Sign In'
-                            onPress={showSigninModal}
-                            showLabel={showLabel}
-                        />
+                        <Row spacing={1} style={styles.authButtons}>
+                            <Pressable onPress={showSignupModal} style={styles.authButton}>
+                                <Text>Sign Up</Text>
+                            </Pressable>
+                            <Pressable onPress={showSigninModal} style={styles.authButton}>
+                                <Text>Sign In</Text>
+                            </Pressable>
+                        </Row>
                     )}
                 </Row>
             </View>
@@ -129,5 +131,12 @@ const styles = StyleSheet.create({
         flexShrink: 0,
         flexGrow: 0,
         flexBasis: 'auto',
+    },
+    authButtons: {
+        backgroundColor: '#ccc',
+    },
+    authButton: {
+        paddingHorizontal: Size.S,
+        backgroundColor: 'white',
     },
 })

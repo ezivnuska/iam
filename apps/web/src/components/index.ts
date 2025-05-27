@@ -2,14 +2,15 @@
 
 export * from './Button'
 export * from './CommentSection'
+export * from './ImageManagerHeader'
 export * from './Layout'
 export * from './PageHeader'
 export * from './ProfileImage'
 export * from './PostList'
 export * from './forms'
 export * from './LinkPreview'
-export * from './UserProfileCard'
-export * from './ImageManagerHeader'
+export * from './UserList'
+export * from './UserListItem'
 
 export { default as AutoSizeImage } from './AutoSizeImage'
 export { default as NativeCamera } from './NativeCamera'

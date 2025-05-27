@@ -147,8 +147,6 @@ const getContent = async (url: string, maxRetries = 3): Promise<{ html: string; 
 
 // Metascraper setup
 const metascraper = require('metascraper')([
-	require('metascraper-author')(),
-	require('metascraper-date')(),
 	require('metascraper-description')(),
 	require('metascraper-image')(),
 	require('metascraper-title')(),

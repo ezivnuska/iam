@@ -30,7 +30,7 @@ export const IconButton: React.FC<ButtonProps> = ({
 		>
 			<Column spacing={4} align='center'>
 				{icon}
-				{shouldShowLabel && (
+				{label && shouldShowLabel && (
 					<Text
 						style={[
 							styles.buttonLabel,

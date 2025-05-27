@@ -12,6 +12,7 @@ import { registerChatHandlers } from './controllers/chat.controller'
 
 import adminRoutes from './routes/admin.routes'
 import authRoutes from './routes/auth.routes'
+import bondRoutes from './routes/bond.routes'
 import profileRoutes from './routes/profile.routes'
 import userRoutes from './routes/user.routes'
 import imageRoutes from './routes/image.routes'
@@ -52,6 +53,7 @@ app.use('/images', express.static(imagesPath))
 
 app.use('/api/admin', adminRoutes)
 app.use('/api/auth', authRoutes)
+app.use('/api/bond', bondRoutes)
 app.use('/api/profile', profileRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/images', imageRoutes)
