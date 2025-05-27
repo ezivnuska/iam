@@ -39,22 +39,31 @@ export const PostList = () => {
         })
     }
 
-	const onViewableItemsChanged = useRef(
+	const MAX_NEW_LINKS_PER_PASS = 2
+
+    const onViewableItemsChanged = useRef(
         ({ viewableItems }: { viewableItems: Array<ViewToken> }) => {
             setLoadedLinkIds((prev) => {
                 const updated = new Set(prev)
-                viewableItems.forEach(({ item }) => {
+                let newlyAdded = 0
+
+                for (const { item } of viewableItems) {
                     const post = item as Post
-                    updated.add(post._id)
-    
-                    if (!commentsByPostId[post._id]) {
-                        loadComments(post._id)
+
+                    if (!updated.has(post._id) && newlyAdded < MAX_NEW_LINKS_PER_PASS) {
+                        updated.add(post._id)
+                        newlyAdded++
+
+                        if (!commentsByPostId[post._id]) {
+                            loadComments(post._id)
+                        }
                     }
-                })
+                }
+
                 return updated
             })
         }
-    ).current    
+    ).current
 
 	const extractFirstUrl = (text: string): string | null => {
         const urlRegex = /(?:https?:\/\/)?(?:[a-zA-Z0-9-]+\.)+[a-z]{2,}(?:\/[^\s]*)?/gi

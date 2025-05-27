@@ -2,7 +2,7 @@
 
 import { Request, Response } from 'express'
 import * as postService from '../services/post.service'
-import puppeteer from 'puppeteer'
+import puppeteer, { Page } from 'puppeteer'
 
 // Core post CRUD handlers
 export const createPost = async (req: Request, res: Response): Promise<void> => {
@@ -98,14 +98,25 @@ const getContent = async (url: string, maxRetries = 3): Promise<{ html: string; 
 	let attempt = 0
 	let lastError: unknown
 
+    const goTo = async (page: Page, url: string) => {
+        return Promise.race([
+            page.goto(url, { timeout: 30000, waitUntil: 'domcontentloaded' }),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('goto timeout exceeded')), 35000)),
+        ])
+    }
+
 	while (attempt < maxRetries) {
 		const browser = await puppeteer.launch({
+            // headless: false,
+            // slowMo: 50,
 			headless: true,
 			args: ['--no-sandbox', '--disable-setuid-sandbox'],
+            protocolTimeout: 60000,
 		})
 
 		try {
 			const page = await browser.newPage()
+            page.setDefaultTimeout(30000)
 
 			await page.setUserAgent(
 				'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
@@ -113,21 +124,19 @@ const getContent = async (url: string, maxRetries = 3): Promise<{ html: string; 
 				'Chrome/115.0.0.0 Safari/537.36'
 			)
 
-			await page.goto(url, {
-				timeout: 30000,
-				waitUntil: 'domcontentloaded',
-			})
+			await goTo(page, url)
 
 			// Attempt to detect canonical URL
-			const canonical = await page.$eval('link[rel="canonical"]', el => el.getAttribute('href')).catch(() => null)
+			const canonical = await Promise.race([
+                page.$eval('link[rel="canonical"]', el => el.getAttribute('href')),
+                new Promise<null>((_, reject) => setTimeout(() => reject(new Error('Timeout getting canonical')), 5000)),
+            ]).catch(() => null)
 			const finalUrl = canonical && canonical !== url ? canonical : url
 
 			// If canonical differs, reload the final page
 			if (finalUrl !== url) {
-				await page.goto(finalUrl, {
-					timeout: 30000,
-					waitUntil: 'domcontentloaded',
-				})
+                console.log(`Canonical redirect: ${url} → ${finalUrl}`)
+                await goTo(page, finalUrl)
 			}
 
 			// Delay to allow scripts to finish loading
