@@ -1,17 +1,16 @@
 // apps/web/src/components/PostList.tsx
 
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { FlatList, Pressable, StyleSheet, Text, ViewToken } from 'react-native'
-import { useAuth, useModal, usePosts } from '@/hooks'
-import { AddCommentForm, Column, CommentSection, LinkPreview, ProfileImage, Row } from '@/components'
+import type { ListRenderItemInfo } from 'react-native'
+import { useAuth, useLinkPreviewQueue, useModal, usePosts } from '@/hooks'
+import { AddCommentForm, Column, CommentSection, ProfileImage, Row, QueuedLinkPreview } from '@/components'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { Comment, PartialUser, Post } from '@iam/types'
 import { fetchComments, toggleLike } from '@services'
-import {  } from '@services'
 import { Size } from '@/styles'
 import Autolink from 'react-native-autolink'
 import { formatRelative } from 'date-fns'
-import { useEffect, useRef } from 'react'
 
 export const PostList = () => {
 
@@ -27,6 +26,8 @@ export const PostList = () => {
 		refreshPosts()
 	}, [])
 
+    const { shouldRender, enqueue } = useLinkPreviewQueue(2)
+
     const toggleComments = (postId: string) => {
         setExpandedComments((prev) => {
             const next = new Set(prev)
@@ -41,29 +42,31 @@ export const PostList = () => {
 
 	const MAX_NEW_LINKS_PER_PASS = 2
 
-    const onViewableItemsChanged = useRef(
-        ({ viewableItems }: { viewableItems: Array<ViewToken> }) => {
-            setLoadedLinkIds((prev) => {
-                const updated = new Set(prev)
-                let newlyAdded = 0
-
-                for (const { item } of viewableItems) {
-                    const post = item as Post
-
-                    if (!updated.has(post._id) && newlyAdded < MAX_NEW_LINKS_PER_PASS) {
-                        updated.add(post._id)
-                        newlyAdded++
-
-                        if (!commentsByPostId[post._id]) {
-                            loadComments(post._id)
-                        }
+    const onViewableItemsChanged = useCallback(({ viewableItems }: { viewableItems: Array<ViewToken> }) => {
+        setLoadedLinkIds((prev) => {
+            const updated = new Set(prev)
+            let newlyAdded = 0
+    
+            for (const { item } of viewableItems) {
+                const post = item as Post
+                const firstUrl = extractFirstUrl(post.content)
+                if (firstUrl && newlyAdded < MAX_NEW_LINKS_PER_PASS && !updated.has(post._id)) {
+                    updated.add(post._id)
+                    newlyAdded++
+    
+                    enqueue(post._id, firstUrl, () => {
+                        // Optional: mark completed
+                    })
+    
+                    if (!commentsByPostId[post._id]) {
+                        loadComments(post._id)
                     }
                 }
-
-                return updated
-            })
-        }
-    ).current
+            }
+    
+            return updated
+        })
+    }, [enqueue, commentsByPostId])    
 
 	const extractFirstUrl = (text: string): string | null => {
         const urlRegex = /(?:https?:\/\/)?(?:[a-zA-Z0-9-]+\.)+[a-z]{2,}(?:\/[^\s]*)?/gi
@@ -79,11 +82,14 @@ export const PostList = () => {
         return url
     }    
     
-	// posible fix for non-rendering items
-	// const viewabilityConfig = { itemVisiblePercentThreshold: 50 }
-	// const viewabilityCallbackPair = useRef([
-	// 	{ viewabilityConfig, onViewableItemsChanged }
-	// ]).current
+	const viewabilityConfig = {
+        itemVisiblePercentThreshold: 30,
+        minimumViewTime: 100,
+    }
+    
+    const viewabilityCallbackPairs = useRef([
+        { viewabilityConfig, onViewableItemsChanged }
+    ])
 
     const onToggleLike = async (postId: string) => {
         await toggleLike(postId)
@@ -98,71 +104,87 @@ export const PostList = () => {
     const openCommentForm = (postId: string) =>
         showModal(<AddCommentForm postId={postId} onCommentAdded={() => loadComments(postId)} />)    
 
+    const renderItem = useCallback(({ item }: ListRenderItemInfo<Post>) => {
+        const firstUrl = extractFirstUrl(item.content)
+        const liked = item.likedByCurrentUser
+        const likeCount = item.likes.length
+      
+        return (
+            <Column flex={1} spacing={Size.M} paddingBottom={Size.L}>
+                {renderHeader(item)}
+                <Autolink
+                    text={item.content}
+                    linkStyle={{ color: '#007aff' }}
+                    url
+                    email={false}
+                    phone={false}
+                    truncate={50}
+                    truncateChars="..."
+                    style={{ paddingHorizontal: Size.M }}
+                />
+                {firstUrl && shouldRender(item._id) && (
+                    <QueuedLinkPreview
+                        id={item._id}
+                        url={firstUrl}
+                        enqueue={enqueue}
+                        shouldRender={shouldRender}
+                    />
+                )}
+                <Row paddingHorizontal={Size.M} spacing={8}>
+                    <Row spacing={8}>
+                        <Text style={styles.bottomButtons}>{likeCount} {likeCount === 1 ? 'like' : 'likes'}</Text>
+                        {isAuthenticated && (
+                            <Pressable onPress={() => onToggleLike(item._id)}>
+                                <Text style={[styles.bottomButtons, { color: liked ? 'red' : 'gray' }]}>{liked ? '♥' : '♡'}</Text>
+                            </Pressable>
+                        )}
+                    </Row>
+                    {(loadedLinkIds.has(item._id) && commentsByPostId[item._id]?.length > 0) && (
+                        <>
+                            <Pressable
+                                onPress={() => toggleComments(item._id)}
+                                style={{ paddingHorizontal: Size.M }}
+                                disabled={!isAuthenticated}
+                            >
+                                <Text style={[styles.bottomButtons, { color: isAuthenticated ? '#007aff' : '#ccc' }]}>
+                                    {expandedComments.has(item._id)
+                                        ? 'Hide Comments'
+                                        : `${commentsByPostId[item._id]?.length || 0} comment${commentsByPostId[item._id]?.length === 1 ? '' : 's'}`}
+                                </Text>
+                            </Pressable>
+                            {expandedComments.has(item._id) && (
+                                <CommentSection comments={commentsByPostId[item._id] ?? []} />
+                            )}
+                        </>
+                    )}
+                    {isAuthenticated && (
+                        <Pressable onPress={() => openCommentForm(item._id)}>
+                            <Text style={styles.bottomButtons}>Add Comment</Text>
+                        </Pressable>
+                    )}
+                </Row>
+            </Column>
+        )
+    }, [loadedLinkIds, enqueue, shouldRender])      
+
 	return (
 		<FlatList
 			data={posts}
 			keyExtractor={(item) => item._id}
-			onViewableItemsChanged={onViewableItemsChanged}
-			viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
-			// viewabilityConfigCallbackPairs={viewabilityCallbackPair}
-			initialNumToRender={5}
+            initialNumToRender={3}
+            maxToRenderPerBatch={3}
+            windowSize={4}
+            // onViewableItemsChanged={onViewableItemsChanged}
+            // viewabilityConfig={{
+            //     itemVisiblePercentThreshold: 30,
+            //     minimumViewTime: 100,
+            // }}              
+            removeClippedSubviews={true}
+			// viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
+            viewabilityConfigCallbackPairs={viewabilityCallbackPairs.current}
+			// initialNumToRender={5}
             contentContainerStyle={{ paddingVertical: Size.S }}
-			renderItem={({ item }) => {
-				const firstUrl = extractFirstUrl(item.content)
-                const liked = item.likedByCurrentUser
-                const likeCount = item.likes.length
-				return (
-					<Column flex={1} spacing={Size.M} paddingBottom={Size.L}>
-						{renderHeader(item)}
-						<Autolink
-							text={item.content}
-							linkStyle={{ color: '#007aff' }}
-							url
-							email={false}
-							phone={false}
-							truncate={50}
-							truncateChars='...'
-							style={{ paddingHorizontal: Size.M }}
-						/>
-						{loadedLinkIds.has(item._id) && firstUrl && (
-							<LinkPreview url={firstUrl} />
-						)}
-                        <Row paddingHorizontal={Size.M} spacing={8}>
-                            <Row spacing={8}>
-                                <Text style={styles.bottomButtons}>{likeCount} {likeCount === 1 ? 'like' : 'likes'}</Text>
-                                {isAuthenticated && (
-                                    <Pressable onPress={() => onToggleLike(item._id)}>
-                                        <Text style={[styles.bottomButtons, { color: liked ? 'red' : 'gray' }]}>{liked ? '♥' : '♡'}</Text>
-                                    </Pressable>
-                                )}
-                            </Row>
-                            {(loadedLinkIds.has(item._id) && commentsByPostId[item._id]?.length > 0) && (
-                                <>
-                                    <Pressable
-                                        onPress={() => toggleComments(item._id)}
-                                        style={{ paddingHorizontal: Size.M }}
-                                        disabled={!isAuthenticated}
-                                    >
-                                        <Text style={[styles.bottomButtons, { color: isAuthenticated ? '#007aff' : '#ccc' }]}>
-                                            {expandedComments.has(item._id)
-                                                ? 'Hide Comments'
-                                                : `${commentsByPostId[item._id]?.length || 0} comment${commentsByPostId[item._id]?.length === 1 ? '' : 's'}`}
-                                        </Text>
-                                    </Pressable>
-                                    {expandedComments.has(item._id) && (
-                                        <CommentSection comments={commentsByPostId[item._id] ?? []} />
-                                    )}
-                                </>
-                            )}
-                            {isAuthenticated && (
-                                <Pressable onPress={() => openCommentForm(item._id)}>
-                                    <Text style={styles.bottomButtons}>Add Comment</Text>
-                                </Pressable>
-                            )}
-                        </Row>
-					</Column>
-				)
-			}}
+			renderItem={renderItem}
 		/>
 	)
 

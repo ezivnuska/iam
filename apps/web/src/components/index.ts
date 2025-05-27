@@ -11,6 +11,7 @@ export * from './forms'
 export * from './LinkPreview'
 export * from './UserList'
 export * from './UserListItem'
+export * from './QueuedLinkPreview'
 
 export { default as AutoSizeImage } from './AutoSizeImage'
 export { default as NativeCamera } from './NativeCamera'

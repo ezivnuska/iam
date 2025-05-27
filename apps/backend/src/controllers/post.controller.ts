@@ -110,6 +110,7 @@ const getContent = async (url: string, maxRetries = 3): Promise<{ html: string; 
             // headless: false,
             // slowMo: 50,
 			headless: true,
+			// headless: 'new',
 			args: ['--no-sandbox', '--disable-setuid-sandbox'],
             protocolTimeout: 60000,
 		})
@@ -124,8 +125,6 @@ const getContent = async (url: string, maxRetries = 3): Promise<{ html: string; 
 				'Chrome/115.0.0.0 Safari/537.36'
 			)
 
-			await goTo(page, url)
-
 			// Attempt to detect canonical URL
 			const canonical = await Promise.race([
                 page.$eval('link[rel="canonical"]', el => el.getAttribute('href')),
@@ -133,14 +132,15 @@ const getContent = async (url: string, maxRetries = 3): Promise<{ html: string; 
             ]).catch(() => null)
 			const finalUrl = canonical && canonical !== url ? canonical : url
 
+			await goTo(page, finalUrl)
 			// If canonical differs, reload the final page
-			if (finalUrl !== url) {
-                console.log(`Canonical redirect: ${url} → ${finalUrl}`)
-                await goTo(page, finalUrl)
-			}
+			// if (finalUrl !== url) {
+            //     console.log(`Canonical redirect: ${url} → ${finalUrl}`)
+            //     await goTo(page, finalUrl)
+			// }
 
 			// Delay to allow scripts to finish loading
-			await new Promise(resolve => setTimeout(resolve, 2000))
+			await new Promise(resolve => setTimeout(resolve, 3000))
 
 			// Grab HTML content
 			const html = await page.content()

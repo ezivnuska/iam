@@ -114,7 +114,7 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url }) => {
 			</Column>
 		</TouchableOpacity>
 	) : (
-		<ActivityIndicator size='large' />
+		<Text style={styles.loadingText}>Loading link...</Text>
 	)
 }
 
@@ -133,4 +133,8 @@ const styles = StyleSheet.create({
 	description: {
 		fontSize: 14,
 	},
+    loadingText: {
+        color: '#bbb',
+        paddingHorizontal: Size.M,
+    },
 })
