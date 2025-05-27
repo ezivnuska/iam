@@ -100,7 +100,7 @@ const getContent = async (url: string, maxRetries = 3): Promise<{ html: string; 
 
     const goTo = async (page: Page, url: string) => {
         return Promise.race([
-            page.goto(url, { timeout: 30000, waitUntil: 'domcontentloaded' }),
+            page.goto(url, { timeout: 40000, waitUntil: 'domcontentloaded' }),
             new Promise((_, reject) => setTimeout(() => reject(new Error('goto timeout exceeded')), 35000)),
         ])
     }
@@ -117,7 +117,7 @@ const getContent = async (url: string, maxRetries = 3): Promise<{ html: string; 
 
 		try {
 			const page = await browser.newPage()
-            page.setDefaultTimeout(30000)
+            // page.setDefaultTimeout(30000)
 
 			await page.setUserAgent(
 				'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
@@ -140,7 +140,7 @@ const getContent = async (url: string, maxRetries = 3): Promise<{ html: string; 
 			// }
 
 			// Delay to allow scripts to finish loading
-			await new Promise(resolve => setTimeout(resolve, 3000))
+			// await new Promise(resolve => setTimeout(resolve, 3000))
 
 			// Grab HTML content
 			const html = await page.content()

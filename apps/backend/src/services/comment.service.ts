@@ -11,3 +11,12 @@ export const getCommentsForPost = async (postId: string) => {
 		.populate('author', 'username avatar')
 		.sort({ createdAt: -1 })
 }
+
+export const getCommentSummaryForPost = async (postId: string) => {
+	const comments = await Comment.find({ postId }, { _id: 1 }).lean()
+	const commentIds = comments.map(c => c._id)
+	return {
+		count: commentIds.length,
+		commentIds,
+	}
+}

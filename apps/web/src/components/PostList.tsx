@@ -7,7 +7,7 @@ import { useAuth, useLinkPreviewQueue, useModal, usePosts } from '@/hooks'
 import { AddCommentForm, Column, CommentSection, ProfileImage, Row, QueuedLinkPreview } from '@/components'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { Comment, PartialUser, Post } from '@iam/types'
-import { fetchComments, toggleLike } from '@services'
+import { fetchCommentSummary, fetchComments, toggleLike } from '@services'
 import { Size } from '@/styles'
 import Autolink from 'react-native-autolink'
 import { formatRelative } from 'date-fns'
@@ -15,7 +15,7 @@ import { formatRelative } from 'date-fns'
 export const PostList = () => {
 
 	const [loadedLinkIds, setLoadedLinkIds] = useState<Set<string>>(new Set())
-    const [commentsByPostId, setCommentsByPostId] = useState<Record<string, Comment[]>>({})
+    const [commentCounts, setCommentCounts] = useState<Record<string, number>>({})
     const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set())
 
 	const { isAuthenticated, user } = useAuth()
@@ -25,6 +25,26 @@ export const PostList = () => {
 	useEffect(() => {
 		refreshPosts()
 	}, [])
+
+    useEffect(() => {
+        const fetchCounts = async () => {
+            const counts: Record<string, number> = {}
+            const commentIdMap: Record<string, string[]> = {}
+        
+            await Promise.all(posts.map(async (post) => {
+                try {
+                    const summary = await fetchCommentSummary(post._id)
+                    counts[post._id] = summary.count
+                    commentIdMap[post._id] = summary.commentIds
+                } catch (err) {
+                    console.error('Failed to load comment summary:', err)
+                }
+            }))
+        
+            setCommentCounts(counts)
+        }
+        fetchCounts()
+    }, [posts])      
 
     const { shouldRender, enqueue } = useLinkPreviewQueue(2)
 
@@ -57,16 +77,12 @@ export const PostList = () => {
                     enqueue(post._id, firstUrl, () => {
                         // Optional: mark completed
                     })
-    
-                    if (!commentsByPostId[post._id]) {
-                        loadComments(post._id)
-                    }
                 }
             }
     
             return updated
         })
-    }, [enqueue, commentsByPostId])    
+    }, [enqueue])    
 
 	const extractFirstUrl = (text: string): string | null => {
         const urlRegex = /(?:https?:\/\/)?(?:[a-zA-Z0-9-]+\.)+[a-z]{2,}(?:\/[^\s]*)?/gi
@@ -96,13 +112,8 @@ export const PostList = () => {
         await refreshPosts()
     }
 
-    const loadComments = async (postId: string) => {
-        const data = await fetchComments(postId)
-        setCommentsByPostId(prev => ({ ...prev, [postId]: data }))
-    }    
-
     const openCommentForm = (postId: string) =>
-        showModal(<AddCommentForm postId={postId} onCommentAdded={() => loadComments(postId)} />)    
+        showModal(<AddCommentForm postId={postId} onCommentAdded={() => {}} />)    
 
     const renderItem = useCallback(({ item }: ListRenderItemInfo<Post>) => {
         const firstUrl = extractFirstUrl(item.content)
@@ -132,46 +143,50 @@ export const PostList = () => {
                 )}
                 <Row paddingHorizontal={Size.M} spacing={8}>
                     <Row spacing={8}>
-                        <Text style={styles.bottomButtons}>{likeCount} {likeCount === 1 ? 'like' : 'likes'}</Text>
-                        {isAuthenticated && (
-                            <Pressable onPress={() => onToggleLike(item._id)}>
-                                <Text style={[styles.bottomButtons, { color: liked ? 'red' : 'gray' }]}>{liked ? '♥' : '♡'}</Text>
-                            </Pressable>
-                        )}
-                    </Row>
-                    {(loadedLinkIds.has(item._id) && commentsByPostId[item._id]?.length > 0) && (
-                        <>
+                        <Row spacing={8}>
+                            <Text style={styles.bottomButtons}>
+                                {likeCount} {likeCount === 1 ? 'like' : 'likes'}
+                            </Text>
+
+                            {isAuthenticated && (
+                                <Pressable onPress={() => onToggleLike(item._id)}>
+                                    <Text style={[styles.bottomButtons, { color: liked ? 'red' : 'gray' }]}>
+                                        {liked ? '♥' : '♡'}
+                                    </Text>
+                                </Pressable>
+                            )}
+
                             <Pressable
                                 onPress={() => toggleComments(item._id)}
                                 style={{ paddingHorizontal: Size.M }}
                                 disabled={!isAuthenticated}
                             >
-                                <Text style={[styles.bottomButtons, { color: isAuthenticated ? '#007aff' : '#ccc' }]}>
-                                    {expandedComments.has(item._id)
-                                        ? 'Hide Comments'
-                                        : `${commentsByPostId[item._id]?.length || 0} comment${commentsByPostId[item._id]?.length === 1 ? '' : 's'}`}
+                                <Text style={styles.bottomButtons}>
+                                    {commentCounts[item._id] ?? 0} {commentCounts[item._id] === 1 ? 'comment' : 'comments'}
                                 </Text>
                             </Pressable>
-                            {expandedComments.has(item._id) && (
-                                <CommentSection comments={commentsByPostId[item._id] ?? []} />
+
+                            {isAuthenticated && (
+                                <Pressable onPress={() => openCommentForm(item._id)}>
+                                    <Text style={styles.bottomButtons}>Add Comment</Text>
+                                </Pressable>
                             )}
-                        </>
-                    )}
-                    {isAuthenticated && (
-                        <Pressable onPress={() => openCommentForm(item._id)}>
-                            <Text style={styles.bottomButtons}>Add Comment</Text>
-                        </Pressable>
+                        </Row>
+
+                    </Row>
+                    {expandedComments.has(item._id) && (
+                        <CommentSection postId={item._id} />
                     )}
                 </Row>
             </Column>
         )
-    }, [loadedLinkIds, enqueue, shouldRender])      
+    }, [loadedLinkIds, expandedComments, enqueue, shouldRender])      
 
 	return (
 		<FlatList
 			data={posts}
 			keyExtractor={(item) => item._id}
-            initialNumToRender={3}
+            initialNumToRender={2}
             maxToRenderPerBatch={3}
             windowSize={4}
             // onViewableItemsChanged={onViewableItemsChanged}

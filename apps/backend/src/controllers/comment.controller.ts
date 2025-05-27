@@ -24,3 +24,20 @@ export const getComments = async (req: Request, res: Response) => {
 	const comments = await commentService.getCommentsForPost(postId)
 	res.json(comments)
 }
+
+export const getCommentSummary = async (req: Request, res: Response) => {
+	const { postId } = req.params
+
+	if (!postId) {
+		res.status(400).json({ error: 'postId is required' })
+        return
+	}
+
+	try {
+		const summary = await commentService.getCommentSummaryForPost(postId)
+		res.json(summary)
+	} catch (error) {
+		console.error('Error fetching comment summary:', error)
+		res.status(500).json({ error: 'Failed to get comment summary' })
+	}
+}
