@@ -4,12 +4,12 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { FlatList, Pressable, StyleSheet, Text, ViewToken } from 'react-native'
 import type { ListRenderItemInfo } from 'react-native'
 import { useAuth, useLinkPreviewQueue, useModal, usePosts } from '@/hooks'
-import { AddCommentForm, Column, CommentSection, ProfileImage, Row, QueuedLinkPreview } from '@/components'
+import { AddCommentForm, Column, CommentSection, PostListItem, ProfileImage, Row, QueuedLinkPreview } from '@/components'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { Comment, PartialUser, Post } from '@iam/types'
 import { fetchCommentSummary, fetchComments, toggleLike } from '@services'
 import { Size } from '@/styles'
-import Autolink from 'react-native-autolink'
+import { extractFirstUrl } from '@/utils'
 import { formatRelative } from 'date-fns'
 
 export const PostList = () => {
@@ -82,21 +82,7 @@ export const PostList = () => {
     
             return updated
         })
-    }, [enqueue])    
-
-	const extractFirstUrl = (text: string): string | null => {
-        const urlRegex = /(?:https?:\/\/)?(?:[a-zA-Z0-9-]+\.)+[a-z]{2,}(?:\/[^\s]*)?/gi
-        const match = text.match(urlRegex)
-        if (!match) return null
-    
-        let url = match[0]
-    
-        if (!url.startsWith('http')) {
-            url = 'https://' + url
-        }
-    
-        return url
-    }    
+    }, [enqueue])
     
 	const viewabilityConfig = {
         itemVisiblePercentThreshold: 30,
@@ -107,80 +93,19 @@ export const PostList = () => {
         { viewabilityConfig, onViewableItemsChanged }
     ])
 
-    const onToggleLike = async (postId: string) => {
-        await toggleLike(postId)
-        await refreshPosts()
-    }
-
-    const openCommentForm = (postId: string) =>
-        showModal(<AddCommentForm postId={postId} onCommentAdded={() => {}} />)    
-
     const renderItem = useCallback(({ item }: ListRenderItemInfo<Post>) => {
         const firstUrl = extractFirstUrl(item.content)
-        const liked = item.likedByCurrentUser
-        const likeCount = item.likes.length
-      
+    
         return (
-            <Column flex={1} spacing={Size.M} paddingBottom={Size.L}>
-                {renderHeader(item)}
-                <Autolink
-                    text={item.content}
-                    linkStyle={{ color: '#007aff' }}
-                    url
-                    email={false}
-                    phone={false}
-                    truncate={50}
-                    truncateChars="..."
-                    style={{ paddingHorizontal: Size.M }}
-                />
-                {firstUrl && shouldRender(item._id) && (
-                    <QueuedLinkPreview
-                        id={item._id}
-                        url={firstUrl}
-                        enqueue={enqueue}
-                        shouldRender={shouldRender}
-                    />
-                )}
-                <Row paddingHorizontal={Size.M} spacing={8}>
-                    <Row spacing={8}>
-                        <Row spacing={8}>
-                            <Text style={styles.bottomButtons}>
-                                {likeCount} {likeCount === 1 ? 'like' : 'likes'}
-                            </Text>
-
-                            {isAuthenticated && (
-                                <Pressable onPress={() => onToggleLike(item._id)}>
-                                    <Text style={[styles.bottomButtons, { color: liked ? 'red' : 'gray' }]}>
-                                        {liked ? '♥' : '♡'}
-                                    </Text>
-                                </Pressable>
-                            )}
-
-                            <Pressable
-                                onPress={() => toggleComments(item._id)}
-                                style={{ paddingHorizontal: Size.M }}
-                                disabled={!isAuthenticated}
-                            >
-                                <Text style={styles.bottomButtons}>
-                                    {commentCounts[item._id] ?? 0} {commentCounts[item._id] === 1 ? 'comment' : 'comments'}
-                                </Text>
-                            </Pressable>
-
-                            {isAuthenticated && (
-                                <Pressable onPress={() => openCommentForm(item._id)}>
-                                    <Text style={styles.bottomButtons}>Add Comment</Text>
-                                </Pressable>
-                            )}
-                        </Row>
-
-                    </Row>
-                    {expandedComments.has(item._id) && (
-                        <CommentSection postId={item._id} />
-                    )}
-                </Row>
-            </Column>
+            <PostListItem
+                post={item}
+                firstUrl={firstUrl}
+                shouldRender={shouldRender}
+                enqueue={enqueue}
+            />
         )
-    }, [loadedLinkIds, expandedComments, enqueue, shouldRender])      
+    }, [shouldRender, enqueue])
+    
 
 	return (
 		<FlatList
@@ -188,46 +113,11 @@ export const PostList = () => {
 			keyExtractor={(item) => item._id}
             initialNumToRender={2}
             maxToRenderPerBatch={3}
-            windowSize={4}
-            // onViewableItemsChanged={onViewableItemsChanged}
-            // viewabilityConfig={{
-            //     itemVisiblePercentThreshold: 30,
-            //     minimumViewTime: 100,
-            // }}              
+            windowSize={4}     
             removeClippedSubviews={true}
-			// viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
             viewabilityConfigCallbackPairs={viewabilityCallbackPairs.current}
-			// initialNumToRender={5}
             contentContainerStyle={{ paddingVertical: Size.S }}
 			renderItem={renderItem}
 		/>
 	)
-
-	function renderHeader(item: Post) {
-		const isAuthor = user?.id === item.author._id
-		return (
-			<Row spacing={16} paddingHorizontal={Size.M} align='center'>
-				<ProfileImage user={item.author as PartialUser} size='md' />
-				<Column flex={1}>
-					<Text style={{ fontSize: 20, fontWeight: 'bold', lineHeight: 22 }}>
-						{item.author.username}
-					</Text>
-					<Text style={{ fontSize: 14, lineHeight: 16 }}>
-						{formatRelative(new Date(item.createdAt), new Date())}
-					</Text>
-				</Column>
-				{isAuthor && (
-					<Pressable onPress={() => deletePost(item._id)} style={{ alignSelf: 'flex-start' }}>
-						<Ionicons name='close-sharp' size={24} color='black' />
-					</Pressable>
-				)}
-			</Row>
-		)
-	}
 }
-
-const styles = StyleSheet.create({
-    bottomButtons: {
-        fontSize: 16,
-    },
-})

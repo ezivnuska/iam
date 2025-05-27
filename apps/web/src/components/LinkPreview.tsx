@@ -39,51 +39,48 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url }) => {
 		let timeoutId: NodeJS.Timeout
 
 		const init = async () => {
-			const cacheKey = `link-metadata:${url}`
-
-            if (memoryCache.has(url)) {
-                setData(memoryCache.get(url)!)
-                return
+            const cacheKey = `link-metadata:${url}`
+        
+            const trySetImageAspect = (imageUrl?: string) => {
+                if (!imageUrl) return
+                Image.getSize(
+                    imageUrl,
+                    (w, h) => setAspectRatio(w / h),
+                    () => setAspectRatio(1) // fallback
+                )
             }
         
-			try {
-				// Try loading from AsyncStorage
-				const cached = await AsyncStorage.getItem(cacheKey)
-				if (cached) {
-					const parsed = JSON.parse(cached)
-					setData(parsed)
+            try {
+                if (memoryCache.has(url)) {
+                    const cachedData = memoryCache.get(url)!
+                    setData(cachedData)
+                    trySetImageAspect(cachedData.image)
+                    return
+                }
+        
+                const cached = await AsyncStorage.getItem(cacheKey)
+                if (cached) {
+                    const parsed = JSON.parse(cached)
+                    setData(parsed)
                     memoryCache.set(url, parsed)
-					if (parsed.image) {
-						Image.getSize(
-							parsed.image,
-							(w, h) => setAspectRatio(w / h),
-							() => {}
-						)
-					}
-					return
-				}
-
-				// Debounce: wait 300ms before fetching
-				timeoutId = setTimeout(async () => {
-					const { response } = await scrape(url)
-					if (response) {
-						setData(response)
+                    trySetImageAspect(parsed.image)
+                    return
+                }
+        
+                timeoutId = setTimeout(async () => {
+                    const { response } = await scrape(url)
+                    if (response) {
+                        setData(response)
                         memoryCache.set(url, response)
-						if (response.image) {
-							Image.getSize(
-								response.image,
-								(w, h) => setAspectRatio(w / h),
-								() => {}
-							)
-						}
-						await AsyncStorage.setItem(cacheKey, JSON.stringify(response))
-					}
-				}, 300)
-			} catch (error) {
-				console.warn('Error fetching or caching metadata:', error)
-				setData({ title: 'Error loading preview', description: String(error) })
-			}
-		}
+                        trySetImageAspect(response.image)
+                        await AsyncStorage.setItem(cacheKey, JSON.stringify(response))
+                    }
+                }, 300)
+            } catch (error) {
+                console.warn('Error fetching or caching metadata:', error)
+                setData({ title: 'Error loading preview', description: String(error) })
+            }
+        }        
 
 		init()
 
@@ -102,8 +99,8 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url }) => {
                     <View style={{ width: '100%', maxWidth, marginHorizontal: 'auto' }}>
                         <Image
                             source={{ uri: data.image }}
-                            style={{ width: '100%', aspectRatio }}
-                            resizeMode='contain'
+                            style={{ width: '100%', aspectRatio: aspectRatio || 1 }}
+                            resizeMode='cover'
                         />
                     </View>
 				)}
