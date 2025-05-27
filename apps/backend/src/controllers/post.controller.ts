@@ -99,45 +99,58 @@ const getContent = async (url: string, maxRetries = 3): Promise<{ html: string; 
 	let lastError: unknown
 
 	while (attempt < maxRetries) {
-        
-        const browser = await puppeteer.launch({
-            headless: true,
-            args: ['--no-sandbox', '--disable-setuid-sandbox'],
-            timeout: 20000,
-        })
+		const browser = await puppeteer.launch({
+			headless: true,
+			args: ['--no-sandbox', '--disable-setuid-sandbox'],
+		})
 
 		try {
 			const page = await browser.newPage()
 
-            await page.setUserAgent(
-                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
-                'AppleWebKit/537.36 (KHTML, like Gecko) ' +
-                'Chrome/115.0.0.0 Safari/537.36'
-            )
+			await page.setUserAgent(
+				'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
+				'AppleWebKit/537.36 (KHTML, like Gecko) ' +
+				'Chrome/115.0.0.0 Safari/537.36'
+			)
 
-            const canonical = await page.$eval('link[rel="canonical"]', el => el.href).catch(() => null)
-            const finalUrl = canonical && canonical !== url ? canonical : url
+			await page.goto(url, {
+				timeout: 30000,
+				waitUntil: 'domcontentloaded',
+			})
 
-            if (finalUrl !== url) {
-                await page.goto(finalUrl, {
-                    timeout: 15000,
-                    waitUntil: 'domcontentloaded',
-                })
-            }
+			// Attempt to detect canonical URL
+			const canonical = await page.$eval('link[rel="canonical"]', el => el.getAttribute('href')).catch(() => null)
+			const finalUrl = canonical && canonical !== url ? canonical : url
 
+			// If canonical differs, reload the final page
+			if (finalUrl !== url) {
+				await page.goto(finalUrl, {
+					timeout: 30000,
+					waitUntil: 'domcontentloaded',
+				})
+			}
+
+			// Delay to allow scripts to finish loading
+			await new Promise(resolve => setTimeout(resolve, 2000))
+
+			// Grab HTML content
 			const html = await page.content()
+
+			// Optional debug
+			// const ogTitle = await page.$eval('meta[property="og:title"]', el => el.getAttribute('content')).catch(() => null)
+			// console.log('og:title:', ogTitle)
 
 			return { html, url: finalUrl }
 		} catch (error) {
 			lastError = error
 			console.warn(`Attempt ${attempt + 1} failed:`, error)
 
-			// Delay before retrying
-			const delay = 1000 * 2 ** attempt // exponential backoff: 1s, 2s, 4s...
-			await new Promise((resolve) => setTimeout(resolve, delay))
+			// Exponential backoff delay before retrying
+			const backoff = 1000 * 2 ** attempt
+			await new Promise(resolve => setTimeout(resolve, backoff))
 		} finally {
 			await browser.close()
-        }
+		}
 
 		attempt++
 	}
@@ -172,7 +185,6 @@ export const scrapePost = async (req: Request, res: Response): Promise<void> => 
 		res.status(400).json({ message: 'URL is required' })
 		return
 	}
-
     const normalizedUrl = normalizeUrl(url)
     
 	try {

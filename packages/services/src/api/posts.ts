@@ -11,7 +11,7 @@ export const updatePost = async (id: string, content: string): Promise<Post> => 
 export const deletePost = async (id: string): Promise<{ success: boolean }> => api.delete(`/posts/${id}`, { withCredentials: true }).then((res) => res.data)
 
 export const scrape = async (url: string) => {
-    if (!url || typeof url !== 'string' || !url.startsWith('http')) {
+    if (!url || typeof url !== 'string') {
         throw new Error('INVALID_URL: Need to provide a valid URL')
     }
 	try {

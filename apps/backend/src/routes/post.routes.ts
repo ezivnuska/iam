@@ -17,7 +17,7 @@ import { asyncHandler } from '../utils/asyncHandler'
 
 const router: Router = Router()
 
-router.post('/scrape', asyncHandler(scrapePost))
+router.post('/scrape', scrapePost)
 router.get('/', optionalAuth, asyncHandler(getAllPosts))
 router.get('/:id', asyncHandler(getPostById))
 router.post('/', requireAuth(), asyncHandler(createPost))

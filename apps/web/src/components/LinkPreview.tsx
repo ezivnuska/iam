@@ -99,11 +99,13 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url }) => {
 		<TouchableOpacity onPress={openExternalUrl}>
 			<Column spacing={16}>
 				{data.image && (
-                    <Image
-                        source={{ uri: data.image }}
-                        style={{ width: '100%', maxWidth, aspectRatio, marginHorizontal: 'auto' }}
-                        resizeMode='contain'
-                    />
+                    <View style={{ width: '100%', maxWidth, marginHorizontal: 'auto' }}>
+                        <Image
+                            source={{ uri: data.image }}
+                            style={{ width: '100%', aspectRatio }}
+                            resizeMode='contain'
+                        />
+                    </View>
 				)}
 				<Column spacing={Size.XS} paddingHorizontal={Size.M}>
 					{data.title && <Text style={styles.heading}>{data.title}</Text>}

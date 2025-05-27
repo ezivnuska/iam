@@ -38,7 +38,7 @@ export const getPostById = async (id: string) =>
           
 
 export const createPost = async (userId: string, content: string) => {
-    const newPost = await PostModel.create({ user: userId, content })
+    const newPost = await PostModel.create({ author: userId, content })
     return newPost
         .populate({
             path: 'author',
@@ -72,7 +72,7 @@ export const updatePost = async (id: string, userId: string, content: string) =>
 }      
 
 export const deletePost = async (id: string, userId: string) => {
-	const result = await PostModel.deleteOne({ _id: id, user: userId })
+	const result = await PostModel.deleteOne({ _id: id })
 	
     if (result.deletedCount === 0) {
         throw new Error('Post not found or unauthorized')
