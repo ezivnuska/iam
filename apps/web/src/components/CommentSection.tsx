@@ -5,6 +5,7 @@ import { Text, View, FlatList, ActivityIndicator } from 'react-native'
 import type { Comment } from '@iam/types'
 import { fetchComments } from '@services'
 import { Size } from '@/styles'
+import { Column } from './Layout'
 
 type CommentSectionProps = {
     postId: string
@@ -39,7 +40,7 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
 
     if (!comments?.length) {
         return (
-            <View style={{ padding: Size.M }}>
+            <View style={{ paddingVertical: Size.S, paddingHorizontal: Size.M }}>
                 <Text>No comments yet.</Text>
             </View>
         )
@@ -50,10 +51,10 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
             data={comments}
             keyExtractor={(item) => item._id}
             renderItem={({ item }) => (
-                <View style={{ padding: 5 }}>
+                <Column spacing={Size.S} paddingHorizontal={Size.M}>
                     <Text style={{ fontWeight: 'bold' }}>{item.author.username}</Text>
                     <Text>{item.content}</Text>
-                </View>
+                </Column>
             )}
         />
     )
