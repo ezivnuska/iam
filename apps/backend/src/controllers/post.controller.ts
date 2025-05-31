@@ -213,7 +213,9 @@ export const scrapePost = async (req: Request, res: Response): Promise<void> => 
 
 		if (/^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//.test(normalizedUrl)) {
 			const rawYoutube = await getYouTubeMetaData(normalizedUrl)
+			console.log('rawYoutube metadata:', rawYoutube)
 			metadata = normalizeYouTubeMetadata(rawYoutube)
+			console.log('normalized metadata:', metadata)
 		} else {
 			const { html } = await getContent(normalizedUrl)
 			metadata = await metascraper({ html, url: normalizedUrl })
