@@ -197,6 +197,35 @@ function normalizeUrl(url: string): string {
     }
 }
 
+async function getYouTubeMetadataFallback(url: string) {
+	const oembed = `https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`
+
+	const res = await fetch(oembed)
+	if (!res.ok) throw new Error('Failed to fetch oEmbed')
+
+	const data = await res.json()
+	return {
+		title: data.title,
+		description: '', // not available in oEmbed
+		image: data.thumbnail_url
+	}
+}
+
+async function getYoutubeMetadataSafe(url: string) {
+	try {
+		const rawYoutube = await getYouTubeMetaData(url)
+		// Check if essential fields are missing or embedinfo is null
+		if (!rawYoutube.title || !rawYoutube.embedinfo || !rawYoutube.embedinfo.thumbnail_url) {
+			console.warn('youtube-meta-data missing info, falling back to oEmbed')
+			return await getYouTubeMetadataFallback(url)
+		}
+		return normalizeYouTubeMetadata(rawYoutube)
+	} catch (e) {
+		console.error('youtube-meta-data error:', e)
+		return await getYouTubeMetadataFallback(url)
+	}
+}
+
 // Main scrape handler
 export const scrapePost = async (req: Request, res: Response): Promise<void> => {
 	const { url } = req.body
@@ -212,10 +241,7 @@ export const scrapePost = async (req: Request, res: Response): Promise<void> => 
 		let metadata: { title: string; description?: string; image?: string }
 
 		if (/^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//.test(normalizedUrl)) {
-			const rawYoutube = await getYouTubeMetaData(normalizedUrl)
-			console.log('rawYoutube metadata:', rawYoutube)
-			metadata = normalizeYouTubeMetadata(rawYoutube)
-			console.log('normalized metadata:', metadata)
+			metadata = await getYoutubeMetadataSafe(normalizedUrl)
 		} else {
 			const { html } = await getContent(normalizedUrl)
 			metadata = await metascraper({ html, url: normalizedUrl })

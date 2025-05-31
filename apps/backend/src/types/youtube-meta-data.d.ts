@@ -1,4 +1,4 @@
-// apps/backend/src/types/youtube.d.ts
+// apps/backend/src/types/youtube-meta-data.d.ts
 
 declare module 'youtube-meta-data' {
 	interface EmbedInfo {
@@ -21,9 +21,9 @@ declare module 'youtube-meta-data' {
 		title: string
 		description?: string
 		keywords?: string
-		shortlinkUrl?: string
-		videourl?: string
-		embedinfo: EmbedInfo
+		shortlinkUrl?: string | null
+		videourl?: string | null
+		embedinfo: EmbedInfo | null
 	}
 
 	const getMetadata: (url: string) => Promise<YouTubeMetadata>
