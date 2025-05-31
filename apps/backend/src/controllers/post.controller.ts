@@ -5,336 +5,310 @@ import * as postService from '../services/post.service'
 import puppeteer from 'puppeteer-extra'
 import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 import { Page } from 'puppeteer'
-import getYouTubeMetaData from 'youtube-meta-data'
+// import getYouTubeMetaData from 'youtube-meta-data'
 import fetch, { AbortError } from 'node-fetch'
+
+interface OEmbedResponse {
+    title: string
+    thumbnail_url: string
+}
 
 puppeteer.use(StealthPlugin())
 
-// Core post CRUD handlers
-export const createPost = async (req: Request, res: Response): Promise<void> => {
-    if (!req.user?.id) {
-        res.status(401).json({ message: 'Unauthorized' })
-        return
-    }
+/* --------------------------------- UTILITIES --------------------------------- */
 
-    const { content } = req.body
+const ensureAuth = (req: Request, res: Response): string | null => {
+    const userId = req.user?.id
+    if (!userId) {
+        res.status(401).json({ message: 'Unauthorized' })
+        return null
+    }
+    return userId
+}
+
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
+/* ------------------------------- POST CRUD ------------------------------- */
+
+export const createPost = async (req: Request, res: Response): Promise<void> => {
+    const userId = ensureAuth(req, res)
+    if (!userId) return
+
     try {
-        const post = await postService.createPost(req.user.id, content)
+        const post = await postService.createPost(userId, req.body.content)
         res.status(201).json(post)
     } catch (err) {
-        console.error('Failed to create post:', err)
+        console.error('Create post error:', err)
         res.status(500).json({ message: 'Failed to create post' })
     }
 }
 
 export const getAllPosts = async (req: Request, res: Response) => {
     try {
-        const userId = req.user?.id
-        const posts = await postService.getAllPosts(userId)
+        const posts = await postService.getAllPosts(req.user?.id)
         res.json(posts)
     } catch (err) {
-        console.error('Failed to get posts:', err)
+        console.error('Get posts error:', err)
         res.status(500).json({ message: 'Failed to get posts' })
     }
 }
 
-export const getPostById = async (req: Request, res: Response): Promise<void> => {
+export const getPostById = async (req: Request, res: Response) => {
     try {
         const post = await postService.getPostById(req.params.id)
-        const currentUserId = req.user?.id
-
         if (!post) {
-            res.status(404).json({ message: 'Post not found' })
-            return
-        }
+			res.status(404).json({ message: 'Post not found' })
+			return
+		}
 
         const enrichedPost = post.toJSON()
-        enrichedPost.likedByCurrentUser = post.likes.some(id => id.equals(currentUserId))
-
+        enrichedPost.likedByCurrentUser = post.likes.some(id => id.equals(req.user?.id))
         res.json(enrichedPost)
     } catch (err) {
-        console.error('Failed to get post:', err)
+        console.error('Get post error:', err)
         res.status(500).json({ message: 'Failed to get post' })
     }
 }
 
 export const updatePost = async (req: Request, res: Response) => {
-    if (!req.user?.id) {
-        res.status(401).json({ message: 'Unauthorized' })
-        return
-    }
+    const userId = ensureAuth(req, res)
+    if (!userId) return
 
     try {
-        const post = await postService.updatePost(req.params.id, req.user.id, req.body.content)
+        const post = await postService.updatePost(req.params.id, userId, req.body.content)
         if (!post) {
-            res.status(404).json({ message: 'Post not found' })
-            return
-        }
+			res.status(404).json({ message: 'Post not found' })
+			return
+		}
+
         res.json(post)
     } catch (err) {
-        console.error('Failed to update post:', err)
+        console.error('Update post error:', err)
         res.status(500).json({ message: 'Failed to update post' })
+    }
+}
+
+export const deletePost = async (req: Request, res: Response) => {
+    const userId = ensureAuth(req, res)
+    if (!userId) return
+
+    try {
+        await postService.deletePost(req.params.id, userId)
+        res.status(204).end()
+    } catch (err) {
+        console.error('Delete post error:', err)
+        res.status(500).json({ message: 'Failed to delete post' })
     }
 }
 
 export const getPostLikes = async (req: Request, res: Response) => {
     try {
-        const postId = req.params.postId
-        const likes = await postService.getPostLikes(postId)
+        const likes = await postService.getPostLikes(req.params.postId)
         if (!likes) {
-            res.status(404).json({ message: 'Post not found' })
-            return
-        }
+			res.status(404).json({ message: 'Post not found' })
+			return
+		}
         res.json(likes)
     } catch (err) {
-        console.error('Failed to get likes:', err)
+        console.error('Get likes error:', err)
         res.status(500).json({ message: 'Failed to get post likes' })
     }
 }
 
-export const toggleLike = async (req: Request, res: Response): Promise<void> => {
-    if (!req.user?.id) {
-        res.status(401).json({ message: 'Unauthorized' })
-        return
-    }
+export const toggleLike = async (req: Request, res: Response) => {
+    const userId = ensureAuth(req, res)
+    if (!userId) return
 
     try {
-        const userId = req.user.id
-        const postId = req.params.postId
-        const post = await postService.toggleLike(userId, postId)
-
+        const post = await postService.toggleLike(userId, req.params.postId)
         if (!post) {
-            res.status(404).json({ message: 'Post not found' })
-            return
-        }
+			res.status(404).json({ message: 'Post not found' })
+			return
+		}
         res.json(post)
     } catch (err) {
-        console.error('Failed to toggle like:', err)
+        console.error('Toggle like error:', err)
         res.status(500).json({ message: 'Failed to toggle like' })
     }
 }
 
-export const deletePost = async (req: Request, res: Response) => {
-    if (!req.user?.id) {
-        res.status(401).json({ message: 'Unauthorized' })
-        return
-    }
-
-    try {
-        await postService.deletePost(req.params.id, req.user.id)
-        res.status(204).end()
-    } catch (err) {
-        console.error('Failed to delete post:', err)
-        res.status(500).json({ message: 'Failed to delete post' })
-    }
-}
-
-// -------------------- SCRAPING LOGIC --------------------
+/* ---------------------------- SCRAPER HELPERS ---------------------------- */
 
 const goToWithRetries = async (page: Page, url: string, maxRetries = 3) => {
-    let lastErr
+    let lastError
     for (let i = 0; i < maxRetries; i++) {
         try {
-            console.log(`goto attempt ${i + 1}: ${url}`)
             await page.goto(url, {
                 timeout: 45000,
-                waitUntil: 'domcontentloaded',//'networkidle2',
+                waitUntil: 'domcontentloaded'
             })
             return
         } catch (err) {
-            lastErr = err
-            console.warn(`goto failed (attempt ${i + 1}):`, err)
-            await new Promise(res => setTimeout(res, 1000 * 2 ** i))
+            lastError = err
+            console.warn(`goto retry ${i + 1} failed:`, err)
+            await delay(1000 * 2 ** i)
         }
     }
-    throw new Error(`goto failed after ${maxRetries} retries: ${lastErr}`)
+    throw new Error(`goto failed after ${maxRetries} attempts: ${lastError}`)
 }
 
 async function getContent(url: string, maxRetries = 3): Promise<{ html: string; url: string }> {
-    let attempt = 0
-    let lastError: unknown
-    const visited = new Set<string>()
+	let lastError
+	const visited = new Set<string>()
 
-    while (attempt < maxRetries) {
-        let browser
-        try {
-            browser = await puppeteer.launch({
-                headless: true,
-                args: ['--no-sandbox', '--disable-setuid-sandbox'],
-            })
+	for (let attempt = 0; attempt < maxRetries; attempt++) {
+		let browser
+		try {
+			browser = await puppeteer.launch({
+				headless: true,
+				args: [
+					'--no-sandbox',
+					'--disable-setuid-sandbox',
+					'--ignore-certificate-errors',
+				]
+			})
 
-            const page = await browser.newPage()
-            await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/115 Safari/537.36')
-            await page.setJavaScriptEnabled(true)
-            await page.setRequestInterception(true)
+			const page = await browser.newPage()
 
-            page.on('request', request => {
-                const blockedTypes = ['image', 'stylesheet', 'font', 'media', 'xhr']
-                if (blockedTypes.includes(request.resourceType())) request.abort()
-                else request.continue()
-            })
+			// ✅ Wait briefly to avoid "Requesting main frame too early!" error
+			// await delay(50)
 
-            visited.add(url)
-            await goToWithRetries(page, url)
+			await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36')
+			// await page.setJavaScriptEnabled(true)
+			await page.setRequestInterception(true)
 
-            const canonical = await page.$eval('link[rel="canonical"]', el => el.getAttribute('href')).catch(() => null)
-            const finalUrl = canonical && canonical !== url && !visited.has(canonical) ? canonical : url
+			page.on('request', req => {
+				try {
+					const block = ['image', 'stylesheet', 'font', 'media', 'xhr']
+					block.includes(req.resourceType()) ? req.abort() : req.continue()
+				} catch (e) {
+					console.warn('Request interception error:', e)
+				}
+			})
 
-            if (finalUrl !== url) {
-                console.log(`Navigating to canonical: ${finalUrl}`)
-                visited.add(finalUrl)
-                await goToWithRetries(page, finalUrl)
-            }
+			visited.add(url)
+			await page.goto(url, {
+				timeout: 90000,
+				waitUntil: 'networkidle2'
+			})
+			
+			// const canonical = await page.$eval('link[rel="canonical"]', el => el.getAttribute('href')).catch(() => null)
+			// const finalUrl = canonical && canonical !== url && !visited.has(canonical) ? canonical : url
+			
+			// if (finalUrl !== url) {
+			// 	await page.goto(finalUrl, {
+			// 		// timeout: 45000,
+			// 		waitUntil: 'networkidle2'
+			// 	})
+			// }			
 
-            const html = await page.content()
-            return { html, url: finalUrl }
-        } catch (error) {
-            lastError = error
-            console.warn(`Attempt ${attempt + 1} failed:`, error)
-            const backoff = 1000 * 2 ** attempt
-            await new Promise(res => setTimeout(res, backoff))
-        } finally {
-            if (browser) await browser.close()
-        }
-        attempt++
-    }
+			const html = await page.content()
+			return { html, url }
+		} catch (err) {
+			lastError = err
+			console.warn(`Attempt ${attempt + 1} failed:`, err)
+			await delay(1000 * 2 ** attempt)
+		} finally {
+			if (browser) await browser.close()
+		}
+	}
 
-    throw new Error(`Failed to load URL after ${maxRetries} attempts: ${url}\nLast error: ${lastError}`)
+	throw new Error(`Failed to load URL: ${url}\nError: ${lastError}`)
 }
 
-function normalizeYouTubeMetadata(raw: any): { title: string; description?: string; image?: string } {
-    const { title, description, embedinfo } = raw
-    return {
-        title: title || embedinfo?.title || '',
-        description: description || '',
-        image: embedinfo?.thumbnail_url || ''
-    }
-}
+/* ----------------------------- METADATA UTILS ---------------------------- */
 
 const metascraper = require('metascraper')([
     require('metascraper-description')(),
     require('metascraper-image')(),
-    require('metascraper-title')(),
+    require('metascraper-title')()
 ])
 
 function normalizeUrl(url: string): string {
     try {
         const u = new URL(url)
-        if (u.hostname.startsWith('m.')) {
-            u.hostname = u.hostname.replace(/^m\./, 'www.')
-        }
+        if (u.hostname.startsWith('m.')) u.hostname = u.hostname.replace(/^m\./, 'www.')
         return u.toString()
-    } catch (e) {
-        throw new Error(`Invalid URL provided: ${url}`)
+    } catch {
+        throw new Error(`Invalid URL: ${url}`)
     }
 }
 
-interface YouTubeOEmbedResponse {
-    title: string
-    thumbnail_url: string
+const oEmbedProviders = [
+    {
+        regex: /youtube\.com|youtu\.be/,
+        endpoint: 'https://www.youtube.com/oembed',
+        requiresAuth: false
+    },
+    // Uncomment and configure for auth:
+    // {
+    //     regex: /instagram\.com/,
+    //     endpoint: 'https://graph.facebook.com/v8.0/instagram_oembed',
+    //     requiresAuth: true
+    // }
+]
+
+function findOEmbedProvider(url: string) {
+    return oEmbedProviders.find(p => p.regex.test(url))
 }
 
 async function fetchOEmbed(url: string) {
-    const providers = [
-        { regex: /youtube\.com|youtu\.be/, endpoint: 'https://www.youtube.com/oembed' },
-        { regex: /instagram\.com/, endpoint: 'https://graph.facebook.com/v8.0/instagram_oembed' },
-        { regex: /facebook\.com/, endpoint: 'https://graph.facebook.com/v8.0/oembed_page' },
-    ]
+    const provider = findOEmbedProvider(url)
+    if (!provider) return null
 
-    for (const { regex, endpoint } of providers) {
-        if (regex.test(url)) {
-            const oembedUrl = `${endpoint}?url=${encodeURIComponent(url)}&format=json`
-            const res = await fetch(oembedUrl)
-            const data = await res.json() as YouTubeOEmbedResponse
-            return {
-                title: data.title || '',
-                description: '',
-                image: data.thumbnail_url || '',
-            }
-        }
+    let oembedUrl = `${provider.endpoint}?url=${encodeURIComponent(url)}&format=json`
+
+    if (provider.requiresAuth) {
+        const appId = process.env.FACEBOOK_APP_ID
+        const appSecret = process.env.FACEBOOK_APP_SECRET
+        if (!appId || !appSecret) throw new Error('Facebook App credentials missing')
+        oembedUrl += `&access_token=${appId}|${appSecret}`
     }
-}
 
-async function getYouTubeMetadataFallback(url: string) {
-    const oembed = `https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`
-    const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), 45000)
-
-    try {
-        const res = await fetch(oembed, { signal: controller.signal })
-        if (!res.ok) throw new Error('Failed to fetch oEmbed')
-        const data = (await res.json()) as YouTubeOEmbedResponse
-        return {
-            title: data.title,
-            description: '',
-            image: data.thumbnail_url
-        }
-    } catch (err) {
-        console.error('Fetch oEmbed failed:', err)
-        throw err
-    } finally {
-        clearTimeout(timeout)
+    const res = await fetch(oembedUrl)
+    if (!res.ok) throw new Error('Failed to fetch oEmbed')
+    const data = await res.json() as OEmbedResponse
+    return {
+        title: data.title || '',
+        description: '',
+        image: data.thumbnail_url || ''
     }
 }
 
 async function getYoutubeMetadataSafe(url: string) {
     try {
-		return await getYouTubeMetadataFallback(url)
-        // const rawYoutube = await getYouTubeMetaData(url)
-        // if (!rawYoutube.title || !rawYoutube.embedinfo || !rawYoutube.embedinfo.thumbnail_url) {
-        //     console.warn('youtube-meta-data missing info, falling back to oEmbed')
-        //     return await getYouTubeMetadataFallback(url)
-        // }
-        // return normalizeYouTubeMetadata(rawYoutube)
+        return await fetchOEmbed(url)
     } catch (e) {
-        console.error('youtube-meta-data error:', e)
-        return await getYouTubeMetadataFallback(url)
+        console.warn('Fallback failed, retrying...', e)
+        throw e
     }
 }
 
-export const scrapePost = async (req: Request, res: Response): Promise<void> => {
+/* ---------------------------- MAIN SCRAPE ENTRY ---------------------------- */
+
+export const scrapePost = async (req: Request, res: Response) => {
     const { url } = req.body
     if (!url) {
-        res.status(400).json({ message: 'URL is required' })
-        return
-    }
+		res.status(400).json({ message: 'URL is required' })
+		return
+	}
 
     const normalizedUrl = normalizeUrl(url)
-    // const controller = new AbortController()
-    // const timeout = setTimeout(() => controller.abort(), 45000)
-    let clientAborted = false
-
-    // req.on('close', () => {
-    //     if (!res.writableEnded) {
-    //         console.warn('Client disconnected during scrape:', normalizedUrl)
-    //         controller.abort()
-    //         clientAborted = true
-    //     }
-    // })
 
     try {
-        let metadata: { title: string; description?: string; image?: string }
+        const isYouTube = /youtube\.com|youtu\.be/.test(normalizedUrl)
+        let metadata = findOEmbedProvider(normalizedUrl) ? await fetchOEmbed(normalizedUrl) : null
 
-        if (/^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//.test(normalizedUrl)) {
-            metadata = await getYoutubeMetadataSafe(normalizedUrl)
-        } else {
-            const { html } = await getContent(normalizedUrl)
-            metadata = await metascraper({ html, url: normalizedUrl })
-            if (!metadata || !metadata.title) throw new Error('Failed to extract metadata')
+        if (!metadata?.title) {
+            metadata = isYouTube
+                ? await getYoutubeMetadataSafe(normalizedUrl)
+                : await metascraper({ html: (await getContent(normalizedUrl)).html, url: normalizedUrl })
         }
 
-        if (!clientAborted && !res.headersSent && res.writableEnded === false) {
-			res.status(200).json({ response: metadata })
-		}		
-    } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Unexpected error'
-        console.error('Error scraping URL:', normalizedUrl, error)
-
-        if (!clientAborted && !res.headersSent && res.writable) {
-            const status = message.includes('timeout') ? 504 : 500
-            res.status(status).json({ message })
-        }
-    } finally {
-        // clearTimeout(timeout)
+        res.status(200).json({ response: metadata })
+    } catch (err) {
+        console.error('Scrape error:', err)
+        const message = err instanceof Error ? err.message : 'Unknown error'
+        res.status(message.includes('timeout') ? 504 : 500).json({ message })
     }
 }

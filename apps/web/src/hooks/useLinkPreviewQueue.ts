@@ -1,45 +1,69 @@
 // aps/web/src/hooks/useLinkPreviewQueue.ts
 
-import React, { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
-export const useLinkPreviewQueue = (maxConcurrent: number = 2) => {
-	const queue = useRef<{ id: string; url: string; done: () => void }[]>([])
-	const active = useRef<Set<string>>(new Set())
-	const canRender = useRef<Set<string>>(new Set())
+type ScrapeJob = {
+	id: string
+	url: string
+	callback: () => void
+}
 
-	const processQueue = () => {
-		while (active.current.size < maxConcurrent && queue.current.length > 0) {
-			const next = queue.current.shift()
-			if (next) {
-				active.current.add(next.id)
-				next.done()
-			}
+export function useLinkPreviewQueue(maxConcurrency: number = 2) {
+	const queue = useRef<ScrapeJob[]>([])
+	const activeCount = useRef(0)
+	const seenIds = useRef<Set<string>>(new Set())
+	const [renderableIds, setRenderableIds] = useState<Set<string>>(new Set())
+
+	const processQueue = useCallback(() => {
+		if (activeCount.current >= maxConcurrency || queue.current.length === 0) {
+			return
 		}
-	}
 
-	const enqueue = useCallback((id: string, url: string, done: () => void) => {
-		if (canRender.current.has(id)) return
-	
-		queue.current.push({
-			id,
-			url,
-			done: () => {
-				active.current.add(id)
-	
-				canRender.current.add(id)
-				done()
-	
-				active.current.delete(id)
-				processQueue()
-			},
+		const job = queue.current.shift()
+		if (!job) return
+
+		activeCount.current++
+
+		fetch('/api/scrape', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ url: job.url }),
 		})
-	
+			.then(() => {
+				setRenderableIds(prev => {
+					const next = new Set(prev)
+					next.add(job.id)
+					return next
+				})
+				job.callback?.()
+			})
+			.catch(err => {
+				console.warn(`Failed to scrape ${job.url}`, err)
+			})
+			.finally(() => {
+				activeCount.current--
+				processQueue()
+			})
+	}, [maxConcurrency])
+
+	const enqueue = useCallback((id: string, url: string, callback: () => void) => {
+		if (seenIds.current.has(id)) return
+		seenIds.current.add(id)
+
+		queue.current.push({ id, url, callback })
 		processQueue()
-	}, [])
+	}, [processQueue])
 
 	const shouldRender = useCallback((id: string) => {
-		return canRender.current.has(id)
-	}, [])	
+		return renderableIds.has(id)
+	}, [renderableIds])
+
+	// Optional: ensure queue processing is triggered if new jobs appear
+	useEffect(() => {
+		if (activeCount.current < maxConcurrency && queue.current.length > 0) {
+			processQueue()
+		}
+	}, [processQueue, maxConcurrency])
 
 	return { enqueue, shouldRender }
 }

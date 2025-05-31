@@ -1,16 +1,14 @@
 // apps/web/src/components/PostList.tsx
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { FlatList, Pressable, StyleSheet, Text, ViewToken } from 'react-native'
+import { FlatList, ViewToken } from 'react-native'
 import type { ListRenderItemInfo } from 'react-native'
 import { useAuth, useLinkPreviewQueue, useModal, usePosts } from '@/hooks'
-import { AddCommentForm, Column, CommentSection, PostListItem, ProfileImage, Row, QueuedLinkPreview } from '@/components'
-import Ionicons from '@expo/vector-icons/Ionicons'
-import { Comment, PartialUser, Post } from '@iam/types'
-import { fetchCommentSummary, fetchComments, toggleLike } from '@services'
+import { PostListItem } from '@/components'
+import { Post } from '@iam/types'
+import { fetchCommentSummary } from '@services'
 import { Size } from '@/styles'
 import { extractFirstUrl } from '@/utils'
-import { formatRelative } from 'date-fns'
 
 export const PostList = () => {
 
@@ -24,27 +22,7 @@ export const PostList = () => {
 
 	useEffect(() => {
 		refreshPosts()
-	}, [])
-
-    useEffect(() => {
-        const fetchCounts = async () => {
-            const counts: Record<string, number> = {}
-            const commentIdMap: Record<string, string[]> = {}
-        
-            await Promise.all(posts.map(async (post) => {
-                try {
-                    const summary = await fetchCommentSummary(post._id)
-                    counts[post._id] = summary.count
-                    commentIdMap[post._id] = summary.commentIds
-                } catch (err) {
-                    console.error('Failed to load comment summary:', err)
-                }
-            }))
-        
-            setCommentCounts(counts)
-        }
-        fetchCounts()
-    }, [posts])      
+	}, [])    
 
     const { shouldRender, enqueue } = useLinkPreviewQueue(2)
 
@@ -63,26 +41,51 @@ export const PostList = () => {
 	const MAX_NEW_LINKS_PER_PASS = 2
 
     const onViewableItemsChanged = useCallback(({ viewableItems }: { viewableItems: Array<ViewToken> }) => {
+        // Add new loaded link IDs synchronously
         setLoadedLinkIds((prev) => {
-            const updated = new Set(prev)
-            let newlyAdded = 0
-    
-            for (const { item } of viewableItems) {
-                const post = item as Post
-                const firstUrl = extractFirstUrl(post.content)
-                if (firstUrl && newlyAdded < MAX_NEW_LINKS_PER_PASS && !updated.has(post._id)) {
-                    updated.add(post._id)
-                    newlyAdded++
-    
-                    enqueue(post._id, firstUrl, () => {
-                        // Optional: mark completed
-                    })
-                }
-            }
-    
-            return updated
+			const updated = new Set(prev)
+			let newlyAdded = 0
+		
+			for (const { item } of viewableItems) {
+				const post = item as Post
+				const firstUrl = extractFirstUrl(post.content)
+				if (firstUrl && newlyAdded < MAX_NEW_LINKS_PER_PASS && !updated.has(post._id)) {
+					updated.add(post._id)
+					newlyAdded++
+					enqueue(post._id, firstUrl, () => {})
+				}
+			}
+		
+			return updated
         })
-    }, [enqueue])
+      
+        // Fetch comment counts asynchronously, independent of loadedLinkIds state update
+        ;(async () => {
+			const nextCommentCounts: Record<string, number> = {}
+		
+			// Fetch summaries only for visible posts that are not already loaded
+			await Promise.all(
+				viewableItems.map(async ({ item }) => {
+					const post = item as Post
+					if (!commentCounts[post._id]) {
+						try {
+							const summary = await fetchCommentSummary(post._id)
+							nextCommentCounts[post._id] = summary.count
+						} catch (err) {
+							console.warn('Failed to fetch comment summary for', post._id, err)
+						}
+					}
+				})
+			)
+		
+			// Update commentCounts state only if we got any new counts
+			if (Object.keys(nextCommentCounts).length > 0) {
+				setCommentCounts((prev) => {
+					return { ...prev, ...nextCommentCounts }
+				})
+			}			  
+        })()
+    }, [enqueue, commentCounts, posts])      
     
 	const viewabilityConfig = {
         itemVisiblePercentThreshold: 30,
@@ -94,30 +97,29 @@ export const PostList = () => {
     ])
 
     const renderItem = useCallback(({ item }: ListRenderItemInfo<Post>) => {
-        const firstUrl = extractFirstUrl(item.content)
-    
-        return (
-            <PostListItem
-                post={item}
-                firstUrl={firstUrl}
-                shouldRender={shouldRender}
-                enqueue={enqueue}
-            />
-        )
-    }, [shouldRender, enqueue])
-    
+		const firstUrl = extractFirstUrl(item.content)
+	  
+		return (
+			<PostListItem
+				post={item}
+				firstUrl={firstUrl}
+				showPreview={shouldRender(item._id)}
+				commentCount={commentCounts[item._id] ?? 0}
+			/>
+		)
+	}, [shouldRender, commentCounts])
 
 	return (
 		<FlatList
-			data={posts}
-			keyExtractor={(item) => item._id}
+            data={posts}
+            keyExtractor={(item) => item._id}
             initialNumToRender={2}
             maxToRenderPerBatch={3}
             windowSize={4}     
             removeClippedSubviews={true}
             viewabilityConfigCallbackPairs={viewabilityCallbackPairs.current}
             contentContainerStyle={{ paddingVertical: Size.S }}
-			renderItem={renderItem}
-		/>
+            renderItem={renderItem}
+        />
 	)
 }

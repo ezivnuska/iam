@@ -1,48 +1,40 @@
 // apps/web/src/components/PostListItem.tsx
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Pressable, StyleSheet, Text } from 'react-native'
-import { Column, Row, ProfileImage, CommentSection, QueuedLinkPreview, AddCommentForm } from '@/components'
+import { Column, Row, ProfileImage, CommentSection, LinkPreview, AddCommentForm } from '@/components'
 import { PartialUser, Post } from '@iam/types'
 import { Size } from '@/styles'
 import Autolink from 'react-native-autolink'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { formatRelative } from 'date-fns'
-import { fetchCommentSummary, toggleLike } from '@services'
-import { useAuth, useModal, useLinkPreviewQueue, usePosts } from '@/hooks'
-import { extractFirstUrl } from '@/utils'
+import { toggleLike } from '@services'
+import { useAuth, useModal, usePosts } from '@/hooks'
 
 type Props = {
 	post: Post
 	firstUrl: string | null
-	shouldRender: (postId: string) => boolean
-	enqueue: (postId: string, url: string, callback: () => void) => void
+	showPreview: boolean
+	commentCount: number
 	onPostDeleted?: (postId: string) => void
 }
 
-export const PostListItem: React.FC<Props> = ({ post, firstUrl, enqueue, shouldRender, onPostDeleted }) => {
+export const PostListItem: React.FC<Props> = ({
+	post,
+	firstUrl,
+	showPreview,
+	commentCount,
+	onPostDeleted,
+}) => {
 	const { user, isAuthenticated } = useAuth()
 	const { showModal } = useModal()
-	const { deletePost } = usePosts()
+	const { commentCounts, deletePost, refreshCommentCounts } = usePosts()
 
 	const isAuthor = user?.id === post.author._id
 
 	const [liked, setLiked] = useState(post.likedByCurrentUser)
 	const [likeCount, setLikeCount] = useState(post.likes.length)
-	const [commentCount, setCommentCount] = useState(0)
 	const [expanded, setExpanded] = useState(false)
-
-	useEffect(() => {
-		const fetch = async () => {
-			try {
-				const summary = await fetchCommentSummary(post._id)
-				setCommentCount(summary.count)
-			} catch (err) {
-				console.error('Failed to load comment count:', err)
-			}
-		}
-		fetch()
-	}, [post._id])
 
 	const handleToggleLike = async () => {
 		try {
@@ -59,8 +51,16 @@ export const PostListItem: React.FC<Props> = ({ post, firstUrl, enqueue, shouldR
 	}
 
 	const handleAddComment = () => {
-		showModal(<AddCommentForm postId={post._id} onCommentAdded={() => setExpanded(true)} />)
-	}
+		showModal(
+			<AddCommentForm
+				postId={post._id}
+				onCommentAdded={() => {
+					setExpanded(true)
+					refreshCommentCounts([post])
+				}}
+			/>
+		)
+	}	
 
 	const handleDelete = async () => {
 		await deletePost(post._id)
@@ -103,14 +103,7 @@ export const PostListItem: React.FC<Props> = ({ post, firstUrl, enqueue, shouldR
 				style={{ paddingHorizontal: Size.M }}
 			/>
 
-			{firstUrl && shouldRender(post._id) && (
-				<QueuedLinkPreview
-					id={post._id}
-					url={firstUrl}
-					enqueue={enqueue}
-					shouldRender={shouldRender}
-				/>
-			)}
+			{firstUrl && showPreview && <LinkPreview url={firstUrl} />}
 
 			<Row paddingHorizontal={Size.M} spacing={8}>
 				<Text style={[styles.bottomButton, { color: bottomButtonColor }]}>
