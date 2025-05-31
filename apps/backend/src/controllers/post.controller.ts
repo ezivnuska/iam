@@ -3,6 +3,7 @@
 import { Request, Response } from 'express'
 import * as postService from '../services/post.service'
 import puppeteer, { Page } from 'puppeteer'
+import getYouTubeMetaData from 'youtube-meta-data'
 
 // Core post CRUD handlers
 export const createPost = async (req: Request, res: Response): Promise<void> => {
@@ -167,6 +168,16 @@ const getContent = async (url: string, maxRetries = 3): Promise<{ html: string; 
 	throw new Error(`Failed to load URL after ${maxRetries} attempts: ${url}\nLast error: ${lastError}`)
 }
 
+function normalizeYouTubeMetadata(raw: any): { title: string; description?: string; image?: string } {
+	const { title, description, embedinfo } = raw
+
+	return {
+		title: title || embedinfo?.title || '',
+		description: description || '',
+		image: embedinfo?.thumbnail_url || ''
+	}
+}
+
 // Metascraper setup
 const metascraper = require('metascraper')([
 	require('metascraper-description')(),
@@ -194,11 +205,19 @@ export const scrapePost = async (req: Request, res: Response): Promise<void> => 
 		res.status(400).json({ message: 'URL is required' })
 		return
 	}
-    const normalizedUrl = normalizeUrl(url)
-    
+
+	const normalizedUrl = normalizeUrl(url)
+
 	try {
-		const { html } = await getContent(normalizedUrl)
-		const metadata = await metascraper({ html, url: normalizedUrl })
+		let metadata: { title: string; description?: string; image?: string }
+
+		if (/^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//.test(normalizedUrl)) {
+			const rawYoutube = await getYouTubeMetaData(normalizedUrl)
+			metadata = normalizeYouTubeMetadata(rawYoutube)
+		} else {
+			const { html } = await getContent(normalizedUrl)
+			metadata = await metascraper({ html, url: normalizedUrl })
+		}
 
 		res.status(200).json({ response: metadata })
 	} catch (error) {
