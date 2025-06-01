@@ -244,11 +244,11 @@ const oEmbedProviders = [
         requiresAuth: false
     },
     // Uncomment and configure for auth:
-    // {
-    //     regex: /instagram\.com/,
-    //     endpoint: 'https://graph.facebook.com/v8.0/instagram_oembed',
-    //     requiresAuth: true
-    // }
+    {
+        regex: /instagram\.com/,
+        endpoint: 'https://graph.facebook.com/v8.0/instagram_oembed',
+        requiresAuth: false,//true
+    }
 ]
 
 function findOEmbedProvider(url: string) {
@@ -269,8 +269,21 @@ async function fetchOEmbed(url: string) {
     }
 
     const res = await fetch(oembedUrl)
-    if (!res.ok) throw new Error('Failed to fetch oEmbed')
-    const data = await res.json() as OEmbedResponse
+
+    const rawText = await res.text() // ✅ read once
+
+    if (!res.ok) {
+        console.error('oEmbed failed response:', rawText)
+        throw new Error(`Failed to fetch oEmbed: ${res.status}`)
+    }
+
+    let data: OEmbedResponse
+    try {
+        data = JSON.parse(rawText)
+    } catch (err) {
+        throw new Error('Invalid JSON in oEmbed response')
+    }
+
     return {
         title: data.title || '',
         description: '',
