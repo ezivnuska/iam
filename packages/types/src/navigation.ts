@@ -7,6 +7,7 @@ export type RootStackParamList = {
     ForgotPassword: { token: string }
     Home: undefined
     Profile: undefined
+    PrivacyPolicy: undefined
     Protected: undefined
     ResetPassword: { token: string }
     UserList: undefined

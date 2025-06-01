@@ -15,8 +15,14 @@ export const scrape = async (url: string) => {
         throw new Error('INVALID_URL: Need to provide a valid URL')
     }
 	try {
-		const { data } = await api.post('/posts/scrape', { url })
-		return data
+		const response = await api.post('/posts/scrape', { url })
+        console.log('response', response)
+        // if (!res.ok) {
+        //     const text = await res.text()
+        //     console.error('Fetch failed:', res.status, text)
+        //     throw new Error('Failed to fetch oEmbed')
+        // }        
+		return response.data
 	} catch (err) {
 		console.error('Scrape failed:', err)
 		return {}

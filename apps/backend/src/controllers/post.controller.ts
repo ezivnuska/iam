@@ -179,7 +179,7 @@ async function getContent(url: string, maxRetries = 3): Promise<{ html: string; 
 
 			page.on('request', req => {
 				try {
-					const block = ['image', 'stylesheet', 'font', 'media', 'xhr']
+					const block = ['image', 'stylesheet', 'font', 'media']
 					block.includes(req.resourceType()) ? req.abort() : req.continue()
 				} catch (e) {
 					console.warn('Request interception error:', e)
@@ -189,21 +189,24 @@ async function getContent(url: string, maxRetries = 3): Promise<{ html: string; 
 			visited.add(url)
 			await page.goto(url, {
 				timeout: 90000,
-				waitUntil: 'networkidle2'
+				waitUntil: 'domcontentloaded',//'networkidle2'
 			})
 			
-			// const canonical = await page.$eval('link[rel="canonical"]', el => el.getAttribute('href')).catch(() => null)
-			// const finalUrl = canonical && canonical !== url && !visited.has(canonical) ? canonical : url
+			const canonical = await page.$eval('link[rel="canonical"]', el => el.getAttribute('href')).catch(() => null)
+			if (canonical && canonical !== url && !visited.has(canonical)) {
+				await page.goto(canonical, { waitUntil: 'domcontentloaded' })
+			}
+			const finalUrl = canonical && canonical !== url && !visited.has(canonical) ? canonical : url
 			
-			// if (finalUrl !== url) {
-			// 	await page.goto(finalUrl, {
-			// 		// timeout: 45000,
-			// 		waitUntil: 'networkidle2'
-			// 	})
-			// }			
+			if (finalUrl !== url) {
+				await page.goto(finalUrl, {
+					timeout: 90000,
+					waitUntil: 'domcontentloaded'
+				})
+			}			
 
 			const html = await page.content()
-			return { html, url }
+			return { html, url: finalUrl }
 		} catch (err) {
 			lastError = err
 			console.warn(`Attempt ${attempt + 1} failed:`, err)
@@ -240,32 +243,49 @@ const oEmbedProviders = [
         endpoint: 'https://www.youtube.com/oembed',
         requiresAuth: false
     },
-    // Uncomment and configure for auth:
-    // {
-    //     regex: /instagram\.com/,
-    //     endpoint: 'https://graph.facebook.com/v8.0/instagram_oembed',
-    //     requiresAuth: true
-    // }
+    {
+        regex: /instagram\.com/,
+        endpoint: 'https://graph.facebook.com/v23.0/instagram_oembed',
+        requiresAuth: true
+    }
 ]
 
 function findOEmbedProvider(url: string) {
     return oEmbedProviders.find(p => p.regex.test(url))
 }
 
+import crypto from 'crypto'
+
+function getAppSecretProof(accessToken: string, appSecret: string) {
+	return crypto
+		.createHmac('sha256', appSecret)
+		.update(accessToken)
+		.digest('hex')
+}
+
 async function fetchOEmbed(url: string) {
     const provider = findOEmbedProvider(url)
     if (!provider) return null
-
-    let oembedUrl = `${provider.endpoint}?url=${encodeURIComponent(url)}&format=json`
+	let oembedUrl = `${provider.endpoint}?url=${encodeURIComponent(url)}`
+	// let oembedUrl = `${provider.endpoint}?url=${encodeURIComponent(url)}&format=json`
 
     if (provider.requiresAuth) {
         const appId = process.env.FACEBOOK_APP_ID
         const appSecret = process.env.FACEBOOK_APP_SECRET
-        if (!appId || !appSecret) throw new Error('Facebook App credentials missing')
-        oembedUrl += `&access_token=${appId}|${appSecret}`
+		const accessToken = process.env.INSTAGRAM_USER_ACCESS_TOKEN
+        if (!accessToken || !appSecret) throw new Error('Facebook App credentials missing')
+		const appSecretProof = getAppSecretProof(accessToken, appSecret)
+		console.log('accessToken', accessToken)
+		console.log('appId', appId)
+		console.log('appSecret present?', !!appSecret)
+		
+        // if (!appId || !appSecret) throw new Error('Facebook App credentials missing')
+        oembedUrl += `&access_token=${accessToken}&appsecret_proof=${appSecretProof}`
     }
-
+	console.log('oembed url', oembedUrl)
     const res = await fetch(oembedUrl)
+	console.log('status', res.status)
+	console.log('response body', await res.text())
     if (!res.ok) throw new Error('Failed to fetch oEmbed')
     const data = await res.json() as OEmbedResponse
     return {

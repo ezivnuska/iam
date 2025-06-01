@@ -8,6 +8,7 @@ import {
     ForgotPasswordScreen,
     HomeScreen,
     ResetPasswordScreen,
+    PrivacyPolicyScreen,
     ProfileScreen,
     UserListScreen,
 } from '../screens'
@@ -24,6 +25,7 @@ export const AppNavigator = () => {
             <Stack.Screen name='Home' component={HomeScreen} />
             <Stack.Screen name='ResetPassword' component={ResetPasswordScreen} />
             <Stack.Screen name='UserList' component={UserListScreen} />
+            <Stack.Screen name='PrivacyPolicy' component={PrivacyPolicyScreen} />
             <Stack.Screen name='Profile' component={ProfileScreen} />
         </Stack.Navigator>
     )

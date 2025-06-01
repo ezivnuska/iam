@@ -20,6 +20,7 @@ const linking = {
             ResetPassword: 'reset-password/:token',
             UserList: 'users',
             Profile: 'profile',
+            PrivacyPolicy: 'privacy',
         },
     },
 }

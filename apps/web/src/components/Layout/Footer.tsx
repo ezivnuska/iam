@@ -1,12 +1,18 @@
 // packages/ui/src/components/layouts/PageLayout/Footer.tsx
 
 import React from 'react'
-import { Text, StyleSheet, View } from 'react-native'
+import { Text, Pressable, StyleSheet, View } from 'react-native'
 import { Row } from '@/components'
+import { useNavigation } from '@react-navigation/native'
 import { MAX_WIDTH } from './constants'
 import { Size } from '@/styles'
+import type { StackNavigationProp } from '@react-navigation/stack'
+import type { RootStackParamList } from '@iam/types'
+
+type NavProp = StackNavigationProp<RootStackParamList>
 
 export const Footer = () => {
+    const navigation = useNavigation<NavProp>()
 	return (
         <View style={styles.container}>
             <View style={styles.maxWidthContainer}>
@@ -18,6 +24,9 @@ export const Footer = () => {
                     style={{ zIndex: 200, flexWrap: 'nowrap' }}
                 >
                     <Text style={styles.copy}>&copy; iameric</Text>
+                    <Pressable onPress={() => navigation.navigate('PrivacyPolicy')}>
+                        <Text style={styles.copy}>Privacy Policy</Text>
+                    </Pressable>
                 </Row>
             </View>
         </View>
