@@ -243,49 +243,32 @@ const oEmbedProviders = [
         endpoint: 'https://www.youtube.com/oembed',
         requiresAuth: false
     },
-    {
-        regex: /instagram\.com/,
-        endpoint: 'https://graph.facebook.com/v23.0/instagram_oembed',
-        requiresAuth: true
-    }
+    // Uncomment and configure for auth:
+    // {
+    //     regex: /instagram\.com/,
+    //     endpoint: 'https://graph.facebook.com/v8.0/instagram_oembed',
+    //     requiresAuth: true
+    // }
 ]
 
 function findOEmbedProvider(url: string) {
     return oEmbedProviders.find(p => p.regex.test(url))
 }
 
-import crypto from 'crypto'
-
-function getAppSecretProof(accessToken: string, appSecret: string) {
-	return crypto
-		.createHmac('sha256', appSecret)
-		.update(accessToken)
-		.digest('hex')
-}
-
 async function fetchOEmbed(url: string) {
     const provider = findOEmbedProvider(url)
     if (!provider) return null
-	let oembedUrl = `${provider.endpoint}?url=${encodeURIComponent(url)}`
-	// let oembedUrl = `${provider.endpoint}?url=${encodeURIComponent(url)}&format=json`
+
+    let oembedUrl = `${provider.endpoint}?url=${encodeURIComponent(url)}&format=json`
 
     if (provider.requiresAuth) {
         const appId = process.env.FACEBOOK_APP_ID
         const appSecret = process.env.FACEBOOK_APP_SECRET
-		const accessToken = process.env.INSTAGRAM_USER_ACCESS_TOKEN
-        if (!accessToken || !appSecret) throw new Error('Facebook App credentials missing')
-		const appSecretProof = getAppSecretProof(accessToken, appSecret)
-		console.log('accessToken', accessToken)
-		console.log('appId', appId)
-		console.log('appSecret present?', !!appSecret)
-		
-        // if (!appId || !appSecret) throw new Error('Facebook App credentials missing')
-        oembedUrl += `&access_token=${accessToken}&appsecret_proof=${appSecretProof}`
+        if (!appId || !appSecret) throw new Error('Facebook App credentials missing')
+        oembedUrl += `&access_token=${appId}|${appSecret}`
     }
-	console.log('oembed url', oembedUrl)
+
     const res = await fetch(oembedUrl)
-	console.log('status', res.status)
-	console.log('response body', await res.text())
     if (!res.ok) throw new Error('Failed to fetch oEmbed')
     const data = await res.json() as OEmbedResponse
     return {
@@ -294,6 +277,47 @@ async function fetchOEmbed(url: string) {
         image: data.thumbnail_url || ''
     }
 }
+
+// import crypto from 'crypto'
+
+// function getAppSecretProof(accessToken: string, appSecret: string) {
+// 	return crypto
+// 		.createHmac('sha256', appSecret)
+// 		.update(accessToken)
+// 		.digest('hex')
+// }
+
+// async function fetchOEmbed(url: string) {
+//     const provider = findOEmbedProvider(url)
+//     if (!provider) return null
+// 	let oembedUrl = `${provider.endpoint}?url=${encodeURIComponent(url)}`
+// 	// let oembedUrl = `${provider.endpoint}?url=${encodeURIComponent(url)}&format=json`
+
+//     if (provider.requiresAuth) {
+//         const appId = process.env.FACEBOOK_APP_ID
+//         const appSecret = process.env.FACEBOOK_APP_SECRET
+// 		const accessToken = process.env.INSTAGRAM_USER_ACCESS_TOKEN
+//         if (!accessToken || !appSecret) throw new Error('Facebook App credentials missing')
+// 		const appSecretProof = getAppSecretProof(accessToken, appSecret)
+// 		console.log('accessToken', accessToken)
+// 		console.log('appId', appId)
+// 		console.log('appSecret present?', !!appSecret)
+		
+//         // if (!appId || !appSecret) throw new Error('Facebook App credentials missing')
+//         oembedUrl += `&access_token=${accessToken}&appsecret_proof=${appSecretProof}`
+//     }
+// 	console.log('oembed url', oembedUrl)
+//     const res = await fetch(oembedUrl)
+// 	console.log('status', res.status)
+// 	console.log('response body', await res.text())
+//     if (!res.ok) throw new Error('Failed to fetch oEmbed')
+//     const data = await res.json() as OEmbedResponse
+//     return {
+//         title: data.title || '',
+//         description: '',
+//         image: data.thumbnail_url || ''
+//     }
+// }
 
 async function getYoutubeMetadataSafe(url: string) {
     try {
