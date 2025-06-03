@@ -248,7 +248,7 @@ const oEmbedProviders = [
         regex: /instagram\.com/,
         endpoint: 'https://graph.facebook.com/v8.0/instagram_oembed',
         requiresAuth: false,//true
-    }
+    },
 ]
 
 function findOEmbedProvider(url: string) {
@@ -267,10 +267,10 @@ async function fetchOEmbed(url: string) {
         if (!appId || !appSecret) throw new Error('Facebook App credentials missing')
         oembedUrl += `&access_token=${appId}|${appSecret}`
     }
-
+    console.log('oembedUrl', oembedUrl)
     const res = await fetch(oembedUrl)
 
-    const rawText = await res.text() // ✅ read once
+    const rawText = await res.text()
 
     if (!res.ok) {
         console.error('oEmbed failed response:', rawText)
@@ -300,38 +300,6 @@ async function fetchOEmbed(url: string) {
 // 		.digest('hex')
 // }
 
-// async function fetchOEmbed(url: string) {
-//     const provider = findOEmbedProvider(url)
-//     if (!provider) return null
-// 	let oembedUrl = `${provider.endpoint}?url=${encodeURIComponent(url)}`
-// 	// let oembedUrl = `${provider.endpoint}?url=${encodeURIComponent(url)}&format=json`
-
-//     if (provider.requiresAuth) {
-//         const appId = process.env.FACEBOOK_APP_ID
-//         const appSecret = process.env.FACEBOOK_APP_SECRET
-// 		const accessToken = process.env.INSTAGRAM_USER_ACCESS_TOKEN
-//         if (!accessToken || !appSecret) throw new Error('Facebook App credentials missing')
-// 		const appSecretProof = getAppSecretProof(accessToken, appSecret)
-// 		console.log('accessToken', accessToken)
-// 		console.log('appId', appId)
-// 		console.log('appSecret present?', !!appSecret)
-		
-//         // if (!appId || !appSecret) throw new Error('Facebook App credentials missing')
-//         oembedUrl += `&access_token=${accessToken}&appsecret_proof=${appSecretProof}`
-//     }
-// 	console.log('oembed url', oembedUrl)
-//     const res = await fetch(oembedUrl)
-// 	console.log('status', res.status)
-// 	console.log('response body', await res.text())
-//     if (!res.ok) throw new Error('Failed to fetch oEmbed')
-//     const data = await res.json() as OEmbedResponse
-//     return {
-//         title: data.title || '',
-//         description: '',
-//         image: data.thumbnail_url || ''
-//     }
-// }
-
 async function getYoutubeMetadataSafe(url: string) {
     try {
         return await fetchOEmbed(url)
@@ -351,7 +319,7 @@ export const scrapePost = async (req: Request, res: Response) => {
 	}
 
     const normalizedUrl = normalizeUrl(url)
-
+    console.log('normalizedUrl', normalizedUrl)
     try {
         const isYouTube = /youtube\.com|youtu\.be/.test(normalizedUrl)
         let metadata = findOEmbedProvider(normalizedUrl) ? await fetchOEmbed(normalizedUrl) : null
