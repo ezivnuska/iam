@@ -246,8 +246,15 @@ const oEmbedProviders = [
     // Uncomment and configure for auth:
     {
         regex: /instagram\.com/,
-        endpoint: 'https://graph.facebook.com/v8.0/instagram_oembed',
-        requiresAuth: true
+        endpoint: 'https://graph.facebook.com/v23.0/instagram_oembed',
+        requiresAuth: true,
+        accessToken: process.env.INSTAGRAM_ACCESS_TOKEN,
+    },
+    {
+        regex: /facebook\.com/,
+        endpoint: 'https://graph.facebook.com/v23.0/oembed_post',
+        requiresAuth: true,
+        accessToken: process.env.INSTAGRAM_ACCESS_TOKEN,
     },
 ]
 
@@ -262,10 +269,10 @@ async function fetchOEmbed(url: string) {
     let oembedUrl = `${provider.endpoint}?url=${encodeURIComponent(url)}&format=json`
 
     if (provider.requiresAuth) {
-        const appId = process.env.FACEBOOK_APP_ID
-        const appSecret = process.env.FACEBOOK_APP_SECRET
-        if (!appId || !appSecret) throw new Error('Facebook App credentials missing')
-        oembedUrl += `&access_token=${appId}|${appSecret}`
+        // const appId = process.env.FACEBOOK_APP_ID
+        // const appSecret = process.env.FACEBOOK_APP_SECRET
+        if (!provider.accessToken) throw new Error('Facebook App credentials missing')
+        oembedUrl += `&access_token=${provider.accessToken}`
     }
     console.log('oembedUrl', oembedUrl)
     const res = await fetch(oembedUrl)
