@@ -247,7 +247,7 @@ const oEmbedProviders = [
     {
         regex: /instagram\.com/,
         endpoint: 'https://graph.facebook.com/v8.0/instagram_oembed',
-        requiresAuth: false,//true
+        requiresAuth: true
     },
 ]
 
