@@ -7,6 +7,8 @@ import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 import { Page } from 'puppeteer'
 // import getYouTubeMetaData from 'youtube-meta-data'
 import fetch, { AbortError } from 'node-fetch'
+import crypto from 'crypto'
+import { ensureAuth } from '../utils/ensureAuth'
 
 interface OEmbedResponse {
     title: string
@@ -14,17 +16,6 @@ interface OEmbedResponse {
 }
 
 puppeteer.use(StealthPlugin())
-
-/* --------------------------------- UTILITIES --------------------------------- */
-
-const ensureAuth = (req: Request, res: Response): string | null => {
-    const userId = req.user?.id
-    if (!userId) {
-        res.status(401).json({ message: 'Unauthorized' })
-        return null
-    }
-    return userId
-}
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
@@ -120,7 +111,7 @@ export const toggleLike = async (req: Request, res: Response) => {
     if (!userId) return
 
     try {
-        const post = await postService.toggleLike(userId, req.params.postId)
+        const post = await postService.togglePostLike(userId, req.params.postId)
         if (!post) {
 			res.status(404).json({ message: 'Post not found' })
 			return
@@ -150,6 +141,13 @@ const goToWithRetries = async (page: Page, url: string, maxRetries = 3) => {
         }
     }
     throw new Error(`goto failed after ${maxRetries} attempts: ${lastError}`)
+}
+
+function getAppSecretProof(accessToken: string, appSecret: string) {
+	return crypto
+		.createHmac('sha256', appSecret)
+		.update(accessToken)
+		.digest('hex')
 }
 
 async function getContent(url: string, maxRetries = 3): Promise<{ html: string; url: string }> {
@@ -237,29 +235,30 @@ function normalizeUrl(url: string): string {
     }
 }
 
-const oEmbedProviders = [
-    {
-        regex: /youtube\.com|youtu\.be/,
-        endpoint: 'https://www.youtube.com/oembed',
-        requiresAuth: false
-    },
-    // Uncomment and configure for auth:
-    {
-        regex: /instagram\.com/,
-        endpoint: 'https://graph.facebook.com/v23.0/instagram_oembed',
-        requiresAuth: true,
-        accessToken: process.env.INSTAGRAM_ACCESS_TOKEN,
-    },
-    {
-        regex: /facebook\.com/,
-        endpoint: 'https://graph.facebook.com/v23.0/oembed_post',
-        requiresAuth: true,
-        accessToken: process.env.INSTAGRAM_ACCESS_TOKEN,
-    },
-]
+function getOEmbedProviders() {
+    return [
+        {
+            regex: /youtube\.com|youtu\.be/,
+            endpoint: 'https://www.youtube.com/oembed',
+            requiresAuth: false
+        },
+        {
+            regex: /instagram\.com/,
+            endpoint: 'https://graph.facebook.com/v23.0/instagram_oembed',
+            requiresAuth: true,
+            accessToken: process.env.INSTAGRAM_ACCESS_TOKEN,
+        },
+        {
+            regex: /facebook\.com/,
+            endpoint: 'https://graph.facebook.com/v23.0/oembed_post',
+            requiresAuth: true,
+            accessToken: process.env.FACEBOOK_ACCESS_TOKEN,
+        },
+    ]
+}
 
 function findOEmbedProvider(url: string) {
-    return oEmbedProviders.find(p => p.regex.test(url))
+    return getOEmbedProviders().find(p => p.regex.test(url))
 }
 
 async function fetchOEmbed(url: string) {
@@ -269,10 +268,14 @@ async function fetchOEmbed(url: string) {
     let oembedUrl = `${provider.endpoint}?url=${encodeURIComponent(url)}&format=json`
 
     if (provider.requiresAuth) {
-        // const appId = process.env.FACEBOOK_APP_ID
-        // const appSecret = process.env.FACEBOOK_APP_SECRET
-        if (!provider.accessToken) throw new Error('Facebook App credentials missing')
-        oembedUrl += `&access_token=${provider.accessToken}`
+        const accessToken = process.env.TEMP_ACCESS_TOKEN
+        const appSecret = process.env.FACEBOOK_APP_SECRET
+
+        if (!accessToken || !appSecret) throw new Error('App credentials missing')
+
+        const appSecretProof = getAppSecretProof(accessToken, appSecret)
+        console.log('appSecretProof', appSecretProof)
+        oembedUrl += `&access_token=${accessToken}&appsecret_proof=${appSecretProof}`
     }
     console.log('oembedUrl', oembedUrl)
     const res = await fetch(oembedUrl)
@@ -298,15 +301,6 @@ async function fetchOEmbed(url: string) {
     }
 }
 
-// import crypto from 'crypto'
-
-// function getAppSecretProof(accessToken: string, appSecret: string) {
-// 	return crypto
-// 		.createHmac('sha256', appSecret)
-// 		.update(accessToken)
-// 		.digest('hex')
-// }
-
 async function getYoutubeMetadataSafe(url: string) {
     try {
         return await fetchOEmbed(url)
@@ -328,14 +322,13 @@ export const scrapePost = async (req: Request, res: Response) => {
     const normalizedUrl = normalizeUrl(url)
     console.log('normalizedUrl', normalizedUrl)
     try {
-        const isYouTube = /youtube\.com|youtu\.be/.test(normalizedUrl)
+        // const isYouTube = /youtube\.com|youtu\.be/.test(normalizedUrl)
         let metadata = findOEmbedProvider(normalizedUrl) ? await fetchOEmbed(normalizedUrl) : null
 
         if (!metadata?.title) {
-            metadata = isYouTube
-                ? await getYoutubeMetadataSafe(normalizedUrl)
-                : await metascraper({ html: (await getContent(normalizedUrl)).html, url: normalizedUrl })
-        }
+            const { html } = await getContent(normalizedUrl)
+            metadata = await metascraper({ html, url: normalizedUrl })
+        }        
 
         res.status(200).json({ response: metadata })
     } catch (err) {

@@ -1,8 +1,10 @@
 // apps/backend/src/services/image.service.ts
 
+import mongoose, { ObjectId } from 'mongoose'
 import sharp from 'sharp'
 import path from 'path'
 import { ImageModel } from '../models/image.model'
+import { Comment } from '../models/comment.model'
 import { sanitizeUsername, ensureDir, deleteFile } from '../utils/file'
 import { getUserDir } from '../utils/imagePaths'
 import type { ImageVariant } from '@iam/types'
@@ -94,4 +96,48 @@ export const processAndSaveImage = async ({
 		alt,
 		variants,
 	})
+}
+
+export const getImageLikes = async (id: string, userId: string) => {
+    const image = await ImageModel.findById(id)
+    if (!image) throw new Error('Image not found')
+    const userObjectId = new mongoose.Types.ObjectId(userId)
+    const likedByCurrentUser = userId ? image.likes.includes(userObjectId) : false
+    return { likedByCurrentUser, count: image.likes.length }
+}
+
+export const toggleImageLike = async (userId: string, id: string) => {
+	try {
+		const image = await ImageModel.findById(id)
+		if (!image) throw new Error('Image not found')
+
+		const userObjectId = new mongoose.Types.ObjectId(userId)
+		const index = image.likes.findIndex((id) => id.equals(userObjectId))
+
+		if (index > -1) {
+			image.likes.splice(index, 1)
+		} else {
+			image.likes.push(userObjectId)
+		}
+
+		await image.save()
+
+		const likedByCurrentUser = image.likes.some((id) => id.equals(userObjectId))
+		const count = image.likes.length
+
+		return { likedByCurrentUser, count }
+	} catch (err) {
+		console.error('toggleImageLike error:', err)
+		throw err
+	}
+}
+
+export const getCommentCount = async (imageId: string) => {
+    const imageExists = await ImageModel.exists({ _id: imageId })
+    if (!imageExists) return null
+    const count = await Comment.countDocuments({
+		parentId: imageId,
+		parentType: 'Image',
+	})
+	return count
 }

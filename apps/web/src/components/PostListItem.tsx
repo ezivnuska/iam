@@ -2,13 +2,13 @@
 
 import React, { useState } from 'react'
 import { Pressable, StyleSheet, Text } from 'react-native'
-import { Column, Row, ProfileImage, CommentSection, LinkPreview, AddCommentForm } from '@/components'
+import { Column, Row, PostComments, ProfileImage, LinkPreview, AddCommentForm } from '@/components'
 import { PartialUser, Post } from '@iam/types'
 import { Size } from '@/styles'
 import Autolink from 'react-native-autolink'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { formatRelative } from 'date-fns'
-import { toggleLike } from '@services'
+import { togglePostLike } from '@services'
 import { useAuth, useModal, usePosts } from '@/hooks'
 
 type Props = {
@@ -28,7 +28,7 @@ export const PostListItem: React.FC<Props> = ({
 }) => {
 	const { user, isAuthenticated } = useAuth()
 	const { showModal } = useModal()
-	const { commentCounts, deletePost, refreshCommentCounts } = usePosts()
+	const { commentCounts, deletePost, refreshCommentCounts, refreshPosts } = usePosts()
 
 	const isAuthor = user?.id === post.author._id
 
@@ -38,7 +38,7 @@ export const PostListItem: React.FC<Props> = ({
 
 	const handleToggleLike = async () => {
 		try {
-			await toggleLike(post._id)
+			await togglePostLike(post._id)
 			setLiked((prev) => !prev)
 			setLikeCount((prev) => (liked ? prev - 1 : prev + 1))
 		} catch (err) {
@@ -53,11 +53,13 @@ export const PostListItem: React.FC<Props> = ({
 	const handleAddComment = () => {
 		showModal(
 			<AddCommentForm
-				postId={post._id}
+				id={post._id}
+                type='Post'
 				onCommentAdded={() => {
 					setExpanded(true)
 					refreshCommentCounts([post])
 				}}
+                onRefresh={refreshPosts}
 			/>
 		)
 	}	
@@ -135,7 +137,7 @@ export const PostListItem: React.FC<Props> = ({
 				)}
 			</Row>
 
-			{expanded && <CommentSection postId={post._id} />}
+			{expanded && <PostComments refId={post._id} />}
 		</Column>
 	)
 }

@@ -15,17 +15,22 @@ const schema = z.object({
 })
 
 type AddCommentFormProps = z.infer<typeof schema>
+type CommentParentType = 'Post' | 'Image'
 
 export const AddCommentForm = ({
-	postId,
+	id,
+    type,
 	onCommentAdded,
+    onRefresh,
 }: {
-	postId: string
+	id: string
+    type: CommentParentType
 	onCommentAdded?: () => void
+    onRefresh?: () => void
 }) => {
 	const { user } = useAuth()
 	const { hideModal } = useModal()
-	const { refreshPosts } = usePosts()
+	// const { refreshPosts } = usePosts()
 
 	const {
 		control,
@@ -59,12 +64,12 @@ export const AddCommentForm = ({
 		}
 
 		try {
-			await addComment(postId, data.content)
+			await addComment(id, type, data.content)
 			onCommentAdded?.()
-			refreshPosts()
+			if (onRefresh) onRefresh()
 			hideModal()
 		} catch (err: any) {
-			Alert.alert('Failed to add comment', err?.message || 'Unknown error')
+			Alert.alert(`Failed to add comment to ${type}`, err?.message || 'Unknown error')
 		}
 	}
 

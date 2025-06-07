@@ -2,17 +2,26 @@
 
 import { api } from './'
 
-export const fetchCommentSummary = async (postId: string): Promise<{ count: number; commentIds: string[] }> => {
-	const res = await api.get(`/comments/summary/${postId}`)
+type RefType = 'Post' | 'Image'
+
+export const fetchCommentSummary = async (
+	refId: string,
+	refType: RefType
+): Promise<{ count: number; commentIds: string[] }> => {
+	const res = await api.get('/comments/summary', {
+		params: { refId, refType },
+	})
 	return res.data
 }
 
-export const fetchComments = async (postId: string) => {
-	const res = await api.get(`/comments/${postId}`)
+export const fetchComments = async (refId: string, refType: RefType) => {
+	const res = await api.get('/comments', {
+		params: { refId, refType },
+	})
 	return res.data
 }
 
-export const addComment = async (postId: string, content: string) => {
-	const res = await api.post('/comments', { postId, content })
+export const addComment = async (refId: string, refType: RefType, content: string) => {
+	const res = await api.post('/comments', { refId, refType, content })
 	return res.data
 }

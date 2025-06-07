@@ -1,11 +1,12 @@
 // packages/ui/src/components/index.ts
 
 export * from './Button'
-export * from './CommentSection'
+export * from './ImageComments'
 export * from './ImageManagerHeader'
 export * from './Layout'
 export * from './PageHeader'
 export * from './ProfileImage'
+export * from './PostComments'
 export * from './PostList'
 export * from './PostListItem'
 export * from './forms'

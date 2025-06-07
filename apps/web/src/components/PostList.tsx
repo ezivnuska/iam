@@ -13,10 +13,10 @@ import { extractFirstUrl } from '@/utils'
 export const PostList = () => {
 
 	const [loadedLinkIds, setLoadedLinkIds] = useState<Set<string>>(new Set())
-    const [commentCounts, setCommentCounts] = useState<Record<string, number>>({})
     const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set())
 
 	const { isAuthenticated, user } = useAuth()
+    const { commentCounts } = usePosts()
 	const { showModal } = useModal()
 	const { posts, deletePost, refreshPosts } = usePosts()
 
@@ -58,33 +58,6 @@ export const PostList = () => {
 		
 			return updated
         })
-      
-        // Fetch comment counts asynchronously, independent of loadedLinkIds state update
-        ;(async () => {
-			const nextCommentCounts: Record<string, number> = {}
-		
-			// Fetch summaries only for visible posts that are not already loaded
-			await Promise.all(
-				viewableItems.map(async ({ item }) => {
-					const post = item as Post
-					if (!commentCounts[post._id]) {
-						try {
-							const summary = await fetchCommentSummary(post._id)
-							nextCommentCounts[post._id] = summary.count
-						} catch (err) {
-							console.warn('Failed to fetch comment summary for', post._id, err)
-						}
-					}
-				})
-			)
-		
-			// Update commentCounts state only if we got any new counts
-			if (Object.keys(nextCommentCounts).length > 0) {
-				setCommentCounts((prev) => {
-					return { ...prev, ...nextCommentCounts }
-				})
-			}			  
-        })()
     }, [enqueue, commentCounts, posts])      
     
 	const viewabilityConfig = {

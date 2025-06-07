@@ -30,7 +30,7 @@ export const PostsProvider = ({ children }: { children: React.ReactNode }) => {
 
 		await Promise.all((targetPosts ?? posts).map(async (post) => {
 			try {
-				const summary = await postService.fetchCommentSummary(post._id)
+				const summary = await postService.fetchCommentSummary(post._id, 'Post')
 				counts[post._id] = summary.count
 			} catch (err) {
 				console.error(`Error fetching comment summary for post ${post._id}`, err)

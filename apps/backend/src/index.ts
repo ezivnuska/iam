@@ -31,6 +31,10 @@ if (!dotenv.config({ path: localPath }).parsed) {
     dotenv.config({ path: fallbackPath })
 }
 
+console.log('INSTAGRAM_ACCESS_TOKEN:', process.env.INSTAGRAM_ACCESS_TOKEN)
+console.log('FACEBOOK_ACCESS_TOKEN:', process.env.FACEBOOK_ACCESS_TOKEN)
+console.log('TEMP_ACCESS_TOKEN:', process.env.TEMP_ACCESS_TOKEN)
+
 const API_PORT = process.env.API_PORT || 4000
 
 const corsOptions = {
@@ -76,6 +80,10 @@ io.on('connection', (socket) => {
 	socket.on('disconnect', () => {
 		console.log(`Socket disconnected: ${socket.id}`)
 	})
+})
+
+mongoose.connection.on('error', (err) => {
+	console.error('MongoDB connection error:', err)
 })
 
 const start = async () => {

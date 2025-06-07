@@ -3,38 +3,50 @@
 import { Request, Response } from 'express'
 import * as commentService from '../services/comment.service'
 
-export const addComment = async (req: Request, res: Response) => {
-	if (!req.user?.id) {
-		res.status(401).json({ message: 'Unauthorized' })
-		return
-	}
+export const addComment = async (req: Request, res: Response): Promise<void> => {
+	try {
+		if (!req.user?.id) {
+			res.status(401).json({ message: 'Unauthorized' })
+			return
+		}
 
-	const { postId, content } = req.body
-	if (!postId || !content) {
-		res.status(400).json({ message: 'Missing postId or content' })
-		return
+		const { refId, refType, content } = req.body
+		if (!refId || !refType || !content) {
+			res.status(400).json({ message: 'Missing refId, refType, or content' })
+			return
+		}
+        console.log('Add comment payload:', { refId, refType, userId: req.user.id, content })
+		const comment = await commentService.createComment(refId, refType, req.user.id, content)
+        console.log('Comment created:', comment)
+		res.status(201).json(comment)
+	} catch (error) {
+		console.error('Error creating comment:', error)
+		res.status(500).json({ message: 'Failed to create comment' })
 	}
-
-	const comment = await commentService.createComment(postId, req.user.id, content)
-	res.status(201).json(comment)
 }
 
-export const getComments = async (req: Request, res: Response) => {
-	const postId = req.params.postId
-	const comments = await commentService.getCommentsForPost(postId)
+export const getComments = async (req: Request, res: Response): Promise<void> => {
+	const { refId, refType } = req.query
+
+	if (!refId || !refType) {
+		res.status(400).json({ message: 'Missing refId or refType' })
+		return
+	}
+
+	const comments = await commentService.getCommentsForRef(refId as string, refType as 'Post' | 'Image')
 	res.json(comments)
 }
 
-export const getCommentSummary = async (req: Request, res: Response) => {
-	const { postId } = req.params
+export const getCommentSummary = async (req: Request, res: Response): Promise<void> => {
+	const { refId, refType } = req.query
 
-	if (!postId) {
-		res.status(400).json({ error: 'postId is required' })
-        return
+	if (!refId || !refType) {
+		res.status(400).json({ error: 'refId and refType are required' })
+		return
 	}
 
 	try {
-		const summary = await commentService.getCommentSummaryForPost(postId)
+		const summary = await commentService.getCommentSummaryForRef(refId as string, refType as 'Post' | 'Image')
 		res.json(summary)
 	} catch (error) {
 		console.error('Error fetching comment summary:', error)

@@ -16,6 +16,7 @@ export interface ImageDocument extends Document {
 	alt?: string
 	url?: string
     variants: ImageVariant[]
+    likes: Types.ObjectId[]
 }
 
 export interface Image {
@@ -25,6 +26,8 @@ export interface Image {
 	url: string
 	alt?: string
     variants: ImageVariant[]
+    likes: string[]
+    likedByCurrentUser: boolean
 }
 
 export type UploadedImage = {
@@ -36,5 +39,7 @@ export type UploadedImage = {
 	createdAt: string
 	updatedAt: string
 	variants: ImageVariant[]
+	likes: string[]
+	likedByCurrentUser: boolean
 }
 

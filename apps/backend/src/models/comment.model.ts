@@ -3,9 +3,13 @@
 import mongoose from 'mongoose'
 
 const commentSchema = new mongoose.Schema({
-	postId: {
+	refId: {
 		type: mongoose.Schema.Types.ObjectId,
-		ref: 'Post',
+		required: true,
+	},
+	refType: {
+		type: String,
+		enum: ['Post', 'Image'],
 		required: true,
 	},
 	author: {
@@ -17,10 +21,8 @@ const commentSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 	},
-	createdAt: {
-		type: Date,
-		default: Date.now,
-	},
-})
+}, { timestamps: true })
+
+commentSchema.index({ refId: 1, refType: 1 })
 
 export const Comment = mongoose.model('Comment', commentSchema)

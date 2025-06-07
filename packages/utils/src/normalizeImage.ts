@@ -15,5 +15,7 @@ export function normalizeImage(img?: any): Image | undefined {
 		url,
 		alt: img.alt ?? '',
 		variants: img.variants ?? [],
+        likes: img.linkes,
+        likedByCurrentUser: img.likedByCurrentUser,
 	}
 }

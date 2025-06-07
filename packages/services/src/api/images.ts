@@ -4,6 +4,7 @@ import { Platform } from 'react-native'
 import { api } from './http'
 import { normalizeImage } from '@utils'
 import type { Image, UploadedImage } from '@iam/types'
+import * as commentService from './comments'
 
 type ImageData = {
 	uri: string
@@ -56,3 +57,26 @@ export const uploadImage = async ({ imageData }: ImageUploadData): Promise<Uploa
 }
 
 export const deleteImage = async (imageId: string) => api.delete(`/images/${imageId}`).then((res) => res.data)
+
+export const fetchImageLikes = async (imageId: string) => {
+    const res = await api.get(`/images/${imageId}/likes`)
+    return res.data
+}
+
+export const toggleImageLike = async (imageId: string) => {
+    const res = await api.post(`/images/${imageId}/like`)
+    return res.data
+}
+
+export const fetchImageCommentCount = async (imageId: string): Promise<number> => {
+	const summary = await commentService.fetchCommentSummary(imageId, 'Image')
+	return summary.count
+}
+
+export const fetchImageComments = async (imageId: string) => {
+	return commentService.fetchComments(imageId, 'Image')
+}
+
+export const addImageComment = async (imageId: string, content: string) => {
+	return commentService.addComment(imageId, 'Image', content)
+}

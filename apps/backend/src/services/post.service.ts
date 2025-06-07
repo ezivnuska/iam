@@ -98,7 +98,7 @@ export const getPostLikes = async (postId: string) => {
 	return post.likes
 }
 
-export const toggleLike = async (userId: string, postId: string) => {
+export const togglePostLike = async (userId: string, postId: string) => {
 	try {
         const post = await PostModel.findById(postId)
     

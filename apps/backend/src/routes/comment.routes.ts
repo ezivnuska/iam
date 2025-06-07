@@ -7,7 +7,7 @@ import { requireAuth } from '../middlewares/auth.middleware'
 const router: express.Router = Router()
 
 router.post('/', requireAuth(), addComment)
-router.get('/:postId', getComments)
-router.get('/summary/:postId', getCommentSummary)
+router.get('/', getComments)
+router.get('/summary', getCommentSummary)
 
 export default router

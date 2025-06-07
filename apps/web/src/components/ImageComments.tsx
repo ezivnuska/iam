@@ -1,34 +1,34 @@
-// apps/web/src/components/CommentSection.tsx
+// apps/web/src/components/ImageComments.tsx
 
 import React, { useEffect, useState } from 'react'
-import { Text, View, FlatList, ActivityIndicator } from 'react-native'
+import { Text, View, FlatList, ActivityIndicator, StyleSheet } from 'react-native'
 import type { Comment } from '@iam/types'
 import { fetchComments } from '@services'
 import { Size } from '@/styles'
 import { Column } from './Layout'
 
-type CommentSectionProps = {
-    postId: string
-}
+type ImageCommentsProps = {
+    refId: string
+}  
 
-export const CommentSection = ({ postId }: CommentSectionProps) => {
+export const ImageComments = ({ refId }: ImageCommentsProps) => {
     const [comments, setComments] = useState<Comment[] | null>(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         const loadComments = async () => {
             try {
-                const data = await fetchComments(postId)
+                const data = await fetchComments(refId, 'Image')
                 setComments(data)
             } catch (err) {
-                console.error('Failed to load comments:', err)
+                console.error('Failed to load image comments:', err)
             } finally {
                 setLoading(false)
             }
         }
-
+      
         loadComments()
-    }, [postId])
+    }, [refId])
 
     if (loading) {
         return (
@@ -41,7 +41,7 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
     if (!comments?.length) {
         return (
             <View style={{ paddingVertical: Size.S, paddingHorizontal: Size.M }}>
-                <Text>No comments yet.</Text>
+                <Text style={styles.text}>No comments yet.</Text>
             </View>
         )
     }
@@ -52,10 +52,19 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
             keyExtractor={(item) => item._id}
             renderItem={({ item }) => (
                 <Column spacing={Size.S} paddingHorizontal={Size.M}>
-                    <Text style={{ fontWeight: 'bold' }}>{item.author.username}</Text>
-                    <Text>{item.content}</Text>
+                    <Text style={[styles.text, styles.author]}>{item.author.username}</Text>
+                    <Text style={[styles.text]}>{item.content}</Text>
                 </Column>
             )}
         />
     )
 }
+
+const styles = StyleSheet.create({
+    author: {
+        fontWeight: 700,
+    },
+    text: {
+        color: '#fff',
+    },
+})
