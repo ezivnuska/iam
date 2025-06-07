@@ -53,3 +53,25 @@ export const getCommentSummary = async (req: Request, res: Response): Promise<vo
 		res.status(500).json({ error: 'Failed to get comment summary' })
 	}
 }
+
+export const deleteComment = async (req: Request, res: Response): Promise<void> => {
+	try {
+		if (!req.user?.id) {
+			res.status(401).json({ message: 'Unauthorized' })
+            return
+		}
+
+		const { commentId } = req.params
+		const deleted = await commentService.deleteCommentById(commentId, req.user.id)
+
+		if (!deleted) {
+			res.status(403).json({ message: 'Not allowed to delete this comment' })
+            return
+		}
+
+		res.status(200).json({ success: true })
+	} catch (err) {
+		console.error('Error deleting comment:', err)
+		res.status(500).json({ message: 'Failed to delete comment' })
+	}
+}

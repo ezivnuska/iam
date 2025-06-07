@@ -34,23 +34,18 @@ const FullScreenImage = ({
 	const paddingHorizontal = resolveResponsiveProp({ xs: 8, sm: 8, md: 16, lg: 24 })
 	const { width: screenWidth, height: screenHeight } = useWindowDimensions()
 
-	// Calculate responsive size preserving aspect ratio
 	let displayWidth = screenWidth - paddingHorizontal * 2
 	let displayHeight = screenHeight - paddingHorizontal * 2
 
-	// Get the best variant URL using your hook
 	const bestVariantUrl = useBestVariant(image, displayWidth)
-
-	// You can also get the variant details (width/height) from image.variants here if needed
-	// For example, find the variant matching bestVariantUrl:
+    
 	const bestVariant = image.variants.find(variant => {
-		// Assuming getBestVariantUrl returns a URL that includes the variant filename
 		return bestVariantUrl.includes(variant.filename)
 	})
 
 	if (bestVariant?.width && bestVariant?.height) {
 		const aspectRatio = bestVariant.width / bestVariant.height
-		// Adjust width and height based on screen orientation
+		
 		if (displayWidth / aspectRatio <= displayHeight) {
 			displayHeight = displayWidth / aspectRatio
 		} else {
@@ -153,22 +148,35 @@ const FullScreenImage = ({
                             </Text>
                         </Pressable>
         
-                        {commentCount > 0 && (
-                            <Pressable
-                                onPress={handleToggleComments}
-                                style={{ paddingHorizontal: Size.M }}
-                            >
-                                <Text style={[styles.bottomButton, { color: '#fff' }]}>
-                                    {expanded && 'Hide '}{commentCount} {commentCount === 1 ? 'comment' : 'comments'}
-                                </Text>
-                            </Pressable>
-                        )}
+                        <Pressable
+                            onPress={handleToggleComments}
+                            style={{ paddingHorizontal: Size.M }}
+                            disabled={commentCount === 0}
+                        >
+                            <Text style={[
+                                styles.bottomButton,
+                                { color: commentCount === 0 ? '#888' : '#fff' }
+                            ]}>
+                                {expanded && commentCount > 0 ? 'Hide ' : ''}
+                                {commentCount} {commentCount === 1 ? 'comment' : 'comments'}
+                            </Text>
+                        </Pressable>
         
                         <Pressable onPress={handleAddComment}>
                             <Text style={styles.bottomButton}>Add Comment</Text>
                         </Pressable>
                     </Row>
-                    {expanded && <ImageComments key={commentRefreshToken} refId={image.id} />}
+                    {expanded && (
+                        <ImageComments
+                            key={commentRefreshToken}
+                            refId={image.id}
+                            onCommentDeleted={() => {
+                                refreshCommentCount()
+                                setCommentRefreshToken((prev) => prev + 1)
+                                if (commentCount === 1) setExpanded(false)
+                            }}                          
+                        />                    
+                    )}
                 </Column>
 			</View>
 		</View>
@@ -177,20 +185,13 @@ const FullScreenImage = ({
 
 const styles = StyleSheet.create({
     fullscreenContainer: {
-        // flex: 1,
-        // position: 'relative',
         backgroundColor: '#000',
     },
     imageContainer: {
         flex: 1,
-        // position: 'absolute',
-        // top: 0, left: 0, right: 0, bottom: 0,
-        // zIndex: 10,
         position: 'relative',
-        // backgroundColor: 'pink',
     },
     header: {
-        // paddingVertical: Size.S,
         position: 'absolute',
         top: 0,
         left: 0,
@@ -208,16 +209,11 @@ const styles = StyleSheet.create({
         bottom: 0,
         left: 0,
         right: 0,
-        // height: 50,
         zIndex: 10,
         backgroundColor: 'rgba(0,0,0,0.4)',
         maxHeight: 200,
-        // flexDirection: 'row',
-        // alignItems: 'center',
-        // justifyContent: 'space-between',
     },
     comments: {
-        // flex: 1,
         backgroundColor: 'yellow',
     },
     bottomButton: {

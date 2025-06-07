@@ -25,3 +25,8 @@ export const addComment = async (refId: string, refType: RefType, content: strin
 	const res = await api.post('/comments', { refId, refType, content })
 	return res.data
 }
+
+export const deleteComment = async (commentId: string) => {
+	const res = await api.delete(`/comments/${commentId}`)
+	return res.data
+}
