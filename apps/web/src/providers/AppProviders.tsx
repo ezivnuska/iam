@@ -4,13 +4,13 @@ import React, { ReactNode } from 'react'
 import { AuthProvider, ImageProvider, ModalProvider, PostsProvider } from '.'
 
 export const AppProviders = ({ children }: { children: ReactNode }) => (
-    <AuthProvider>
-        <PostsProvider>
-            <ImageProvider>
-                <ModalProvider>
+    <ModalProvider>
+        <AuthProvider>
+            <PostsProvider>
+                <ImageProvider>
                     {children}
-                </ModalProvider>
-            </ImageProvider>
-        </PostsProvider>
-    </AuthProvider>
+                </ImageProvider>
+            </PostsProvider>
+        </AuthProvider>
+    </ModalProvider>
 )

@@ -99,7 +99,7 @@ export const PostListItem: React.FC<Props> = ({
 				email={false}
 				phone={false}
 				truncate={50}
-				truncateChars="..."
+				truncateChars='...'
 			/>
 
 			{firstUrl && showPreview && <LinkPreview url={firstUrl} />}

@@ -52,7 +52,7 @@ export const ImageComments = ({ refId, onCommentDeleted }: ImageCommentsProps) =
 	if (loading) {
 		return (
 			<View style={{ padding: Size.M }}>
-				<ActivityIndicator size="small" />
+				<ActivityIndicator size='small' />
 			</View>
 		)
 	}
@@ -67,7 +67,7 @@ export const ImageComments = ({ refId, onCommentDeleted }: ImageCommentsProps) =
 					isAuthor={user?.id === item.author._id}
 					isDeleting={deletingIds.includes(item._id)}
 					onDelete={handleDelete}
-					textColor="#fff"
+					textColor='#fff'
 				/>
 			)}
 		/>

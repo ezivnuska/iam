@@ -48,7 +48,7 @@ export const ResetPasswordScreen = () => {
 			Alert.alert('Success', 'Your password has been reset', [
 				{
 					text: 'OK',
-					onPress: () => navigation.navigate('Signin'),
+					// onPress: () => navigation.navigate('Signin'),
 				},
 			])
 		} catch (err: any) {
@@ -64,7 +64,7 @@ export const ResetPasswordScreen = () => {
 
 			<TextInput
 				secureTextEntry
-				placeholder="New Password"
+				placeholder='New Password'
 				value={newPassword}
 				onChangeText={setNewPassword}
 				style={styles.input}
@@ -72,7 +72,7 @@ export const ResetPasswordScreen = () => {
 
 			<TextInput
 				secureTextEntry
-				placeholder="Confirm Password"
+				placeholder='Confirm Password'
 				value={confirmPassword}
 				onChangeText={setConfirmPassword}
 				style={styles.input}

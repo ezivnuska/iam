@@ -102,7 +102,7 @@ const FullScreenImage: React.FC<Props> = ({
 		showModal(
 			<AddCommentForm
 				id={image.id}
-				type="Image"
+				type='Image'
 				onCommentAdded={() => {
 					setExpanded(true)
 					refreshCommentCount()
@@ -123,16 +123,16 @@ const FullScreenImage: React.FC<Props> = ({
 			<View style={styles.imageContainer}>
 				{/* Header */}
 				<View style={[styles.header, { paddingHorizontal }]}>
-					<Row justify="flex-start" spacing={16}>
+					<Row justify='flex-start' spacing={16}>
 						{onDelete && (
 							<Pressable onPress={onDelete}>
-								<Ionicons name="trash-bin" size={28} color="#fff" />
+								<Ionicons name='trash-bin' size={28} color='#fff' />
 							</Pressable>
 						)}
 						{onSetAvatar && (
 							<Pressable onPress={onSetAvatar}>
 								<FontAwesome
-									name="user-circle-o"
+									name='user-circle-o'
 									size={24}
 									color={isAvatar ? '#3498db' : '#fff'}
 								/>
@@ -140,7 +140,7 @@ const FullScreenImage: React.FC<Props> = ({
 						)}
 					</Row>
 					<Pressable onPress={onClose}>
-						<Ionicons name="close-sharp" size={28} color="#fff" />
+						<Ionicons name='close-sharp' size={28} color='#fff' />
 					</Pressable>
 				</View>
 
@@ -148,7 +148,7 @@ const FullScreenImage: React.FC<Props> = ({
 				<View style={styles.imageWrapper}>
 					<AutoSizeImage
 						image={image}
-						resizeMode="contain"
+						resizeMode='contain'
 						style={{ width: displayWidth, height: displayHeight }}
 					/>
 				</View>
@@ -163,8 +163,8 @@ const FullScreenImage: React.FC<Props> = ({
 						onToggleLike={handleToggleLike}
 						onToggleComments={() => setExpanded(prev => !prev)}
 						onAddComment={handleAddComment}
-						textColor="#fff"
-						iconColor="#fff"
+						textColor='#fff'
+						iconColor='#fff'
 						expanded={expanded}
 					/>
 					{expanded && (

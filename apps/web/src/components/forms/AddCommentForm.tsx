@@ -73,16 +73,16 @@ export const AddCommentForm: React.FC<AddCommentFormProps> = ({
 
 	return (
 		<FormLayout>
-			<FormHeader title="Add Comment" onCancel={hideModal} />
+			<FormHeader title='Add Comment' onCancel={hideModal} />
 
 			<Controller
 				control={control}
-				name="content"
+				name='content'
 				render={({ field: { value, onChange, onBlur } }) => (
 					<TextInput
 						ref={contentRef}
-						placeholder="Add Comment..."
-						placeholderTextColor="#070"
+						placeholder='Add Comment...'
+						placeholderTextColor='#070'
 						value={value}
 						onChangeText={onChange}
 						onFocus={() => setFocusedField('content')}
@@ -90,8 +90,8 @@ export const AddCommentForm: React.FC<AddCommentFormProps> = ({
 							onBlur()
 							setFocusedField(null)
 						}}
-						autoCapitalize="sentences"
-						returnKeyType="done"
+						autoCapitalize='sentences'
+						returnKeyType='done'
 						onSubmitEditing={handleSubmit(onSubmit)}
 						style={[
 							styles.input,
@@ -109,7 +109,7 @@ export const AddCommentForm: React.FC<AddCommentFormProps> = ({
 			)}
 
 			<SubmitButton
-				label="Submit"
+				label='Submit'
 				onPress={handleSubmit(onSubmit)}
 				disabled={isSubmitting}
 			/>

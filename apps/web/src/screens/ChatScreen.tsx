@@ -49,7 +49,7 @@ export const ChatScreen = () => {
                     style={styles.container}
                     enableOnAndroid={true}
                     extraScrollHeight={100}
-                    keyboardShouldPersistTaps="handled"
+                    keyboardShouldPersistTaps='handled'
                 >
                     {messages.map((msg, idx) => (
                         <Text key={idx} style={styles.message}>

@@ -40,14 +40,14 @@ export const ForgotPasswordScreen = () => {
 
 			<Controller
 				control={control}
-				name="email"
+				name='email'
 				render={({ field: { value, onChange } }) => (
 					<TextInput
-						placeholder="Enter your email"
+						placeholder='Enter your email'
 						value={value}
 						onChangeText={onChange}
-						keyboardType="email-address"
-						autoCapitalize="none"
+						keyboardType='email-address'
+						autoCapitalize='none'
 						style={styles.input}
 					/>
 				)}
@@ -55,7 +55,7 @@ export const ForgotPasswordScreen = () => {
 			
 			{errors.email && <Text style={styles.error}>{errors.email.message}</Text>}
 
-			<Button title="Send Reset Link" onPress={handleSubmit(onSubmit)} disabled={isSubmitting} />
+			<Button title='Send Reset Link' onPress={handleSubmit(onSubmit)} disabled={isSubmitting} />
 		</View>
 	)
 }
