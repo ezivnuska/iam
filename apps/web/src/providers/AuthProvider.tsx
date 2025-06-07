@@ -72,7 +72,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
 		setUnauthorizedHandler(() => {
 			logout()
-			showModal(<SigninForm user={user} login={login} />)
+			showModal(<SigninForm />)
 		})
 	}, [logout])
 

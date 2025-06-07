@@ -9,14 +9,14 @@ import { SigninForm } from '@/components'
 type ProtectedScreenNavProp = StackNavigationProp<RootStackParamList, 'Protected'>
 
 export const ProtectedScreen = () => {
-	const { user, isAuthenticated, login } = useAuth()
+	const { user, isAuthenticated } = useAuth()
 	const { showModal } = useModal()
 
 	const navigation = useNavigation<ProtectedScreenNavProp>()
 
 	useEffect(() => {
 		if (!isAuthenticated) {
-			showModal(<SigninForm user={user ?? undefined} login={login} />)
+			showModal(<SigninForm />)
 		}
 	}, [isAuthenticated])
 

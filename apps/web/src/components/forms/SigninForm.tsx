@@ -9,7 +9,6 @@ import { Button, Column, FormHeader, FormLayout, SignupForm, SubmitButton } from
 import { useAuth, useModal } from '@/hooks'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { form as styles, shadows } from '@/styles'
-import { User } from '@iam/types'
 
 const schema = z.object({
 	email: z.string().email(),
@@ -18,15 +17,8 @@ const schema = z.object({
 
 type SigninFormProps = z.infer<typeof schema>
 
-type SigninFormComponentProps = {
-	user?: User | null
-	login?: (email: string, password: string) => Promise<void>
-}
-
-export const SigninForm = ({ user: userProp, login: loginProp }: SigninFormComponentProps) => {
-	const { login: loginFromContext, user: userFromContext } = useAuth()
-	const login = loginProp || loginFromContext
-	const user = userProp || userFromContext
+export const SigninForm = () => {
+    const { login, user } = useAuth()
     const { hideModal, showModal } = useModal()
     const { control, handleSubmit, formState: { errors, isSubmitting }, setError, trigger, setValue, getValues } = useForm<SigninFormProps>({
 		resolver: zodResolver(schema),

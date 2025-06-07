@@ -27,7 +27,7 @@ const Brand = ({ ...props }) => {
 }
 
 export const Header: React.FC<HeaderProps> = () => {
-    const { isAuthenticated, user, login } = useAuth()
+    const { isAuthenticated, user } = useAuth()
     const { showModal } = useModal()
     const navigation = useNavigation()
 
@@ -39,7 +39,7 @@ export const Header: React.FC<HeaderProps> = () => {
 
     const currentRoute = useNavigationState((state) => state.routes[state.index].name)
 
-    const showSigninModal = () => showModal(<SigninForm user={user ?? undefined} login={login} />)
+    const showSigninModal = () => showModal(<SigninForm />)
     const showSignupModal = () => showModal(<SignupForm />)
 
 	return (
