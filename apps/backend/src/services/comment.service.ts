@@ -12,12 +12,14 @@ export const createComment = async (
 	const toObjectId = (id: string | mongoose.Types.ObjectId) =>
 		typeof id === 'string' ? new mongoose.Types.ObjectId(id) : id
 	
-	return Comment.create({
+	const newComment = await Comment.create({
 		refId: toObjectId(refId),
 		refType,
 		author: toObjectId(userId),
 		content,
-	})	
+	})
+
+    return Comment.findById(newComment._id).populate('author', 'username avatar')
 }
 
 export const getCommentsForRef = async (

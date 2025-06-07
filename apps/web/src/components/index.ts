@@ -1,6 +1,7 @@
 // packages/ui/src/components/index.ts
 
 export * from './Button'
+export * from './CommentItem'
 export * from './ImageComments'
 export * from './ImageManagerHeader'
 export * from './Layout'
@@ -10,6 +11,7 @@ export * from './PostComments'
 export * from './PostList'
 export * from './PostListItem'
 export * from './forms'
+export * from './LikeCommentBar'
 export * from './LinkPreview'
 export * from './UserList'
 export * from './UserListItem'

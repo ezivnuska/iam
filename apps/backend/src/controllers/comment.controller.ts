@@ -15,9 +15,7 @@ export const addComment = async (req: Request, res: Response): Promise<void> => 
 			res.status(400).json({ message: 'Missing refId, refType, or content' })
 			return
 		}
-        console.log('Add comment payload:', { refId, refType, userId: req.user.id, content })
 		const comment = await commentService.createComment(refId, refType, req.user.id, content)
-        console.log('Comment created:', comment)
 		res.status(201).json(comment)
 	} catch (error) {
 		console.error('Error creating comment:', error)

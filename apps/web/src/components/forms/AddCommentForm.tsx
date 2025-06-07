@@ -5,8 +5,13 @@ import { TextInput, Text, Alert, TextInput as RNTextInput } from 'react-native'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { FormLayout, FormHeader, SubmitButton } from '@/components'
-import { useAuth, useModal, usePosts } from '@/hooks'
+
+import {
+	FormLayout,
+	FormHeader,
+	SubmitButton,
+} from '@/components'
+import { useAuth, useModal } from '@/hooks'
 import { addComment } from '@services'
 import { form as styles, shadows } from '@/styles'
 
@@ -14,102 +19,97 @@ const schema = z.object({
 	content: z.string().min(1, 'Comment cannot be empty'),
 })
 
-type AddCommentFormProps = z.infer<typeof schema>
+type FormData = z.infer<typeof schema>
 type CommentParentType = 'Post' | 'Image'
 
-export const AddCommentForm = ({
-	id,
-    type,
-	onCommentAdded,
-    onRefresh,
-}: {
+type AddCommentFormProps = {
 	id: string
-    type: CommentParentType
-	onCommentAdded?: () => void
-    onRefresh?: () => void
+	type: CommentParentType
+	onCommentAdded?: (newComment: Comment) => void
+}
+
+export const AddCommentForm: React.FC<AddCommentFormProps> = ({
+	id,
+	type,
+	onCommentAdded,
 }) => {
 	const { user } = useAuth()
 	const { hideModal } = useModal()
-	// const { refreshPosts } = usePosts()
 
 	const {
 		control,
 		handleSubmit,
 		formState: { errors, isSubmitting },
 		trigger,
-		getValues,
-	} = useForm<AddCommentFormProps>({
+	} = useForm<FormData>({
 		resolver: zodResolver(schema),
 		mode: 'onBlur',
-		defaultValues: {
-			content: '',
-		},
+		defaultValues: { content: '' },
 	})
 
-	const [focused, setFocused] = useState<string | null>(null)
-	const contentInputRef = useRef<RNTextInput>(null)
+	const [focusedField, setFocusedField] = useState<string | null>(null)
+	const contentRef = useRef<RNTextInput>(null)
 
 	useEffect(() => {
-		const validateOnMount = async () => {
-			const isValid = await trigger()
-			if (!isValid) contentInputRef.current?.focus()
-		}
-		validateOnMount()
+		trigger().then((isValid) => {
+			if (!isValid) contentRef.current?.focus()
+		})
 	}, [])
 
-	const onSubmit = async (data: AddCommentFormProps) => {
+	const onSubmit = async ({ content }: FormData) => {
 		if (!user?.id) {
 			Alert.alert('Error', 'User ID is missing')
 			return
 		}
 
 		try {
-			await addComment(id, type, data.content)
-			onCommentAdded?.()
-			if (onRefresh) onRefresh()
+			const newComment = await addComment(id, type, content)
+			onCommentAdded?.(newComment)
 			hideModal()
 		} catch (err: any) {
 			Alert.alert(`Failed to add comment to ${type}`, err?.message || 'Unknown error')
 		}
 	}
 
-	const isFocused = (name: string) => name === focused
-
 	return (
 		<FormLayout>
-			<FormHeader title='Add Comment' onCancel={hideModal} />
+			<FormHeader title="Add Comment" onCancel={hideModal} />
+
 			<Controller
 				control={control}
-				name='content'
+				name="content"
 				render={({ field: { value, onChange, onBlur } }) => (
 					<TextInput
-						ref={contentInputRef}
-						placeholder='Add Comment...'
-						placeholderTextColor='#070'
+						ref={contentRef}
+						placeholder="Add Comment..."
+						placeholderTextColor="#070"
 						value={value}
 						onChangeText={onChange}
-						onFocus={() => setFocused('content')}
+						onFocus={() => setFocusedField('content')}
 						onBlur={() => {
 							onBlur()
-							setFocused(null)
+							setFocusedField(null)
 						}}
-						autoCapitalize='sentences'
-						returnKeyType='done'
+						autoCapitalize="sentences"
+						returnKeyType="done"
 						onSubmitEditing={handleSubmit(onSubmit)}
 						style={[
 							styles.input,
 							styles.textArea,
 							shadows.input,
-							isFocused('content') && styles.inputFocused,
+							focusedField === 'content' && styles.inputFocused,
 						]}
 						multiline
 					/>
 				)}
 			/>
-			{errors.content && <Text style={styles.error}>{errors.content.message}</Text>}
+
+			{errors.content && (
+				<Text style={styles.error}>{errors.content.message}</Text>
+			)}
 
 			<SubmitButton
-				label='Submit'
+				label="Submit"
 				onPress={handleSubmit(onSubmit)}
 				disabled={isSubmitting}
 			/>
