@@ -1,19 +1,13 @@
-import React, { useEffect, useState, useCallback, createContext } from 'react'
-import {
-	saveToken,
-	clearToken,
-	signinRequest,
-	logoutRequest,
-	setAuthHeader,
-	clearAuthHeader,
-	trySigninFromStoredToken,
-	setUnauthorizedHandler,
-} from '@services'
-import { getProfile } from '@services'
+import React, { useEffect, useState } from 'react'
+import { saveToken, clearToken, signinRequest, logoutRequest, setAuthHeader, clearAuthHeader, getProfile } from '@services'
+import { trySigninFromStoredToken, setUnauthorizedHandler } from '@services'
 import { navigate } from '../navigation'
-import { useModal } from '@/hooks'
-import { SigninForm } from '@/components'
+import { createContext } from 'react'
 import type { User } from '@iam/types'
+
+setUnauthorizedHandler(() => {
+	window.location.href = '/'
+})
 
 export type AuthContextType = {
 	isAuthenticated: boolean
@@ -28,7 +22,7 @@ export const AuthContext = createContext<AuthContextType>({
 	user: null,
 	login: async () => {},
 	logout: async () => {},
-	setUser: () => {},
+    setUser: async () => {},
 })
 
 type AuthProviderProps = { children: React.ReactNode }
@@ -36,46 +30,39 @@ type AuthProviderProps = { children: React.ReactNode }
 export const AuthProvider = ({ children }: AuthProviderProps) => {
 	const [user, setUser] = useState<User | null>(null)
 	const [isAuthenticated, setIsAuthenticated] = useState(false)
-
-	const { showModal } = useModal()
-
+  
 	const login = async (email: string, password: string) => {
-		const { accessToken, user: userProfile } = await signinRequest(email, password)
-		await saveToken(accessToken)
-		setAuthHeader(accessToken)
-		setUser(userProfile)
-		setIsAuthenticated(true)
-		navigate('Home')
-	}
-
-	const logout = useCallback(async () => {
-		await logoutRequest()
-		await clearToken()
-		clearAuthHeader()
-		setIsAuthenticated(false)
-		setUser(null)
-		navigate('Home')
-	}, [])
-
-	useEffect(() => {
-		const initialize = async () => {
-			const profile = await trySigninFromStoredToken()
-			if (profile) {
-				setUser(profile)
-				setIsAuthenticated(true)
-			} else {
-				navigate('Home')
-			}
-		}
-
-		initialize()
-
-		setUnauthorizedHandler(() => {
-			logout()
-			showModal(<SigninForm />)
-		})
-	}, [logout])
-
+        const { accessToken, user: userProfile } = await signinRequest(email, password)
+        await saveToken(accessToken)
+        setAuthHeader(accessToken)
+        setUser(userProfile)
+        setIsAuthenticated(true)
+        navigate('Home')
+    }
+  
+	const logout = async () => {
+        await logoutRequest()
+        await clearToken()
+        clearAuthHeader()
+        setIsAuthenticated(false)
+        setUser(null)
+        navigate('Home')
+    }
+    
+    useEffect(() => {
+        const initialize = async () => {
+            const profile = await trySigninFromStoredToken()
+            if (profile) {
+                setUser(profile)
+                setIsAuthenticated(true)
+            } else {
+                navigate('Home')
+            }
+        }
+    
+        initialize()
+    }, [])
+  
 	return (
 		<AuthContext.Provider value={{ isAuthenticated, user, login, logout, setUser }}>
 			{children}
