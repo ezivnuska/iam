@@ -14,35 +14,44 @@ type ModalContent = ReactNode | null
 export type ModalContextType = {
 	showModal: (content: ModalContent) => void
 	hideModal: () => void
-	content: ModalContent
+	hideAllModals: () => void
+	modalStack: ModalContent[]
 }
 
 export const ModalContext = createContext<ModalContextType | undefined>(undefined)
 
 export const ModalProvider = ({ children }: { children: ReactNode }) => {
-	const [content, setContent] = useState<ModalContent>(null)
+	const [modalStack, setModalStack] = useState<ModalContent[]>([])
 
 	const showModal = useCallback((modalContent: ModalContent) => {
-		setContent(modalContent)
+		setModalStack(prev => [...prev, modalContent])
 	}, [])
 
 	const hideModal = useCallback(() => {
-		setContent(null)
+		setModalStack(prev => prev.slice(0, -1))
 	}, [])
 
+	const hideAllModals = useCallback(() => {
+		setModalStack([])
+	}, [])
+
+	const topModal = modalStack[modalStack.length - 1]
+
 	return (
-		<ModalContext.Provider value={{ showModal, hideModal, content }}>
+		<ModalContext.Provider
+			value={{ showModal, hideModal, hideAllModals, modalStack }}
+		>
 			{children}
-			{content && (
-                <View style={styles.modalOverlay}>
-                    <Pressable style={styles.backdrop} onPress={hideModal} />
-                    {typeof content === 'string' ? (
-                        <View style={styles.modalContent}>{content}</View>
-                    ) : (
-                        content
-                    )}
-                </View>
-            )}
+			{topModal && (
+				<View style={styles.modalOverlay}>
+					<Pressable style={styles.backdrop} onPress={hideModal} />
+					{typeof topModal === 'string' ? (
+						<View style={styles.modalContent}>{topModal}</View>
+					) : (
+						topModal
+					)}
+				</View>
+			)}
 		</ModalContext.Provider>
 	)
 }
@@ -58,7 +67,7 @@ export const useModalContext = () => {
 const styles = StyleSheet.create({
 	modalOverlay: {
 		...(Platform.OS === 'web'
-			? { position: 'fixed' as 'absolute' } // hack to suppress TS error
+			? { position: 'fixed' as 'absolute' }
 			: { position: 'absolute' }),
 		top: 0,
 		left: 0,
@@ -77,7 +86,6 @@ const styles = StyleSheet.create({
 		borderRadius: 8,
 		padding: 24,
 		minWidth: 300,
-		// maxWidth: '80%',
 		shadowColor: '#000',
 		shadowOpacity: 0.2,
 		shadowOffset: { width: 0, height: 2 },

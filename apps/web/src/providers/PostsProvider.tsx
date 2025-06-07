@@ -72,16 +72,16 @@ export const PostsProvider = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<PostsContext.Provider
 			value={{
-				posts,
-				loading,
-				error,
-				refreshPosts,
-				addPost,
-				setPosts,
-				deletePost,
 				commentCounts,
+				error,
+				loading,
+				posts,
+				addPost,
+				deletePost,
 				refreshCommentCounts,
+				refreshPosts,
                 setCommentCounts,
+				setPosts,
 			}}
 		>
 			{children}
