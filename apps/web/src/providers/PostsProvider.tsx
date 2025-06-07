@@ -14,6 +14,7 @@ export type PostsContextType = {
     setPosts: (posts: Post[]) => void
 	deletePost: (id: string) => Promise<void>
 	refreshCommentCounts: (posts?: Post[]) => Promise<void>
+    setCommentCounts: React.Dispatch<React.SetStateAction<Record<string, number>>>
 }
 
 export const PostsContext = createContext<PostsContextType | undefined>(undefined)
@@ -80,6 +81,7 @@ export const PostsProvider = ({ children }: { children: React.ReactNode }) => {
 				deletePost,
 				commentCounts,
 				refreshCommentCounts,
+                setCommentCounts,
 			}}
 		>
 			{children}

@@ -16,7 +16,7 @@ export const PostList = () => {
     const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set())
 
 	const { isAuthenticated, user } = useAuth()
-    const { commentCounts } = usePosts()
+    const { commentCounts, setCommentCounts } = usePosts()
 	const { showModal } = useModal()
 	const { posts, deletePost, refreshPosts } = usePosts()
 
@@ -74,11 +74,17 @@ export const PostList = () => {
 	  
 		return (
 			<PostListItem
-				post={item}
-				firstUrl={firstUrl}
-				showPreview={shouldRender(item._id)}
-				commentCount={commentCounts[item._id] ?? 0}
-			/>
+                post={item}
+                firstUrl={firstUrl}
+                showPreview={shouldRender(item._id)}
+                commentCount={commentCounts[item._id] ?? 0}
+                onCommentDeleted={() => {
+                    setCommentCounts(prev => ({
+                        ...prev,
+                        [item._id]: Math.max((prev[item._id] ?? 1) - 1, 0)
+                    }))
+                }}
+            />
 		)
 	}, [shouldRender, commentCounts])
 

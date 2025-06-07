@@ -17,6 +17,7 @@ type Props = {
 	showPreview: boolean
 	commentCount: number
 	onPostDeleted?: (postId: string) => void
+	onCommentDeleted?: () => void
 }
 
 export const PostListItem: React.FC<Props> = ({
@@ -25,6 +26,7 @@ export const PostListItem: React.FC<Props> = ({
 	showPreview,
 	commentCount,
 	onPostDeleted,
+	onCommentDeleted,
 }) => {
 	const { user, isAuthenticated } = useAuth()
 	const { showModal } = useModal()
@@ -137,7 +139,13 @@ export const PostListItem: React.FC<Props> = ({
 				)}
 			</Row>
 
-			{expanded && <PostComments refId={post._id} />}
+			{expanded && (
+				<PostComments
+					refId={post._id}
+					onCommentDeleted={onCommentDeleted}
+				/>
+			)}
+
 		</Column>
 	)
 }
