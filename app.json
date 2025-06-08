@@ -1,20 +1,25 @@
 {
-    "expo": {
-        "plugins": [
-            [
-                "expo-image-picker",
-                {
-                     "photosPermission": "Allow $(PRODUCT_NAME) to access your photo library"
-                }
-            ],
-            [
-                "expo-camera",
-                {
-                    "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
-                    "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
-                    "recordAudioAndroid": true
-                }
-            ]
-        ]
-    }
+	"expo": {
+		"name": "iam",
+		"slug": "iam",
+		"version": "1.0.0",
+		"sdkVersion": "52.0.46",
+		"plugins": [
+			[
+				"expo-image-picker",
+				{
+					"photosPermission": "Allow $(PRODUCT_NAME) to access your photo library"
+				}
+			],
+			[
+				"expo-camera",
+				{
+					"cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+					"microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
+					"recordAudioAndroid": true
+				}
+			]
+		]
+	}
 }
+  

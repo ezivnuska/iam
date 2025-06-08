@@ -59,7 +59,7 @@ const includedModules = (filepath) => {
 		'expo',
 		'expo-camera',
 		'expo-image',
-        'expo-permissions',
+        '@react-native/assets-registry',
 	]
 
 	const matchesSources = sourcesToCompile.some(src => filepath.startsWith(src))
@@ -149,6 +149,9 @@ module.exports = {
 	plugins,
 	resolve: {
 		alias: {
+            'react': path.resolve(__dirname, '../../node_modules/react'),
+            'react-dom': path.resolve(__dirname, '../../node_modules/react-dom'),
+            'react/jsx-runtime': path.resolve(__dirname, '../../node_modules/react/jsx-runtime'),
 			'react-native$': 'react-native-web',
 			'react-native-vector-icons': '@expo/vector-icons',
 			'@auth': path.resolve(__dirname, '../../packages/auth/src'),
