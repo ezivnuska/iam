@@ -7,7 +7,6 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { AppProviders } from './providers'
 import { AppNavigator, navigationRef } from './navigation'
-import * as Linking from 'expo-linking'
 
 const linking = {
     prefixes: ['http://localhost:3000', 'https://iameric.me'],

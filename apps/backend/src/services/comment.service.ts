@@ -51,7 +51,6 @@ export const getCommentSummaryForRef = async (
 
 export const deleteCommentById = async (commentId: string, userId: string): Promise<boolean> => {
 	const comment = await Comment.findById(commentId)
-    console.log('deleting comment', comment)
 	if (!comment || comment.author.toString() !== userId.toString()) {
 		return false
 	}

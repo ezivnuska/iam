@@ -10,6 +10,7 @@ import {
     ResetPasswordScreen,
     PrivacyPolicyScreen,
     ProfileScreen,
+    SigninScreen,
     UserListScreen,
 } from '../screens'
 import type { RootStackParamList } from '@iam/types'
@@ -24,9 +25,10 @@ export const AppNavigator = () => {
             <Stack.Screen name='ForgotPassword' component={ForgotPasswordScreen} />
             <Stack.Screen name='Home' component={HomeScreen} />
             <Stack.Screen name='ResetPassword' component={ResetPasswordScreen} />
-            <Stack.Screen name='UserList' component={UserListScreen} />
             <Stack.Screen name='PrivacyPolicy' component={PrivacyPolicyScreen} />
             <Stack.Screen name='Profile' component={ProfileScreen} />
+            <Stack.Screen name='Signin' component={SigninScreen} />
+            <Stack.Screen name='UserList' component={UserListScreen} />
         </Stack.Navigator>
     )
 }

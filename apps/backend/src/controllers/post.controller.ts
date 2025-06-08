@@ -274,7 +274,6 @@ async function fetchOEmbed(url: string) {
         if (!accessToken || !appSecret) throw new Error('App credentials missing')
 
         const appSecretProof = getAppSecretProof(accessToken, appSecret)
-        console.log('appSecretProof', appSecretProof)
         oembedUrl += `&access_token=${accessToken}&appsecret_proof=${appSecretProof}`
     }
     console.log('oembedUrl', oembedUrl)
@@ -320,9 +319,7 @@ export const scrapePost = async (req: Request, res: Response) => {
 	}
 
     const normalizedUrl = normalizeUrl(url)
-    console.log('normalizedUrl', normalizedUrl)
     try {
-        // const isYouTube = /youtube\.com|youtu\.be/.test(normalizedUrl)
         let metadata = findOEmbedProvider(normalizedUrl) ? await fetchOEmbed(normalizedUrl) : null
 
         if (!metadata?.title) {

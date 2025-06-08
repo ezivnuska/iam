@@ -8,7 +8,7 @@ export const selectImage = async () => {
     const permission = await ImagePicker.getMediaLibraryPermissionsAsync()
     
     if (!permission.granted) {
-        alert('Permission denied.')
+        console.log('Permission denied.')
         return null
     }
     
@@ -18,13 +18,12 @@ export const selectImage = async () => {
 	})
     
 	if (result.canceled) {
-        alert('You did not select any image.')
+        console.log('You did not select any image.')
         return
     }
 
 	const asset = result.assets[0]
 	const uri = asset.uri
-    alert(uri)
     
     if (Platform.OS === 'web') {
         const isBase64 = uri.startsWith('data:image/')
@@ -62,39 +61,4 @@ export const selectImage = async () => {
 			filename: asset.fileName || `image-${Date.now()}.jpg`,
 		},
 	}
-    
-	// if (Platform.OS === 'web') {
-	// 	const res = await fetch(uri)
-    //     alert(res)
-	// 	const blob = await res.blob()
-	// 	const exif = await extractExif(blob)
-	// 	const image = await loadImage(uri)
-
-	// 	const { width, height, filename } = await handleImageData(image, exif)
-
-	// 	return {
-	// 		uri,
-	// 		imageData: {
-	// 			uri,
-	// 			width,
-	// 			height,
-	// 			filename: filename || `image-${Date.now()}.jpg`,
-	// 		},
-	// 	}
-	// } else {
-	// 	// Native — skip EXIF/canvas
-	// 	const image = {
-	// 		uri,
-	// 		height: asset.height,
-	// 		width: asset.width,
-	// 	}
-
-	// 	return {
-	// 		uri,
-	// 		imageData: {
-	// 			...image,
-	// 			filename: asset.fileName || `image-${Date.now()}.jpg`,
-	// 		},
-	// 	}
-	// }
 }

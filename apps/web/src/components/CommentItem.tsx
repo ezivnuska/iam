@@ -15,7 +15,7 @@ type CommentItemProps = {
 	onDelete: (id: string) => void
 	textColor?: string
 	authorTextWeight?: string | number
-	paddingBottom?: number
+	paddingVertical?: number
 }
 
 export const CommentItem = ({
@@ -25,7 +25,7 @@ export const CommentItem = ({
 	onDelete,
 	textColor = '#000',
 	authorTextWeight = '700',
-	paddingBottom = Size.S,
+	paddingVertical = Size.S,
 }: CommentItemProps) => {
 	return (
 		<Row
@@ -33,7 +33,7 @@ export const CommentItem = ({
 			paddingHorizontal={Size.M}
 			align='flex-start'
             justify='flex-start'
-            paddingVertical={Size.XS}
+            paddingVertical={paddingVertical}
 			style={{ opacity: isDeleting ? 0.5 : 1 }}
 		>
             {comment.author.avatar ? (

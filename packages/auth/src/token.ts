@@ -6,7 +6,11 @@ import type { TokenPayload } from './types'
 const JWT_SECRET = process.env.JWT_SECRET ?? 'insecure-dev-secret'
 
 const accessOptions: SignOptions = {
-	expiresIn: '30m',
+	expiresIn: '2h',
+    // or
+	// expiresIn: '30m'
+	// expiresIn: '12h'
+	// expiresIn: '1d'
 }
 
 const refreshOptions: SignOptions = {

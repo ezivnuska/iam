@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { saveToken, clearToken, signinRequest, logoutRequest, setAuthHeader, clearAuthHeader, getProfile } from '@services'
 import { trySigninFromStoredToken, setUnauthorizedHandler } from '@services'
-import { navigate } from '../navigation'
+import { navigate, navigationRef } from '../navigation'
 import { createContext } from 'react'
 import type { User } from '@iam/types'
 
@@ -48,8 +48,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setUser(null)
         navigate('Home')
     }
-    
+
     useEffect(() => {
+        const handler = () => navigationRef.navigate('Signin')
+        setUnauthorizedHandler(handler)
         const initialize = async () => {
             const profile = await trySigninFromStoredToken()
             if (profile) {
@@ -61,6 +63,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         }
     
         initialize()
+
+        return () => {
+            setUnauthorizedHandler(() => {})
+        }
     }, [])
   
 	return (

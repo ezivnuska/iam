@@ -4,6 +4,7 @@ import axios from 'axios'
 import { apiBaseUrl } from '../constants'
 import { getToken, saveToken, clearToken } from '../'
 import { logoutRequest, refreshTokenRequest } from '.'
+// import jwt_decode from 'jwt-decode'
 
 let onUnauthorized: (() => void) | null = null
 
@@ -42,7 +43,32 @@ function onTokenRefreshed(token: string) {
 // Attach token automatically before every request
 api.interceptors.request.use(
 	async (config) => {
-		const token = await getToken()
+		let token = await getToken()
+
+        // if (token) {
+		// 	const { exp } = jwt_decode<{ exp: number }>(token)
+		// 	const isExpiringSoon = exp * 1000 - Date.now() < 5 * 60 * 1000 // < 5 mins
+
+		// 	if (isExpiringSoon && !isRefreshing) {
+		// 		isRefreshing = true
+		// 		try {
+		// 			const { accessToken } = await refreshTokenRequest()
+		// 			await saveToken(accessToken)
+		// 			setAuthHeader(accessToken)
+		// 			onTokenRefreshed(accessToken)
+		// 			token = accessToken
+		// 		} catch (err) {
+		// 			clearAuthHeader()
+		// 			await clearToken()
+		// 			await logoutRequest()
+		// 			if (onUnauthorized) onUnauthorized()
+		// 			return Promise.reject(err)
+		// 		} finally {
+		// 			isRefreshing = false
+		// 		}
+		// 	}
+		// }
+
 		if (token) {
 			config.headers = config.headers || {}
 			config.headers['Authorization'] = `Bearer ${token}`
