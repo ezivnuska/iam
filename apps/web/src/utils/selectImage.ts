@@ -22,7 +22,7 @@ export const selectImage = async () => {
         return
     }
     
-    const hiddenResult = result && Object.values(result) || 'none'
+    const hiddenResult = result && Object.keys(result) || 'none'
     alert(`${Object.values(hiddenResult)}`)
 
 	const asset = result.assets[0]
