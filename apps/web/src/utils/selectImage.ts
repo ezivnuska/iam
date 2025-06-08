@@ -11,7 +11,7 @@ export const selectImage = async () => {
         alert('Permission denied.')
         return null
     }
-    console.log('launching image library')
+    alert('launching image library')
 	const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ['images'],
 		quality: 1,
@@ -22,7 +22,7 @@ export const selectImage = async () => {
         return
     }
 
-    console.log('result from image library', result)
+    alert(Object.values(result))
 
 	const asset = result.assets[0]
 	const uri = asset.uri
