@@ -21,8 +21,9 @@ export const selectImage = async () => {
         alert('You did not select any image.')
         return
     }
-
-    alert(Object.values(result))
+    
+    const hiddenResult = result && Object.values(result) || 'none'
+    alert(`${Object.values(hiddenResult)}`)
 
 	const asset = result.assets[0]
 	const uri = asset.uri
