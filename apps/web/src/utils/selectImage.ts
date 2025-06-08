@@ -6,7 +6,7 @@ import { extractExif, loadImage, handleImageData } from './image'
 
 export const selectImage = async () => {
     const permission = await ImagePicker.getMediaLibraryPermissionsAsync()
-    console.log('permission', permission)
+    alert(Object.values(permission))
     if (!permission.granted) {
         alert('Permission denied.')
         return null

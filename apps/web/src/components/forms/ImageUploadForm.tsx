@@ -73,9 +73,12 @@ export const ImageUploadForm: React.FC<ImageUploaderProps> = ({ onUploaded }) =>
 
 	const handlePick = async () => {
 		try {
-			const selected: { uri: string; imageData: { uri: string; filename: string; width?: number; height?: number } } | null = await selectImage()
-			if (!selected) return
-			setUpload(selected)
+			// const selected: { uri: string; imageData: { uri: string; filename: string; width?: number; height?: number } } | null = await selectImage()
+			// if (!selected) return
+			// setUpload(selected)
+            const selected = (await selectImage()) ?? null
+            if (!selected) return
+            setUpload(selected)
 		} catch (err) {
 			console.error(err)
 			setError('Image not selected. Please try again.')
