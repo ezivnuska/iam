@@ -1,6 +1,6 @@
 // apps/web/src/utils/image/handleImageData.ts
 
-import { getImageData } from '.'
+import { getImageData } from './getImageData'
 
 export async function handleImageData(
 	image: HTMLImageElement,
@@ -12,11 +12,12 @@ export async function handleImageData(
 }> {
 	const orientation = exif.Orientation || 1
 
-	const imageData = await getImageData(image, orientation, 600, 'webp')
+	const { width, height } = getImageData(image, orientation, 600, 'webp')
 	const filename = `image-${Date.now()}.webp`
 
 	return {
-		...imageData,
+		width,
+		height,
 		filename,
 	}
 }

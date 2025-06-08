@@ -2,7 +2,7 @@
 
 import { Platform } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
-import { extractExif, loadImage, handleImageData } from './image'
+import { extractExif, getSafeImageData } from './image'
 
 export const selectImage = async () => {
     const permission = await ImagePicker.getMediaLibraryPermissionsAsync()
@@ -28,26 +28,19 @@ export const selectImage = async () => {
     
     if (Platform.OS === 'web') {
         const isBase64 = uri.startsWith('data:image/')
-        
-        let width, height
-        let filename = `image-${Date.now()}.jpg`
+        let exif = {}
     
-        if (isBase64) {
-            const image = await loadImage(uri)
-            const { width: w, height: h } = image
-            width = w
-            height = h
-        } else {
-            const res = await fetch(uri)
-            const blob = await res.blob()
-            const exif = await extractExif(blob)
-            const image = await loadImage(uri)
-            const data = await handleImageData(image, exif)
-    
-            width = data.width
-            height = data.height
-            filename = data.filename || filename
+        if (!isBase64) {
+            try {
+                const res = await fetch(uri)
+                const blob = await res.blob()
+                exif = await extractExif(blob)
+            } catch (e) {
+                console.warn('EXIF extraction failed:', e)
+            }
         }
+    
+        const { width, height, filename } = await getSafeImageData(uri, exif)
     
         return {
             uri,
@@ -59,6 +52,16 @@ export const selectImage = async () => {
             },
         }
     }
+
+    return {
+		uri,
+		imageData: {
+			uri,
+			width: asset.width ?? 800,
+			height: asset.height ?? 600,
+			filename: asset.fileName || `image-${Date.now()}.jpg`,
+		},
+	}
     
 	// if (Platform.OS === 'web') {
 	// 	const res = await fetch(uri)
