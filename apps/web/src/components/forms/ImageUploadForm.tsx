@@ -2,11 +2,13 @@
 
 import React, { useState } from 'react'
 import { Dimensions, Image, Platform, StyleSheet, Text } from 'react-native'
-import { Button, Column, FormHeader, FormLayout, NativeCamera, Row, SubmitButton, WebCamera } from '../'
+import { Column, FormHeader, FormLayout, IconButton, NativeCamera, Row, SubmitButton, WebCamera } from '../'
 import { uploadImage } from '@services'
 import { selectImage } from '@/utils'
 import { useModal, useResponsiveImageSize } from '@/hooks'
 import type { UploadedImage } from '@iam/types'
+import FontAwesome from '@expo/vector-icons/FontAwesome'
+import Ionicons from '@expo/vector-icons/Ionicons'
 
 type ImageDataType = {
 	uri: string
@@ -132,9 +134,19 @@ export const ImageUploadForm: React.FC<ImageUploaderProps> = ({ onUploaded }) =>
                             resizeMode='contain'
                         />
                     )}
-                    <Row spacing={10} style={styles.controls}>
-                        <Button label='Library' onPress={handlePick} style={styles.button} />
-                        <Button label='Camera' onPress={() => setUseCamera(true)} style={styles.button} />
+                    <Row spacing={30} style={styles.controls}>
+                        <IconButton
+                            label='Library'
+                            onPress={handlePick}
+                            icon={<Ionicons name='images' size={24} color='#000' />}
+                            showLabel={upload ? false : true}
+                        />
+                        <IconButton
+                            label='Camera'
+                            onPress={() => setUseCamera(true)}
+                            icon={<FontAwesome name='camera-retro' size={24} color='#000' />}
+                            showLabel={upload ? false : true}
+                        />
                         {upload && (
                             <SubmitButton
                                 label='Upload'
