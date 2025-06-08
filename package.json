@@ -30,6 +30,7 @@
         "@types/node": "^22.14.1",
         "@types/nodemailer": "^6.4.17",
         "@types/react": "19.1.2",
+        "@types/react-dom": "19.1.6",
         "body-parser": "^1.20.3",
         "buffer": "^6.0.3",
         "dotenv": "^16.5.0",
@@ -40,7 +41,7 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.27.0",
-        "@gorhom/bottom-sheet": "^5.1.2",
+        "@expo/vector-icons": "^14.1.0",
         "@hookform/resolvers": "^5.0.1",
         "@react-native-async-storage/async-storage": "1.23.1",
         "@react-navigation/core": "7.8.5",
@@ -52,7 +53,8 @@
         "react-dom": "^19.1.0",
         "react-hook-form": "^7.55.0",
         "react-native": "^0.79.1",
-        "react-native-web": "^0.20.0",
+        "react-native-vector-icons": "^10.2.0",
+        "react-native-web": "^0.19.13",
         "zod": "^3.24.3"
     }
 }
