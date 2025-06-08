@@ -16,7 +16,7 @@ module.exports = {
 			{
 				alias: {
 					'react-native': 'react-native-web',
-					'react-native-vector-icons': '@expo/vector-icons',
+					// 'react-native-vector-icons': '@expo/vector-icons',
 					'@': path.resolve(__dirname, './src'),
 					'@auth': path.resolve(__dirname, '../../packages/auth/src'),
 					'@services': path.resolve(__dirname, '../../packages/services/src'),

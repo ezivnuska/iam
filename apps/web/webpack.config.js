@@ -60,6 +60,7 @@ const includedModules = (filepath) => {
 		'expo-camera',
 		'expo-image',
         '@react-native/assets-registry',
+        '@expo/vector-icons',
 	]
 
 	const matchesSources = sourcesToCompile.some(src => filepath.startsWith(src))
@@ -153,7 +154,7 @@ module.exports = {
             'react-dom': path.resolve(__dirname, '../../node_modules/react-dom'),
             'react/jsx-runtime': path.resolve(__dirname, '../../node_modules/react/jsx-runtime'),
 			'react-native$': 'react-native-web',
-			'react-native-vector-icons': '@expo/vector-icons',
+			// 'react-native-vector-icons': '@expo/vector-icons',
 			'@auth': path.resolve(__dirname, '../../packages/auth/src'),
 			'@services': path.resolve(__dirname, '../../packages/services/src'),
 			'@iam/types': path.resolve(__dirname, '../../packages/types/src'),
