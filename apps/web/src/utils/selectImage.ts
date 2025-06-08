@@ -21,17 +21,14 @@ export const selectImage = async () => {
         alert('You did not select any image.')
         return
     }
-    
-    // const keys = result && Object.keys(result) || 'none'
-    alert(`${Object.values(Object.values(result.assets[0]))}`)
 
 	const asset = result.assets[0]
-    alert(Object.keys(asset))
-    alert(Object.values(asset))
 	const uri = asset.uri
+    alert(uri)
     
 	if (Platform.OS === 'web') {
 		const res = await fetch(uri)
+        alert(res)
 		const blob = await res.blob()
 		const exif = await extractExif(blob)
 		const image = await loadImage(uri)
