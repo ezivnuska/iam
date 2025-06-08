@@ -20,7 +20,7 @@ export const selectImage = async () => {
 
 	const asset = result.assets[0]
 	const uri = asset.uri
-
+    alert(Platform.OS)
 	if (Platform.OS === 'web') {
 		const res = await fetch(uri)
 		const blob = await res.blob()
