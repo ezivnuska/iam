@@ -5,11 +5,13 @@ import * as ImagePicker from 'expo-image-picker'
 import { extractExif, loadImage, handleImageData } from './image'
 
 export const selectImage = async () => {
-	const permission = await ImagePicker.requestMediaLibraryPermissionsAsync()
-	if (!permission.granted) {
-		alert('Permission denied.')
-		return null
-	}
+    if (Platform.OS !== 'web') {
+        const permission = await ImagePicker.requestMediaLibraryPermissionsAsync()
+        if (!permission.granted) {
+            alert('Permission denied.')
+            return null
+        }
+    }
 
 	const result = await ImagePicker.launchImageLibraryAsync({
 		mediaTypes: ['images'],
