@@ -6,12 +6,12 @@ import { extractExif, loadImage, handleImageData } from './image'
 
 export const selectImage = async () => {
     const permission = await ImagePicker.getMediaLibraryPermissionsAsync()
-    alert(Object.values(permission))
+    
     if (!permission.granted) {
         alert('Permission denied.')
         return null
     }
-    alert('launching image library')
+    
 	const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ['images'],
 		quality: 1,
@@ -22,10 +22,12 @@ export const selectImage = async () => {
         return
     }
     
-    const hiddenResult = result && Object.keys(result) || 'none'
-    alert(`${Object.values(hiddenResult)}`)
+    // const keys = result && Object.keys(result) || 'none'
+    alert(`${Object.values(Object.values(result.assets[0]))}`)
 
 	const asset = result.assets[0]
+    alert(Object.keys(asset))
+    alert(Object.values(asset))
 	const uri = asset.uri
     
 	if (Platform.OS === 'web') {
