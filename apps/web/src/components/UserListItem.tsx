@@ -6,6 +6,7 @@ import { Column, IconButton, ProfileImage, Row } from '@/components'
 import { useAuth } from '@/hooks'
 import { User, Bond } from '@iam/types'
 import { Size } from '@/styles'
+import { getAvatarPlaceholder } from '@/utils'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 type UserListItemProps = {
@@ -36,7 +37,7 @@ export const UserListItem = ({
 						<ProfileImage user={profile} size='md' />
 					) : (
 						<Image
-							source={{ uri: getPlaceholder(profile.username) }}
+							source={{ uri: getAvatarPlaceholder(profile.username) }}
 							style={styles.avatar}
 						/>
 					)}
@@ -73,9 +74,6 @@ export const UserListItem = ({
 		</Row>
 	)
 }
-
-const getPlaceholder = (name: string) =>
-	`https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`
 
 const styles = StyleSheet.create({
 	container: {

@@ -28,8 +28,12 @@ export const getCommentsForRef = async (
 ) => {
 	const refObjectId = new mongoose.Types.ObjectId(refId)
 	return Comment.find({ refId: refObjectId, refType })
-			.populate('author', 'username avatar')
-			.sort({ createdAt: -1 })
+        .populate({
+            path: 'author',
+            select: 'username avatar',
+            populate: { path: 'avatar', select: '_id filename variants username' },
+        })
+        .sort({ createdAt: -1 })
 }
 
 export const getCommentSummaryForRef = async (
