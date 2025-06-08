@@ -5,20 +5,24 @@ import * as ImagePicker from 'expo-image-picker'
 import { extractExif, loadImage, handleImageData } from './image'
 
 export const selectImage = async () => {
-    if (Platform.OS !== 'web') {
-        const permission = await ImagePicker.requestMediaLibraryPermissionsAsync()
-        if (!permission.granted) {
-            alert('Permission denied.')
-            return null
-        }
+    const permission = await ImagePicker.getMediaLibraryPermissionsAsync()
+    console.log('permission', permission)
+    if (!permission.granted) {
+        alert('Permission denied.')
+        return null
     }
-
+    console.log('launching image library')
 	const result = await ImagePicker.launchImageLibraryAsync({
-		mediaTypes: ['images'],
+        mediaTypes: ['images'],
 		quality: 1,
 	})
+    
+	if (result.canceled) {
+        alert('You did not select any image.')
+        return
+    }
 
-	if (result.canceled) return null
+    console.log('result from image library', result)
 
 	const asset = result.assets[0]
 	const uri = asset.uri
