@@ -2,9 +2,8 @@
 
 import axios from 'axios'
 import { apiBaseUrl } from '../constants'
-import { getToken, saveToken, clearToken } from '../'
+import { clearToken, getToken, isTokenExpiredOrExpiringSoon, saveToken } from '../'
 import { logoutRequest, refreshTokenRequest } from '.'
-// import jwt_decode from 'jwt-decode'
 
 let onUnauthorized: (() => void) | null = null
 
@@ -45,31 +44,37 @@ api.interceptors.request.use(
 	async (config) => {
 		let token = await getToken()
 
-        // if (token) {
-		// 	const { exp } = jwt_decode<{ exp: number }>(token)
-		// 	const isExpiringSoon = exp * 1000 - Date.now() < 5 * 60 * 1000 // < 5 mins
-
-		// 	if (isExpiringSoon && !isRefreshing) {
-		// 		isRefreshing = true
-		// 		try {
-		// 			const { accessToken } = await refreshTokenRequest()
-		// 			await saveToken(accessToken)
-		// 			setAuthHeader(accessToken)
-		// 			onTokenRefreshed(accessToken)
-		// 			token = accessToken
-		// 		} catch (err) {
-		// 			clearAuthHeader()
-		// 			await clearToken()
-		// 			await logoutRequest()
-		// 			if (onUnauthorized) onUnauthorized()
-		// 			return Promise.reject(err)
-		// 		} finally {
-		// 			isRefreshing = false
-		// 		}
-		// 	}
-		// }
-
 		if (token) {
+			if (isTokenExpiredOrExpiringSoon(token)) {
+				if (!isRefreshing) {
+					isRefreshing = true
+					try {
+						const { accessToken } = await refreshTokenRequest()
+						await saveToken(accessToken)
+						setAuthHeader(accessToken)
+						onTokenRefreshed(accessToken)
+						isRefreshing = false
+						token = accessToken
+					} catch (err) {
+						isRefreshing = false
+						refreshSubscribers = []
+						await clearToken()
+						clearAuthHeader()
+						await logoutRequest()
+						if (onUnauthorized) onUnauthorized()
+						return Promise.reject(err)
+					}
+				} else {
+					// Wait for ongoing refresh
+					await new Promise<void>((resolve, reject) => {
+						subscribeTokenRefresh((newToken) => {
+							token = newToken
+							resolve()
+						})
+					})
+				}
+			}
+
 			config.headers = config.headers || {}
 			config.headers['Authorization'] = `Bearer ${token}`
 		}

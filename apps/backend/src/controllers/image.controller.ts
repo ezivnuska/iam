@@ -81,7 +81,7 @@ export const deleteImageController = async (req: Request, res: Response): Promis
 			return
 		}
 
-        // 🧹 Delete all comments tied to this image (system-level permission)
+        // 🧹 Delete all comments tied to this image
 		await Comment.deleteMany({ refId: imageId, refType: 'Image' })
 
 		res.status(200).json({ message: 'Image and variants deleted successfully' })

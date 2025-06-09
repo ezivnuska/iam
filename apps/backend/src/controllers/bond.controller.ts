@@ -6,7 +6,7 @@ import { Types } from 'mongoose'
 
 export const createBond = async (req: Request, res: Response): Promise<void> => {
 	try {
-		const sender = req.user?.id // authenticated user
+		const sender = req.user?.id
 		const responder = req.body.responder
 
 		if (!sender || !responder) {

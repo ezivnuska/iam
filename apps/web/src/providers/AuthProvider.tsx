@@ -5,9 +5,9 @@ import { navigate, navigationRef } from '../navigation'
 import { createContext } from 'react'
 import type { User } from '@iam/types'
 
-setUnauthorizedHandler(() => {
-	window.location.href = '/'
-})
+// setUnauthorizedHandler(() => {
+// 	window.location.href = '/'
+// })
 
 export type AuthContextType = {
 	isAuthenticated: boolean
@@ -50,8 +50,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
 
     useEffect(() => {
-        const handler = () => navigationRef.navigate('Signin')
-        setUnauthorizedHandler(handler)
+        setUnauthorizedHandler(() => navigationRef.navigate('Signin'))
         const initialize = async () => {
             const profile = await trySigninFromStoredToken()
             if (profile) {
