@@ -7,8 +7,8 @@ export const requireAuth = (roles: TokenPayload['role'][] = []): RequestHandler 
 	return (req: Request, res: Response, next: NextFunction): void => {
 		const authHeader = req.headers.authorization
 
-		if (!authHeader || !authHeader.startsWith('Bearer ')) {
-			res.status(401).json({ message: 'Unauthorized' })
+		if (!authHeader?.startsWith('Bearer ')) {
+			res.status(401).json({ message: 'Unauthorized: Missing token' })
 			return
 		}
 
@@ -17,13 +17,17 @@ export const requireAuth = (roles: TokenPayload['role'][] = []): RequestHandler 
 		try {
 			const payload = verifyToken(token)
 
+			if (!payload?.id) {
+				res.status(401).json({ message: 'Unauthorized: Invalid token payload' })
+				return
+			}
+
 			if (roles.length && !roles.includes(payload.role)) {
 				res.status(403).json({ message: 'Forbidden: Access denied' })
 				return
 			}
 
 			req.user = payload
-
 			next()
 		} catch (err) {
 			res.status(401).json({ message: 'Invalid or expired token' })

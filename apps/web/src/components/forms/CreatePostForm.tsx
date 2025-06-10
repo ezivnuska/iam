@@ -2,6 +2,7 @@
 
 import React, { useRef, useState } from 'react'
 import {
+	Image,
 	Text,
 	TextInput,
 	ActivityIndicator,
@@ -11,19 +12,45 @@ import {
 import { useForm, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Button, FormLayout, FormHeader } from '@/components'
+import { Button, FormLayout, FormHeader, ImageUploader } from '@/components'
 import * as postService from '@services'
 import { useModal, usePosts } from '@/hooks'
 import { form as styles, shadows } from '@/styles'
+import type { UploadedImage } from '@iam/types'
 
 const schema = z.object({
-	content: z
-		.string()
-		.min(1, 'Post content is required')
-		.max(280, 'Post must be under 280 characters'),
+	content: z.string().min(1, 'Post content is required').max(280),
+	image: z
+		.custom<UploadedImage>()
+		.optional(),
 })
 
+// optional upgrade...
+// const uploadedImageSchema: z.ZodType<UploadedImage> = z.object({
+// 	id: z.string(),
+// 	url: z.string().url(),
+// 	filename: z.string(),
+// 	username: z.string(),
+// 	alt: z.string(),
+// 	createdAt: z.string(),
+// 	updatedAt: z.string(),
+// 	width: z.number(),
+// 	height: z.number(),
+// })
+
+// const schema = z.object({
+// 	content: z.string().min(1, 'Post content is required').max(280),
+// 	image: uploadedImageSchema.optional(),
+// })
+
 type CreatePostFormProps = z.infer<typeof schema>
+
+type ImageData = {
+	uri: string
+	filename: string
+	width?: number
+	height?: number
+}  
 
 export const CreatePostForm = ({ onPostCreated }: { onPostCreated?: () => void }) => {
     const { hideModal } = useModal()
@@ -43,22 +70,40 @@ export const CreatePostForm = ({ onPostCreated }: { onPostCreated?: () => void }
 		},
 	})
 
+	const [localImageData, setLocalImageData] = useState<ImageData | null>(null)
+    const [uploadingImage, setUploadingImage] = useState(false)
 	const [focused, setFocused] = useState<string | null>(null)
 	const contentInputRef = useRef<RNTextInput>(null)
 
-	const onSubmit = async (data: CreatePostFormProps) => {
-		try {
-			const newPost = await postService.createPost(data.content)
-			onPostCreated?.()
-			setValue('content', '')
-            addPost(newPost)
-            hideModal()
-		} catch (err: any) {
-			const message = err?.response?.data?.message || 'Something went wrong'
-			setError('content', { message })
-			Alert.alert('Post failed', message)
+	function toImageUploadData(image: UploadedImage & { uri?: string }) {
+		return {
+			imageData: {
+				uri: image.uri!,
+				filename: image.filename || 'upload.jpg',
+			}
 		}
 	}
+	  
+	const onSubmit = async (data: CreatePostFormProps) => {
+		try {
+			let uploadedImage = data.image
+		
+			if (localImageData) {
+				// Upload new image first
+				uploadedImage = await postService.uploadImage({ imageData: localImageData })
+			}
+		
+			const newPost = await postService.createPost(data.content, uploadedImage)
+			onPostCreated?.()
+			setValue('content', '')
+			setValue('image', undefined)
+			setLocalImageData(null)
+			addPost(newPost)
+			hideModal()
+		} catch (err: any) {
+			// error handling
+		}
+	}	  
 
 	const focusFirstEmptyField = () => {
 		if (!getValues().content.length) {
@@ -72,44 +117,66 @@ export const CreatePostForm = ({ onPostCreated }: { onPostCreated?: () => void }
 
 	const isFocused = (name: string) => focused === name
 
+    const image = getValues('image')
+
 	return (
-		<FormLayout>
-			<FormHeader title='Create Post' onCancel={hideModal} />
+	<FormLayout>
+		<FormHeader title='Create Post' onCancel={hideModal} />
 
-			<Controller
-				control={control}
-				name='content'
-				render={({ field: { value, onChange, onBlur } }) => (
-					<TextInput
-						ref={contentInputRef}
-						placeholder={`What's on your mind?`}
-						placeholderTextColor='#070'
-						value={value}
-						multiline
-						numberOfLines={3}
-						onChangeText={onChange}
-						onFocus={() => setFocused('content')}
-						onBlur={() => {
-							onBlur()
-							setFocused(null)
-						}}
-						returnKeyType='done'
-						onSubmitEditing={handleSubmit(onSubmit, onInvalid)}
-						style={[
-							styles.input,
-							shadows.input,
-							isFocused('content') && styles.inputFocused,
-						]}
-					/>
-				)}
+		<Controller
+		control={control}
+		name='content'
+		render={({ field: { value, onChange, onBlur } }) => (
+			<TextInput
+				ref={contentInputRef}
+				placeholder={`What's on your mind?`}
+				placeholderTextColor='#070'
+				value={value}
+				multiline
+				numberOfLines={3}
+				onChangeText={onChange}
+				onFocus={() => setFocused('content')}
+				onBlur={() => {
+					onBlur()
+					setFocused(null)
+				}}
+				returnKeyType='done'
+				onSubmitEditing={handleSubmit(onSubmit, onInvalid)}
+				style={[
+					styles.input,
+					shadows.input,
+					isFocused('content') && styles.inputFocused,
+				]}
 			/>
-			{errors.content && <Text style={styles.error}>{errors.content.message}</Text>}
+		)}
+		/>
+		{errors.content && <Text style={styles.error}>{errors.content.message}</Text>}
 
-			{isSubmitting ? (
-				<ActivityIndicator style={{ marginTop: 20 }} />
-			) : (
-				<Button label='Post' onPress={handleSubmit(onSubmit, onInvalid)} />
-			)}
-		</FormLayout>
+		{/* Image preview */}
+		{localImageData ? (
+			<Image
+				source={{ uri: localImageData.uri }}
+				style={{ width: 150, height: 150, marginVertical: 10, borderRadius: 8 }}
+			/>
+		) : image ? (
+			<Image
+				source={{ uri: image.url }}
+				style={{ width: 150, height: 150, marginVertical: 10, borderRadius: 8 }}
+			/>
+		) : null}
+
+		<ImageUploader
+			onImageSelected={(imageData) => {
+				setLocalImageData(imageData)
+				setValue('image', undefined) // clear uploaded image until upload
+			}}
+		/>
+
+		{isSubmitting || uploadingImage ? (
+			<ActivityIndicator style={{ marginTop: 20 }} />
+		) : (
+			<Button label='Post' onPress={handleSubmit(onSubmit, onInvalid)} />
+		)}
+	</FormLayout>
 	)
 }

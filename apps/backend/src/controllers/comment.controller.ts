@@ -2,11 +2,8 @@
 
 import { Request, Response, NextFunction } from 'express'
 import * as commentService from '../services/comment.service'
-import { ensureUser } from '../utils/controller.utils'
 
 export const addComment = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-	const userId = ensureUser(req, res)
-	if (!userId) return
 
 	const { refId, refType, content } = req.body
 	if (!refId || !refType || !content) {
@@ -15,7 +12,7 @@ export const addComment = async (req: Request, res: Response, next: NextFunction
 	}
 
 	try {
-		const comment = await commentService.createComment(refId, refType, userId, content)
+		const comment = await commentService.createComment(refId, refType, req.user!.id, content)
 		res.status(201).json(comment)
 	} catch (err) {
 		next(err)
@@ -55,12 +52,10 @@ export const getCommentSummary = async (req: Request, res: Response, next: NextF
 }
 
 export const deleteComment = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-	const userId = ensureUser(req, res)
-	if (!userId) return
 
 	try {
 		const { commentId } = req.params
-		await commentService.deleteCommentById(commentId, userId)
+		await commentService.deleteCommentById(commentId, req.user!.id)
 		res.status(200).json({ success: true })
 	} catch (err) {
 		next(err)

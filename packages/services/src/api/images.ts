@@ -3,6 +3,7 @@
 import { Platform } from 'react-native'
 import { api } from './http'
 import { normalizeImage } from '@utils'
+import { uriToFile } from '../utils'
 import type { Image, UploadedImage } from '@iam/types'
 import * as commentService from './comments'
 
@@ -30,23 +31,24 @@ export const uploadImage = async ({ imageData }: ImageUploadData): Promise<Uploa
 	const formData = new FormData()
 
 	if (Platform.OS === 'web') {
-        let file: File
+        const file = await uriToFile(imageData.uri, imageData.filename || 'upload.jpg')
     
-        if (imageData.uri.startsWith('data:image')) {
-            // Convert base64 to Blob
-            const res = await fetch(imageData.uri)
-            const blob = await res.blob()
-            file = new File([blob], imageData.filename || 'upload.jpg', {
-                type: blob.type || 'image/jpeg',
-            })
-        } else {
-            // Assume it's a blob URL or regular URL
-            const res = await fetch(imageData.uri)
-            const blob = await res.blob()
-            file = new File([blob], imageData.filename || 'upload.jpg', {
-                type: blob.type || 'image/jpeg',
-            })
-        }
+        // if (imageData.uri.startsWith('data:image')) {
+        //     // Convert base64 to Blob
+        //     file = await uriToFile(imageData.uri, imageData.filename || 'upload.jpg')
+        //     // const res = await fetch(imageData.uri)
+        //     // const blob = await res.blob()
+        //     // file = new File([blob], imageData.filename || 'upload.jpg', {
+        //     //     type: blob.type || 'image/jpeg',
+        //     // })
+        // } else {
+        //     // Assume it's a blob URL or regular URL
+        //     const res = await fetch(imageData.uri)
+        //     const blob = await res.blob()
+        //     file = new File([blob], imageData.filename || 'upload.jpg', {
+        //         type: blob.type || 'image/jpeg',
+        //     })
+        // }
     
         formData.append('image', file)
     }

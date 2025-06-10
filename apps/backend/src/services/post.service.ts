@@ -1,16 +1,18 @@
 // apps/backend/src/services/post.service.ts
 
 import mongoose from 'mongoose'
-import PostModel from '../models/post.model'
+import Post from '../models/post.model'
 import { HttpError } from '../utils/HttpError'
+import { UploadedImage } from '@iam/types'
 
 export const getAllPosts = async (currentUserId?: string) => {
-	const posts = await PostModel.find()
+	const posts = await Post.find()
 		.populate({
 			path: 'author',
 			select: 'username avatar',
 			populate: { path: 'avatar', select: '_id filename variants username' },
 		})
+		.populate('image')
 		.sort({ createdAt: -1 })
 
 	return posts.map(post => {
@@ -26,22 +28,7 @@ export const getAllPosts = async (currentUserId?: string) => {
 }
 
 export const getPostById = async (id: string) => {
-	const post = await PostModel.findById(id).populate({
-		path: 'author',
-		select: 'username avatar',
-		populate: {
-			path: 'avatar',
-			select: '_id filename variants username',
-		},
-	})
-
-	if (!post) throw new HttpError('Post not found', 404)
-	return post
-}
-
-export const createPost = async (userId: string, content: string) => {
-	const newPost = await PostModel.create({ author: userId, content })
-	return newPost
+	const post = await Post.findById(id)
 		.populate({
 			path: 'author',
 			select: 'username avatar',
@@ -50,28 +37,73 @@ export const createPost = async (userId: string, content: string) => {
 				select: '_id filename variants username',
 			},
 		})
-		.then(p => p.toJSON({ virtuals: true }))
+		.populate('image')
+
+	if (!post) throw new HttpError('Post not found', 404)
+	return post
 }
 
-export const updatePost = async (id: string, userId: string, content: string) => {
-	const post = await PostModel.findOne({ _id: id, author: userId }).populate({
-		path: 'author',
-		select: 'username avatar',
-		populate: {
-			path: 'avatar',
-			select: '_id filename variants username',
+// export const createPost = async (userId: string, content: string) => {
+// 	const newPost = await Post.create({ author: userId, content })
+// 	return newPost
+// 		.populate({
+// 			path: 'author',
+// 			select: 'username avatar',
+// 			populate: {
+// 				path: 'avatar',
+// 				select: '_id filename variants username',
+// 			},
+// 		})
+// 		.then(p => p.toJSON({ virtuals: true }))
+// }
+
+export async function createPost(userId: string, content: string, image?: { id: string }) {
+    const postData: any = { author: userId, content }
+
+    if (image?.id) {
+        postData.image = image.id
+    }
+
+    const post = await Post.create(postData)
+	return await post.populate([
+		{
+			path: 'author',
+			select: 'username avatar',
+			populate: {
+				path: 'avatar',
+				select: '_id filename variants username',
+			},
 		},
-	})
+		{ path: 'image' },
+	])
+}
+
+export const updatePost = async (id: string, userId: string, content: string, image?: { id: string }) => {
+	const post = await Post.findOne({ _id: id, author: userId })
+		.populate({
+			path: 'author',
+			select: 'username avatar',
+			populate: {
+				path: 'avatar',
+				select: '_id filename variants username',
+			},
+		})
+		.populate('image')
 
 	if (!post) throw new HttpError('Post not found or unauthorized', 404)
 
 	post.content = content
+
+	if (image?.id) {
+		post.image = new mongoose.Types.ObjectId(image.id)
+	}
+
 	await post.save()
 	return post.toJSON({ virtuals: true })
 }
 
 export const deletePost = async (id: string, userId: string) => {
-	const result = await PostModel.deleteOne({ _id: id, author: userId })
+	const result = await Post.deleteOne({ _id: id, author: userId })
 
 	if (result.deletedCount === 0) {
 		throw new HttpError('Post not found or unauthorized', 404)
@@ -84,21 +116,22 @@ export const deletePost = async (id: string, userId: string) => {
 }
 
 export const getPostLikes = async (postId: string) => {
-	const post = await PostModel.findById(postId).populate({
-		path: 'likes',
-		select: '_id username avatar',
-		populate: {
-			path: 'avatar',
-			select: '_id filename variants',
-		},
-	})
+	const post = await Post.findById(postId)
+		.populate({
+			path: 'likes',
+			select: '_id username avatar',
+			populate: {
+				path: 'avatar',
+				select: '_id filename variants',
+			},
+		})
 
 	if (!post) throw new HttpError('Post not found', 404)
 	return post.likes
 }
 
 export const togglePostLike = async (userId: string, postId: string) => {
-	const post = await PostModel.findById(postId)
+	const post = await Post.findById(postId)
 
 	if (!post) throw new HttpError('Post not found', 404)
 

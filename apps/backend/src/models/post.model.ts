@@ -6,7 +6,8 @@ export interface IPost extends Document {
     author: Types.ObjectId
     content: string
     likes: Types.ObjectId[]
-	likedByCurrentUser?: boolean
+    image?: Types.ObjectId
+    likedByCurrentUser?: boolean
 }
 
 const postSchema = new Schema<IPost>(
@@ -14,6 +15,7 @@ const postSchema = new Schema<IPost>(
         author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
         content: { type: String, required: true },
         likes: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+        image: { type: Schema.Types.ObjectId, ref: 'Image', required: false },
     },
     { timestamps: true }
 )

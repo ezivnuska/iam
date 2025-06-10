@@ -1,5 +1,7 @@
 // packages/types/src/post.ts
 
+import type { UploadedImage } from "./image"
+
 export interface Post {
 	_id: string
 	content: string
@@ -20,4 +22,5 @@ export interface Post {
     }
     likes: string[]
     likedByCurrentUser: boolean
+    image?: UploadedImage
 }

@@ -19,8 +19,8 @@ router.post( '/upload', requireAuth(), uploadMemory.single('image'), uploadImage
 router.get('/:username', requireAuth(), getUserImages)
 router.get('/', requireAuth(), getImages)
 router.delete('/:imageId', requireAuth(), deleteImageController)
-router.get('/:id/likes', requireAuth(), getLikes)
+router.get('/:id/likes', getLikes)
 router.post('/:id/like', requireAuth(), toggleLike)
-router.get('/:id/comments/count', requireAuth(), getCommentCount)
+router.get('/:id/comments/count', getCommentCount)
 
 export default router

@@ -10,3 +10,4 @@ export type Comment = {
 	}
 	createdAt: string
 }
+

@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from 'react'
 import { Text } from 'react-native'
-import { Column, Row, LikeCommentBar, PostComments, ProfileImage, LinkPreview, AddCommentForm, IconButton } from '@/components'
+import { Column, Row, LikeCommentBar, PostComments, ProfileImage, LinkPreview, AddCommentForm, IconButton, AutoSizeImage } from '@/components'
 import { PartialUser, Post } from '@iam/types'
 import { Size } from '@/styles'
 import Autolink from 'react-native-autolink'
@@ -92,6 +92,8 @@ export const PostListItem: React.FC<Props> = ({
 	return (
 		<Column flex={1} spacing={Size.M} paddingBottom={Size.L}>
 			{renderHeader()}
+
+            {post.image && <AutoSizeImage image={post.image} />}
 
 			<Autolink
 				text={post.content}

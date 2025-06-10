@@ -4,16 +4,14 @@ import { Request, Response, NextFunction } from 'express'
 import * as postService from '../services/post.service'
 import { Comment } from '../models/comment.model'
 import { ScrapeError, scrapeMetadata } from '../utils/metadata.utils'
-import { ensureUser } from '../utils/controller.utils'
 
 /* ------------------------------- POST CRUD ------------------------------- */
 
 export const createPost = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-	const userId = ensureUser(req, res)
-	if (!userId) return
-
 	try {
-		const post = await postService.createPost(userId, req.body.content)
+		const { content, image } = req.body
+
+		const post = await postService.createPost(req.user!.id, content, image)
 		res.status(201).json(post)
 	} catch (err) {
 		next(err)
@@ -33,7 +31,7 @@ export const getPostById = async (req: Request, res: Response, next: NextFunctio
 	try {
 		const post = await postService.getPostById(req.params.id)
 		const enrichedPost = post.toJSON()
-		enrichedPost.likedByCurrentUser = post.likes.some(id => id.equals(req.user?.id))
+		enrichedPost.likedByCurrentUser = post.likes.some(id => id.equals(req.user!.id))
 		res.json(enrichedPost)
 	} catch (err) {
 		next(err)
@@ -41,11 +39,8 @@ export const getPostById = async (req: Request, res: Response, next: NextFunctio
 }
 
 export const updatePost = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-	const userId = ensureUser(req, res)
-	if (!userId) return
-
 	try {
-		const post = await postService.updatePost(req.params.id, userId, req.body.content)
+		const post = await postService.updatePost(req.params.id, req.user!.id, req.body.content)
 		res.json(post)
 	} catch (err) {
 		next(err)
@@ -53,11 +48,8 @@ export const updatePost = async (req: Request, res: Response, next: NextFunction
 }
 
 export const deletePost = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-	const userId = ensureUser(req, res)
-	if (!userId) return
-
 	try {
-		await postService.deletePost(req.params.id, userId)
+		await postService.deletePost(req.params.id, req.user!.id)
 		await Comment.deleteMany({ refId: req.params.id, refType: 'Post' })
 		res.status(204).end()
 	} catch (err) {
@@ -75,11 +67,8 @@ export const getPostLikes = async (req: Request, res: Response, next: NextFuncti
 }
 
 export const toggleLike = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-	const userId = ensureUser(req, res)
-	if (!userId) return
-
 	try {
-		const post = await postService.togglePostLike(userId, req.params.postId)
+		const post = await postService.togglePostLike(req.user!.id, req.params.postId)
 		res.json(post)
 	} catch (err) {
 		next(err)
@@ -100,9 +89,6 @@ export const scrapePost = async (req: Request, res: Response): Promise<void> => 
 		res.status(200).json({ response: metadata })
 	} catch (err: any) {
 		const message = err instanceof Error ? err.message : 'Unknown error'
-
-		console.error('scrapePost error:', message)
-
 		if (err instanceof ScrapeError) {
 			if (message.includes('Invalid URL')) {
 				res.status(400).json({ message })
