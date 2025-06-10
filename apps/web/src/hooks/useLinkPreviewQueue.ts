@@ -57,13 +57,17 @@ export function useLinkPreviewQueue(maxConcurrency = 2) {
 
 	const enqueue = useCallback(
 		(id: string, url: string, callback: () => void) => {
-			if (seenIds.current.has(id)) return
+			if (seenIds.current.has(id)) {
+				console.log(`Skip enqueue, already seen: ${id}`)
+				return
+			}
+			console.log(`Enqueue: ${id} -> ${url}`)
 			seenIds.current.add(id)
 			queue.current.push({ id, url, callback })
 			processQueue()
 		},
 		[processQueue]
-	)
+	)	  
 
 	const shouldRender = useCallback(
 		(id: string) => renderableIds.has(id),

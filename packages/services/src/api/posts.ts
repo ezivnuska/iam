@@ -46,10 +46,10 @@ export const scrape = async (url: string): Promise<any> => {
 		throw new Error('INVALID_URL: Need to provide a valid URL')
 	}
 	try {
-		const res = await api.post('/posts/scrape', { url })
-		return res.data.response
+		const { data } = await api.post('/posts/scrape', { url })
+		return data.response
 	} catch (err) {
-		console.error('Scrape failed:', err)
+		console.error(`Scrape failed for ${url}`, err)
 		return {}
 	}
 }

@@ -11,12 +11,14 @@ import { Size } from '@/styles'
 import { extractFirstUrl } from '@/utils'
 
 export const PostList = () => {
-	const [loadedLinkIds, setLoadedLinkIds] = useState<Set<string>>(new Set())
+    const [loadedLinkIds, setLoadedLinkIds] = useState<Set<string>>(new Set())
 	const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set())
-
+    
 	const { commentCounts, setCommentCounts } = usePosts()
 	const { posts, deletePost, refreshPosts } = usePosts()
 	const { showModal } = useModal()
+
+    const loadedLinkIdsRef = useRef<Set<string>>(new Set())
 
 	useEffect(() => {
 		refreshPosts()
@@ -37,10 +39,12 @@ export const PostList = () => {
 					const firstUrl = extractFirstUrl(post.content)
 					if (
 						firstUrl &&
-						!updated.has(post._id) &&
+						!loadedLinkIdsRef.current.has(post._id) &&
 						newlyAdded < MAX_NEW_LINKS_PER_PASS
 					) {
+						console.log(`Viewable post triggering enqueue: ${post._id}`)
 						updated.add(post._id)
+						loadedLinkIdsRef.current.add(post._id)
 						newlyAdded++
 						enqueue(post._id, firstUrl, () => {})
 					}

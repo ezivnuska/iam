@@ -106,7 +106,7 @@ export const PostListItem: React.FC<Props> = ({
 				truncateChars='...'
 			/>
 
-			{firstUrl && showPreview && <LinkPreview url={firstUrl} />}
+			{firstUrl && showPreview && !post.image && <LinkPreview url={firstUrl} />}
 
 			<LikeCommentBar
 				likeCount={likeCount}

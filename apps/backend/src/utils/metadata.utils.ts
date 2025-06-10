@@ -112,6 +112,6 @@ export const scrapeMetadata = async (url: string) => {
 			throw new ScrapeError('Could not fetch oEmbed metadata')
 		}
 
-		throw new ScrapeError('Failed to scrape metadata')
+		throw new ScrapeError(`Failed to scrape metadata for ${url}`)
 	}
 }
