@@ -22,7 +22,7 @@ export const FormHeader: React.FC<FormHeaderProps> = ({
 	subtitleStyle,
     onCancel,
 }) => (
-    <Row>
+    <Row align='center'>
         <View style={[styles.container, style]}>
             <Text style={[styles.title, titleStyle]}>{title}</Text>
             {subtitle ? <Text style={[styles.subtitle, subtitleStyle]}>{subtitle}</Text> : null}

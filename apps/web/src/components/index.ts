@@ -2,6 +2,7 @@
 
 export * from './Button'
 export * from './CommentItem'
+export * from './CreatePostButton'
 export * from './ImageComments'
 export * from './ImageManagerHeader'
 export * from './Layout'

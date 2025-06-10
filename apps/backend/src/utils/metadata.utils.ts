@@ -3,6 +3,14 @@
 import fetch from 'node-fetch'
 import { getContent } from './puppeteer.utils'
 import crypto from 'crypto'
+
+export class ScrapeError extends Error {
+	constructor(message: string) {
+		super(message)
+		this.name = 'ScrapeError'
+	}
+}
+
 const metascraper = require('metascraper')([
     require('metascraper-description')(),
     require('metascraper-image')(),
@@ -33,33 +41,77 @@ const getOEmbedProviders = () => ([
 const findOEmbedProvider = (url: string) => getOEmbedProviders().find(p => p.regex.test(url))
 
 const fetchOEmbed = async (url: string) => {
-    const provider = findOEmbedProvider(url)
-    if (!provider) return null
+	const provider = findOEmbedProvider(url)
+	if (!provider) return null
 
-    let oembedUrl = `${provider.endpoint}?url=${encodeURIComponent(url)}&format=json`
-    if (provider.requiresAuth) {
-        const accessToken = process.env.TEMP_ACCESS_TOKEN
-        const appSecret = process.env.FACEBOOK_APP_SECRET
-        if (!accessToken || !appSecret) throw new Error('App credentials missing')
+	let oembedUrl = `${provider.endpoint}?url=${encodeURIComponent(url)}&format=json`
 
-        const appSecretProof = getAppSecretProof(accessToken, appSecret)
-        oembedUrl += `&access_token=${accessToken}&appsecret_proof=${appSecretProof}`
-    }
+	if (provider.requiresAuth) {
+		const accessToken = process.env.TEMP_ACCESS_TOKEN
+		const appSecret = process.env.FACEBOOK_APP_SECRET
+		if (!accessToken || !appSecret) {
+			throw new ScrapeError('App credentials missing for oEmbed')
+		}
+		const appSecretProof = getAppSecretProof(accessToken, appSecret)
+		oembedUrl += `&access_token=${accessToken}&appsecret_proof=${appSecretProof}`
+	}
 
-    const res = await fetch(oembedUrl)
-    const rawText = await res.text()
-    if (!res.ok) throw new Error(`Failed to fetch oEmbed: ${res.status}`)
-
-    const data: OEmbedResponse = JSON.parse(rawText)
-    return { title: data.title || '', description: '', image: data.thumbnail_url || '' }
+	try {
+		const res = await fetch(oembedUrl)
+		const rawText = await res.text()
+		if (!res.ok) {
+			const errorText = await res.text()
+			console.error('oEmbed fetch failed:', res.status, errorText)
+			throw new ScrapeError(`oEmbed fetch failed: ${res.status}`)
+		}
+		const data: OEmbedResponse = JSON.parse(rawText)
+		return {
+			title: data.title || '',
+			description: '',
+			image: data.thumbnail_url || '',
+		}
+	} catch (err: any) {
+		if (err.name === 'FetchError') {
+			throw new ScrapeError('Network error during oEmbed fetch')
+		}
+		throw err
+	}
 }
 
 export const scrapeMetadata = async (url: string) => {
-    const normalizedUrl = normalizeUrl(url)
-    let metadata = findOEmbedProvider(normalizedUrl) ? await fetchOEmbed(normalizedUrl) : null
-    if (!metadata?.title) {
-        const { html } = await getContent(normalizedUrl)
-        metadata = await metascraper({ html, url: normalizedUrl })
-    }
-    return metadata
-} 
+	let normalizedUrl: string
+	try {
+		normalizedUrl = normalizeUrl(url)
+	} catch {
+		throw new ScrapeError(`Invalid URL: ${url}`)
+	}
+
+	try {
+		const hasProvider = findOEmbedProvider(normalizedUrl)
+
+		// Try oEmbed first
+		let metadata = hasProvider ? await fetchOEmbed(normalizedUrl) : null
+
+		// If oEmbed fails or lacks title, fallback to scraping
+		if (!metadata?.title) {
+			const { html } = await getContent(normalizedUrl)
+			metadata = await metascraper({ html, url: normalizedUrl })
+		}
+
+		return metadata
+	} catch (err: any) {
+		if (err.code === 'ENOTFOUND' || err.code === 'EAI_AGAIN') {
+			throw new ScrapeError('Host not found or unreachable')
+		}
+
+		if (err.message?.includes('timeout')) {
+			throw new ScrapeError('Request timed out')
+		}
+
+		if (err.message?.includes('Failed to fetch oEmbed')) {
+			throw new ScrapeError('Could not fetch oEmbed metadata')
+		}
+
+		throw new ScrapeError('Failed to scrape metadata')
+	}
+}

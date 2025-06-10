@@ -1,12 +1,11 @@
 // apps/web/src/components/LinkPreview.tsx
 
 import React, { useEffect, useMemo, useState } from 'react'
-import { ActivityIndicator, Dimensions, Image, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Dimensions, Image, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Column, Row } from './Layout'
 import { scrape } from '@services'
 import { resolveResponsiveProp, Size } from '@/styles'
-import { format } from 'date-fns'
 
 type LinkPreviewProps = {
 	url: string
@@ -24,6 +23,7 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url }) => {
 	const [data, setData] = useState<ScraperProps | null>(null)
 	const [aspectRatio, setAspectRatio] = useState<number | undefined>(1)
     const [windowWidth, setWindowWidth] = useState(Dimensions.get('window').width)
+	const [error, setError] = useState(false)
     const maxWidth = useMemo(
         () => resolveResponsiveProp({ xs: 500, sm: 500, md: 500 - Size.M * 2, lg: 500 - Size.M * 2 }),
         [windowWidth]
@@ -35,12 +35,12 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url }) => {
         return () => subscription.remove?.()
     }, [])
 
-	useEffect(() => {
-		let timeoutId: NodeJS.Timeout
+    useEffect(() => {
+        let timeoutId: NodeJS.Timeout
 
-		const init = async () => {
+        const init = async () => {
             const cacheKey = `link-metadata:${url}`
-        
+
             const trySetImageAspect = (imageUrl?: string) => {
                 if (!imageUrl) return
                 Image.getSize(
@@ -49,7 +49,7 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url }) => {
                     () => setAspectRatio(1) // fallback
                 )
             }
-        
+
             try {
                 if (memoryCache.has(url)) {
                     const cachedData = memoryCache.get(url)!
@@ -57,7 +57,7 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url }) => {
                     trySetImageAspect(cachedData.image)
                     return
                 }
-        
+
                 const cached = await AsyncStorage.getItem(cacheKey)
                 if (cached) {
                     const parsed = JSON.parse(cached)
@@ -66,33 +66,46 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url }) => {
                     trySetImageAspect(parsed.image)
                     return
                 }
-        
+
                 timeoutId = setTimeout(async () => {
-                    const { response } = await scrape(url)
-                    if (response) {
-                        setData(response)
-                        memoryCache.set(url, response)
-                        trySetImageAspect(response.image)
-                        await AsyncStorage.setItem(cacheKey, JSON.stringify(response))
+                    try {
+                        const { response } = await scrape(url)
+                        if (response) {
+                            setData(response)
+                            memoryCache.set(url, response)
+                            trySetImageAspect(response.image)
+                            await AsyncStorage.setItem(cacheKey, JSON.stringify(response))
+                        } else {
+                            setError(true)
+                        }
+                    } catch (err) {
+                        setError(true)
                     }
                 }, 300)
             } catch (error) {
                 console.warn('Error fetching or caching metadata:', error)
-                setData({ title: 'Error loading preview', description: String(error) })
+                setError(true)
             }
-        }        
+        }
 
-		init()
+        init()
 
-		// Cleanup debounce
-		return () => clearTimeout(timeoutId)
-	}, [url])
+        return () => clearTimeout(timeoutId)
+    }, [url])
 
 	const openExternalUrl = () => {
 		Linking.openURL(url).catch(err => console.error('Error loading page', err))
 	}
 
-	return data ? (
+    if (error) {
+        return <Text style={styles.loadingText}>Could not load link preview</Text>
+    }
+    
+    if (!data) {
+        return <Text style={styles.loadingText}>Loading link...</Text>
+    }
+    
+	return (
 		<TouchableOpacity onPress={openExternalUrl}>
 			<Column spacing={16}>
 				{data.image && (
@@ -110,8 +123,6 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url }) => {
 				</Column>
 			</Column>
 		</TouchableOpacity>
-	) : (
-		<Text style={styles.loadingText}>Loading link...</Text>
 	)
 }
 
