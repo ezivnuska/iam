@@ -50,7 +50,7 @@ export const scrape = async (url: string): Promise<any> => {
 		return data.response
 	} catch (err) {
 		console.error(`Scrape failed for ${url}`, err)
-		return {}
+		return null
 	}
 }
 

@@ -70,6 +70,7 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url }) => {
                 timeoutId = setTimeout(async () => {
                     try {
                         const response = await scrape(url)
+                        console.log('response', response)
                         if (response) {
                             setData(response)
                             memoryCache.set(url, response)
