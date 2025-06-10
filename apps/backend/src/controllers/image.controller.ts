@@ -62,9 +62,8 @@ export const deleteImageController: RequestHandler = async (req, res, next) => {
 }
 
 export const getLikes: RequestHandler = async (req, res, next) => {
-    console.log('req.params', req.params)
 	try {
-		const likes = await imageService.getImageLikes(req.params.id, req.user!.id)
+		const likes = await imageService.getImageLikes(req.params.id, req.user?.id)
 		res.json(likes)
 	} catch (err) {
 		next(err)

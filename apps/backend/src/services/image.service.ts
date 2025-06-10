@@ -99,12 +99,15 @@ export const processAndSaveImage = async ({
 	})
 }
 
-export const getImageLikes = async (imageId: string, userId: string) => {
+export const getImageLikes = async (imageId: string, userId?: string) => {
 	const image = await ImageModel.findById(imageId)
 	if (!image) throw new HttpError('Image not found', 404)
-
-	const userObjectId = new mongoose.Types.ObjectId(userId)
-	const likedByCurrentUser = image.likes.some(id => id.equals(userObjectId))
+    
+    let likedByCurrentUser = false
+    if (userId) {
+        const userObjectId = new mongoose.Types.ObjectId(userId)
+        likedByCurrentUser = image.likes.some(id => id.equals(userObjectId))
+    }
 
 	return {
 		likedByCurrentUser,
