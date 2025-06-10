@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import { Text, TextInput, Alert, TextInput as RNTextInput } from 'react-native'
-import { useForm, Controller } from 'react-hook-form'
+import { useForm, Controller, FieldErrors } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, Column, FormHeader, FormLayout, SignupForm, SubmitButton } from '@/components'
@@ -22,7 +22,7 @@ export const SigninForm = () => {
     const { hideModal, showModal } = useModal()
     const { control, handleSubmit, formState: { errors, isSubmitting }, setError, trigger, setValue, getValues } = useForm<SigninFormProps>({
 		resolver: zodResolver(schema),
-        mode: 'onBlur',
+        mode: 'all',
         defaultValues: {
           email: user?.email ?? '',
           password: '',
@@ -50,13 +50,13 @@ export const SigninForm = () => {
         loadStoredEmail()
     }, [])
     
-    const focusFirstError = (formErrors: typeof errors) => {
-        if (formErrors.email) {
-            emailInputRef.current?.focus()
-        } else if (formErrors.password) {
-            passwordInputRef.current?.focus()
-        }
-    }
+    const focusFirstError = (formErrors: FieldErrors<SigninFormProps>) => {
+		if (formErrors.email) {
+			emailInputRef.current?.focus()
+		} else if (formErrors.password) {
+			passwordInputRef.current?.focus()
+		}
+	}	  
 
     const focusFirstEmptyField = () => {
         const values = getValues()
@@ -67,23 +67,41 @@ export const SigninForm = () => {
         }
     }
 
-    const onInvalid = () => {
-        focusFirstEmptyField()
-    }
+    const onInvalid = (errors: FieldErrors<SigninFormProps>) => {
+		focusFirstError(errors)
+	}	  
 
 	const onSubmit = async (data: SigninFormProps) => {
 		try {
-			await login(data.email, data.password)  // login will set the user state
-            await AsyncStorage.setItem('user_email', data.email)
-            hideModal()
-		} catch (err: any) {
-            if (err?.response?.data?.message) {
-                const [fieldName, message] = err.response.data.message.split(':')
-                setError(fieldName, { message })
-            }
-			Alert.alert('Login failed', err?.response?.data?.message || 'Something went wrong')
+			await login(data.email, data.password)
+			await AsyncStorage.setItem('user_email', data.email)
+			hideModal()
+		} catch (err: unknown) {
+			const errorObj = err as {
+				response?: {
+					data?: {
+						error?: {
+							details?: unknown
+						}
+					}
+				}
+			}
+		
+			const details = errorObj.response?.data?.error?.details
+		
+			if (Array.isArray(details) && details.length === 2) {
+				const [field, issue] = details
+		
+				if (typeof field === 'string' && typeof issue === 'string') {
+					setError(field as keyof SigninFormProps, { message: issue }, { shouldFocus: true })
+					Alert.alert('Login failed', issue)
+					return
+				}
+			}
+			
+			Alert.alert('Login failed', 'Something went wrong')
 		}
-	}
+	}	  
 
     const isFocused = (name: string): boolean => name === focused
 

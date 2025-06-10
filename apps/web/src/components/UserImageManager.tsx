@@ -18,12 +18,10 @@ const UserImageManager = () => {
 
     const handleDelete = async (id: string) => {
         try {
-            // If the image to be deleted is the current avatar, unset the avatar first
+            // If the image is avatar, unset the avatar
             if (id === currentAvatarId) {
-                await setAvatar(undefined)  // Ensure setAvatar can handle setting avatar to undefined
+                await setAvatar(undefined)
             }
-        
-            // Proceed with deleting the image
             await deleteImage(id)
             hideModal()
         } catch (err) {

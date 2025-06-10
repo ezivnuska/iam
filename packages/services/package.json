@@ -23,8 +23,7 @@
 		"axios": "^1.5.1",
 		"expo-secure-store": "^12.2.0",
 		"jwt-decode": "^4.0.0",
-		"react-hook-form": "^7.55.0",
-		"zod": "^3.24.3"
+		"react-hook-form": "^7.55.0"
 	},
 	"devDependencies": {
 		"@babel/preset-env": "^7.26.9",

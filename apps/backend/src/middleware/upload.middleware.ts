@@ -1,4 +1,4 @@
-// apps/backend/src/middlewares/upload.middleware.ts
+// apps/backend/src/middleware/upload.middleware.ts
 
 import { RequestHandler } from 'express'
 import multer, { Options } from 'multer'

@@ -2,22 +2,18 @@
 
 import { UserModel } from '../models/user.model'
 import { hashPassword, comparePassword } from '../utils/password'
+import { HttpError } from '../utils/HttpError'
 import { createPayload, TokenPayload, generateToken, generateRefreshToken, verifyToken } from '@auth'
 import crypto from 'crypto'
-import { Request, Response } from 'express'
 import { normalizeUser } from '@utils'
 
-export const registerUser = async (
-	email: string,
-	username: string,
-	password: string
-) => {
+export const registerUser = async (email: string, username: string, password: string) => {
 	const existing = await UserModel.findOne({ email })
-	if (existing) throw new Error('email:Email already registered')
+	if (existing) throw new HttpError('Email already registered', 409)
 
 	const hashed = await hashPassword(password)
-
 	const verifyToken = crypto.randomBytes(32).toString('hex')
+
 	const user = new UserModel({
 		email,
 		username,
@@ -35,98 +31,65 @@ export const registerUser = async (
 	return { token, refreshToken }
 }
 
-export const loginUser = async (email: string, password: string, res: Response) => {
+export const loginUser = async (email: string, password: string) => {
 	const user = await UserModel.findOne({ email }).select('+password').populate('avatar')
 	if (!user) {
-        throw new Error('email:Email is not registered')
-    }
+		throw new HttpError('Validation failed', undefined, {
+			field: 'email',
+			issue: 'Email is not registered',
+		})
+	}
 
 	const isMatch = await comparePassword(password, user.password)
-	if (!isMatch) throw new Error('password:Invalid password')
+	if (!isMatch) {
+		throw new HttpError('Validation failed', undefined, {
+			field: 'password',
+			issue: 'Invalid password',
+		})
+	}  
 
 	const payload = createPayload(user)
 	const accessToken = generateToken(payload)
 	const refreshToken = generateRefreshToken(payload)
 
-	res.cookie('refreshToken', refreshToken, {
-		httpOnly: true,
-        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
-		secure: process.env.NODE_ENV === 'production',
-		maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-        path: '/',
-	})
-
-	// const userResponse = {
-	// 	id: user._id,
-	// 	email: user.email,
-	// 	username: user.username,
-	// 	role: user.role,
-	// 	verified: user.verified,
-	// }
-
-	return { accessToken, user: normalizeUser(user) }
+	return { accessToken, refreshToken, user: normalizeUser(user) }
 }
-  
-export const refreshAccessToken = async (
-	req: Request,
-	res: Response
-) => {
-	const token = req.cookies.refreshToken
-    console.log('Cookies:', req.cookies)
-	if (!token) return res.status(401).json({ message: 'No refresh token provided' })
 
+export const refreshAccessToken = async (refreshToken: string) => {
+	if (!refreshToken) throw new HttpError('No refresh token provided', 401)
+
+	let decoded: TokenPayload
 	try {
-		// Verify refresh token
-		const decoded = verifyToken(token)
-
-		if (typeof decoded !== 'object' || !('_id' in decoded)) {
+		const raw = verifyToken(refreshToken)
+		if (typeof raw !== 'object' || !('_id' in raw)) {
 			throw new Error('Invalid token payload')
 		}
-
-		const payload = decoded as TokenPayload
-		const accessToken = generateToken(payload)
-
-		// Send new access token
-		return res.json({ accessToken })
-	} catch (err) {
-		// Token invalid or expired, clear the refresh token cookie
-		res.clearCookie('refreshToken', {
-			httpOnly: true,
-			sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-			secure: process.env.NODE_ENV === 'production',
-			path: '/',
-		})
-
-		return res.status(403).json({ message: 'Invalid or expired refresh token' })
+		decoded = raw as TokenPayload
+	} catch {
+		throw new HttpError('Invalid or expired refresh token', 403)
 	}
+
+	const accessToken = generateToken(decoded)
+	return { accessToken }
 }
 
-export const verifyEmailToken = async (
-	req: Request,
-	res: Response,
-) => {
-	const { token } = req.query
+export const verifyEmailToken = async (token: string) => {
 	const user = await UserModel.findOne({
 		verifyToken: token,
-		verifyTokenExpires: { $gt: Date.now() }
+		verifyTokenExpires: { $gt: Date.now() },
 	})
 
-	if (!user) return res.status(400).json({ message: 'Invalid or expired token' })
+	if (!user) throw new HttpError('Invalid or expired token', 400)
 
 	user.verified = true
 	user.verifyToken = undefined
 	user.verifyTokenExpires = undefined
 	await user.save()
-
-	res.json({ message: 'Email verified' })
 }
 
-export const forgotPassword = async (
-	req: Request,
-	res: Response
-) => {
-	const user = await UserModel.findOne({ email: req.body.email })
-	if (!user) return res.status(400).json({ message: 'No user' })
+export const forgotPassword = async (email: string) => {
+	const user = await UserModel.findOne({ email })
+	if (!user) throw new HttpError('No user with that email', 400)
 
 	const token = crypto.randomBytes(32).toString('hex')
 	user.resetPasswordToken = token
@@ -134,24 +97,18 @@ export const forgotPassword = async (
 	await user.save()
 
 	// TODO: send email with reset URL
-	res.json({ message: 'Reset email sent' })
 }
 
-export const resetPassword = async (
-	req: Request,
-	res: Response
-) => {
+export const resetPassword = async (token: string, newPassword: string) => {
 	const user = await UserModel.findOne({
-		resetPasswordToken: req.body.token,
-		resetPasswordExpires: { $gt: Date.now() }
+		resetPasswordToken: token,
+		resetPasswordExpires: { $gt: Date.now() },
 	})
 
-	if (!user) return res.status(400).json({ message: 'Invalid or expired token' })
+	if (!user) throw new HttpError('Invalid or expired reset token', 400)
 
-	user.password = await hashPassword(req.body.newPassword)
+	user.password = await hashPassword(newPassword)
 	user.resetPasswordToken = undefined
 	user.resetPasswordExpires = undefined
 	await user.save()
-
-	res.json({ message: 'Password reset successful' })
 }

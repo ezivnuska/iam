@@ -9,6 +9,8 @@ import cors from 'cors'
 import path from 'path'
 import dotenv from 'dotenv'
 import { registerChatHandlers } from './controllers/chat.controller'
+import { errorHandler } from './middleware/error.middleware'
+import type { ErrorRequestHandler } from 'express'
 
 import adminRoutes from './routes/admin.routes'
 import authRoutes from './routes/auth.routes'
@@ -18,7 +20,6 @@ import userRoutes from './routes/user.routes'
 import imageRoutes from './routes/image.routes'
 import postRoutes from './routes/post.routes'
 import commentRoutes from './routes/comment.routes'
-
 
 // Default to development
 const env = process.env.NODE_ENV || 'development'
@@ -64,9 +65,12 @@ app.use('/api/images', imageRoutes)
 app.use('/api/posts', postRoutes)
 app.use('/api/comments', commentRoutes)
 
-app.use((err: any, _req: any, res: any, _next: any) => {
-    res.status(500).json({ message: err.message || 'Unexpected error' })
+// 404 handler for unmatched routes
+app.use((req, res, next) => {
+    res.status(404).json({ message: 'Not Found' })
 })
+
+app.use(errorHandler as ErrorRequestHandler)
 
 // Health check endpoint
 app.get('/health', (_req, res) => {

@@ -39,45 +39,49 @@ function onTokenRefreshed(token: string) {
 	refreshSubscribers = []
 }
 
-// Attach token automatically before every request
 api.interceptors.request.use(
 	async (config) => {
 		let token = await getToken()
 
-		if (token) {
-			if (isTokenExpiredOrExpiringSoon(token)) {
-				if (!isRefreshing) {
-					isRefreshing = true
-					try {
-						const { accessToken } = await refreshTokenRequest()
-						await saveToken(accessToken)
-						setAuthHeader(accessToken)
-						onTokenRefreshed(accessToken)
-						isRefreshing = false
-						token = accessToken
-					} catch (err) {
-						isRefreshing = false
-						refreshSubscribers = []
-						await clearToken()
-						clearAuthHeader()
-						await logoutRequest()
-						if (onUnauthorized) onUnauthorized()
-						return Promise.reject(err)
-					}
-				} else {
-					// Wait for ongoing refresh
-					await new Promise<void>((resolve, reject) => {
-						subscribeTokenRefresh((newToken) => {
-							token = newToken
-							resolve()
-						})
-					})
-				}
-			}
+		if (!token) return config
 
-			config.headers = config.headers || {}
-			config.headers['Authorization'] = `Bearer ${token}`
+		if (isTokenExpiredOrExpiringSoon(token)) {
+			if (!isRefreshing) {
+				isRefreshing = true
+				try {
+					const { accessToken } = await refreshTokenRequest()
+					await saveToken(accessToken)
+					setAuthHeader(accessToken)
+					onTokenRefreshed(accessToken)
+					token = accessToken
+				} catch (err) {
+					refreshSubscribers = []
+					await clearToken()
+					clearAuthHeader()
+					await logoutRequest()
+					if (onUnauthorized) onUnauthorized()
+					return Promise.reject(err)
+				} finally {
+					isRefreshing = false
+				}
+			} else {
+				await new Promise<void>((resolve, reject) => {
+					const timeout = setTimeout(() => {
+						reject(new Error('Token refresh timeout'))
+					}, 5000)
+
+					subscribeTokenRefresh((newToken) => {
+						clearTimeout(timeout)
+						token = newToken
+						resolve()
+					})
+				})
+			}
 		}
+
+		config.headers = config.headers || {}
+		config.headers['Authorization'] = `Bearer ${token}`
+
 		return config
 	},
 	(error) => Promise.reject(error)

@@ -2,7 +2,7 @@
 
 import express, { Router } from 'express'
 import { addComment, deleteComment, getComments, getCommentSummary } from '../controllers/comment.controller'
-import { requireAuth } from '../middlewares/auth.middleware'
+import { requireAuth } from '../middleware/auth.middleware'
 
 const router: express.Router = Router()
 

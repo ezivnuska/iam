@@ -17,9 +17,9 @@ export const logoutRequest = async () => {
 
 type RefreshTokenResponse = { accessToken: string }
 
-export const signinRequest = (email: string, password: string) =>
-	api.post('/auth/signin', { email, password }).then(res => res.data)
-
+export const signinRequest = async (email: string, password: string) => {
+	return await api.post('/auth/signin', { email, password }).then(res => res.data)
+}
 export const signupRequest = (email: string, username: string, password: string) =>
 	api.post('/auth/signup', { email, username, password }).then(res => res.data)
 

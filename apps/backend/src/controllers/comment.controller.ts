@@ -1,29 +1,28 @@
 // apps/backend/src/controllers/comment.controller.ts
 
-import { Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import * as commentService from '../services/comment.service'
+import { ensureUser } from '../utils/controller.utils'
 
-export const addComment = async (req: Request, res: Response): Promise<void> => {
+export const addComment = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+	const userId = ensureUser(req, res)
+	if (!userId) return
+
+	const { refId, refType, content } = req.body
+	if (!refId || !refType || !content) {
+		res.status(400).json({ message: 'Missing refId, refType, or content' })
+		return
+	}
+
 	try {
-		if (!req.user?.id) {
-			res.status(401).json({ message: 'Unauthorized' })
-			return
-		}
-
-		const { refId, refType, content } = req.body
-		if (!refId || !refType || !content) {
-			res.status(400).json({ message: 'Missing refId, refType, or content' })
-			return
-		}
-		const comment = await commentService.createComment(refId, refType, req.user.id, content)
+		const comment = await commentService.createComment(refId, refType, userId, content)
 		res.status(201).json(comment)
-	} catch (error) {
-		console.error('Error creating comment:', error)
-		res.status(500).json({ message: 'Failed to create comment' })
+	} catch (err) {
+		next(err)
 	}
 }
 
-export const getComments = async (req: Request, res: Response): Promise<void> => {
+export const getComments = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 	const { refId, refType } = req.query
 
 	if (!refId || !refType) {
@@ -31,11 +30,15 @@ export const getComments = async (req: Request, res: Response): Promise<void> =>
 		return
 	}
 
-	const comments = await commentService.getCommentsForRef(refId as string, refType as 'Post' | 'Image')
-	res.json(comments)
+	try {
+		const comments = await commentService.getCommentsForRef(refId as string, refType as 'Post' | 'Image')
+		res.json(comments)
+	} catch (err) {
+		next(err)
+	}
 }
 
-export const getCommentSummary = async (req: Request, res: Response): Promise<void> => {
+export const getCommentSummary = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 	const { refId, refType } = req.query
 
 	if (!refId || !refType) {
@@ -46,30 +49,20 @@ export const getCommentSummary = async (req: Request, res: Response): Promise<vo
 	try {
 		const summary = await commentService.getCommentSummaryForRef(refId as string, refType as 'Post' | 'Image')
 		res.json(summary)
-	} catch (error) {
-		console.error('Error fetching comment summary:', error)
-		res.status(500).json({ error: 'Failed to get comment summary' })
+	} catch (err) {
+		next(err)
 	}
 }
 
-export const deleteComment = async (req: Request, res: Response): Promise<void> => {
+export const deleteComment = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+	const userId = ensureUser(req, res)
+	if (!userId) return
+
 	try {
-		if (!req.user?.id) {
-			res.status(401).json({ message: 'Unauthorized' })
-            return
-		}
-
 		const { commentId } = req.params
-		const deleted = await commentService.deleteCommentById(commentId, req.user.id)
-
-		if (!deleted) {
-			res.status(403).json({ message: 'Not allowed to delete this comment' })
-            return
-		}
-
+		await commentService.deleteCommentById(commentId, userId)
 		res.status(200).json({ success: true })
 	} catch (err) {
-		console.error('Error deleting comment:', err)
-		res.status(500).json({ message: 'Failed to delete comment' })
+		next(err)
 	}
 }

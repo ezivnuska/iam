@@ -28,7 +28,7 @@ export const SignupForm = () => {
 	
     const { control, handleSubmit, formState: { errors, isSubmitting }, setError, trigger, getValues } = useForm<SignupFormProps>({
 		resolver: zodResolver(schema),
-        mode: 'onBlur',
+        mode: 'all',
         defaultValues: {
             email: user?.email ?? '',
             username: '',
@@ -88,8 +88,8 @@ export const SignupForm = () => {
 
 	const onSubmit = async (data: SignupFormProps) => {
 		try {
-            await signupRequest(data.email, data.username, data.password)  // sign up the user
-            await login(data.email, data.password)  // login will update the user context automatically
+            await signupRequest(data.email, data.username, data.password)
+            await login(data.email, data.password)
 		} catch (err: any) {
 			if (err?.response?.data?.message) {
                 const [fieldName, message] = err.response.data.message.split(':')

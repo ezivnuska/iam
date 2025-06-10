@@ -32,6 +32,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 	const [isAuthenticated, setIsAuthenticated] = useState(false)
   
 	const login = async (email: string, password: string) => {
+        console.log('login called')
         const { accessToken, user: userProfile } = await signinRequest(email, password)
         await saveToken(accessToken)
         setAuthHeader(accessToken)

@@ -8,7 +8,7 @@ import {
   updateUserRole,
   deleteUser,
 } from '../controllers/user.controller'
-import { requireAuth } from '../middlewares/auth.middleware'
+import { requireAuth } from '../middleware/auth.middleware'
 
 const router: express.Router = Router()
 

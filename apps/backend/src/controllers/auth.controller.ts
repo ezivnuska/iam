@@ -1,50 +1,107 @@
 // apps/backend/src/controllers/auth.controller.ts
 
-import { Request, RequestHandler, Response, NextFunction } from 'express'
+import { RequestHandler } from 'express'
 import * as authService from '../services/auth.service'
 import { getUserDir } from '../utils/imagePaths'
-
 import fs from 'fs'
-import path from 'path'
+import { ZodError } from 'zod'
 
-export const signup: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const refreshTokenCookieOptions = {
+	httpOnly: true,
+	sameSite: (process.env.NODE_ENV === 'production' ? 'strict' : 'lax') as 'strict' | 'lax',
+	secure: process.env.NODE_ENV === 'production',
+	maxAge: 7 * 24 * 60 * 60 * 1000,
+	path: '/',
+}
+
+export const signup: RequestHandler = async (req, res, next) => {
 	try {
 		const { email, username, password } = req.body
-		const result = await authService.registerUser(email, username, password)
-		res.status(201).json(result)
+		const { token, refreshToken } = await authService.registerUser(email, username, password)
+
+		res.cookie('refreshToken', refreshToken, refreshTokenCookieOptions)
+		res.status(201).json({ token })
 	} catch (err) {
+		if (err instanceof ZodError) {
+			res.status(400).json({ error: 'Validation failed', details: err.errors })
+			return
+		}
 		next(err)
 	}
 }
 
-export const signin: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const signin: RequestHandler = async (req, res, next) => {
 	try {
 		const { email, password } = req.body
-		const result = await authService.loginUser(email, password, res)
-		res.status(200).json(result)
+		const { accessToken, refreshToken, user } = await authService.loginUser(email, password)
+
+		res.cookie('refreshToken', refreshToken, refreshTokenCookieOptions)
+		res.status(200).json({ accessToken, user })
 	} catch (err) {
+		if (err instanceof ZodError) {
+			res.status(400).json({ error: 'Validation failed', details: err.errors })
+			return
+		}
 		next(err)
 	}
 }
 
-export const refreshToken: RequestHandler = (req: Request, res: Response) => {
-	authService.refreshAccessToken(req, res)
+export const refreshToken: RequestHandler = async (req, res, next) => {
+	try {
+		const token = req.cookies.refreshToken
+		const { accessToken } = await authService.refreshAccessToken(token)
+		res.json({ accessToken })
+	} catch (err) {
+		res.clearCookie('refreshToken', {
+			httpOnly: true,
+			sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'lax') as 'none' | 'lax',
+			secure: process.env.NODE_ENV === 'production',
+			path: '/',
+		})
+		next(err)
+	}
 }
 
-export const logout: RequestHandler = (req: Request, res: Response) => {
+export const logout: RequestHandler = (req, res) => {
 	res.clearCookie('refreshToken').json({ message: 'Logged out' })
 }
 
-export const verifyEmail: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
-	authService.verifyEmailToken(req, res)
+export const verifyEmail: RequestHandler = async (req, res, next) => {
+	try {
+		const token = req.query.token as string
+		await authService.verifyEmailToken(token)
+		res.json({ message: 'Email verified' })
+	} catch (err) {
+		next(err)
+	}
 }
 
-export const forgotPassword: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
-	authService.forgotPassword(req, res)
+export const forgotPassword: RequestHandler = async (req, res, next) => {
+	try {
+		const { email } = req.body
+		await authService.forgotPassword(email)
+		res.json({ message: 'Reset email sent' })
+	} catch (err) {
+		if (err instanceof ZodError) {
+			res.status(400).json({ error: 'Validation failed', details: err.errors })
+			return
+		}
+		next(err)
+	}
 }
 
-export const resetPassword: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
-	authService.resetPassword(req, res)
+export const resetPassword: RequestHandler = async (req, res, next) => {
+	try {
+		const { token, newPassword } = req.body
+		await authService.resetPassword(token, newPassword)
+		res.json({ message: 'Password reset successful' })
+	} catch (err) {
+		if (err instanceof ZodError) {
+			res.status(400).json({ error: 'Validation failed', details: err.errors })
+			return
+		}
+		next(err)
+	}
 }
 
 export const deleteUserFolder = (username: string) => {

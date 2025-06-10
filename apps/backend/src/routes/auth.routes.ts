@@ -10,17 +10,24 @@ import {
   forgotPassword,
   resetPassword
 } from '../controllers/auth.controller'
-import { requireRefreshToken } from '../middlewares/requireRefreshToken'
+import { requireRefreshToken } from '../middleware/requireRefreshToken'
+import { validate } from '../middleware/validate.middleware'
+import {
+	signupSchema,
+	signinSchema,
+	forgotPasswordSchema,
+	resetPasswordSchema,
+	verifyEmailSchema,
+} from '../schemas/auth.schema'
 
 const router: express.Router = Router()
 
-router.post('/signup', signup)
-router.post('/signin', signin)
-router.post('/logout', logout)
+router.post('/signin', validate(signinSchema), signin)
+router.post('/signup', validate(signupSchema), signup)
 router.post('/refresh-token', requireRefreshToken, refreshToken)
-
-router.get('/verify', verifyEmail)
-router.post('/forgot-password', forgotPassword)
-router.post('/reset-password', resetPassword)
+router.post('/logout', logout)
+router.post('/forgot-password', validate(forgotPasswordSchema), forgotPassword)
+router.post('/reset-password', validate(resetPasswordSchema), resetPassword)
+router.get('/verify-email', validate(verifyEmailSchema), verifyEmail)
 
 export default router

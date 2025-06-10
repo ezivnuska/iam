@@ -2,6 +2,7 @@
 
 import Bond, { IBond } from '../models/bond.model'
 import { Types } from 'mongoose'
+import { HttpError } from '../utils/HttpError' // Import the HttpError
 
 interface BondData {
 	sender: Types.ObjectId | string
@@ -41,7 +42,7 @@ export const updateBondStatus = async (
 	actionerId: Types.ObjectId | string
 ): Promise<IBond> => {
 	const bond = await Bond.findById(id)
-	if (!bond) throw new Error('Bond not found')
+	if (!bond) throw new HttpError('Bond not found', 404)
 
 	Object.assign(bond, statusUpdate, { actionerId })
 	return await bond.save()
@@ -52,16 +53,21 @@ export const updateBondStatus = async (
  * @param userId - User's ObjectId or string
  * @returns Array of bond documents
  */
-export const getUserBonds = async (userId: Types.ObjectId | string): Promise<IBond[]> => {
+export const getUserBonds = async (
+	userId: Types.ObjectId | string
+): Promise<IBond[]> => {
 	return await Bond.find({
 		$or: [{ sender: userId }, { responder: userId }],
 	})
 	// .populate('sender responder')
 }
 
+/**
+ * Deletes a bond by ID.
+ * @param id - The bond document ID
+ */
 export const deleteBond = async (id: string): Promise<void> => {
 	const bond = await Bond.findById(id)
-	if (!bond) throw new Error('Bond not found')
+	if (!bond) throw new HttpError('Bond not found', 404)
 	await bond.deleteOne()
 }
-

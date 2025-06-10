@@ -1,4 +1,4 @@
-// apps/backend/src/middlewares/requireRefreshToken.ts
+// apps/backend/src/middleware/requireRefreshToken.ts
 
 import { Request, Response, NextFunction } from 'express'
 import { verifyToken, TokenPayload } from '@auth'

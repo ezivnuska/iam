@@ -1,4 +1,4 @@
-// apps/backend/src/middlewares/optionalAuth.middleware.ts
+// apps/backend/src/middleware/optionalAuth.middleware.ts
 
 import { Request, Response, NextFunction, RequestHandler } from 'express'
 import { verifyToken } from '@auth'

@@ -1,8 +1,8 @@
 // apps/web/src/components/PostListItem.tsx
 
 import React, { useRef, useState } from 'react'
-import { Pressable, Text } from 'react-native'
-import { Column, Row, LikeCommentBar, PostComments, ProfileImage, LinkPreview, AddCommentForm } from '@/components'
+import { Text } from 'react-native'
+import { Column, Row, LikeCommentBar, PostComments, ProfileImage, LinkPreview, AddCommentForm, IconButton } from '@/components'
 import { PartialUser, Post } from '@iam/types'
 import { Size } from '@/styles'
 import Autolink from 'react-native-autolink'
@@ -80,9 +80,11 @@ export const PostListItem: React.FC<Props> = ({
 				</Text>
 			</Column>
 			{isAuthor && (
-				<Pressable onPress={handleDelete} style={{ alignSelf: 'flex-start' }}>
-					<Ionicons name='close-sharp' size={24} color='black' />
-				</Pressable>
+				<IconButton
+                    onPress={handleDelete}
+                    icon={<Ionicons name='trash-bin' size={24} color='black' />}
+                />
+					
 			)}
 		</Row>
 	)

@@ -1,8 +1,8 @@
 // apps/backend/src/routes/image.routes.ts
 
 import { Router } from 'express'
-import { requireAuth } from '../middlewares/auth.middleware'
-import { uploadMemory } from '../middlewares/upload.middleware'
+import { requireAuth } from '../middleware/auth.middleware'
+import { uploadMemory } from '../middleware/upload.middleware'
 import {
     uploadImage,
     getImages,

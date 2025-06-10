@@ -11,8 +11,8 @@ import {
     toggleLike,
 	updatePost,
 } from '../controllers/post.controller'
-import { optionalAuth } from '../middlewares/optionalAuth.middleware'
-import { requireAuth } from '../middlewares/auth.middleware'
+import { optionalAuth } from '../middleware/optionalAuth.middleware'
+import { requireAuth } from '../middleware/auth.middleware'
 import { asyncHandler } from '../utils/asyncHandler'
 
 const router: Router = Router()
