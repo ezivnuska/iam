@@ -41,19 +41,6 @@ export const deletePost = async (id: string): Promise<{ success: boolean }> => {
 	return res.data
 }
 
-export const scrape = async (url: string): Promise<any> => {
-	if (!url || typeof url !== 'string') {
-		throw new Error('INVALID_URL: Need to provide a valid URL')
-	}
-	try {
-		const { data } = await api.post('/posts/scrape', { url })
-		return data.response
-	} catch (err) {
-		console.error(`Scrape failed for ${url}`, err)
-		return null
-	}
-}
-
 export const fetchPostCommentCount = async (postId: string): Promise<number> => {
 	const summary = await commentService.fetchCommentSummary(postId, 'Post')
 	return summary.count
@@ -65,4 +52,17 @@ export const fetchPostComments = async (postId: string) => {
 
 export const addPostComment = async (postId: string, content: string) => {
 	return commentService.addComment(postId, 'Post', content)
+}
+
+export const scrape = async (url: string): Promise<any> => {
+	if (!url || typeof url !== 'string') {
+		throw new Error('INVALID_URL: Need to provide a valid URL')
+	}
+	try {
+		const { data } = await api.post('/posts/scrape', { url })
+		return data.response
+	} catch (err) {
+		console.error(`Scrape failed for ${url}`, err)
+		return null
+	}
 }

@@ -12,7 +12,7 @@ export class ScrapeError extends Error {
 }
 
 const metascraper = require('metascraper')([
-    require('metascraper-description')(),
+    require('metascraper-description')({ truncateLength: 200 }),
     require('metascraper-image')(),
     require('metascraper-title')()
 ])
@@ -42,7 +42,7 @@ const findOEmbedProvider = (url: string) => getOEmbedProviders().find(p => p.reg
 
 const fetchOEmbed = async (url: string) => {
 	const provider = findOEmbedProvider(url)
-	if (!provider) return null
+	if (!provider) return undefined  // <-- changed from null
 
 	let oembedUrl = `${provider.endpoint}?url=${encodeURIComponent(url)}&format=json`
 
@@ -74,6 +74,8 @@ const fetchOEmbed = async (url: string) => {
 		if (err.name === 'FetchError') {
 			throw new ScrapeError('Network error during oEmbed fetch')
 		}
+		// Return undefined on fetch error instead of throwing?
+		// Or keep throw, depending on your error handling preference
 		throw err
 	}
 }
@@ -90,12 +92,17 @@ export const scrapeMetadata = async (url: string) => {
 		const hasProvider = findOEmbedProvider(normalizedUrl)
 
 		// Try oEmbed first
-		let metadata = hasProvider ? await fetchOEmbed(normalizedUrl) : null
+		let metadata = hasProvider ? await fetchOEmbed(normalizedUrl) : undefined  // <-- changed from null
 
 		// If oEmbed fails or lacks title, fallback to scraping
 		if (!metadata?.title) {
 			const { html } = await getContent(normalizedUrl)
 			metadata = await metascraper({ html, url: normalizedUrl })
+		}
+
+		// If metadata is empty or no useful data, return undefined
+		if (!metadata || (!metadata.title && !metadata.description && !metadata.image)) {
+			return undefined
 		}
 
 		return metadata

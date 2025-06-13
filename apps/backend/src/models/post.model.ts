@@ -7,6 +7,13 @@ export interface IPost extends Document {
     content: string
     likes: Types.ObjectId[]
     image?: Types.ObjectId
+    linkUrl?: string
+    linkPreview?: {
+        title?: string
+        description?: string
+        image?: string
+        siteName?: string
+    }
     likedByCurrentUser?: boolean
 }
 
@@ -16,6 +23,13 @@ const postSchema = new Schema<IPost>(
         content: { type: String, required: true },
         likes: [{ type: Schema.Types.ObjectId, ref: 'User' }],
         image: { type: Schema.Types.ObjectId, ref: 'Image', required: false },
+        linkUrl: { type: String },
+        linkPreview: {
+            title: String,
+            description: String,
+            image: String,
+            siteName: String,
+        },
     },
     { timestamps: true }
 )

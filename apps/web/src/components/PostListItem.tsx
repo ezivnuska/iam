@@ -13,7 +13,6 @@ import { useAuth, useModal, usePosts } from '@/hooks'
 
 type Props = {
 	post: Post
-	firstUrl: string | null
 	showPreview: boolean
 	commentCount: number
 	onPostDeleted?: (postId: string) => void
@@ -22,7 +21,6 @@ type Props = {
 
 export const PostListItem: React.FC<Props> = ({
 	post,
-	firstUrl,
 	showPreview,
 	commentCount,
 	onPostDeleted,
@@ -81,10 +79,9 @@ export const PostListItem: React.FC<Props> = ({
 			</Column>
 			{isAuthor && (
 				<IconButton
-                    onPress={handleDelete}
-                    icon={<Ionicons name='trash-bin' size={24} color='black' />}
-                />
-					
+					onPress={handleDelete}
+					icon={<Ionicons name='trash-bin' size={24} color='black' />}
+				/>
 			)}
 		</Row>
 	)
@@ -93,7 +90,7 @@ export const PostListItem: React.FC<Props> = ({
 		<Column flex={1} spacing={Size.M} paddingBottom={Size.L}>
 			{renderHeader()}
 
-            {post.image && <AutoSizeImage image={post.image} />}
+			{post.image && <AutoSizeImage image={post.image} />}
 
 			<Autolink
 				text={post.content}
@@ -106,7 +103,9 @@ export const PostListItem: React.FC<Props> = ({
 				truncateChars='...'
 			/>
 
-			{firstUrl && showPreview && !post.image && <LinkPreview url={firstUrl} />}
+			{showPreview && post.linkUrl && post.linkPreview && (
+				<LinkPreview url={post.linkUrl} preview={post.linkPreview} />
+			)}
 
 			<LikeCommentBar
 				likeCount={likeCount}

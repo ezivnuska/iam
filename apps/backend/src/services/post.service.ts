@@ -3,7 +3,48 @@
 import mongoose from 'mongoose'
 import Post from '../models/post.model'
 import { HttpError } from '../utils/HttpError'
-import { UploadedImage } from '@iam/types'
+import { scrapeMetadata } from '../utils/metadata.utils'
+import { extractFirstUrl } from '../utils/extractFirstUrl'
+
+export async function createPost(userId: string, content: string, image?: { id: string }) {
+    const postData: any = {
+        author: userId,
+        content,
+    }
+
+    if (image?.id) {
+        postData.image = image.id
+    }
+
+    const firstUrl = extractFirstUrl(content)
+    if (firstUrl) {
+        postData.linkUrl = firstUrl
+
+        try {
+            const metadata = await scrapeMetadata(firstUrl)
+            if (metadata) {
+                postData.linkPreview = metadata
+            }
+            // If metadata is undefined, just skip setting linkPreview
+        } catch (err) {
+            console.warn(`Failed to scrape link metadata for ${firstUrl}:`, err)
+        }
+    }
+
+    const post = await Post.create(postData)
+
+    return await post.populate([
+        {
+            path: 'author',
+            select: 'username avatar',
+            populate: {
+                path: 'avatar',
+                select: '_id filename variants username',
+            },
+        },
+        { path: 'image' },
+    ])
+}
 
 export const getAllPosts = async (currentUserId?: string) => {
 	const posts = await Post.find()
@@ -43,41 +84,6 @@ export const getPostById = async (id: string) => {
 	return post
 }
 
-// export const createPost = async (userId: string, content: string) => {
-// 	const newPost = await Post.create({ author: userId, content })
-// 	return newPost
-// 		.populate({
-// 			path: 'author',
-// 			select: 'username avatar',
-// 			populate: {
-// 				path: 'avatar',
-// 				select: '_id filename variants username',
-// 			},
-// 		})
-// 		.then(p => p.toJSON({ virtuals: true }))
-// }
-
-export async function createPost(userId: string, content: string, image?: { id: string }) {
-    const postData: any = { author: userId, content }
-
-    if (image?.id) {
-        postData.image = image.id
-    }
-
-    const post = await Post.create(postData)
-	return await post.populate([
-		{
-			path: 'author',
-			select: 'username avatar',
-			populate: {
-				path: 'avatar',
-				select: '_id filename variants username',
-			},
-		},
-		{ path: 'image' },
-	])
-}
-
 export const updatePost = async (id: string, userId: string, content: string, image?: { id: string }) => {
 	const post = await Post.findOne({ _id: id, author: userId })
 		.populate({
@@ -104,7 +110,7 @@ export const updatePost = async (id: string, userId: string, content: string, im
 
 export const deletePost = async (id: string, userId: string) => {
 	const result = await Post.deleteOne({ _id: id, author: userId })
-
+	console.log('post deleted', result)
 	if (result.deletedCount === 0) {
 		throw new HttpError('Post not found or unauthorized', 404)
 	}
@@ -146,4 +152,30 @@ export const togglePostLike = async (userId: string, postId: string) => {
 
 	await post.save()
 	return post
+}
+
+export async function scrapeAndUpdateLinkPreview(postId: string) {
+	const post = await Post.findById(postId)
+	if (!post || !post.linkUrl) return null
+
+	try {
+		const metadata = await scrapeMetadata(post.linkUrl)
+		post.linkPreview = metadata
+		await post.save()
+
+		return await post.populate([
+			{
+				path: 'author',
+				select: 'username avatar',
+				populate: {
+					path: 'avatar',
+					select: '_id filename variants username',
+				},
+			},
+			{ path: 'image' },
+		])
+	} catch (err) {
+		console.warn(`Failed to scrape metadata for post ${postId}:`, err)
+		throw new HttpError('Metadata scraping failed', 500)
+	}
 }

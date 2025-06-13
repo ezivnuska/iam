@@ -104,3 +104,19 @@ export const scrapePost = async (req: Request, res: Response): Promise<void> => 
 		}
 	}
 }
+
+export const scrapePostLinkPreview = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+	try {
+		const { id } = req.params
+		const updatedPost = await postService.scrapeAndUpdateLinkPreview(id)
+
+		if (!updatedPost) {
+			res.status(404).json({ error: 'Post not found or no link to scrape' })
+			return
+		}
+
+		res.status(200).json(updatedPost)
+	} catch (err) {
+		next(err)
+	}
+}

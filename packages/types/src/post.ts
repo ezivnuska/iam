@@ -23,4 +23,10 @@ export interface Post {
     likes: string[]
     likedByCurrentUser: boolean
     image?: UploadedImage
+    linkUrl?: string
+	linkPreview?: {
+		title?: string
+		description?: string
+		image?: string
+	}
 }
