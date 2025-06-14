@@ -1,7 +1,7 @@
 // packages/ui/src/components/layouts/PageLayout/Footer.tsx
 
 import React from 'react'
-import { Text, Pressable, StyleSheet, View } from 'react-native'
+import { Linking, Text, Pressable, StyleSheet, View } from 'react-native'
 import { Row } from '@/components'
 import { useNavigation } from '@react-navigation/native'
 import { MAX_WIDTH } from './constants'
@@ -13,6 +13,9 @@ type NavProp = StackNavigationProp<RootStackParamList>
 
 export const Footer = () => {
     const navigation = useNavigation<NavProp>()
+    const gotoKofi = () => {
+        Linking.openURL('https://ko-fi.com/E1E51GFUIF').catch(err => console.error('Error opening ko-fi.com/iameric', err))
+    }
 	return (
         <View style={styles.container}>
             <View style={styles.maxWidthContainer}>
@@ -23,9 +26,12 @@ export const Footer = () => {
                     wrap={false}
                     style={{ zIndex: 200, flexWrap: 'nowrap' }}
                 >
-                    <Text style={styles.copy}>&copy; iameric</Text>
+                    <Text style={[styles.text, styles.copy]}>&copy; iameric</Text>
+                    <Pressable onPress={gotoKofi} style={styles.supportButton}>
+                        <Text style={[styles.text, styles.support]}>Support</Text>
+                    </Pressable>
                     <Pressable onPress={() => navigation.navigate('PrivacyPolicy')}>
-                        <Text style={styles.copy}>Privacy Policy</Text>
+                        <Text style={[styles.text, styles.privacy]}>Privacy Policy</Text>
                     </Pressable>
                 </Row>
             </View>
@@ -47,8 +53,26 @@ const styles = StyleSheet.create({
         marginHorizontal: 'auto',
         paddingHorizontal: Size.M,
     },
+    text: {
+        lineHeight: 24,
+    },
     copy: {
-        fontSize: 18,
-        color: '#000',
+        fontSize: 12,
+        color: '#aaa',
+    },
+    supportButton: {
+        fontSize: 14,
+        paddingHorizontal: Size.S,
+        backgroundColor: '#3a3',
+        borderRadius: 4,
+    },
+    support: {
+        fontSize: 14,
+        color: '#fff',
+        fontWeight: 'bold',
+    },
+    privacy: {
+        fontSize: 12,
+        color: '#aaa',
     },
 })

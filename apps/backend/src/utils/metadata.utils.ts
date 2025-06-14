@@ -48,23 +48,29 @@ const fetchOEmbed = async (url: string) => {
 
 	if (provider.requiresAuth) {
 		const accessToken = process.env.TEMP_ACCESS_TOKEN
+		const appId = process.env.FACEBOOK_APP_ID
 		const appSecret = process.env.FACEBOOK_APP_SECRET
-		if (!accessToken || !appSecret) {
+		if (!appId || !appSecret) {
 			throw new ScrapeError('App credentials missing for oEmbed')
 		}
-		const appSecretProof = getAppSecretProof(accessToken, appSecret)
-		oembedUrl += `&access_token=${accessToken}&appsecret_proof=${appSecretProof}`
+		// const appSecretProof = getAppSecretProof(accessToken, appSecret)
+		oembedUrl += `&access_token=${appId}|${appSecret}`
+		console.log('OEMBED', oembedUrl)
 	}
 
 	try {
 		const res = await fetch(oembedUrl)
 		const rawText = await res.text()
 		if (!res.ok) {
-			const errorText = await res.text()
-			console.error('oEmbed fetch failed:', res.status, errorText)
+			console.error('oEmbed fetch failed:', res.status, rawText)
 			throw new ScrapeError(`oEmbed fetch failed: ${res.status}`)
 		}
-		const data: OEmbedResponse = JSON.parse(rawText)
+		let data: OEmbedResponse
+		try {
+			data = JSON.parse(rawText)
+		} catch (e) {
+			throw new ScrapeError('Invalid JSON response from oEmbed endpoint')
+		}
 		return {
 			title: data.title || '',
 			description: '',
