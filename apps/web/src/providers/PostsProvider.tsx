@@ -1,6 +1,6 @@
 // apps/web/src/providers/PostsProvider.tsx
 
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { createContext, useState } from 'react'
 import * as postService from '@services'
 import { Post } from '@iam/types'
 
@@ -68,7 +68,7 @@ export const PostsProvider = ({ children }: { children: React.ReactNode }) => {
 			throw err
 		}
 	}
-
+    
 	return (
 		<PostsContext.Provider
 			value={{

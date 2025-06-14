@@ -7,7 +7,13 @@ import React, {
 	useCallback,
 	ReactNode,
 } from 'react'
-import { View, Platform, Pressable, StyleSheet } from 'react-native'
+import {
+	Modal,
+	View,
+	Platform,
+	Pressable,
+	StyleSheet,
+} from 'react-native'
 
 type ModalContent = ReactNode | null
 
@@ -20,7 +26,7 @@ export type ModalContextType = {
 
 export const ModalContext = createContext<ModalContextType | undefined>(undefined)
 
-export const ModalProvider = ({ children }: { children: ReactNode }) => {
+export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
 	const [modalStack, setModalStack] = useState<ModalContent[]>([])
 
 	const showModal = useCallback((modalContent: ModalContent) => {
@@ -37,21 +43,38 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
 
 	const topModal = modalStack[modalStack.length - 1]
 
+	const useNativeModal = Platform.OS !== 'web'
+
+	const modalOverlayStyle = [
+		styles.baseOverlay,
+		Platform.OS === 'web' ? { position: 'fixed' as any } : { position: 'absolute' },
+	]
+
 	return (
 		<ModalContext.Provider
 			value={{ showModal, hideModal, hideAllModals, modalStack }}
 		>
 			{children}
-			{topModal && (
-				<View style={styles.modalOverlay}>
-					<Pressable style={styles.backdrop} onPress={hideModal} />
-					{typeof topModal === 'string' ? (
+			{topModal &&
+				(useNativeModal ? (
+					<Modal
+						transparent
+						visible
+						animationType="fade"
+						presentationStyle="overFullScreen"
+						onRequestClose={hideModal}
+					>
+						<View style={modalOverlayStyle}>
+							<Pressable style={styles.backdrop} onPress={hideModal} />
+							<View style={styles.modalContent}>{topModal}</View>
+						</View>
+					</Modal>
+				) : (
+					<View style={modalOverlayStyle}>
+						<Pressable style={styles.backdrop} onPress={hideModal} />
 						<View style={styles.modalContent}>{topModal}</View>
-					) : (
-						topModal
-					)}
-				</View>
-			)}
+					</View>
+				))}
 		</ModalContext.Provider>
 	)
 }
@@ -65,10 +88,7 @@ export const useModalContext = () => {
 }
 
 const styles = StyleSheet.create({
-	modalOverlay: {
-		...(Platform.OS === 'web'
-			? { position: 'fixed' as 'absolute' }
-			: { position: 'absolute' }),
+	baseOverlay: {
 		top: 0,
 		left: 0,
 		right: 0,
@@ -82,14 +102,14 @@ const styles = StyleSheet.create({
 		backgroundColor: 'rgba(0, 0, 0, 0.5)',
 	},
 	modalContent: {
-		backgroundColor: '#fff',
-		borderRadius: 8,
-		padding: 24,
-		minWidth: 300,
-		shadowColor: '#000',
-		shadowOpacity: 0.2,
-		shadowOffset: { width: 0, height: 2 },
-		shadowRadius: 4,
-		elevation: 5,
+		position: 'absolute',
+		top: 0,
+		left: 0,
+		right: 0,
+		bottom: 0,
+		width: '100%',
+		height: '100%',
+		backgroundColor: '#fff', // or make this transparent if needed
+		zIndex: 10000,
 	},
 })

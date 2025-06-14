@@ -5,7 +5,7 @@ import { Text, TextInput, Alert, TextInput as RNTextInput } from 'react-native'
 import { useForm, Controller, FieldErrors } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Button, Column, FormHeader, FormLayout, SignupForm, SubmitButton } from '@/components'
+import { Button, Column, ModalContainer, SignupForm, SubmitButton } from '@/components'
 import { useAuth, useModal } from '@/hooks'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { form as styles, shadows } from '@/styles'
@@ -108,8 +108,7 @@ export const SigninForm = () => {
     const showSignupForm = () => showModal(<SignupForm />)
     
 	return (
-		<FormLayout>
-			<FormHeader title='Sign In' onCancel={hideModal} />
+		<ModalContainer title='Sign In'>
 
 			<Controller
 				control={control}
@@ -166,6 +165,6 @@ export const SigninForm = () => {
                 <SubmitButton label='Sign In' onPress={handleSubmit(onSubmit, onInvalid)} submitting={isSubmitting} />
                 <Button label='Sign Up' onPress={showSignupForm} />
             </Column>
-		</FormLayout>
+		</ModalContainer>
 	)
 }

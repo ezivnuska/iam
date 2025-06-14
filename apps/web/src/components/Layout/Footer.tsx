@@ -1,20 +1,22 @@
 // packages/ui/src/components/layouts/PageLayout/Footer.tsx
 
 import React from 'react'
-import { Linking, Text, Pressable, StyleSheet, View } from 'react-native'
-import { Row } from '@/components'
+import { Text, Pressable, StyleSheet, View } from 'react-native'
+import { KoFiPanel, Row } from '@/components'
 import { useNavigation } from '@react-navigation/native'
 import { MAX_WIDTH } from './constants'
 import { Size } from '@/styles'
 import type { StackNavigationProp } from '@react-navigation/stack'
 import type { RootStackParamList } from '@iam/types'
+import { useModal } from '@/hooks'
 
 type NavProp = StackNavigationProp<RootStackParamList>
 
 export const Footer = () => {
     const navigation = useNavigation<NavProp>()
-    const gotoKofi = () => {
-        Linking.openURL('https://ko-fi.com/E1E51GFUIF').catch(err => console.error('Error opening ko-fi.com/iameric', err))
+    const { showModal } = useModal()
+    const showKofiModal = () => {
+        showModal(<KoFiPanel />)
     }
 	return (
         <View style={styles.container}>
@@ -27,7 +29,7 @@ export const Footer = () => {
                     style={{ zIndex: 200, flexWrap: 'nowrap' }}
                 >
                     <Text style={[styles.text, styles.copy]}>&copy; iameric</Text>
-                    <Pressable onPress={gotoKofi} style={styles.supportButton}>
+                    <Pressable onPress={showKofiModal} style={styles.supportButton}>
                         <Text style={[styles.text, styles.support]}>Support</Text>
                     </Pressable>
                     <Pressable onPress={() => navigation.navigate('PrivacyPolicy')}>

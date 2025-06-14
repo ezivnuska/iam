@@ -5,12 +5,7 @@ import { TextInput, Text, Alert, TextInput as RNTextInput } from 'react-native'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-
-import {
-	FormLayout,
-	FormHeader,
-	SubmitButton,
-} from '@/components'
+import { SubmitButton, ModalContainer } from '@/components'
 import { useAuth, useModal } from '@/hooks'
 import { addComment } from '@services'
 import { form as styles, shadows } from '@/styles'
@@ -72,8 +67,7 @@ export const AddCommentForm: React.FC<AddCommentFormProps> = ({
 	}
 
 	return (
-		<FormLayout>
-			<FormHeader title='Add Comment' onCancel={hideModal} />
+		<ModalContainer title='Add Comment'>
 
 			<Controller
 				control={control}
@@ -113,6 +107,6 @@ export const AddCommentForm: React.FC<AddCommentFormProps> = ({
 				onPress={handleSubmit(onSubmit)}
 				disabled={isSubmitting}
 			/>
-		</FormLayout>
+		</ModalContainer>
 	)
 }

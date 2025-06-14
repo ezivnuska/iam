@@ -9,16 +9,18 @@ export function errorHandler(err: any, req: Request, res: Response, _next: NextF
 
 		// Normalize { field, issue } into [field, issue] for the frontend
 		if (details && 'field' in details && 'issue' in details) {
-			return res.status(status).json({
+			res.status(status).json({
 				error: {
 					message,
 					details: [details.field, details.issue],
 				},
 			})
+            return
 		}
 
 		// Default structured HttpError
-		return res.status(status).json({ error: { message, details } })
+		res.status(status).json({ error: { message, details } })
+        return
 	}
 
 	console.error('Unhandled error:', err)

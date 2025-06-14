@@ -8,9 +8,11 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import path from 'path'
 import dotenv from 'dotenv'
-import { registerChatHandlers } from './controllers/chat.controller'
+
+import type { Request, Response, ErrorRequestHandler } from 'express'
+import { initSockets } from './sockets'
 import { errorHandler } from './middleware/error.middleware'
-import type { ErrorRequestHandler } from 'express'
+import { registerSocketServer } from './lib/socket'
 
 import adminRoutes from './routes/admin.routes'
 import authRoutes from './routes/auth.routes'
@@ -20,33 +22,38 @@ import userRoutes from './routes/user.routes'
 import imageRoutes from './routes/image.routes'
 import postRoutes from './routes/post.routes'
 import commentRoutes from './routes/comment.routes'
+import kofiRoutes from './routes/kofi.routes'
 
-// Default to development
-const env = process.env.NODE_ENV || 'development'
-
-// Try backend .env first, fallback only if not found
-const localPath = path.resolve(__dirname, `../.env.${env}`)
-const fallbackPath = path.resolve(__dirname, `../../../.env.${env}`)
-
-if (!dotenv.config({ path: localPath }).parsed) {
-    dotenv.config({ path: fallbackPath })
+function loadEnv(env: string) {
+	const local = dotenv.config({ path: path.resolve(__dirname, `../.env.${env}`) })
+	if (!local.parsed) {
+		const fallback = dotenv.config({ path: path.resolve(__dirname, `../../../.env.${env}`) })
+		if (!fallback.parsed) {
+			console.warn(`⚠️  Could not load .env.${env} from either local or fallback path.`)
+		}
+	}
 }
 
-console.log('INSTAGRAM_ACCESS_TOKEN:', process.env.INSTAGRAM_ACCESS_TOKEN)
-console.log('FACEBOOK_ACCESS_TOKEN:', process.env.FACEBOOK_ACCESS_TOKEN)
-console.log('TEMP_ACCESS_TOKEN:', process.env.TEMP_ACCESS_TOKEN)
+// --- Load Environment Variables ---
+loadEnv(process.env.NODE_ENV || 'development')
 
-const API_PORT = process.env.API_PORT || 4000
+// --- Constants ---
+const API_PORT = parseInt(process.env.API_PORT || '4000', 10)
 
 const corsOptions = {
 	origin: process.env.CORS_ORIGIN,
 	credentials: true,
 }
 
+// --- Initialize App & Server ---
 const app = express()
 const server = createServer(app)
-const io = new Server(server, { cors: corsOptions })
 
+const io = new Server(server, { cors: corsOptions })
+registerSocketServer(io)
+initSockets(io)
+
+// --- Express Middleware ---
 app.use(cookieParser())
 app.use(cors(corsOptions))
 app.use(express.json({ limit: '5mb' }))
@@ -56,6 +63,7 @@ app.use(express.static('dist'))
 const imagesPath = path.resolve(__dirname, '../../images')
 app.use('/images', express.static(imagesPath))
 
+// --- API Routes ---
 app.use('/api/admin', adminRoutes)
 app.use('/api/auth', authRoutes)
 app.use('/api/bond', bondRoutes)
@@ -64,69 +72,53 @@ app.use('/api/users', userRoutes)
 app.use('/api/images', imageRoutes)
 app.use('/api/posts', postRoutes)
 app.use('/api/comments', commentRoutes)
+app.post('/api/kofi', kofiRoutes)
 
-// 404 handler for unmatched routes
-app.use((req, res, next) => {
-    res.status(404).json({ message: 'Not Found' })
+// --- Misc Handlers ---
+app.get('/health', (req: Request, res: Response) => {
+	res.status(200).send('OK')
 })
 
+app.use((req: Request, res: Response) => {
+	res.status(404).json({ message: 'Not Found' })
+})
 app.use(errorHandler as ErrorRequestHandler)
 
-// Health check endpoint
-app.get('/health', (_req, res) => {
-    res.status(200).send('OK')
-})
-
-io.on('connection', (socket) => {
-	console.log(`Socket connected: ${socket.id}`)
-	registerChatHandlers(io, socket)
-
-	socket.on('disconnect', () => {
-		console.log(`Socket disconnected: ${socket.id}`)
-	})
-})
-
+// --- Database & Server Startup ---
 mongoose.connection.on('error', (err) => {
 	console.error('MongoDB connection error:', err)
 })
 
 const start = async () => {
 	try {
-		await mongoose.connect(process.env.MONGO_URI!)
+		const mongoUri = process.env.MONGO_URI
+		if (!mongoUri) throw new Error('Missing MONGO_URI in environment')
+
+		await mongoose.connect(mongoUri)
 		console.log('MongoDB connected')
-        
-        server.listen(API_PORT, () => {
-            console.log(`Server running on http://localhost:${API_PORT}`)
-        })
+
+		server.listen(API_PORT, () => {
+			console.log(`Server running on http://localhost:${API_PORT}`)
+		})
 	} catch (err) {
 		console.error('MongoDB connection error:', err)
 	}
 }
 
-process.on('SIGINT', async () => {
-	console.log('Received SIGINT, shutting down gracefully...')
-	
+// --- Graceful Shutdown ---
+const shutdown = async () => {
+	console.log('Shutting down gracefully...')
 	try {
 		await mongoose.connection.close()
 		console.log('MongoDB connection closed')
 		process.exit(0)
 	} catch (err) {
-		console.error('Error during MongoDB disconnection', err)
+		console.error('Error during shutdown', err)
 		process.exit(1)
 	}
-})
-  
-process.on('SIGTERM', async () => {
-	console.log('Received SIGTERM, shutting down gracefully...')
-	
-	try {
-		await mongoose.connection.close()
-		console.log('MongoDB connection closed')
-		process.exit(0)
-	} catch (err) {
-		console.error('Error during MongoDB disconnection', err)
-		process.exit(1)
-	}
-})
+}
+
+process.on('SIGINT', shutdown)
+process.on('SIGTERM', shutdown)
 
 start()

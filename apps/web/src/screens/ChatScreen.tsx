@@ -1,46 +1,33 @@
 // apps/web/src/screens/ChatScreen.tsx
 
 import React, { useRef, useState, useEffect } from 'react'
-import { TextInput, TextInput as RNTextInput, Text, StyleSheet, View } from 'react-native'
+import { TextInput, TextInput as RNTextInput, Text, StyleSheet } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { Column, PageLayout } from '@/components'
-import { io } from 'socket.io-client'
 import { horizontalPadding } from '@/styles'
-
-const socket = io(process.env.SOCKET_URL, {
-    path: '/socket.io',
-    withCredentials: true,
-    transports: ['websocket'],
-})
+import { useSocket } from '@/hooks'
 
 export const ChatScreen = () => {
 	
 	const [messages, setMessages] = useState<any[]>([])
 	const [input, setInput] = useState('')
-
     const inputRef = useRef<RNTextInput>(null)
 
-	useEffect(() => {
-		socket.on('chat:message', (msg) => {
-			// assuming msg is an object { id, text, timestamp }
+    const { onChatMessage, emitChatMessage } = useSocket()
+
+    useEffect(() => {
+		const cleanup = onChatMessage((msg) => {
 			setMessages(prev => [...prev, msg])
 		})
-
-		return () => {
-			socket.off('chat:message')
-		}
-	}, [])
+		return cleanup
+	}, [onChatMessage])
 
 	const sendMessage = () => {
 		if (input.trim()) {
-			socket.emit('chat:message', input)
+			emitChatMessage(input)
 			setInput('')
 		}
 	}
-
-    const scrollToInput = (ref: React.RefObject<any>) => {
-        ref?.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    }
 
 	return (
         <PageLayout>
@@ -64,7 +51,7 @@ export const ChatScreen = () => {
                     placeholder='Say something...'
                     style={styles.input}
                     returnKeyType='send'
-                    onFocus={() => scrollToInput(inputRef)}
+					onFocus={() => inputRef.current?.focus()}
                     ref={inputRef}
                 />
             </Column>

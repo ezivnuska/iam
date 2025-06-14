@@ -5,7 +5,7 @@ import { Text, TextInput, Alert, TextInput as RNTextInput } from 'react-native'
 import { useForm, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { FormHeader, FormLayout, SigninForm, SubmitButton } from '@/components'
+import { ModalContainer, SigninForm, SubmitButton } from '@/components'
 import { useAuth, useModal } from '@/hooks'
 import { signupRequest } from '@services'
 import { form as styles, shadows } from '@/styles'
@@ -104,8 +104,7 @@ export const SignupForm = () => {
     const showSigninForm = () => showModal(<SigninForm />)
 
 	return (
-		<FormLayout>
-			<FormHeader title='Create Account' onCancel={hideModal} />
+		<ModalContainer title='Create Account'>
 
 			<Controller
 				control={control}
@@ -208,6 +207,6 @@ export const SignupForm = () => {
 			{errors.confirmPassword && <Text style={styles.error}>{errors.confirmPassword.message}</Text>}
 
             <SubmitButton label='Sign Up' onPress={handleSubmit(onSubmit, onInvalid)} submitting={isSubmitting} />
-		</FormLayout>
+		</ModalContainer>
 	)
 }

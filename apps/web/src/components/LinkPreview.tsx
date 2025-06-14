@@ -34,7 +34,7 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, preview }) => {
 	const openExternalUrl = () => {
 		Linking.openURL(url).catch(err => console.error('Error opening URL:', err))
 	}
-
+	
 	if (!preview?.title && !preview?.description && !preview?.image) return null
 
 	return (

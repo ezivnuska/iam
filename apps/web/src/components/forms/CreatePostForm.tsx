@@ -6,13 +6,12 @@ import {
 	Text,
 	TextInput,
 	ActivityIndicator,
-	Alert,
 	TextInput as RNTextInput,
 } from 'react-native'
 import { useForm, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Button, FormLayout, FormHeader, ImageUploader } from '@/components'
+import { Button, ImageUploader, ModalContainer } from '@/components'
 import * as postService from '@services'
 import { useModal, usePosts } from '@/hooks'
 import { form as styles, shadows } from '@/styles'
@@ -24,24 +23,6 @@ const schema = z.object({
 		.custom<UploadedImage>()
 		.optional(),
 })
-
-// optional upgrade...
-// const uploadedImageSchema: z.ZodType<UploadedImage> = z.object({
-// 	id: z.string(),
-// 	url: z.string().url(),
-// 	filename: z.string(),
-// 	username: z.string(),
-// 	alt: z.string(),
-// 	createdAt: z.string(),
-// 	updatedAt: z.string(),
-// 	width: z.number(),
-// 	height: z.number(),
-// })
-
-// const schema = z.object({
-// 	content: z.string().min(1, 'Post content is required').max(280),
-// 	image: uploadedImageSchema.optional(),
-// })
 
 type CreatePostFormProps = z.infer<typeof schema>
 
@@ -120,63 +101,62 @@ export const CreatePostForm = ({ onPostCreated }: { onPostCreated?: () => void }
     const image = getValues('image')
 
 	return (
-	<FormLayout>
-		<FormHeader title='Create Post' onCancel={hideModal} />
+        <ModalContainer title='Create Post'>
 
-		<Controller
-		control={control}
-		name='content'
-		render={({ field: { value, onChange, onBlur } }) => (
-			<TextInput
-				ref={contentInputRef}
-				placeholder={`What's on your mind?`}
-				placeholderTextColor='#070'
-				value={value}
-				multiline
-				numberOfLines={3}
-				onChangeText={onChange}
-				onFocus={() => setFocused('content')}
-				onBlur={() => {
-					onBlur()
-					setFocused(null)
-				}}
-				returnKeyType='done'
-				onSubmitEditing={handleSubmit(onSubmit, onInvalid)}
-				style={[
-					styles.input,
-					shadows.input,
-					isFocused('content') && styles.inputFocused,
-				]}
-			/>
-		)}
-		/>
-		{errors.content && <Text style={styles.error}>{errors.content.message}</Text>}
+            <Controller
+            control={control}
+            name='content'
+            render={({ field: { value, onChange, onBlur } }) => (
+                <TextInput
+                    ref={contentInputRef}
+                    placeholder={`What's on your mind?`}
+                    placeholderTextColor='#070'
+                    value={value}
+                    multiline
+                    numberOfLines={3}
+                    onChangeText={onChange}
+                    onFocus={() => setFocused('content')}
+                    onBlur={() => {
+                        onBlur()
+                        setFocused(null)
+                    }}
+                    returnKeyType='done'
+                    onSubmitEditing={handleSubmit(onSubmit, onInvalid)}
+                    style={[
+                        styles.input,
+                        shadows.input,
+                        isFocused('content') && styles.inputFocused,
+                    ]}
+                />
+            )}
+            />
+            {errors.content && <Text style={styles.error}>{errors.content.message}</Text>}
 
-		{/* Image preview */}
-		{localImageData ? (
-			<Image
-				source={{ uri: localImageData.uri }}
-				style={{ width: 150, height: 150, marginVertical: 10, borderRadius: 8 }}
-			/>
-		) : image ? (
-			<Image
-				source={{ uri: image.url }}
-				style={{ width: 150, height: 150, marginVertical: 10, borderRadius: 8 }}
-			/>
-		) : null}
+            {/* Image preview */}
+            {localImageData ? (
+                <Image
+                    source={{ uri: localImageData.uri }}
+                    style={{ width: 150, height: 150, marginVertical: 10, borderRadius: 8 }}
+                />
+            ) : image ? (
+                <Image
+                    source={{ uri: image.url }}
+                    style={{ width: 150, height: 150, marginVertical: 10, borderRadius: 8 }}
+                />
+            ) : null}
 
-		<ImageUploader
-			onImageSelected={(imageData) => {
-				setLocalImageData(imageData)
-				setValue('image', undefined) // clear uploaded image until upload
-			}}
-		/>
+            <ImageUploader
+                onImageSelected={(imageData) => {
+                    setLocalImageData(imageData)
+                    setValue('image', undefined) // clear uploaded image until upload
+                }}
+            />
 
-		{isSubmitting || uploadingImage ? (
-			<ActivityIndicator style={{ marginTop: 20 }} />
-		) : (
-			<Button label='Post' onPress={handleSubmit(onSubmit, onInvalid)} />
-		)}
-	</FormLayout>
+            {isSubmitting || uploadingImage ? (
+                <ActivityIndicator style={{ marginTop: 20 }} />
+            ) : (
+                <Button label='Post' onPress={handleSubmit(onSubmit, onInvalid)} />
+            )}
+        </ModalContainer>
 	)
 }

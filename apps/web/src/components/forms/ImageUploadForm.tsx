@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { Dimensions, Image, Platform, StyleSheet, Text } from 'react-native'
-import { Column, FormHeader, FormLayout, IconButton, NativeCamera, Row, SubmitButton, WebCamera } from '../'
+import { Column, IconButton, ModalContainer, NativeCamera, Row, SubmitButton, WebCamera } from '../'
 import { uploadImage } from '@services'
 import { selectImage } from '@/utils'
 import { useModal, useResponsiveImageSize } from '@/hooks'
@@ -127,8 +127,7 @@ export const ImageUploadForm: React.FC<ImageUploaderProps> = ({ onUploaded }) =>
 	return useCamera
         ? renderCamera()
         : (
-            <FormLayout>
-                <FormHeader title='Upload Image' onCancel={hideModal} />
+            <ModalContainer title='Upload Image'>
                 <Column spacing={10} style={styles.container}>
                     {upload && (
                         <Image
@@ -161,7 +160,7 @@ export const ImageUploadForm: React.FC<ImageUploaderProps> = ({ onUploaded }) =>
                     </Row>
                 </Column>
                 {error && <Text style={styles.errorText}>{error}</Text>}
-            </FormLayout>
+            </ModalContainer>
         )
 }
 

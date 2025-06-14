@@ -5,7 +5,7 @@ import { TextInput, Text, Alert, TextInput as RNTextInput } from 'react-native'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { FormLayout, FormHeader, SubmitButton } from '@/components'
+import { SubmitButton, ModalContainer } from '@/components'
 import { useAuth, useModal } from '@/hooks'
 import { updateSelf } from '@services'
 import { form as styles, shadows } from '@/styles'
@@ -81,8 +81,7 @@ export const EditProfileForm = () => {
     const isFocused = (name: string): boolean => name === focused
 
 	return (
-		<FormLayout>
-			<FormHeader title='Edit Bio' onCancel={hideModal} />
+		<ModalContainer title='Edit Bio'>
 			<Controller
 				control={control}
 				name='bio'
@@ -113,6 +112,6 @@ export const EditProfileForm = () => {
 				onPress={handleSubmit(onSubmit, onInvalid)}
 				disabled={isSubmitting}
 			/>
-		</FormLayout>
+		</ModalContainer>
 	)
 }

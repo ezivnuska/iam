@@ -58,6 +58,17 @@ export const getAllPosts = async (currentUserId?: string) => {
 
 	return posts.map(post => {
 		const json = post.toJSON()
+	
+		// Clean up the linkPreview
+		if (json.linkPreview) {
+			if (
+				typeof json.linkPreview.description === 'string' &&
+				json.linkPreview.description.trim() === ''
+			) {
+				json.linkPreview.description = undefined
+			}
+		}
+	
 		return {
 			...json,
 			likes: json.likes.map((id: mongoose.Types.ObjectId) => id.toString()),
@@ -65,7 +76,7 @@ export const getAllPosts = async (currentUserId?: string) => {
 				? json.likes.some((id: mongoose.Types.ObjectId) => id.equals(currentUserId))
 				: false,
 		}
-	})
+	})	
 }
 
 export const getPostById = async (id: string) => {

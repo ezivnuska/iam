@@ -10,7 +10,8 @@
         "baseUrl": "./src",
         "paths": {
             "@/*": ["*"]
-        }
+        },
+        "esModuleInterop": true
 	},
 	"include": [
 		"src",

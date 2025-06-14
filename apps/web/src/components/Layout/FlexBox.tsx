@@ -53,7 +53,7 @@ const FlexBox: React.FC<FlexBoxProps> = ({
             paddingRight,
 		}),
 	}
-
+    
 	return <View style={StyleSheet.flatten([layoutStyle, style])}>{children}</View>
 }
 
