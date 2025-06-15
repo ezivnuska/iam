@@ -1,8 +1,8 @@
 // apps/web/src/screens/ChatScreen.tsx
 
-import React, { useRef, useState, useEffect } from 'react'
-import { TextInput, TextInput as RNTextInput, Text, StyleSheet, FlatList } from 'react-native'
-import { Avatar, Column, PageLayout, Row } from '@/components'
+import React, { KeyboardEvent, useRef, useState, useEffect } from 'react'
+import { Platform, TextInput, TextInput as RNTextInput, Text, StyleSheet, FlatList, TouchableOpacity, View } from 'react-native'
+import { Column, Avatar, PageLayout, Row } from '@/components'
 import { horizontalPadding, Size } from '@/styles'
 import { useSocket } from '@/hooks'
 
@@ -15,6 +15,10 @@ export const ChatScreen = () => {
     const { onChatMessage, emitChatMessage } = useSocket()
 
     useEffect(() => {
+		inputRef.current?.focus()
+	}, [])
+
+    useEffect(() => {
 		const cleanup = onChatMessage((msg) => {
 			setMessages(prev => [...prev, msg])
 		})
@@ -25,6 +29,7 @@ export const ChatScreen = () => {
 		if (input.trim()) {
 			emitChatMessage(input)
 			setInput('')
+            inputRef.current?.focus()
 		}
 	}
 
@@ -34,40 +39,35 @@ export const ChatScreen = () => {
                 <FlatList
                     data={messages}
                     keyExtractor={(item) => item._id}
-                    renderItem={({ item }) => {
-                        console.log('message', item)
+                    renderItem={({ item, index }) => {
+                        const showAvatar =
+                            index === 0 || messages[index - 1]?.user?.id !== item.user.id
+                
                         return (
-                            <Row spacing={Size.S} paddingBottom={Size.S}>
-                                <Avatar user={item.user} size='xs' />
-                                <Text style={styles.message}>
-                                    {item.text}
-                                </Text>
+                            <Row paddingBottom={Size.XS}>
+                                <View style={{ width: 40 }}>
+                                    {showAvatar && <Avatar user={item.user} size='xs' />}
+                                </View>
+                                <Text style={styles.message}>{item.text}</Text>
                             </Row>
                         )
                     }}
                 />
-                {/* <KeyboardAwareScrollView
-                    style={styles.container}
-                    enableOnAndroid={true}
-                    extraScrollHeight={100}
-                    keyboardShouldPersistTaps='handled'
-                >
-                    {messages.map((msg, idx) => (
-                        <Text key={idx} style={styles.message}>
-                            {msg.text}
-                        </Text>
-                    ))}
-                </KeyboardAwareScrollView> */}
-                <TextInput
-                    value={input}
-                    onChangeText={setInput}
-                    onSubmitEditing={sendMessage}
-                    placeholder='Say something...'
-                    style={styles.input}
-                    returnKeyType='send'
-					onFocus={() => inputRef.current?.focus()}
-                    ref={inputRef}
-                />
+                <Row style={{ alignItems: 'center' }}>
+                    <TextInput
+                        value={input}
+                        onChangeText={setInput}
+                        placeholder='Say something...'
+                        style={[styles.input, { flex: 1 }]}
+                        returnKeyType='send'
+                        onSubmitEditing={sendMessage}
+                        ref={inputRef}
+                    />
+
+                    <TouchableOpacity onPress={sendMessage}>
+                        <Text style={styles.sendButton}>Send</Text>
+                    </TouchableOpacity>
+                </Row>
             </Column>
         </PageLayout>
 	)
@@ -104,4 +104,10 @@ const styles = StyleSheet.create({
 		backgroundColor: '#fff',
         marginBottom: 10,
 	},
+    sendButton: {
+        marginLeft: 8,
+        color: '#007AFF',
+        fontWeight: 'bold',
+        fontSize: 16,
+    },    
 })
