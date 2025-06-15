@@ -5,6 +5,7 @@ import { Platform, TextInput, TextInput as RNTextInput, Text, StyleSheet, FlatLi
 import { Column, Avatar, PageLayout, Row } from '@/components'
 import { horizontalPadding, Size } from '@/styles'
 import { useSocket } from '@/hooks'
+import Feather from '@expo/vector-icons/Feather'
 
 export const ChatScreen = () => {
 	
@@ -53,19 +54,20 @@ export const ChatScreen = () => {
                         )
                     }}
                 />
-                <Row style={{ alignItems: 'center' }}>
+                <Row align='center' spacing={Size.S}>
                     <TextInput
                         value={input}
                         onChangeText={setInput}
                         placeholder='Say something...'
-                        style={[styles.input, { flex: 1 }]}
+						placeholderTextColor='#ccc'
+                        style={styles.input}
                         returnKeyType='send'
                         onSubmitEditing={sendMessage}
                         ref={inputRef}
                     />
 
-                    <TouchableOpacity onPress={sendMessage}>
-                        <Text style={styles.sendButton}>Send</Text>
+                    <TouchableOpacity onPress={sendMessage} style={styles.sendButton}>
+						<Feather name='arrow-right' size={30} color='#fff' />
                     </TouchableOpacity>
                 </Row>
             </Column>
@@ -96,18 +98,22 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 	},
 	input: {
+		flex: 1,
 		borderWidth: 1,
 		borderColor: '#ccc',
 		borderRadius: 6,
 		paddingHorizontal: 12,
-		paddingVertical: 8,
 		backgroundColor: '#fff',
-        marginBottom: 10,
+		lineHeight: 40,
+		fontSize: 20,
 	},
-    sendButton: {
-        marginLeft: 8,
-        color: '#007AFF',
-        fontWeight: 'bold',
-        fontSize: 16,
-    },    
+	sendButton: {
+		backgroundColor: '#3a3',
+		height: 40,
+		width: 40,
+		borderRadius: 20,
+		overflow: 'hidden',
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
 })
