@@ -1,8 +1,8 @@
-// apps/web/src/components/LinkPreview.tsx
+// apps/web/src/components/Posts/LinkPreview.tsx
 
 import React, { useEffect, useMemo, useState } from 'react'
-import { Dimensions, Image, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { Column } from './Layout'
+import { Image, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Column } from '@/components'
 import { resolveResponsiveProp, Size } from '@/styles'
 
 type LinkPreviewProps = {
