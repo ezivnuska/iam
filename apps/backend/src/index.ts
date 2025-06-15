@@ -33,6 +33,7 @@ if (!dotenv.config({ path: localPath }).parsed) {
 	dotenv.config({ path: fallbackPath })
 }
 
+console.log('IMAGE_UPLOAD_DIR...', process.env.IMAGE_UPLOAD_DIR)
 // --- Constants ---
 const API_PORT = parseInt(process.env.API_PORT || '4000', 10)
 
