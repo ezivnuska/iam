@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react'
 import { View, FlatList, ActivityIndicator } from 'react-native'
-import { CommentItem } from './'
+import { CommentItem } from '@/components'
 import { useAuth } from '@/hooks'
 import { fetchComments, deleteComment } from '@services'
 import type { Comment } from '@iam/types'

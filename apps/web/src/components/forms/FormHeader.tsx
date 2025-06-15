@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { View, Text, StyleSheet, StyleProp, TextStyle, ViewStyle, Pressable } from 'react-native'
-import { Row } from '../Layout'
+import { Row } from '@/components'
 import Ionicons from '@expo/vector-icons/Ionicons'
 
 export interface FormHeaderProps {

@@ -2,8 +2,7 @@
 
 import React, { ReactNode } from 'react'
 import { StyleSheet, View, ViewStyle } from 'react-native'
-import Column from '../Layout/Column'
-import { FlexBox } from '../Layout'
+import { FlexBox } from '@/components'
 
 const minWidth = 300
 const maxWidth = 500

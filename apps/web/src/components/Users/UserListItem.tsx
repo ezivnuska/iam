@@ -6,7 +6,7 @@ import { Avatar, Column, IconButton, Row } from '@/components'
 import { useAuth } from '@/hooks'
 import { User, Bond } from '@iam/types'
 import { Size } from '@/styles'
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 
 type UserListItemProps = {
 	profile: User
@@ -32,7 +32,7 @@ export const UserListItem = ({
 		<Row flex={1} spacing={Size.M} justify='space-between' style={styles.container}>
 			<Pressable onPress={onPress}>
 				<Row flex={1} spacing={Size.M}>
-					<Avatar profile={profile} size='md' />
+					<Avatar user={profile} size='md' />
 					<Column flex={1}>
 						<Text style={styles.username}>{profile.username}</Text>
 						{showEmail && <Text style={styles.email}>{profile.email}</Text>}

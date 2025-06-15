@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import { useRoute } from '@react-navigation/native'
-import { Avatar, PageLayout, Row, Column, ImageGallery } from '../components'
+import { Avatar, PageLayout, Row, Column, ImageGallery } from '@/components'
 import { User } from '@iam/types'
 import { getUserById } from '@services'
 import { Size } from '@/styles'

@@ -5,7 +5,7 @@ import { View, FlatList, ActivityIndicator } from 'react-native'
 import { deleteComment, fetchComments } from '@services'
 import { useAuth } from '@/hooks'
 import { Size } from '@/styles'
-import { CommentItem } from './'
+import { CommentItem } from '@/components'
 import type { Comment } from '@iam/types'
 
 type ImageCommentsProps = {
