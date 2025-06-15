@@ -29,7 +29,7 @@ function loadEnv(env: string) {
 	if (!local.parsed) {
 		const fallback = dotenv.config({ path: path.resolve(__dirname, `../../../.env.${env}`) })
 		if (!fallback.parsed) {
-			console.warn(`⚠️  Could not load .env.${env} from either local or fallback path.`)
+			console.warn(`Could not load .env.${env} from either local or fallback path.`)
 		}
 	}
 }
@@ -82,6 +82,7 @@ app.get('/health', (req: Request, res: Response) => {
 app.use((req: Request, res: Response) => {
 	res.status(404).json({ message: 'Not Found' })
 })
+
 app.use(errorHandler as ErrorRequestHandler)
 
 // --- Database & Server Startup ---

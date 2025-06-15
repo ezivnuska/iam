@@ -1,6 +1,6 @@
 // apps/web/src/providers/AuthProvider.tsx
 
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
 	saveToken,
 	clearToken,
@@ -8,7 +8,6 @@ import {
 	logoutRequest,
 	setAuthHeader,
 	clearAuthHeader,
-	getProfile,
 	trySigninFromStoredToken,
 	setUnauthorizedHandler,
 } from '@services'
@@ -42,7 +41,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 	const { connectSocket, disconnectSocket } = useSocket()
 
 	const login = async (email: string, password: string) => {
-		console.log('🔐 login called')
+		console.log('login called')
 		const { accessToken, user: userProfile } = await signinRequest(email, password)
 		await saveToken(accessToken)
 		setAuthHeader(accessToken)
@@ -79,7 +78,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 					try {
 						connectSocket(token)
 					} catch (err) {
-						console.error('❌ Socket failed to connect with stored token:', err)
+						console.error('Socket failed to connect with stored token:', err)
 						disconnectSocket()
 					}
 				}

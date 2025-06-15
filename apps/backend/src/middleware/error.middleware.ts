@@ -7,7 +7,6 @@ export function errorHandler(err: any, req: Request, res: Response, _next: NextF
 	if (err instanceof HttpError) {
 		const { message, status, details } = err
 
-		// Normalize { field, issue } into [field, issue] for the frontend
 		if (details && 'field' in details && 'issue' in details) {
 			res.status(status).json({
 				error: {
@@ -18,7 +17,6 @@ export function errorHandler(err: any, req: Request, res: Response, _next: NextF
             return
 		}
 
-		// Default structured HttpError
 		res.status(status).json({ error: { message, details } })
         return
 	}

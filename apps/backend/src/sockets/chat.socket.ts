@@ -9,7 +9,7 @@ type ChatMessage = {
 }
 
 export const handleChatSocket = (io: Server, socket: Socket) => {
-	console.log(`🧩 Chat socket connected: ${socket.id}`)
+	console.log(`Chat socket connected: ${socket.id}`)
 
 	const broadcastMessage = (text: string) => {
 		const payload: ChatMessage = {
@@ -21,7 +21,7 @@ export const handleChatSocket = (io: Server, socket: Socket) => {
 	}
 
 	socket.on('chat:message', (message: string) => {
-		console.log(`💬 ${socket.id}: ${message}`)
+		console.log(`${socket.id}: ${message}`)
 		broadcastMessage(message)
 	})
 }

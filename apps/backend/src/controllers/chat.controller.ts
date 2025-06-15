@@ -3,27 +3,20 @@
 import { Server, Socket } from 'socket.io'
 
 export const registerChatHandlers = (io: Server, socket: Socket) => {
-	console.log(`Chat handlers attached to ${socket.id}`)
-  
-	const onChatMessage = (message: string) => {
+	console.log(`Chat handlers registered for socket: ${socket.id}`)
 
+	socket.on('chat:message', (message: string) => {
 		if (typeof message !== 'string') {
-			console.warn(`Invalid message from ${socket.id}`, message)
+			console.warn(`⚠️ Invalid message from ${socket.id}`, message)
 			return
 		}
-		
+
+		console.log(`Message from ${socket.id}:`, message)
+
 		io.emit('chat:message', {
 			id: socket.id,
 			text: message,
 			timestamp: new Date(),
 		})
-	}
-  
-	socket.on('chat:message', onChatMessage)
-  
-	socket.on('disconnect', () => {
-		console.log(`Socket disconnected, cleaning chat handlers: ${socket.id}`)
-		socket.off('chat:message', onChatMessage)
 	})
 }
-  

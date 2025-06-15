@@ -2,7 +2,6 @@
 
 import React, {
 	createContext,
-	useEffect,
 	useState,
 	ReactNode,
 	useMemo,
@@ -33,10 +32,9 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 	const [socket, setSocket] = useState<Socket | null>(null)
 	const socketRef = useRef<Socket | null>(null)
 
-	// Manual connect with token
 	const connectSocket = (token: string) => {
 		if (socketRef.current) {
-			console.warn('🔌 Socket already exists, reconnecting...')
+			console.warn('Socket already exists, reconnecting...')
 			socketRef.current.disconnect()
 		}
 
@@ -48,15 +46,15 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 		})
 
 		socketInstance.on('connect', () => {
-			console.log('✅ Connected to socket:', socketInstance.id)
+			console.log('Connected to socket:', socketInstance.id)
 		})
 
 		socketInstance.on('disconnect', () => {
-			console.log('⚠️ Disconnected from socket')
+			console.log('Disconnected from socket')
 		})
 
 		socketInstance.on('connect_error', (err) => {
-			console.error('❌ Socket connection error:', err.message)
+			console.error('Socket connection error:', err.message)
 		})
 
 		socketRef.current = socketInstance

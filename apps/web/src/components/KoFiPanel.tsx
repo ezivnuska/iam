@@ -1,3 +1,5 @@
+// apps/web/src/components/KoFiPanel.tsx
+
 import React, { useEffect } from 'react'
 import { Platform, StyleSheet } from 'react-native'
 import { WebView } from 'react-native-webview'
@@ -12,22 +14,10 @@ export default function KoFiPanel() {
 
 	useEffect(() => {
 		onDonation((donation) => {
-			console.log('💸 Ko-fi donation received:', donation)
+			console.log('Ko-fi donation received:', donation)
 			hideModal()
 		})
 	}, [])
-
-	// const handleNavigationChange = (navState: any) => {
-	// 	// Adjust this condition based on Ko-fi's behavior (inspect the URL after a donation)
-	// 	if (
-	// 		navState.url.includes('thank-you') ||
-	// 		navState.url.includes('success') ||
-	// 		navState.url.includes('ko-fi.com/iameric') // fallback
-	// 	) {
-	// 		console.log('Ko-fi donation likely completed')
-	// 		hideModal()
-	// 	}
-	// }
 
 	const renderContent = () => {
 		if (Platform.OS === 'web') {
@@ -47,7 +37,6 @@ export default function KoFiPanel() {
 				javaScriptEnabled
 				domStorageEnabled
 				startInLoadingState
-				// onNavigationStateChange={handleNavigationChange}
 			/>
 		)
 	}
