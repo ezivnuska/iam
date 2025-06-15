@@ -13,7 +13,7 @@ type DeviceInfo = {
 
 export function useDeviceInfo(): DeviceInfo {
 	const getInfo = (): DeviceInfo => {
-		const { width, height } = Dimensions.get('screen')
+		const { width, height } = Dimensions.get('window')
 		return {
 			width,
 			height,
