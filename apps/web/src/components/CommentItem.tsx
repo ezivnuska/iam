@@ -1,12 +1,11 @@
 // apps/web/src/components/CommentItem.tsx
 
 import React from 'react'
-import { Image, Text, Pressable, StyleSheet, View } from 'react-native'
-import Ionicons from '@expo/vector-icons/Ionicons'
+import { Pressable, StyleSheet, Text } from 'react-native'
+import { Avatar, Column, Row } from '@/components'
 import { Comment, PartialUser } from '@iam/types'
-import { Column, ProfileImage, Row } from '@/components'
-import { getAvatarPlaceholder } from '@/utils'
 import { Size } from '@/styles'
+import Ionicons from '@expo/vector-icons/Ionicons'
 
 type CommentItemProps = {
 	comment: Comment
@@ -36,14 +35,10 @@ export const CommentItem = ({
             paddingVertical={paddingVertical}
 			style={{ opacity: isDeleting ? 0.5 : 1 }}
 		>
-            {comment.author.avatar ? (
-                <ProfileImage user={comment.author as PartialUser} size='xs' />
-            ) : (
-                <Image
-                    source={{ uri: getAvatarPlaceholder(comment.author.username) }}
-                    style={styles.avatar}
-                />
-            )}
+            <Avatar
+                user={comment.author as PartialUser}
+                size='xs'
+            />
             <Row
                 flex={1}
                 spacing={Size.S}

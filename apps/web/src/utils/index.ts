@@ -2,4 +2,3 @@
 
 export * from './platform'
 export * from './selectImage'
-export * from './getAvatarPlaceholder'

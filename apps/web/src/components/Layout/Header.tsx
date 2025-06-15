@@ -3,11 +3,11 @@
 import React, { ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { MAX_WIDTH } from './constants'
-import { IconButton, ProfileImage, Row, SigninForm, SignupForm } from '@/components'
+import { Avatar, IconButton, Row, SigninForm, SignupForm } from '@/components'
 import { useNavigation, useNavigationState } from '@react-navigation/native'
 import { useAuth, useModal } from '@/hooks'
 import Ionicons from '@expo/vector-icons/Ionicons'
-import type { ProfileImageSize } from '@/components'
+import type { AvatarSize } from '@/components'
 import { resolveResponsiveProp, Size } from '@/styles'
 
 interface HeaderProps {
@@ -35,7 +35,7 @@ export const Header: React.FC<HeaderProps> = () => {
     const showLabel = resolveResponsiveProp({ xs: false, sm: true, md: true, lg: true })
     const navSpacing = resolveResponsiveProp({ xs: Size.M, sm: Size.M, md: Size.M, lg: Size.L })
     const showUsername = resolveResponsiveProp({ xs: false, sm: true, md: true, lg: true })
-    const avatarSize = resolveResponsiveProp({ xs: 'sm', sm: 'md', md: 'md', lg: 'lg' }) as ProfileImageSize
+    const avatarSize = resolveResponsiveProp({ xs: 'sm', sm: 'md', md: 'md', lg: 'lg' }) as AvatarSize
 
     const currentRoute = useNavigationState((state) => state.routes[state.index].name)
 
@@ -82,7 +82,7 @@ export const Header: React.FC<HeaderProps> = () => {
                                 showLabel={showLabel}
                             />
                             {user && (
-                                <ProfileImage
+                                <Avatar
                                     user={user}
                                     size={avatarSize}
                                     onPress={() => navigation.navigate('Profile' as never)}

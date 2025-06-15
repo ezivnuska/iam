@@ -4,11 +4,11 @@ import React from 'react'
 import { StyleSheet, Text, View, Pressable } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import {
+    Avatar,
     Column,
     EditProfileForm,
     IconButton,
     PageLayout,
-    ProfileImage,
     UserImageManager,
     Row,
 } from '@/components'
@@ -46,7 +46,7 @@ export const ProfileScreen = () => {
             >
                 <Row>
                     <Row flex={1} spacing={15}>
-                        <ProfileImage
+                        <Avatar
                             user={user}
                             size='lg'
                         />

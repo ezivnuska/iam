@@ -39,8 +39,7 @@ export interface User {
 	updatedAt: string
 }
 
-// Used in UI when only lightweight user data is needed
 export interface PartialUser {
-	username?: string
+	username: string
 	avatar?: Image
 }

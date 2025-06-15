@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from 'react'
 import { Text } from 'react-native'
-import { Column, Row, LikeCommentBar, PostComments, ProfileImage, LinkPreview, AddCommentForm, IconButton, AutoSizeImage } from '@/components'
+import { Avatar, Column, Row, LikeCommentBar, PostComments, LinkPreview, AddCommentForm, IconButton, AutoSizeImage } from '@/components'
 import { PartialUser, Post } from '@iam/types'
 import { Size } from '@/styles'
 import Autolink from 'react-native-autolink'
@@ -68,7 +68,7 @@ export const PostListItem: React.FC<Props> = ({
 
 	const renderHeader = () => (
 		<Row spacing={Size.M} paddingHorizontal={Size.M} align='center'>
-			<ProfileImage user={post.author as PartialUser} size='md' />
+			<Avatar user={post.author as PartialUser} size='md' />
 			<Column flex={1}>
 				<Text style={{ fontSize: 20, fontWeight: 'bold', lineHeight: 22 }}>
 					{post.author.username}

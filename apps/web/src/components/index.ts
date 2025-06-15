@@ -1,5 +1,6 @@
 // packages/ui/src/components/index.ts
 
+export * from './Avatar'
 export * from './Button'
 export * from './CommentItem'
 export * from './CreatePostButton'
@@ -10,7 +11,6 @@ export * from './Layout'
 export * from './ModalContainer'
 export * from './ModalHeader'
 export * from './PageHeader'
-export * from './ProfileImage'
 export * from './PostComments'
 export * from './PostList'
 export * from './PostListItem'
