@@ -1,5 +1,6 @@
 // apps/backend/src/index.ts
 
+import './loadEnv'
 import express from 'express'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
@@ -7,7 +8,6 @@ import mongoose from 'mongoose'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import path from 'path'
-import dotenv from 'dotenv'
 
 import type { Request, Response, ErrorRequestHandler } from 'express'
 import { initSockets } from './sockets'
@@ -24,16 +24,8 @@ import postRoutes from './routes/post.routes'
 import commentRoutes from './routes/comment.routes'
 import kofiRoutes from './routes/kofi.routes'
 
-// --- Load Environment Variables ---
-const env = process.env.NODE_ENV || 'development'
-const localPath = path.resolve(__dirname, `../.env.${env}`)
-const fallbackPath = path.resolve(__dirname, `../../../.env.${env}`)
-
-if (!dotenv.config({ path: localPath }).parsed) {
-	dotenv.config({ path: fallbackPath })
-}
-
 console.log('IMAGE_UPLOAD_DIR...', process.env.IMAGE_UPLOAD_DIR)
+
 // --- Constants ---
 const API_PORT = parseInt(process.env.API_PORT || '4000', 10)
 
