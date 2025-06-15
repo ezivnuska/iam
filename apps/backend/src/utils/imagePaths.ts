@@ -5,6 +5,7 @@ import { sanitizeUsername } from './file'
 
 const PROJECT_ROOT = path.resolve(__dirname, '../../../../')
 console.log('PROJECT_ROOT', PROJECT_ROOT)
+console.log('IMAGE_UPLOAD_DIR', process.env.IMAGE_UPLOAD_DIR)
 const rawUploadDir = process.env.IMAGE_UPLOAD_DIR || 'apps/images/users'
 const IMAGE_UPLOAD_ROOT = path.isAbsolute(rawUploadDir)
   ? rawUploadDir
