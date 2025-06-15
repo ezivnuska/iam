@@ -1,22 +1,46 @@
 // apps/backend/src/controllers/chat.controller.ts
 
 import { Server, Socket } from 'socket.io'
+import type { ChatMessage, ServerToClientEvents, ClientToServerEvents, SocketUser } from '@iam/types'
 
-export const registerChatHandlers = (io: Server, socket: Socket) => {
-	console.log(`Chat handlers registered for socket: ${socket.id}`)
+export const registerChatHandlers = (
+	io: Server<ClientToServerEvents, ServerToClientEvents>,
+	socket: Socket<ClientToServerEvents, ServerToClientEvents>
+) => {
+	console.log(`Chat handlers attached to ${socket.id}`)
 
-	socket.on('chat:message', (message: string) => {
+	const user = socket.data.user as SocketUser | undefined
+
+	const onChatMessage = (message: string) => {
 		if (typeof message !== 'string') {
-			console.warn(`⚠️ Invalid message from ${socket.id}`, message)
+			console.warn(`Invalid message from ${socket.id}`, message)
 			return
 		}
 
-		console.log(`Message from ${socket.id}:`, message)
+		if (!user) {
+			console.warn(`No user data found for socket ${socket.id}`)
+			return
+		}
 
-		io.emit('chat:message', {
-			id: socket.id,
+		const payload: ChatMessage = {
+			user: {
+				id: user.id,
+				role: user.role,
+				username: user.username,
+				avatar: user.avatar,
+			},
 			text: message,
-			timestamp: new Date(),
-		})
+			timestamp: new Date().toISOString(),
+		}
+
+		console.log(`${user.username}: ${message}`)
+		io.emit('chat:message', payload)
+	}
+
+	socket.on('chat:message', onChatMessage)
+
+	socket.on('disconnect', () => {
+		console.log(`Socket disconnected, cleaning chat handlers: ${socket.id}`)
+		socket.off('chat:message', onChatMessage)
 	})
 }

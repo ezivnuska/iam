@@ -1,6 +1,6 @@
 // apps/web/src/utils/getSafeImageData.ts
 
-import { handleImageData, loadImage } from "./"
+import { handleImageData, loadImage } from './'
 
 export async function getSafeImageData(uri: string, exif: Record<string, any> = {}) {
 	try {

@@ -2,12 +2,17 @@
 
 import React, {
 	createContext,
-	useState,
 	ReactNode,
 	useMemo,
 	useRef,
+	useState,
 } from 'react'
 import { io, Socket } from 'socket.io-client'
+import { getToken } from '@services'
+import type {
+	ServerToClientEvents,
+	ClientToServerEvents,
+} from '@iam/types'
 
 type KoFiDonation = {
 	from_name: string
@@ -29,10 +34,15 @@ export const SocketContext = createContext<SocketContextType | undefined>(undefi
 const SOCKET_URL = process.env.SOCKET_URL!
 
 export const SocketProvider = ({ children }: { children: ReactNode }) => {
-	const [socket, setSocket] = useState<Socket | null>(null)
-	const socketRef = useRef<Socket | null>(null)
+	const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents> | null>(null)
+	const socketRef = useRef<Socket<ServerToClientEvents, ClientToServerEvents> | null>(null)
 
 	const connectSocket = (token: string) => {
+        if (!token) {
+            console.warn('No token found. Skipping socket connection.')
+            return
+        }
+
 		if (socketRef.current) {
 			console.warn('Socket already exists, reconnecting...')
 			socketRef.current.disconnect()
@@ -43,6 +53,13 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 			withCredentials: true,
 			transports: ['websocket'],
 			path: '/socket.io',
+		})
+
+		socketInstance.on('reconnect_attempt', async () => {
+			const freshToken = await getToken()
+			if (freshToken) {
+				(socketInstance.auth as { token: string }).token = freshToken
+			}
 		})
 
 		socketInstance.on('connect', () => {
@@ -63,7 +80,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 
 	const disconnectSocket = () => {
 		if (socketRef.current) {
-			console.log('🔌 Disconnecting socket manually')
+			console.log('Disconnecting socket manually')
 			socketRef.current.disconnect()
 			socketRef.current = null
 			setSocket(null)
@@ -87,7 +104,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 		if (socketRef.current?.connected) {
 			socketRef.current.emit('chat:message', msg)
 		} else {
-			console.warn('⚠️ Cannot send message. Socket not connected.')
+			console.warn('Cannot send message. Socket not connected.')
 		}
 	}
 

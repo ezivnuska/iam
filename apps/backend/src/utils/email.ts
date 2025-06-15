@@ -15,7 +15,7 @@ const transporter = nodemailer.createTransport({
 export const sendEmail = async (to: string, subject: string, html: string) => {
 	try {
 		await transporter.sendMail({
-		from: `"Your App Name" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+		from: `'Your App Name' <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
 		to,
 		subject,
 		html,
@@ -32,5 +32,5 @@ export const sendEmail = async (to: string, subject: string, html: string) => {
 // await sendEmail(
 //   user.email,
 //   'Reset your password',
-//   `<p>Click <a href="${process.env.FRONTEND_URL}/reset-password?token=${resetToken}">here</a> to reset your password.</p>`
+//   `<p>Click <a href='${process.env.FRONTEND_URL}/reset-password?token=${resetToken}'>here</a> to reset your password.</p>`
 // )

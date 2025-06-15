@@ -1,7 +1,22 @@
 // packages/types/src/socket.ts
 
-export type ChatMessage = {
+import { ImageDocument, ImageVariant } from './image'
+
+export type SocketUser = {
 	id: string
+	username: string
+	role: string
+	avatar?: {
+		id: string
+		filename: string
+		username: string
+		url?: string
+		variants: ImageVariant[]
+	}
+}
+
+export type ChatMessage = {
+	user: SocketUser
 	text: string
 	timestamp: string
 }

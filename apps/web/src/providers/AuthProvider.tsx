@@ -15,6 +15,7 @@ import { navigate, navigationRef } from '../navigation'
 import { createContext } from 'react'
 import type { User } from '@iam/types'
 import { useSocket } from '@/hooks'
+import { getToken } from '@services'
 
 export type AuthContextType = {
 	isAuthenticated: boolean
@@ -41,7 +42,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 	const { connectSocket, disconnectSocket } = useSocket()
 
 	const login = async (email: string, password: string) => {
-		console.log('login called')
 		const { accessToken, user: userProfile } = await signinRequest(email, password)
 		await saveToken(accessToken)
 		setAuthHeader(accessToken)
@@ -72,7 +72,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 			const profile = await trySigninFromStoredToken()
 		
 			if (profile) {
-				const token = localStorage.getItem('accessToken')
+				const token = await getToken()
 		
 				if (token) {
 					try {

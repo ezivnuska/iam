@@ -58,6 +58,7 @@ export const Avatar: React.FC<AvatarProps> = ({
 				? (
 					<AutoSizeImage
 						image={avatar}
+                        style={{ width: imageSize, height: imageSize }}
 						forceSquare
 					/>
 				)

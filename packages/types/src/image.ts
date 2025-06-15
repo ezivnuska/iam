@@ -43,3 +43,19 @@ export type UploadedImage = {
 	likedByCurrentUser: boolean
 }
 
+export type SanitizedImage = {
+	id: string
+	filename: string
+	username: string
+	url: string
+	variants: ImageVariant[]
+}
+
+export type SocketImage = {
+	id: string
+	filename: string
+	username: string
+	url: string
+	variants: ImageVariant[]
+	alt?: string
+}

@@ -1,7 +1,6 @@
 // apps/backend/src/services/user.service.ts
 
 import { UserModel } from '../models/user.model'
-import { ImageModel } from '../models/image.model'
 import { comparePassword, hashPassword } from '../utils/password'
 import { HttpError } from '../utils/HttpError'
 
@@ -17,7 +16,10 @@ export const findUserById = async (id: string) => {
 		.populate('avatar')
 
 	if (!user) throw new HttpError('User not found', 404)
-	return user
+
+	const result = user.toJSON()
+	
+	return result
 }
 
 export const changeUserRole = async (id: string, newRole: string) => {

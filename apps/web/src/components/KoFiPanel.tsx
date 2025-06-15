@@ -25,7 +25,7 @@ export default function KoFiPanel() {
 				<iframe
 					src={KOFI_URL}
 					style={{ ...styles.webview, border: 'none' }}
-					title="Ko-fi Support Panel"
+					title='Ko-fi Support Panel'
 				/>
 			)
 		}
@@ -42,7 +42,7 @@ export default function KoFiPanel() {
 	}
 
 	return (
-		<ModalContainer title="Donate">
+		<ModalContainer title='Donate'>
 			{renderContent()}
 		</ModalContainer>
 	)

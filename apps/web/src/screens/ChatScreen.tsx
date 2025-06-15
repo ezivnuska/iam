@@ -1,10 +1,9 @@
 // apps/web/src/screens/ChatScreen.tsx
 
 import React, { useRef, useState, useEffect } from 'react'
-import { TextInput, TextInput as RNTextInput, Text, StyleSheet } from 'react-native'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { Column, PageLayout } from '@/components'
-import { horizontalPadding } from '@/styles'
+import { TextInput, TextInput as RNTextInput, Text, StyleSheet, FlatList } from 'react-native'
+import { Avatar, Column, PageLayout, Row } from '@/components'
+import { horizontalPadding, Size } from '@/styles'
 import { useSocket } from '@/hooks'
 
 export const ChatScreen = () => {
@@ -19,7 +18,7 @@ export const ChatScreen = () => {
 		const cleanup = onChatMessage((msg) => {
 			setMessages(prev => [...prev, msg])
 		})
-		return cleanup
+		return () => cleanup()
 	}, [onChatMessage])
 
 	const sendMessage = () => {
@@ -32,7 +31,22 @@ export const ChatScreen = () => {
 	return (
         <PageLayout>
             <Column flex={1} style={horizontalPadding}>
-                <KeyboardAwareScrollView
+                <FlatList
+                    data={messages}
+                    keyExtractor={(item) => item._id}
+                    renderItem={({ item }) => {
+                        console.log('message', item)
+                        return (
+                            <Row spacing={Size.S} paddingBottom={Size.S}>
+                                <Avatar user={item.user} size='xs' />
+                                <Text style={styles.message}>
+                                    {item.text}
+                                </Text>
+                            </Row>
+                        )
+                    }}
+                />
+                {/* <KeyboardAwareScrollView
                     style={styles.container}
                     enableOnAndroid={true}
                     extraScrollHeight={100}
@@ -43,7 +57,7 @@ export const ChatScreen = () => {
                             {msg.text}
                         </Text>
                     ))}
-                </KeyboardAwareScrollView>
+                </KeyboardAwareScrollView> */}
                 <TextInput
                     value={input}
                     onChangeText={setInput}

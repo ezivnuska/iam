@@ -60,8 +60,8 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
 					<Modal
 						transparent
 						visible
-						animationType="fade"
-						presentationStyle="overFullScreen"
+						animationType='fade'
+						presentationStyle='overFullScreen'
 						onRequestClose={hideModal}
 					>
 						<View style={modalOverlayStyle}>

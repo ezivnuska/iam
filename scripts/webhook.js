@@ -16,7 +16,7 @@ const port = 9000
 const GITHUB_SECRET = process.env.GITHUB_SECRET
 
 if (!GITHUB_SECRET) {
-    console.warn('⚠️  Warning: GITHUB_SECRET is not set in scripts/.env')
+    console.warn(' Warning: GITHUB_SECRET is not set in scripts/.env')
 }
 
 // GitHub requires raw body for signature verification
@@ -37,7 +37,7 @@ const verifySignature = (req) => {
 
 app.post('/webhook', (req, res) => {
     if (!verifySignature(req)) {
-        console.warn('⚠️ Invalid signature received')
+        console.warn('Invalid signature received')
         return res.status(400).send('Invalid signature')
     }
 

@@ -1,6 +1,6 @@
 // packages/types/src/post.ts
 
-import type { UploadedImage } from "./image"
+import type { UploadedImage } from './image'
 
 export interface Post {
 	_id: string
