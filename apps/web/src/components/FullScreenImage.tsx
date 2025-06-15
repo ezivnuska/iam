@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
 		right: 0,
 		zIndex: 10,
 		backgroundColor: 'rgba(0,0,0,0.4)',
-		maxHeight: 200,
+		maxHeight: '50%',
 	},
 })
 
