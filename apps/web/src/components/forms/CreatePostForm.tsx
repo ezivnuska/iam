@@ -72,6 +72,7 @@ export const CreatePostForm = ({ onPostCreated }: { onPostCreated?: () => void }
 			if (localImageData) {
 				// Upload new image first
 				uploadedImage = await postService.uploadImage({ imageData: localImageData })
+                console.log('uploadedImage with post', uploadedImage)
 			}
 		
 			const newPost = await postService.createPost(data.content, uploadedImage)

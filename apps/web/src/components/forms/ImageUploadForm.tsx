@@ -93,6 +93,7 @@ export const ImageUploadForm: React.FC<ImageUploaderProps> = ({ onUploaded }) =>
 
 		try {
 			const response: UploadedImage = await uploadImage({ imageData: upload.imageData })
+            console.log('uploaded image response', response)
 			onUploaded?.(response)
 		} catch (err) {
 			console.error('Upload failed:', err)
