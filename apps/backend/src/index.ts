@@ -24,19 +24,14 @@ import postRoutes from './routes/post.routes'
 import commentRoutes from './routes/comment.routes'
 import kofiRoutes from './routes/kofi.routes'
 
-function loadEnv(env: string) {
-	const local = dotenv.config({ path: path.resolve(__dirname, `../.env.${env}`) })
-	if (!local.parsed) {
-        console.log('ENV fallback')
-		const fallback = dotenv.config({ path: path.resolve(__dirname, `../../../.env.${env}`) })
-		if (!fallback.parsed) {
-			console.warn(`Could not load .env.${env} from either local or fallback path.`)
-		}
-	}
-}
-
 // --- Load Environment Variables ---
-loadEnv(process.env.NODE_ENV || 'development')
+const env = process.env.NODE_ENV || 'development'
+const localPath = path.resolve(__dirname, `../.env.${env}`)
+const fallbackPath = path.resolve(__dirname, `../../../.env.${env}`)
+
+if (!dotenv.config({ path: localPath }).parsed) {
+	dotenv.config({ path: fallbackPath })
+}
 
 // --- Constants ---
 const API_PORT = parseInt(process.env.API_PORT || '4000', 10)
