@@ -8,7 +8,7 @@ const rawUploadDir = process.env.IMAGE_UPLOAD_DIR || 'apps/images/users'
 const IMAGE_UPLOAD_ROOT = path.isAbsolute(rawUploadDir)
   ? rawUploadDir
   : path.resolve(PROJECT_ROOT, rawUploadDir)
-
+console.log('IMAGE_UPLOAD_ROOT', IMAGE_UPLOAD_ROOT)
 export const getUserDir = (username: string): string => {
 	const safeUsername = sanitizeUsername(username)
 	return path.join(IMAGE_UPLOAD_ROOT, safeUsername)

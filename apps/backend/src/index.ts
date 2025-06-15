@@ -27,6 +27,7 @@ import kofiRoutes from './routes/kofi.routes'
 function loadEnv(env: string) {
 	const local = dotenv.config({ path: path.resolve(__dirname, `../.env.${env}`) })
 	if (!local.parsed) {
+        console.log('ENV fallback')
 		const fallback = dotenv.config({ path: path.resolve(__dirname, `../../../.env.${env}`) })
 		if (!fallback.parsed) {
 			console.warn(`Could not load .env.${env} from either local or fallback path.`)
