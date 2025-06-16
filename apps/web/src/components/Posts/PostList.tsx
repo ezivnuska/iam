@@ -47,6 +47,7 @@ export const PostList = () => {
 			windowSize={4}
 			removeClippedSubviews={true}
 			contentContainerStyle={{ paddingVertical: Size.S }}
+            showsVerticalScrollIndicator={false}
 			renderItem={renderItem}
 		/>
 	)

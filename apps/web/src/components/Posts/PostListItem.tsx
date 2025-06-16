@@ -89,12 +89,10 @@ export const PostListItem: React.FC<Props> = ({
 	return (
 		<Column flex={1} spacing={Size.M} paddingBottom={Size.L}>
 			{renderHeader()}
-
-			{post.image && <AutoSizeImage image={post.image} />}
-
+            
 			<Autolink
 				text={post.content}
-				style={{ paddingHorizontal: Size.M }}
+				style={{ paddingHorizontal: Size.M, fontSize: 16, color: '#333' }}
 				linkStyle={{ color: '#007aff' }}
 				url
 				email={false}
@@ -102,6 +100,8 @@ export const PostListItem: React.FC<Props> = ({
 				truncate={50}
 				truncateChars='...'
 			/>
+
+			{post.image && <AutoSizeImage image={post.image} />}
 
 			{showPreview && post.linkUrl && post.linkPreview && (
 				<LinkPreview url={post.linkUrl} preview={post.linkPreview} />
