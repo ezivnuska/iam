@@ -6,7 +6,7 @@ import type { StackNavigationProp } from '@react-navigation/stack'
 import { useNavigation } from '@react-navigation/native'
 import { UserListItem } from '@/components'
 import { usePaginatedFetch } from '@services'
-import { useAuth, useBonds, useSocket } from '@/hooks'
+import { useAuth, useBonds, usePresence, useSocket } from '@/hooks'
 import type { Bond, RootStackParamList, User } from '@iam/types'
 import { Size } from '@/styles'
 import { normalizeUser } from '@utils'
@@ -19,6 +19,7 @@ export const UserList = () => {
     const [filter, setFilter] = useState<FilterType>('all')
     const { user: currentUser } = useAuth()
     const { bonds, createBond, removeBond, setBonds, updateBond, loading: loadingBonds, error: bondsError, refetch: refetchBonds } = useBonds(currentUser?.id ?? '')
+    const { isOnline } = usePresence()
 	const { socket } = useSocket()
 	const navigation = useNavigation<NavProps>()
 	const { data, fetchNextPage, loading } = usePaginatedFetch<User>('users')
@@ -125,6 +126,7 @@ export const UserList = () => {
 		return (
 			<UserListItem
 				bond={bond}
+                isOnline={isOnline(userId)}
 				onConfirm={() => bond && updateBondStatus(bond._id, { confirmed: true })}
 				onCreate={() => requestBond(userId)}
 				onDelete={() => bond && deleteBond(bond._id)}
@@ -132,7 +134,7 @@ export const UserList = () => {
 				profile={item}
 			/>
 		)
-	}, [getBondForUser, updateBondStatus, requestBond, deleteBond, navigation])
+	}, [getBondForUser, isOnline, updateBondStatus, requestBond, deleteBond, navigation])
 
 	if (loadingBonds) {
 		return <ActivityIndicator style={{ flex: 1, justifyContent: 'center' }} />

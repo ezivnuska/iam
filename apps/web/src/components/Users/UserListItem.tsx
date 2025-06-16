@@ -1,17 +1,19 @@
 // apps/web/src/components/UserListItem.tsx
 
 import React from 'react'
-import { StyleSheet, Text, Pressable } from 'react-native'
+import { StyleSheet, Text, Pressable, View } from 'react-native'
 import { Avatar, BondControls, Column, Row } from '@/components'
 import { useAuth } from '@/hooks'
 import { User, Bond } from '@iam/types'
 import { Size } from '@/styles'
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 
 type UserListItemProps = {
 	profile: User
 	onPress?: () => void
 	showEmail?: boolean
 	bond?: Bond | null
+	isOnline: boolean,
 	onConfirm?: () => void
 	onDelete?: () => void
 	onCreate?: () => void
@@ -22,19 +24,22 @@ export const UserListItem = ({
 	onPress,
 	showEmail = true,
 	bond,
+	isOnline,
 	onConfirm,
 	onDelete,
 	onCreate,
 }: UserListItemProps) => {
 	const { user } = useAuth()
-
 	return (
-		<Row flex={1} spacing={Size.M} justify='space-between' style={styles.container}>
+		<Row flex={1} spacing={Size.M} justify='space-between' align='center' style={styles.container}>
 			<Pressable onPress={onPress}>
 				<Row flex={1} spacing={Size.M}>
 					<Avatar user={profile} size='md' />
 					<Column flex={1}>
-						<Text style={styles.username}>{profile.username}</Text>
+						<Row flex={1} spacing={Size.S} align='center'>
+							<Text style={styles.username}>{profile.username}</Text>
+							{isOnline && <MaterialIcons name='co-present' size={18} color='green' />}
+						</Row>
 						{showEmail && <Text style={styles.email}>{profile.email}</Text>}
 					</Column>
 				</Row>

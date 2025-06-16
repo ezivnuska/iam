@@ -63,7 +63,7 @@ export const BondControls = ({ bond, userId, onConfirm, onDelete, onCreate }: Bo
 	if (onDelete) {
 		return (
 			<IconButton
-				icon={<MaterialIcons name='cancel' size={30} color='red' />}
+				icon={<MaterialIcons name='person-remove' size={30} color='red' />}
 				onPress={onDelete}
 			/>
 		)

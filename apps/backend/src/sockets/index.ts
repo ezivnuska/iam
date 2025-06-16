@@ -4,6 +4,7 @@ import { Server, Socket } from 'socket.io'
 import { socketAuthMiddleware } from '../middleware/auth.middleware'
 import { registerChatHandlers } from '../controllers/chat.controller'
 import { registerBondHandlers } from '../controllers/bond.controller'
+import { registerPresenceHandlers } from '../controllers/presence.controller'
 import { bondEvents } from '../events/bond.events'
 
 export const initSockets = (io: Server) => {
@@ -29,8 +30,8 @@ export const initSockets = (io: Server) => {
 
 		registerChatHandlers(io, socket)
         registerBondHandlers(io, socket)
+		registerPresenceHandlers(io, socket)
 		// registerNotificationHandlers(io, socket)
-		// registerPresenceHandlers(io, socket)
 
 		socket.on('disconnect', () => {
 			console.log(`Socket disconnected: ${socket.id}`)
