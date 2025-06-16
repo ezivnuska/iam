@@ -2,11 +2,10 @@
 
 import React from 'react'
 import { StyleSheet, Text, Pressable } from 'react-native'
-import { Avatar, Column, IconButton, Row } from '@/components'
+import { Avatar, BondControls, Column, Row } from '@/components'
 import { useAuth } from '@/hooks'
 import { User, Bond } from '@iam/types'
 import { Size } from '@/styles'
-import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 
 type UserListItemProps = {
 	profile: User
@@ -28,6 +27,7 @@ export const UserListItem = ({
 	onCreate,
 }: UserListItemProps) => {
 	const { user } = useAuth()
+
 	return (
 		<Row flex={1} spacing={Size.M} justify='space-between' style={styles.container}>
 			<Pressable onPress={onPress}>
@@ -39,30 +39,14 @@ export const UserListItem = ({
 					</Column>
 				</Row>
 			</Pressable>
-			{bond && onConfirm && onDelete && bond.responder === user?.id && !bond.confirmed && (
-				<Row style={{ borderWidth: 1, }}>
-					<IconButton
-						onPress={onConfirm}
-						icon={<MaterialIcons name='check-circle' size={30} color='green' />}
-					/>
-					<IconButton
-						onPress={onDelete}
-						icon={<MaterialIcons name='cancel' size={30} color='red' />}
-					/>
-				</Row>
-			)}
-			{bond && onDelete && (
-				<IconButton
-					icon={<MaterialIcons name={bond.confirmed ? 'person-remove' : 'cancel'} size={30} color={bond.confirmed ? 'red' : 'gray'} />}
-					onPress={onDelete}
-				/>
-			)}
-			{!bond && onCreate && (
-				<IconButton
-					icon={<MaterialIcons name='person-add' size={30} color='blue' />}
-					onPress={onCreate}
-				/>
-			)}
+
+			<BondControls
+				bond={bond}
+				userId={user?.id}
+				onConfirm={onConfirm}
+				onDelete={onDelete}
+				onCreate={onCreate}
+			/>
 		</Row>
 	)
 }

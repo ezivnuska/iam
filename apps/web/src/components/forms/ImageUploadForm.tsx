@@ -5,7 +5,7 @@ import { Dimensions, Image, Platform, StyleSheet, Text } from 'react-native'
 import { Column, IconButton, ModalContainer, NativeCamera, Row, SubmitButton, WebCamera } from '@/components'
 import { uploadImage } from '@services'
 import { selectImage } from '@/utils'
-import { useModal, useResponsiveImageSize } from '@/hooks'
+import { useResponsiveImageSize } from '@/hooks'
 import type { UploadedImage } from '@iam/types'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import Ionicons from '@expo/vector-icons/Ionicons'
@@ -32,8 +32,6 @@ export const ImageUploadForm: React.FC<ImageUploaderProps> = ({ onUploaded }) =>
 	const [uploading, setUploading] = useState(false)
     const [useCamera, setUseCamera] = useState(false)
 
-	const { hideModal } = useModal()
-
     const handleCapture = async (uri: string) => {
         const isBase64 = uri.startsWith('data:image/')
         const filename = isBase64
@@ -42,8 +40,7 @@ export const ImageUploadForm: React.FC<ImageUploaderProps> = ({ onUploaded }) =>
     
         let width: number | undefined
         let height: number | undefined
-    
-        // Get dimensions for preview sizing
+
         await new Promise<void>((resolve) => {
             const img = new window.Image()
             img.onload = () => {
@@ -73,9 +70,6 @@ export const ImageUploadForm: React.FC<ImageUploaderProps> = ({ onUploaded }) =>
 
 	const handlePick = async () => {
 		try {
-			// const selected: { uri: string; imageData: { uri: string; filename: string; width?: number; height?: number } } | null = await selectImage()
-			// if (!selected) return
-			// setUpload(selected)
             const selected = (await selectImage()) ?? null
             if (!selected) return
             setUpload(selected)
@@ -93,7 +87,6 @@ export const ImageUploadForm: React.FC<ImageUploaderProps> = ({ onUploaded }) =>
 
 		try {
 			const response: UploadedImage = await uploadImage({ imageData: upload.imageData })
-            console.log('uploaded image response', response)
 			onUploaded?.(response)
 		} catch (err) {
 			console.error('Upload failed:', err)

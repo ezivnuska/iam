@@ -84,6 +84,7 @@ export const useBonds = (userId: string) => {
 		createBond,
 		refetch: fetchBonds,
 		removeBond,
+        setBonds,
 		updateBond,
 	}
 }

@@ -27,6 +27,15 @@ export type SocketContextType = {
 	onDonation: (cb: (data: KoFiDonation) => void) => () => void
 	onChatMessage: (cb: (msg: any) => void) => () => void
 	emitChatMessage: (msg: string) => void
+
+	// Bond-specific
+	emitBondCreate: (responderId: string) => void
+	emitBondUpdate: (bondId: string, status: { confirmed?: boolean, declined?: boolean, cancelled?: boolean }) => void
+	emitBondDelete: (bondId: string) => void
+	onBondCreated: (cb: (bond: any) => void) => () => void
+	onBondUpdated: (cb: (bond: any) => void) => () => void
+	onBondDeleted: (cb: (bondId: string) => void) => () => void
+	onBondError: (cb: (error: string) => void) => () => void
 }
 
 export const SocketContext = createContext<SocketContextType | undefined>(undefined)
@@ -108,6 +117,40 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 		}
 	}
 
+	// BOND SOCKET EMITTERS
+	const emitBondCreate = (responderId: string) => {
+		socketRef.current?.emit('bond:create', { responder: responderId })
+	}
+
+	const emitBondUpdate = (bondId: string, status: { confirmed?: boolean; declined?: boolean; cancelled?: boolean }) => {
+		socketRef.current?.emit('bond:update', { bondId, status })
+	}
+
+	const emitBondDelete = (bondId: string) => {
+		socketRef.current?.emit('bond:delete', { bondId })
+	}
+
+	// BOND SOCKET LISTENERS
+	const onBondCreated = (cb: (bond: any) => void): (() => void) => {
+		socketRef.current?.on('bond:created', cb)
+		return () => socketRef.current?.off('bond:created', cb)
+	}
+
+	const onBondUpdated = (cb: (bond: any) => void): (() => void) => {
+		socketRef.current?.on('bond:updated', cb)
+		return () => socketRef.current?.off('bond:updated', cb)
+	}
+
+	const onBondDeleted = (cb: (bondId: string) => void): (() => void) => {
+		socketRef.current?.on('bond:deleted', cb)
+		return () => socketRef.current?.off('bond:deleted', cb)
+	}
+
+	const onBondError = (cb: (error: string) => void): (() => void) => {
+		socketRef.current?.on('bond:error', cb)
+		return () => socketRef.current?.off('bond:error', cb)
+	}
+
 	const value = useMemo(
 		() => ({
 			socket,
@@ -116,6 +159,15 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 			onDonation,
 			onChatMessage,
 			emitChatMessage,
+
+			// BOND
+			emitBondCreate,
+			emitBondUpdate,
+			emitBondDelete,
+			onBondCreated,
+			onBondUpdated,
+			onBondDeleted,
+			onBondError,
 		}),
 		[socket]
 	)

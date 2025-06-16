@@ -1,13 +1,11 @@
 // apps/web/src/components/AutoSizeImage.tsx
 
-import React, { useState } from 'react'
+import React from 'react'
 import {
 	View,
 	Image as RNImage,
 	ImageStyle,
 	LayoutChangeEvent,
-	ActivityIndicator,
-	StyleSheet,
 } from 'react-native'
 import type { Image as ImageType } from '@iam/types'
 import { useBestVariant } from '@/hooks'
@@ -86,13 +84,6 @@ const AutoSizeImage = ({
 			)}
 		</View>
 	)
-}	
-
-const styles = StyleSheet.create({
-  flexContainer: {
-    flex: 1,
-    alignSelf: 'stretch',
-  },
-})
+}
 
 export default AutoSizeImage

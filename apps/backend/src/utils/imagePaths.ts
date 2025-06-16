@@ -10,9 +10,7 @@ const IMAGE_UPLOAD_ROOT = path.isAbsolute(rawUploadDir)
   : path.resolve(PROJECT_ROOT, rawUploadDir)
 
 export const getUserDir = (username: string): string => {
-    console.log('IMAGE_UPLOAD_ROOT', process.env.IMAGE_UPLOAD_ROOT)
 	const safeUsername = sanitizeUsername(username)
     const userDir = path.join(IMAGE_UPLOAD_ROOT, safeUsername)
-    console.log('userDir', userDir)
 	return userDir
 }

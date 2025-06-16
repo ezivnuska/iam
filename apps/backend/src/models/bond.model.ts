@@ -1,17 +1,7 @@
 // apps/backend/src/models/bond.model.ts
 
-import { Schema, model, Document, Types } from 'mongoose'
-
-export interface IBond extends Document {
-	sender: Types.ObjectId
-	responder: Types.ObjectId
-	confirmed: boolean
-	declined: boolean
-	cancelled: boolean
-	actionerId: Types.ObjectId
-	createdAt: Date
-	updatedAt: Date
-}
+import { Schema, model, Types } from 'mongoose'
+import type { IBond } from '@iam/types'
 
 const BondSchema = new Schema<IBond>({
 	sender: { type: Schema.Types.ObjectId, ref: 'User', required: true },

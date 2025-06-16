@@ -4,7 +4,7 @@ import { Header, Footer } from '.'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { MAX_WIDTH } from './constants'
 import { useDeviceInfo } from '@/hooks'
-import { resolveResponsiveProp, Size } from '@/styles'
+// import { resolveResponsiveProp, Size } from '@/styles'
 
 interface PageLayoutProps {
 	children: React.ReactNode
@@ -12,7 +12,7 @@ interface PageLayoutProps {
 
 export const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
 	const { height } = useDeviceInfo()
-    const paddingHorizontal = resolveResponsiveProp({ xs: 8, sm: 8, md: 16, lg: 24 })
+    // const paddingHorizontal = resolveResponsiveProp({ xs: 8, sm: 8, md: 16, lg: 24 })
 	return (
 		<SafeAreaView style={styles.container}>
 			<Header />

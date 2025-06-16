@@ -24,8 +24,6 @@ import postRoutes from './routes/post.routes'
 import commentRoutes from './routes/comment.routes'
 import kofiRoutes from './routes/kofi.routes'
 
-console.log('IMAGE_UPLOAD_DIR...', process.env.IMAGE_UPLOAD_DIR)
-
 // --- Constants ---
 const API_PORT = parseInt(process.env.API_PORT || '4000', 10)
 

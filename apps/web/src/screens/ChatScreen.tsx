@@ -1,7 +1,7 @@
 // apps/web/src/screens/ChatScreen.tsx
 
 import React, { KeyboardEvent, useRef, useState, useEffect } from 'react'
-import { Platform, TextInput, TextInput as RNTextInput, Text, StyleSheet, FlatList, TouchableOpacity, View } from 'react-native'
+import { TextInput, TextInput as RNTextInput, Text, StyleSheet, FlatList, TouchableOpacity, View } from 'react-native'
 import { Column, Avatar, PageLayout, Row } from '@/components'
 import { horizontalPadding, Size } from '@/styles'
 import { useSocket } from '@/hooks'

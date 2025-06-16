@@ -55,22 +55,13 @@ export const CreatePostForm = ({ onPostCreated }: { onPostCreated?: () => void }
     const [uploadingImage, setUploadingImage] = useState(false)
 	const [focused, setFocused] = useState<string | null>(null)
 	const contentInputRef = useRef<RNTextInput>(null)
-
-	function toImageUploadData(image: UploadedImage & { uri?: string }) {
-		return {
-			imageData: {
-				uri: image.uri!,
-				filename: image.filename || 'upload.jpg',
-			}
-		}
-	}
 	  
 	const onSubmit = async (data: CreatePostFormProps) => {
+        setUploadingImage(true)
 		try {
 			let uploadedImage = data.image
 		
 			if (localImageData) {
-				// Upload new image first
 				uploadedImage = await postService.uploadImage({ imageData: localImageData })
                 console.log('uploadedImage with post', uploadedImage)
 			}
@@ -84,7 +75,9 @@ export const CreatePostForm = ({ onPostCreated }: { onPostCreated?: () => void }
 			hideModal()
 		} catch (err: any) {
 			// error handling
-		}
+		} finally {
+            setUploadingImage(false)
+        }
 	}	  
 
 	const focusFirstEmptyField = () => {
@@ -105,35 +98,35 @@ export const CreatePostForm = ({ onPostCreated }: { onPostCreated?: () => void }
         <ModalContainer title='Create Post'>
 
             <Controller
-            control={control}
-            name='content'
-            render={({ field: { value, onChange, onBlur } }) => (
-                <TextInput
-                    ref={contentInputRef}
-                    placeholder={`What's on your mind?`}
-                    placeholderTextColor='#070'
-                    value={value}
-                    multiline
-                    numberOfLines={3}
-                    onChangeText={onChange}
-                    onFocus={() => setFocused('content')}
-                    onBlur={() => {
-                        onBlur()
-                        setFocused(null)
-                    }}
-                    returnKeyType='done'
-                    onSubmitEditing={handleSubmit(onSubmit, onInvalid)}
-                    style={[
-                        styles.input,
-                        shadows.input,
-                        isFocused('content') && styles.inputFocused,
-                    ]}
-                />
-            )}
+                control={control}
+                name='content'
+                render={({ field: { value, onChange, onBlur } }) => (
+                    <TextInput
+                        ref={contentInputRef}
+                        placeholder={`What's on your mind?`}
+                        placeholderTextColor='#070'
+                        value={value}
+                        multiline
+                        numberOfLines={3}
+                        onChangeText={onChange}
+                        onFocus={() => setFocused('content')}
+                        onBlur={() => {
+                            onBlur()
+                            setFocused(null)
+                        }}
+                        returnKeyType='done'
+                        onSubmitEditing={handleSubmit(onSubmit, onInvalid)}
+                        style={[
+                            styles.input,
+                            shadows.input,
+                            isFocused('content') && styles.inputFocused,
+                        ]}
+                    />
+                )}
             />
+            
             {errors.content && <Text style={styles.error}>{errors.content.message}</Text>}
 
-            {/* Image preview */}
             {localImageData ? (
                 <Image
                     source={{ uri: localImageData.uri }}

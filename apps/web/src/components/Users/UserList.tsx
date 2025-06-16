@@ -1,26 +1,65 @@
 // packages/screens/src/screens/UserList.tsx
 
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { ActivityIndicator, Alert, FlatList, StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import type { StackNavigationProp } from '@react-navigation/stack'
 import { useNavigation } from '@react-navigation/native'
 import { UserListItem } from '@/components'
 import { usePaginatedFetch } from '@services'
-import { useAuth, useBonds } from '@/hooks'
-import type { RootStackParamList } from '@iam/types'
+import { useAuth, useBonds, useSocket } from '@/hooks'
+import type { Bond, RootStackParamList, User } from '@iam/types'
 import { Size } from '@/styles'
+import { normalizeUser } from '@utils'
 
 type NavProps = StackNavigationProp<RootStackParamList, 'UserList'>
 
 type FilterType = 'all' | 'bonded' | 'pending'
 
 export const UserList = () => {
-    const navigation = useNavigation<NavProps>()
-    const { user: currentUser } = useAuth()
-    const { data, fetchNextPage, loading } = usePaginatedFetch<any>('users')
-    const { bonds, createBond, removeBond, updateBond, loading: loadingBonds, error: bondsError, refetch: refetchBonds } = useBonds(currentUser?.id ?? '')
-
     const [filter, setFilter] = useState<FilterType>('all')
+    const { user: currentUser } = useAuth()
+    const { bonds, createBond, removeBond, setBonds, updateBond, loading: loadingBonds, error: bondsError, refetch: refetchBonds } = useBonds(currentUser?.id ?? '')
+	const { socket } = useSocket()
+	const navigation = useNavigation<NavProps>()
+	const { data, fetchNextPage, loading } = usePaginatedFetch<User>('users')
+
+    const otherUsers = (data ?? []).filter((u) => u.email !== currentUser?.email)
+
+	useEffect(() => {
+		if (!socket) return
+
+		const onBondCreated = (newBond: Bond) => {
+			setBonds((prev) => {
+				if (!prev) return [newBond]
+				const exists = prev.some((b) => b._id === newBond._id)
+				return exists ? prev : [...prev, newBond]
+			})
+		}
+	
+		const onBondUpdated = (updatedBond: Bond) => {
+			setBonds((prev) => {
+				if (!prev) return [updatedBond]
+				return prev.map((b) => (b._id === updatedBond._id ? updatedBond : b))
+			})
+		}
+	
+		const onBondDeleted = (bond: Bond) => {
+			setBonds((prev) => {
+				if (!prev) return []
+				return prev.filter((b) => b._id !== bond._id)
+			})
+		}
+	  
+		socket.on('bond:created', onBondCreated)
+		socket.on('bond:updated', onBondUpdated)
+		socket.on('bond:deleted', onBondDeleted)
+	  
+		return () => {
+			socket.off('bond:created', onBondCreated)
+			socket.off('bond:updated', onBondUpdated)
+			socket.off('bond:deleted', onBondDeleted)
+		}
+	}, [socket, refetchBonds])
 
     const getBondForUser = useCallback(
         (userId: string) => {
@@ -33,10 +72,8 @@ export const UserList = () => {
         [bonds, currentUser?.id]
     )
 
-    const otherUsers = (data ?? []).filter((u) => u.email !== currentUser?.email)
-
     const filteredUsers = otherUsers.filter((user) => {
-        const bond = getBondForUser(user._id)
+        const bond = getBondForUser(user.id)
         switch (filter) {
             case 'bonded':
                 return bond?.confirmed
@@ -81,6 +118,30 @@ export const UserList = () => {
         </TouchableOpacity>
     )
 
+	const renderItem = useCallback((item: User) => {
+		const userId = item.id ?? ''
+		const bond = getBondForUser(userId)
+	  
+		return (
+			<UserListItem
+				bond={bond}
+				onConfirm={() => bond && updateBondStatus(bond._id, { confirmed: true })}
+				onCreate={() => requestBond(userId)}
+				onDelete={() => bond && deleteBond(bond._id)}
+				onPress={() => navigation.navigate('Details', { id: userId })}
+				profile={item}
+			/>
+		)
+	}, [getBondForUser, updateBondStatus, requestBond, deleteBond, navigation])
+
+	if (loadingBonds) {
+		return <ActivityIndicator style={{ flex: 1, justifyContent: 'center' }} />
+	}
+	  
+	if (bondsError) {
+		return <Text>Error loading bonds</Text>
+	}
+
     return bonds && (
         <View style={{ flex: 1 }}>
             <View style={styles.filterContainer}>
@@ -90,21 +151,9 @@ export const UserList = () => {
             </View>
             <FlatList
                 data={filteredUsers}
-                keyExtractor={(item) => item._id || item.email}
+                keyExtractor={(item) => item.id || item.email}
                 scrollEnabled={false}
-                renderItem={({ item }) => {
-                    const bond = getBondForUser(item._id)
-                    return (
-                        <UserListItem
-                            bond={bond}
-                            onConfirm={() => bond && updateBondStatus(bond._id, { confirmed: true })}
-                            onCreate={() => requestBond(item._id)}
-                            onDelete={() => bond && deleteBond(bond._id)}
-                            onPress={() => navigation.navigate('Details', { id: item._id })}
-                            profile={item}
-                        />
-                    )
-                }}
+                renderItem={({ item }) => renderItem(normalizeUser(item))}
                 onEndReached={fetchNextPage}
                 onEndReachedThreshold={0.5}
                 ListFooterComponent={loading ? <ActivityIndicator style={{ marginVertical: 20 }} /> : null}
