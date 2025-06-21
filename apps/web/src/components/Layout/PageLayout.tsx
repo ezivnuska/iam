@@ -35,6 +35,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
 const styles = StyleSheet.create({
 	outerContainer: {
 		flex: 1,
+        backgroundColor: '#fff',
 	},
 	header: {
 		height: 50,

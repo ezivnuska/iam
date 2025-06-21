@@ -153,7 +153,7 @@ export const SigninForm = () => {
                         }}
 						secureTextEntry
 						autoCapitalize='none'
-						returnKeyType='done'
+						returnKeyType='default'
 						onSubmitEditing={handleSubmit(onSubmit, onInvalid)}
 						style={[styles.input, shadows.input, isFocused('password') && styles.inputFocused]}
 					/>

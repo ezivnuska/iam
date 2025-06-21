@@ -85,7 +85,7 @@ export const AddCommentForm: React.FC<AddCommentFormProps> = ({
 							setFocusedField(null)
 						}}
 						autoCapitalize='sentences'
-						returnKeyType='done'
+						returnKeyType='default'
 						onSubmitEditing={handleSubmit(onSubmit)}
 						style={[
 							styles.input,

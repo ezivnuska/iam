@@ -148,7 +148,7 @@ export const SignupForm = () => {
                             setFocused(null)
                         }}
 						autoCapitalize='none'
-						returnKeyType='next'
+						returnKeyType='default'
 						onSubmitEditing={() => passwordInputRef.current?.focus()}
 						style={[styles.input, shadows.input, isFocused('username') && styles.inputFocused]}
 					/>
