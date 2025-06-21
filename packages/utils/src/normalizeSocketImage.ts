@@ -1,7 +1,5 @@
 // packages/utils/src/normalizeSocketImage.ts
 
-// packages/utils/src/normalizeSocketImage.ts
-
 import { getAvatarUrl } from './'
 import type { SocketImage, ImageVariant } from '@iam/types'
 
@@ -14,6 +12,7 @@ export function normalizeSocketImage(img?: any): SocketImage | undefined {
 
 	return {
 		id: img._id?.toString?.() ?? img.id,
+        userId: img.userId,
 		filename: img.filename,
 		username: img.username,
 		url,

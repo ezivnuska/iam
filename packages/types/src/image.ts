@@ -57,7 +57,7 @@ export type SanitizedImage = {
 
 export type SocketImage = {
 	id: string
-    userId: Types.ObjectId
+    userId: string
 	filename: string
 	username: string
 	url: string
