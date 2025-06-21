@@ -2,13 +2,14 @@
 
 import React, { useMemo, useState } from 'react'
 import {
-	View,
-	Text,
-	StyleSheet,
+	ActivityIndicator,
 	FlatList,
-	useWindowDimensions,
 	LayoutChangeEvent,
+	StyleSheet,
+	Text,
 	TouchableOpacity,
+	useWindowDimensions,
+	View,
 } from 'react-native'
 import { AutoSizeImage, FullScreenImage } from '.'
 import type { Image } from '@iam/types'
@@ -22,9 +23,11 @@ type ImageGalleryProps = {
 	currentAvatarId?: string | null | undefined
 	onDelete?: (id: string) => void
 	onSetAvatar?: (id: string | undefined) => void
+	onEndReached?: () => void
+	loading?: boolean
 }
 
-const ImageGallery = ({ images, onDelete, onSetAvatar, currentAvatarId }: ImageGalleryProps) => {
+const ImageGallery = ({ currentAvatarId, images, loading, onDelete, onSetAvatar, onEndReached }: ImageGalleryProps) => {
 	const { user } = useAuth()
 	const { showModal, hideModal } = useModal()
 	const { width: windowWidth } = useWindowDimensions()
@@ -91,6 +94,9 @@ const ImageGallery = ({ images, onDelete, onSetAvatar, currentAvatarId }: ImageG
 					initialNumToRender={6}
 					maxToRenderPerBatch={10}
 					windowSize={5}
+					onEndReached={onEndReached}
+					onEndReachedThreshold={0.5}
+					ListFooterComponent={loading ? <ActivityIndicator style={{ marginVertical: 20 }} /> : null}
 				/>
 			)}
 		</View>

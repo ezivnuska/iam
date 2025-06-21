@@ -34,7 +34,7 @@ export const registerChatHandlers = (
 		}
 
 		console.log(`${user.username}: ${message}`)
-		io.emit('chat:message', payload)
+		socket.broadcast.emit('chat:message', payload)
 	}
 
 	socket.on('chat:message', onChatMessage)

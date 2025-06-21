@@ -11,6 +11,7 @@ export interface ImageVariant {
 
 export interface ImageDocument extends Document {
 	_id: Types.ObjectId
+    userId: Types.ObjectId
 	filename: string
 	username: string
 	alt?: string
@@ -21,6 +22,7 @@ export interface ImageDocument extends Document {
 
 export interface Image {
 	id: string
+    userId: Types.ObjectId
 	filename: string
 	username: string
 	url: string
@@ -32,6 +34,7 @@ export interface Image {
 
 export type UploadedImage = {
 	id: string
+    userId: Types.ObjectId
 	filename: string
 	username: string
 	alt: string
@@ -45,6 +48,7 @@ export type UploadedImage = {
 
 export type SanitizedImage = {
 	id: string
+    userId: Types.ObjectId
 	filename: string
 	username: string
 	url: string
@@ -53,6 +57,7 @@ export type SanitizedImage = {
 
 export type SocketImage = {
 	id: string
+    userId: Types.ObjectId
 	filename: string
 	username: string
 	url: string

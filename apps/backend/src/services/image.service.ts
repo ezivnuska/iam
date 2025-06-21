@@ -17,16 +17,66 @@ const VARIANT_SIZES = {
 	thumb: 150,
 } as const
 
-export const getImagesByUsername = async (username: string) => {
-	return ImageModel.find({ username }).sort({ createdAt: -1 })
+export const getImagesByUsername = async (
+	username: string,
+	page = 1,
+	limit = 12
+) => {
+	const skip = (page - 1) * limit
+
+	const [images, total] = await Promise.all([
+		ImageModel.find({ username })
+			.sort({ createdAt: -1 })
+			.skip(skip)
+			.limit(limit),
+		ImageModel.countDocuments({ username }),
+	])
+
+	const hasNextPage = skip + images.length < total
+
+	return {
+		images,
+		total,
+		hasNextPage,
+	}
 }
 
-export const deleteImage = async (imageId: string, username: string): Promise<boolean> => {
+export const getImagesByUserId = async (
+	userId: string,
+	page = 1,
+	limit = 12
+) => {
+	const skip = (page - 1) * limit
+
+	if (!mongoose.Types.ObjectId.isValid(userId)) {
+		throw new Error('Invalid user ID')
+	}
+
+	const objectId = new mongoose.Types.ObjectId(userId)
+	
+	const [images, total] = await Promise.all([
+		ImageModel.find({ userId: objectId })
+			.sort({ createdAt: -1 })
+			.skip(skip)
+			.limit(limit),
+		ImageModel.countDocuments({ userId: objectId }),
+	])
+
+	const hasNextPage = skip + images.length < total
+
+	return {
+		images,
+		total,
+		hasNextPage,
+	}
+}
+
+export const deleteImage = async (imageId: string, userId: string): Promise<boolean> => {
 	const image = await ImageModel.findById(imageId)
 	if (!image) throw new HttpError('Image not found', 404)
-	if (image.username !== username) throw new HttpError('Unauthorized: image does not belong to user', 403)
+	if (!image.userId.equals(userId)) throw new HttpError('Unauthorized: image does not belong to user', 403)
 
-	const uploadDir = getUserDir(username)
+	const uploadDir = getUserDir(image.username)
 
 	const deleteResults = await Promise.all(
 		image.variants.map(variant =>
@@ -42,6 +92,7 @@ export const deleteImage = async (imageId: string, username: string): Promise<bo
 interface ProcessImageParams {
 	fileBuffer: Buffer
 	originalName: string
+	userId: string
 	username: string
 	alt?: string
 	generateThumbnail?: boolean
@@ -50,10 +101,11 @@ interface ProcessImageParams {
 export const processAndSaveImage = async ({
 	fileBuffer,
 	originalName,
+	userId,
 	username,
 	alt = '',
 	generateThumbnail = false,
-}: ProcessImageParams) => {
+}: ProcessImageParams & { userId: string }) => {
 	const sanitizedUsername = sanitizeUsername(username)
 	const uploadDir = getUserDir(sanitizedUsername)
 	await ensureDir(uploadDir)
@@ -92,8 +144,9 @@ export const processAndSaveImage = async ({
 	}
 
 	return ImageModel.create({
-		filename: filenameBase,
+		userId,
 		username: sanitizedUsername,
+		filename: filenameBase,
 		alt,
 		variants,
 	})

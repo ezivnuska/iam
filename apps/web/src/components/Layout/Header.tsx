@@ -27,7 +27,7 @@ const Brand = ({ ...props }) => {
 }
 
 export const Header: React.FC<HeaderProps> = () => {
-    const { isAuthenticated, user } = useAuth()
+    const { isAuthenticated, isAuthInitialized, user } = useAuth()
     const { showModal } = useModal()
     const navigation = useNavigation()
 
@@ -58,7 +58,7 @@ export const Header: React.FC<HeaderProps> = () => {
                         showUsername={showUsername}
                     />
 
-                    {isAuthenticated ? (
+                    {!isAuthInitialized ? null : isAuthenticated ? (
                         <Row
                             flex={5}
                             spacing={navSpacing}
@@ -107,13 +107,15 @@ export const Header: React.FC<HeaderProps> = () => {
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         width: '100%',
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: Size.S,
+        // paddingVertical: Size.S,
         backgroundColor: '#fff',
     },
     maxWidthContainer: {
+        flex: 1,
         width: '100%',
         maxWidth: MAX_WIDTH,
         marginHorizontal: 'auto',

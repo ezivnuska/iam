@@ -21,10 +21,36 @@ export const uploadAvatar = async (formData: FormData): Promise<Image> => {
 	return normalizeImage(res.data)!
 }
 
-export const fetchUserImages = async (userId?: string): Promise<Image[]> => {
-	const endpoint = userId ? `/images/${userId}` : `/images`
-	const res = await api.get<UploadedImage[]>(endpoint)
-	return res.data.map(normalizeImage).filter(Boolean) as Image[]
+type FetchUserImagesOptions = {
+	userId?: string
+	page?: number
+	limit?: number
+}
+
+export const fetchUserImages = async ({
+	userId,
+	page = 1,
+	limit = 12,
+}: FetchUserImagesOptions = {}): Promise<{
+	images: Image[]
+	total: number
+	hasNextPage: boolean
+}> => {
+	const endpoint = userId
+		? `/images/user/${userId}?page=${page}&limit=${limit}`
+		: `/images?page=${page}&limit=${limit}`
+
+	const res = await api.get<{
+		images: UploadedImage[]
+		total: number
+		hasNextPage: boolean
+	}>(endpoint)
+
+	return {
+		images: res.data.images.map(normalizeImage).filter(Boolean) as Image[],
+		total: res.data.total,
+		hasNextPage: res.data.hasNextPage,
+	}
 }
 
 export const uploadImage = async ({ imageData }: ImageUploadData): Promise<UploadedImage> => {

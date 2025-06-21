@@ -1,45 +1,21 @@
 // apps/web/src/app.tsx
 
 import React from 'react'
-import { StyleSheet } from 'react-native'
-import { NavigationContainer } from '@react-navigation/native'
-import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { View } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { AppProviders } from './providers'
-import { AppNavigator, navigationRef } from './navigation'
+import { AppNavigator } from './navigation'
 
-const linking = {
-    prefixes: ['http://localhost:3000', 'https://iameric.me'],
-    config: {
-        screens: {
-            Chat: 'chat',
-            Details: 'details',
-            ForgotPassword: 'forgot-password',
-            Home: '/',
-            ResetPassword: 'reset-password/:token',
-            UserList: 'users',
-            Profile: 'profile',
-            PrivacyPolicy: 'privacy',
-        },
-    },
-}
-export default function App() {
+const App = () => {
 	return (
-		<GestureHandlerRootView style={styles.container}>
-            <SafeAreaProvider>
-                <NavigationContainer ref={navigationRef} linking={linking}>
-                    <AppProviders>
-                        <AppNavigator />
-                    </AppProviders>
-                </NavigationContainer>
-            </SafeAreaProvider>
+		<GestureHandlerRootView style={{ flex: 1 }}>
+            <AppProviders>
+                <View style={{ flex: 1 }}>
+                    <AppNavigator />
+                </View>
+            </AppProviders>
 		</GestureHandlerRootView>
 	)
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-    },
-})  
+export default App

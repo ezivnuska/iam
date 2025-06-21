@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import {
+    getToken,
 	saveToken,
 	clearToken,
 	signinRequest,
@@ -9,16 +10,15 @@ import {
 	setAuthHeader,
 	clearAuthHeader,
 	trySigninFromStoredToken,
-	setUnauthorizedHandler,
 } from '@services'
 import { navigate, navigationRef } from '../navigation'
 import { createContext } from 'react'
 import type { User } from '@iam/types'
 import { useSocket } from '@/hooks'
-import { getToken } from '@services'
 
 export type AuthContextType = {
 	isAuthenticated: boolean
+	isAuthInitialized: boolean
 	user: User | null
 	login: (email: string, password: string) => Promise<void>
 	logout: () => Promise<void>
@@ -27,6 +27,7 @@ export type AuthContextType = {
 
 export const AuthContext = createContext<AuthContextType>({
 	isAuthenticated: false,
+	isAuthInitialized: false,
 	user: null,
 	login: async () => {},
 	logout: async () => {},
@@ -38,7 +39,8 @@ type AuthProviderProps = { children: React.ReactNode }
 export const AuthProvider = ({ children }: AuthProviderProps) => {
 	const [user, setUser] = useState<User | null>(null)
 	const [isAuthenticated, setIsAuthenticated] = useState(false)
-
+    const [isAuthInitialized, setIsAuthInitialized] = useState(false)
+    
 	const { connectSocket, disconnectSocket } = useSocket()
 
 	const login = async (email: string, password: string) => {
@@ -66,7 +68,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 	}
 
 	useEffect(() => {
-		setUnauthorizedHandler(() => navigationRef.navigate('Signin'))
 
 		const initialize = async () => {
 			const profile = await trySigninFromStoredToken()
@@ -88,17 +89,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 			} else {
 				navigate('Home')
 			}
+
+            setIsAuthInitialized(true)
 		}		
 
 		initialize()
-
-		return () => {
-			setUnauthorizedHandler(() => {})
-		}
 	}, [])
 
 	return (
-		<AuthContext.Provider value={{ isAuthenticated, user, login, logout, setUser }}>
+		<AuthContext.Provider value={{ isAuthenticated, isAuthInitialized, user, login, logout, setUser }}>
 			{children}
 		</AuthContext.Provider>
 	)

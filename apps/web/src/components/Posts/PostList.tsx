@@ -1,54 +1,94 @@
 // apps/web/src/components/PostList.tsx
 
-import React, { useCallback, useEffect, useState } from 'react'
-import { FlatList } from 'react-native'
-import type { ListRenderItemInfo } from 'react-native'
-import { usePosts, useModal } from '@/hooks'
+import React, { useState, useCallback, useEffect } from 'react'
+import { ScrollView, View, NativeSyntheticEvent, NativeScrollEvent } from 'react-native'
+import type { Post } from '@iam/types'
 import { PostListItem } from '@/components'
-import { Post } from '@iam/types'
+import { usePosts } from '@/hooks'
 import { Size } from '@/styles'
 
-export const PostList = () => {
-	const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set())
+const PAGE_SIZE = 10
 
-	const { commentCounts, setCommentCounts } = usePosts()
-	const { posts, deletePost, refreshPosts } = usePosts()
-	const { showModal } = useModal()
+export const PostList = () => {
+	const { commentCounts, setCommentCounts, posts, refreshPosts } = usePosts()
+	const [visiblePosts, setVisiblePosts] = useState<Post[]>([])
+	// const { showModal } = useModal()
 
 	useEffect(() => {
 		refreshPosts()
 	}, [])
+	useEffect(() => {
+		console.log('visiblePosts', visiblePosts)
+	}, [visiblePosts])
+	useEffect(() => {
+		console.log('posts', posts)
+		setVisiblePosts(posts.slice(0, PAGE_SIZE))
+	}, [posts])
 
-	const renderItem = useCallback(
-		({ item }: ListRenderItemInfo<Post>) => {
-			return (
-				<PostListItem
-					post={item}
-					showPreview={!!item.linkPreview}
-					commentCount={commentCounts[item._id] ?? 0}
-					onCommentDeleted={() => {
-						setCommentCounts((prev) => ({
-							...prev,
-							[item._id]: Math.max((prev[item._id] ?? 1) - 1, 0),
-						}))
-					}}
-				/>
-			)
-		},
-		[commentCounts]
-	)
+	// Load next "page"
+	const loadMore = useCallback(() => {
+		const next = posts.slice(0, visiblePosts.length + PAGE_SIZE)
+		if (next.length > visiblePosts.length) {
+			setVisiblePosts(next)
+		}
+	}, [posts, visiblePosts])
+
+	// Detect when user scrolls near the bottom
+	const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+		const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent
+		const distanceFromBottom = contentSize.height - (contentOffset.y + layoutMeasurement.height)
+
+		if (distanceFromBottom < 100) {
+			loadMore()
+		}
+	}
+
+	// const renderItem = useCallback(
+	// 	(item: Post) => {
+	// 		return (
+	// 			<PostListItem
+	// 				key={item._id}
+	// 				post={item}
+	// 				showPreview={!!item.linkPreview}
+	// 				commentCount={commentCounts[item._id] ?? 0}
+	// 				onCommentDeleted={() => {
+	// 					setCommentCounts((prev) => ({
+	// 						...prev,
+	// 						[item._id]: Math.max((prev[item._id] ?? 1) - 1, 0),
+	// 					}))
+	// 				}}
+	// 			/>
+	// 		)
+	// 	},
+	// 	[commentCounts]
+	// )
 
 	return (
-		<FlatList
-			data={posts}
-			keyExtractor={(item) => item._id}
-			initialNumToRender={2}
-			maxToRenderPerBatch={3}
-			windowSize={4}
-			removeClippedSubviews={true}
-			contentContainerStyle={{ paddingVertical: Size.S }}
-            showsVerticalScrollIndicator={false}
-			renderItem={renderItem}
-		/>
+		<View style={{ flex: 1 }}>
+			<ScrollView
+				onScroll={handleScroll}
+				scrollEventThrottle={16}
+				style={{ flex: 1, backgroundColor: 'red' }}
+				contentContainerStyle={{
+					paddingVertical: Size.S,
+				}}
+				showsVerticalScrollIndicator={false}
+			>
+				{visiblePosts.map((post) => (
+					<PostListItem
+						key={post._id}
+						post={post}
+						showPreview={!!post.linkPreview}
+						commentCount={commentCounts[post._id] ?? 0}
+						onCommentDeleted={() => {
+							setCommentCounts((prev) => ({
+								...prev,
+								[post._id]: Math.max((prev[post._id] ?? 1) - 1, 0),
+							}))
+						}}
+					/>
+				))}
+			</ScrollView>
+		</View>
 	)
 }

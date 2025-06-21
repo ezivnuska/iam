@@ -80,14 +80,14 @@ export const PostListItem: React.FC<Props> = ({
 			{isAuthor && (
 				<IconButton
 					onPress={handleDelete}
-					icon={<Ionicons name='trash-bin' size={24} color='black' />}
+					icon={<Ionicons name='trash-outline' size={24} color='black' />}
 				/>
 			)}
 		</Row>
 	)
 
 	return (
-		<Column flex={1} spacing={Size.M} paddingBottom={Size.L}>
+		<Column spacing={Size.M} paddingVertical={Size.S}>
 			{renderHeader()}
             
 			<Autolink

@@ -18,7 +18,7 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, preview }) => {
 	const [aspectRatio, setAspectRatio] = useState<number>(1)
 
 	const maxWidth = useMemo(
-		() => resolveResponsiveProp({ xs: 500, sm: 500, md: 500 - Size.M * 2, lg: 500 - Size.M * 2 }),
+		() => resolveResponsiveProp({ xs: 400, sm: 400, md: 400 - Size.M * 2, lg: 400 - Size.M * 2 }),
 		[]
 	)
 

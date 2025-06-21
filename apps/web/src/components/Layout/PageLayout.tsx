@@ -1,48 +1,50 @@
+// apps/web/src/components/Layout/PageLayout.tsx
+
 import React from 'react'
-import { ScrollView, StyleSheet } from 'react-native'
-import { Header, Footer } from '.'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { MAX_WIDTH } from './constants'
+import { View, StyleSheet } from 'react-native'
+import { Header, Footer } from '@/components'
 import { useDeviceInfo } from '@/hooks'
-// import { resolveResponsiveProp, Size } from '@/styles'
+import { MAX_WIDTH } from './constants'
 
 interface PageLayoutProps {
 	children: React.ReactNode
 }
 
-export const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
+export const PageLayout: React.FC<PageLayoutProps> = ({
+	children,
+}) => {
 	const { height } = useDeviceInfo()
-    // const paddingHorizontal = resolveResponsiveProp({ xs: 8, sm: 8, md: 16, lg: 24 })
+
 	return (
-		<SafeAreaView style={styles.container}>
-			<Header />
+		<View style={styles.outerContainer}>
+			<View style={styles.header}>
+				<Header />
+			</View>
 
-			<ScrollView
-				style={[styles.mainContent, { maxHeight: height - 100 }]}
-				contentContainerStyle={styles.scrollContent}
-				showsVerticalScrollIndicator={false}
-			>
-                {children}
-			</ScrollView>
+			<View style={[styles.contentWrapper, { height: height - 100 }]}>
+				{children}
+			</View>
 
-			<Footer />
-		</SafeAreaView>
+			<View style={styles.footer}>
+				<Footer />
+			</View>
+		</View>
 	)
 }
 
 const styles = StyleSheet.create({
-	container: {
+	outerContainer: {
 		flex: 1,
-        backgroundColor: '#000',
 	},
-	mainContent: {
-		flex: 1,
-        backgroundColor: '#fff',
+	header: {
+		height: 50,
 	},
-	scrollContent: {
-		flex: 1,
+	footer: {
+		height: 50,
+	},
+	contentWrapper: {
 		width: '100%',
 		maxWidth: MAX_WIDTH,
-		marginHorizontal: 'auto',
+		alignSelf: 'center',
 	},
 })

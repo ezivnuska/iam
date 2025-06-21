@@ -41,7 +41,7 @@
         "@hookform/resolvers": "^5.0.1",
         "@react-native-async-storage/async-storage": "1.23.1",
         "@react-navigation/core": "7.8.5",
-        "@react-navigation/native": "7.1.10",
+        "@react-navigation/native": "7.1.11",
         "@react-navigation/stack": "^7.2.10",
         "body-parser": "^1.20.3",
         "buffer": "^6.0.3",

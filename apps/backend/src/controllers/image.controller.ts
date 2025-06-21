@@ -14,9 +14,10 @@ export const uploadImage: RequestHandler = async (req, res, next) => {
 		const savedImage = await imageService.processAndSaveImage({
 			fileBuffer: req.file.buffer,
 			originalName: req.file.originalname,
+			userId: req.user!.id,
 			username: req.user!.username,
 			generateThumbnail: true,
-		})
+		})		
 
 		res.status(200).json(savedImage)
 	} catch (err) {
@@ -24,10 +25,17 @@ export const uploadImage: RequestHandler = async (req, res, next) => {
 	}
 }
 
+const parsePagination = (req: any) => {
+	const page = parseInt(req.query.page as string) || 1
+	const limit = parseInt(req.query.limit as string) || 12
+	return { page, limit }
+}
+
 export const getImages: RequestHandler = async (req, res, next) => {
 	try {
-		const images = await imageService.getImagesByUsername(req.user!.username)
-		res.status(200).json(images)
+		const { page, limit } = parsePagination(req)
+		const result = await imageService.getImagesByUserId(req.user!.id, page, limit)
+		res.status(200).json(result)
 	} catch (err) {
 		next(err)
 	}
@@ -35,14 +43,16 @@ export const getImages: RequestHandler = async (req, res, next) => {
 
 export const getUserImages: RequestHandler = async (req, res, next) => {
 	try {
-		const username = req.params.username
-		if (!username) {
-			res.status(400).json({ message: 'Username is required' })
+		const { page, limit } = parsePagination(req)
+		const userId = req.params!.userId
+
+		if (!userId) {
+			res.status(400).json({ message: 'User ID is required' })
 			return
 		}
-
-		const images = await imageService.getImagesByUsername(username)
-		res.status(200).json(images)
+		
+		const result = await imageService.getImagesByUserId(userId, page, limit)
+		res.status(200).json(result)
 	} catch (err) {
 		next(err)
 	}
@@ -51,7 +61,7 @@ export const getUserImages: RequestHandler = async (req, res, next) => {
 export const deleteImageController: RequestHandler = async (req, res, next) => {
 	try {
 		const { imageId } = req.params
-		await imageService.deleteImage(imageId, req.user!.username)
+		await imageService.deleteImage(imageId, req.user!.id)
 
 		await Comment.deleteMany({ refId: imageId, refType: 'Image' })
 

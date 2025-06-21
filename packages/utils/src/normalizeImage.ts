@@ -10,12 +10,13 @@ export function normalizeImage(img?: any): Image | undefined {
 
 	return {
 		id: img._id?.toString?.() ?? img.id,
+        userId: img.userId,
 		filename: img.filename,
 		username: img.username,
 		url,
 		alt: img.alt ?? '',
 		variants: img.variants ?? [],
-        likes: img.linkes,
+        likes: img.likes,
         likedByCurrentUser: img.likedByCurrentUser,
 	}
 }

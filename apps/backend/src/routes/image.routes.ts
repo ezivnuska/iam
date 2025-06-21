@@ -16,8 +16,8 @@ import {
 const router: Router = Router()
 
 router.post( '/upload', requireAuth(), uploadMemory.single('image'), uploadImage)
-router.get('/:username', requireAuth(), getUserImages)
 router.get('/', requireAuth(), getImages)
+router.get('/user/:userId', requireAuth(), getUserImages)
 router.delete('/:imageId', requireAuth(), deleteImageController)
 router.get('/:id/likes', getLikes)
 router.post('/:id/like', requireAuth(), toggleLike)

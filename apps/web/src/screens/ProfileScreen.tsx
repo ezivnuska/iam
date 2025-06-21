@@ -68,7 +68,9 @@ export const ProfileScreen = () => {
                         <Feather name='edit-3' size={18} color='#555' />
                     </Pressable>
                 </Row>
-                <UserImageManager />
+                <View style={{ flex: 1 }}>
+                    <UserImageManager />
+                </View>
             </Column>
 		</PageLayout>
 	)

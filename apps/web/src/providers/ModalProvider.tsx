@@ -14,7 +14,8 @@ import {
 	Pressable,
 	StyleSheet,
 } from 'react-native'
-
+import { createPortal } from 'react-dom'
+  
 type ModalContent = ReactNode | null
 
 export type ModalContextType = {
@@ -23,93 +24,96 @@ export type ModalContextType = {
 	hideAllModals: () => void
 	modalStack: ModalContent[]
 }
-
+  
 export const ModalContext = createContext<ModalContextType | undefined>(undefined)
 
-export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
+export const ModalProvider = ({ children }: { children: ReactNode }) => {
 	const [modalStack, setModalStack] = useState<ModalContent[]>([])
-
+  
 	const showModal = useCallback((modalContent: ModalContent) => {
-		setModalStack(prev => [...prev, modalContent])
+	  setModalStack(prev => [...prev, modalContent])
 	}, [])
-
+  
 	const hideModal = useCallback(() => {
-		setModalStack(prev => prev.slice(0, -1))
+	  setModalStack(prev => prev.slice(0, -1))
 	}, [])
-
+  
 	const hideAllModals = useCallback(() => {
-		setModalStack([])
+	  setModalStack([])
 	}, [])
-
+  
 	const topModal = modalStack[modalStack.length - 1]
-
 	const useNativeModal = Platform.OS !== 'web'
-
-	const modalOverlayStyle = [
-		styles.baseOverlay,
-		Platform.OS === 'web' ? { position: 'fixed' as any } : { position: 'absolute' },
-	]
-
+  
 	return (
-		<ModalContext.Provider
-			value={{ showModal, hideModal, hideAllModals, modalStack }}
-		>
+	  <ModalContext.Provider value={{ showModal, hideModal, hideAllModals, modalStack }}>
+		<View style={{ flex: 1 }}>
 			{children}
-			{topModal &&
-				(useNativeModal ? (
-					<Modal
-						transparent
-						visible
-						animationType='fade'
-						presentationStyle='overFullScreen'
-						onRequestClose={hideModal}
-					>
-						<View style={modalOverlayStyle}>
-							<Pressable style={styles.backdrop} onPress={hideModal} />
-							<View style={styles.modalContent}>{topModal}</View>
-						</View>
-					</Modal>
-				) : (
-					<View style={modalOverlayStyle}>
-						<Pressable style={styles.backdrop} onPress={hideModal} />
-						<View style={styles.modalContent}>{topModal}</View>
-					</View>
-				))}
-		</ModalContext.Provider>
+		</View>
+  
+		{topModal &&
+		  (useNativeModal ? (
+			<Modal
+			  transparent
+			  visible
+			  animationType='fade'
+			  presentationStyle='overFullScreen'
+			  onRequestClose={hideModal}
+			>
+			  <Overlay onClose={hideModal}>{topModal}</Overlay>
+			</Modal>
+		  ) : (
+			typeof document !== 'undefined' &&
+			createPortal(
+			  <Overlay onClose={hideModal}>{topModal}</Overlay>,
+			  document.body
+			)
+		  ))}
+	  </ModalContext.Provider>
 	)
 }
 
+const Overlay = ({ children, onClose }: { children: ReactNode; onClose: () => void }) => {
+	return (
+	  <View pointerEvents="box-none" style={styles.overlay}>
+		<Pressable style={styles.backdrop} onPress={onClose} />
+		<View style={styles.modalContent}>{children}</View>
+	  </View>
+	)
+}
+  
 export const useModalContext = () => {
 	const context = useContext(ModalContext)
 	if (!context) {
-		throw new Error('useModalContext must be used within a ModalProvider')
+	  throw new Error('useModalContext must be used within a ModalProvider')
 	}
 	return context
 }
 
 const styles = StyleSheet.create({
-	baseOverlay: {
-		top: 0,
-		left: 0,
-		right: 0,
-		bottom: 0,
-		zIndex: 9999,
-		justifyContent: 'center',
-		alignItems: 'center',
+	overlay: {
+	  position: 'absolute',
+	  top: 0,
+	  left: 0,
+	  right: 0,
+	  bottom: 0,
+	  zIndex: 9999,
+	  justifyContent: 'center',
+	  alignItems: 'center',
 	},
 	backdrop: {
-		...StyleSheet.absoluteFillObject,
-		backgroundColor: 'rgba(0, 0, 0, 0.5)',
+	  ...StyleSheet.absoluteFillObject,
+	  backgroundColor: 'rgba(0, 0, 0, 0.5)',
 	},
 	modalContent: {
-		position: 'absolute',
-		top: 0,
-		left: 0,
-		right: 0,
-		bottom: 0,
-		width: '100%',
-		height: '100%',
-		backgroundColor: '#fff', // or make this transparent if needed
-		zIndex: 10000,
+	  width: '90%',
+	  maxWidth: 600,
+	  minHeight: 200,
+	  backgroundColor: '#fff',
+	  borderRadius: 8,
+	  padding: 16,
+	  elevation: 10,
+	  zIndex: 10000,
 	},
 })
+  

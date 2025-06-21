@@ -1,5 +1,6 @@
 // packages/ui/src/components/index.ts
 
+export * from './AutoScrollView'
 export * from './Avatar'
 export * from './Button'
 export * from './CommentItem'
@@ -9,6 +10,7 @@ export * from './Grid'
 export * from './ImageComments'
 export * from './ImageManagerHeader'
 export * from './ImageUploader'
+export * from './InfiniteScrollView'
 export * from './Layout'
 export * from './LikeCommentBar'
 export * from './ModalContainer'

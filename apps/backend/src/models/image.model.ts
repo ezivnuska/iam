@@ -15,8 +15,9 @@ const VariantSchema = new Schema(
 
 const ImageSchema = new Schema<ImageDocument>(
 	{
-		filename: { type: String, required: true },
+		userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 		username: { type: String, required: true },
+		filename: { type: String, required: true },
 		alt: { type: String, default: '' },
 		variants: {
 			type: [VariantSchema],

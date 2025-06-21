@@ -1,18 +1,19 @@
 // apps/web/src/providers/AppProviders.tsx
 
 import React, { ReactNode } from 'react'
+import { View } from 'react-native'
 import { AuthProvider, ImageProvider, ModalProvider, PostsProvider, SocketProvider } from '.'
 
 export const AppProviders = ({ children }: { children: ReactNode }) => (
     <SocketProvider>
         <AuthProvider>
-            <PostsProvider>
-                <ImageProvider>
-                    <ModalProvider>
+            <ModalProvider>
+                <PostsProvider>
+                    <ImageProvider>
                         {children}
-                    </ModalProvider>
-                </ImageProvider>
-            </PostsProvider>
+                    </ImageProvider>
+                </PostsProvider>
+            </ModalProvider>
         </AuthProvider>
     </SocketProvider>
 )
