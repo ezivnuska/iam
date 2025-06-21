@@ -26,7 +26,7 @@ export const ProfileScreen = () => {
 	const navigation = useNavigation<ProfileScreenNavProp>()
 	const { showModal } = useModal()
 
-	const openEditModal = () => showModal(<EditProfileForm />)
+	const openEditModal = () => showModal({ content: <EditProfileForm /> })
     
     if (!user) {
         return (

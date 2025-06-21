@@ -16,7 +16,12 @@ import {
 } from 'react-native'
 import { createPortal } from 'react-dom'
   
-type ModalContent = ReactNode | null
+export type ModalContentObject = {
+	content: ReactNode
+	fullscreen?: boolean
+}
+ 
+export type ModalContent = ModalContentObject | null  
 
 export type ModalContextType = {
 	showModal: (content: ModalContent) => void
@@ -29,10 +34,34 @@ export const ModalContext = createContext<ModalContextType | undefined>(undefine
 
 export const ModalProvider = ({ children }: { children: ReactNode }) => {
 	const [modalStack, setModalStack] = useState<ModalContent[]>([])
+
+	const topModal = modalStack[modalStack.length - 1]
+	const useNativeModal = Platform.OS !== 'web'
+
+	const modalContent =
+		topModal && typeof topModal === 'object' && 'content' in topModal
+			? topModal.content
+			: topModal
+
+	const fullscreen =
+		topModal && typeof topModal === 'object' && 'fullscreen' in topModal
+			? topModal.fullscreen ?? false
+			: false
+
   
-	const showModal = useCallback((modalContent: ModalContent) => {
-	  setModalStack(prev => [...prev, modalContent])
-	}, [])
+	const showModal = useCallback((modalContent: ReactNode | ModalContentObject | null) => {
+		if (modalContent === null) return
+	
+		const contentObj: ModalContentObject =
+			typeof modalContent === 'object' &&
+			modalContent !== null &&
+			'content' in modalContent
+				? modalContent
+				: { content: modalContent }
+		
+			setModalStack(prev => [...prev, contentObj])
+		},
+	[])	  
   
 	const hideModal = useCallback(() => {
 	  setModalStack(prev => prev.slice(0, -1))
@@ -42,78 +71,94 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
 	  setModalStack([])
 	}, [])
   
-	const topModal = modalStack[modalStack.length - 1]
-	const useNativeModal = Platform.OS !== 'web'
-  
 	return (
 	  <ModalContext.Provider value={{ showModal, hideModal, hideAllModals, modalStack }}>
-		<View style={{ flex: 1 }}>
-			{children}
-		</View>
-  
-		{topModal &&
-		  (useNativeModal ? (
-			<Modal
-			  transparent
-			  visible
-			  animationType='fade'
-			  presentationStyle='overFullScreen'
-			  onRequestClose={hideModal}
-			>
-			  <Overlay onClose={hideModal}>{topModal}</Overlay>
-			</Modal>
-		  ) : (
-			typeof document !== 'undefined' &&
-			createPortal(
-			  <Overlay onClose={hideModal}>{topModal}</Overlay>,
-			  document.body
-			)
-		  ))}
+			<View style={{ flex: 1 }}>
+				{children}
+			</View>
+	
+			{modalContent &&
+				(useNativeModal ? (
+					<Modal
+						transparent
+						visible
+						animationType="fade"
+						presentationStyle="overFullScreen"
+						onRequestClose={hideModal}
+					>
+						<Overlay fullscreen={fullscreen} onClose={hideModal}>
+							{modalContent}
+						</Overlay>
+					</Modal>
+				) : (
+					typeof document !== 'undefined' && createPortal(
+						<Overlay fullscreen={fullscreen} onClose={hideModal}>
+							{modalContent}
+						</Overlay>,
+						document.body
+					)
+				))}
 	  </ModalContext.Provider>
 	)
 }
 
-const Overlay = ({ children, onClose }: { children: ReactNode; onClose: () => void }) => {
+const Overlay = ({
+	children,
+	fullscreen = false,
+	onClose,
+}: {
+	children: ReactNode
+	fullscreen?: boolean
+	onClose: () => void
+}) => {
 	return (
-	  <View pointerEvents="box-none" style={styles.overlay}>
-		<Pressable style={styles.backdrop} onPress={onClose} />
-		<View style={styles.modalContent}>{children}</View>
-	  </View>
+		<View pointerEvents='box-none' style={styles.overlay}>
+			<Pressable style={styles.backdrop} onPress={onClose} />
+			<View style={fullscreen ? styles.fullscreenModalContent : styles.modalContent}>
+				{children}
+			</View>
+		</View>
 	)
-}
+}  
   
 export const useModalContext = () => {
 	const context = useContext(ModalContext)
 	if (!context) {
-	  throw new Error('useModalContext must be used within a ModalProvider')
+		throw new Error('useModalContext must be used within a ModalProvider')
 	}
 	return context
 }
 
 const styles = StyleSheet.create({
 	overlay: {
-	  position: 'absolute',
-	  top: 0,
-	  left: 0,
-	  right: 0,
-	  bottom: 0,
-	  zIndex: 9999,
-	  justifyContent: 'center',
-	  alignItems: 'center',
+		position: 'absolute',
+		top: 0,
+		left: 0,
+		right: 0,
+		bottom: 0,
+		zIndex: 9999,
+		justifyContent: 'center',
+		alignItems: 'center',
 	},
 	backdrop: {
-	  ...StyleSheet.absoluteFillObject,
-	  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+		...StyleSheet.absoluteFillObject,
+		backgroundColor: 'rgba(0, 0, 0, 0.5)',
 	},
 	modalContent: {
-	  width: '90%',
-	  maxWidth: 600,
-	  minHeight: 200,
-	  backgroundColor: '#fff',
-	  borderRadius: 8,
-	  padding: 16,
-	  elevation: 10,
-	  zIndex: 10000,
+		width: '90%',
+		maxWidth: 600,
+		minHeight: 200,
+		backgroundColor: '#fff',
+		borderRadius: 8,
+		padding: 16,
+		elevation: 10,
+		zIndex: 10000,
 	},
+	fullscreenModalContent: {
+		...StyleSheet.absoluteFillObject,
+		backgroundColor: '#fff',
+		padding: 16,
+		zIndex: 10000,
+	},	  
 })
   

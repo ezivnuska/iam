@@ -48,17 +48,19 @@ export const PostListItem: React.FC<Props> = ({
 	}
 
 	const handleAddComment = () => {
-		showModal(
-			<AddCommentForm
-				id={post._id}
-				type='Post'
-				onCommentAdded={(newComment) => {
-					setExpanded(true)
-					refreshCommentCounts([post])
-					postCommentsRef.current?.handleNewComment?.(newComment)
-				}}
-			/>
-		)
+		showModal({
+            content: (
+                <AddCommentForm
+                    id={post._id}
+                    type='Post'
+                    onCommentAdded={(newComment) => {
+                        setExpanded(true)
+                        refreshCommentCounts([post])
+                        postCommentsRef.current?.handleNewComment?.(newComment)
+                    }}
+                />
+            )
+		})
 	}
 
 	const handleDelete = async () => {

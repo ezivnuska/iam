@@ -16,7 +16,7 @@ export const ProtectedScreen = () => {
 
 	useEffect(() => {
 		if (!isAuthenticated) {
-			showModal(<SigninForm />)
+			showModal({ content: <SigninForm /> })
 		}
 	}, [isAuthenticated])
 

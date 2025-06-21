@@ -39,8 +39,8 @@ export const Header: React.FC<HeaderProps> = () => {
 
     const currentRoute = useNavigationState((state) => state.routes[state.index].name)
 
-    const showSigninModal = () => showModal(<SigninForm />)
-    const showSignupModal = () => showModal(<SignupForm />)
+    const showSigninModal = () => showModal({ content: <SigninForm /> })
+    const showSignupModal = () => showModal({ content: <SignupForm /> })
 
 	return (
         <View style={styles.container}>

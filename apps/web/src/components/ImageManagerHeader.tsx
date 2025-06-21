@@ -17,7 +17,11 @@ export const ImageManagerHeader = () => {
         hideModal()
     }
 
-    const openImageUploadModal = () => showModal(<ImageUploadForm onUploaded={handleUploadSuccess} />)
+    const openImageUploadModal = () => showModal({
+        content: (
+            <ImageUploadForm onUploaded={handleUploadSuccess} />
+        )
+    })
 
 	return (
 		<Row spacing={10}>

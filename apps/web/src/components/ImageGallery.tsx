@@ -58,15 +58,18 @@ const ImageGallery = ({ currentAvatarId, images, loading, onDelete, onSetAvatar,
 		return (
 			<TouchableOpacity
 				onPress={() =>
-					showModal(
-						<FullScreenImage
-                            image={item}
-                            onClose={hideModal}
-                            onDelete={onDelete ? () => onDelete(item.id) : undefined}
-                            onSetAvatar={user?.username === item.username ? () => handleSetAvatar(newAvatarId) : undefined}
-                            isAvatar={isAvatar}
-                        />
-					)
+					showModal({
+                        content: (
+                            <FullScreenImage
+                                image={item}
+                                onClose={hideModal}
+                                onDelete={onDelete ? () => onDelete(item.id) : undefined}
+                                onSetAvatar={user?.username === item.username ? () => handleSetAvatar(newAvatarId) : undefined}
+                                isAvatar={isAvatar}
+                            />
+                        ),
+                        fullscreen: true,
+                    })
 				}
 				style={[styles.imageBlock, imageSize ? { width: imageSize } : null]}
 			>

@@ -16,7 +16,11 @@ export const CreatePostButton = ({ onPostCreated }: CreatePostButtonProps) => {
     const handlePostCreated = onPostCreated ?? (() => {})
 
     const openCreatePostModal = () => {
-        showModal(<CreatePostForm onPostCreated={handlePostCreated} />)
+        showModal({
+            content: (
+                <CreatePostForm onPostCreated={handlePostCreated} />
+            )
+        })
     }
     return (
         <Pressable

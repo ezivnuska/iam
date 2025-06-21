@@ -42,7 +42,7 @@ const FullScreenImage: React.FC<Props> = ({
 	const [commentCount, setCommentCount] = useState(0)
 	const [commentRefreshToken, setCommentRefreshToken] = useState(0)
 
-	const { showModal } = useModal()
+	const { hideModal, showModal } = useModal()
 	const { width, height } = useWindowDimensions()
 	const paddingHorizontal = resolveResponsiveProp({ xs: 8, sm: 8, md: 16, lg: 24 })
 
@@ -99,17 +99,19 @@ const FullScreenImage: React.FC<Props> = ({
 	}
 
 	const handleAddComment = () => {
-		showModal(
-			<AddCommentForm
-				id={image.id}
-				type='Image'
-				onCommentAdded={() => {
-					setExpanded(true)
-					refreshCommentCount()
-					setCommentRefreshToken(prev => prev + 1)
-				}}
-			/>
-		)
+		showModal({
+            content: (
+                <AddCommentForm
+                    id={image.id}
+                    type='Image'
+                    onCommentAdded={() => {
+                        setExpanded(true)
+                        refreshCommentCount()
+                        setCommentRefreshToken(prev => prev + 1)
+                    }}
+                />
+            )
+        })
 	}
 
 	const handleCommentDeleted = () => {

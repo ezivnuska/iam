@@ -101,7 +101,7 @@ export const SignupForm = () => {
 
     const isFocused = (name: string): boolean => name === focused
 
-    const showSigninForm = () => showModal(<SigninForm />)
+    const showSigninForm = () => showModal({ content: <SigninForm /> })
 
 	return (
 		<ModalContainer title='Create Account'>
