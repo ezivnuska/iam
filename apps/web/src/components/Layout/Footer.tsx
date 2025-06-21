@@ -15,9 +15,12 @@ type NavProp = StackNavigationProp<RootStackParamList>
 export const Footer = () => {
     const navigation = useNavigation<NavProp>()
     const { showModal } = useModal()
-    const showKofiModal = () => showModal({ content: <KoFiPanel /> })
+    const showKofiModal = () => showModal({
+        content: <KoFiPanel />,
+        fullscreen: true,
+    })
 	return (
-        <View style={styles.container}>
+        <Row flex={1} align='center' style={styles.container}>
             <View style={styles.maxWidthContainer}>
                 <Row
                     flex={1}
@@ -35,15 +38,15 @@ export const Footer = () => {
                     </Pressable>
                 </Row>
             </View>
-        </View>
+        </Row>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
         width: '100%',
-        flexDirection: 'row',
-        alignItems: 'center',
+        // flexDirection: 'row',
+        // alignItems: 'center',
         paddingVertical: Size.S,
         backgroundColor: '#fff',
     },

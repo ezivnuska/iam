@@ -1,10 +1,11 @@
 // apps/web/src/screens/HomeScreen.tsx
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useRef, useState, useEffect, useCallback } from 'react'
 import { View, ActivityIndicator } from 'react-native'
-import { InfiniteScrollView, PageLayout, PostListItem } from '@/components'
+import { InfiniteScrollView, AnimatedPageLayout, PostListItem } from '@/components'
 import { usePosts } from '@/hooks'
 import type { Post } from '@iam/types'
+import type { AnimatedPageLayoutHandles } from '@/components'
 
 const PAGE_SIZE = 2
 
@@ -38,14 +39,32 @@ export const HomeScreen = () => {
 		setLoadingMore(false)
 	}, [loadingMore, posts, visiblePosts.length])
 
+    const pageLayoutRef = useRef<AnimatedPageLayoutHandles>(null)
+
+    const onLayoutTrigger = (direction: string) => {
+        pageLayoutRef.current?.hideHeaderFooter()
+        // Or pageLayoutRef.current?.showHeaderFooter()
+		if (direction === 'down') {
+			pageLayoutRef.current?.hideHeaderFooter()
+		} else {
+			pageLayoutRef.current?.showHeaderFooter()
+		}
+    }
+
 	return (
-		<PageLayout>
+		<AnimatedPageLayout ref={pageLayoutRef}>
 			{initialLoading ? (
 				<View style={{ justifyContent: 'center', alignItems: 'center', paddingVertical: 50 }}>
 					<ActivityIndicator size='large' />
 				</View>
 			) : (
-				<InfiniteScrollView onScrollNearBottom={loadMore}>
+				<InfiniteScrollView
+                    onScrollNearBottom={loadMore}
+                    onScrollDirectionChange={(direction) => {
+						onLayoutTrigger(direction)
+                        
+                    }}
+                >
 					{visiblePosts.map((post) => (
 						<PostListItem
 							key={post._id}
@@ -67,6 +86,6 @@ export const HomeScreen = () => {
 					)}
 				</InfiniteScrollView>
 			)}
-		</PageLayout>
+		</AnimatedPageLayout>
 	)
 }

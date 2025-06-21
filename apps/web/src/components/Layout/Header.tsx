@@ -43,14 +43,14 @@ export const Header: React.FC<HeaderProps> = () => {
     const showSignupModal = () => showModal({ content: <SignupForm /> })
 
 	return (
-        <View style={styles.container}>
+        <Row flex={1} align='center' style={styles.container}>
             <View style={styles.maxWidthContainer}>
                 <Row
                     flex={1}
                     align='center'
                     justify='space-between'
                     wrap={false}
-                    style={{ zIndex: 100, flexWrap: 'nowrap' }}
+                    style={{ zIndex: 100, flexWrap: 'nowrap', minHeight: 50 }}
                 >
                     <Brand
                         user={user}
@@ -101,18 +101,19 @@ export const Header: React.FC<HeaderProps> = () => {
                     )}
                 </Row>
             </View>
-        </View>
+        </Row>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        // flex: 1,
         width: '100%',
-        flexDirection: 'row',
-        alignItems: 'center',
+        // flexDirection: 'row',
+        // alignItems: 'center',
         // paddingVertical: Size.S,
-        backgroundColor: '#fff',
+        // backgroundColor: 'yellow',
+        // height: 50,
     },
     maxWidthContainer: {
         flex: 1,
@@ -120,6 +121,7 @@ const styles = StyleSheet.create({
         maxWidth: MAX_WIDTH,
         marginHorizontal: 'auto',
         paddingHorizontal: paddingHorizontal,
+        // backgroundColor: 'orange',
     },
 	iam: {
 		fontWeight: 'bold',
