@@ -42,14 +42,27 @@ export const HomeScreen = () => {
     const pageLayoutRef = useRef<AnimatedPageLayoutHandles>(null)
 
     const onLayoutTrigger = (direction: string) => {
-        pageLayoutRef.current?.hideHeaderFooter()
-        // Or pageLayoutRef.current?.showHeaderFooter()
 		if (direction === 'down') {
 			pageLayoutRef.current?.hideHeaderFooter()
 		} else {
 			pageLayoutRef.current?.showHeaderFooter()
 		}
-    }
+	}
+	
+	const debouncedShowHeaderFooter = useCallback(
+		debounce(() => {
+			pageLayoutRef.current?.showHeaderFooter()
+		}, 150), // 150ms debounce
+		[]
+	)
+
+	function debounce<T extends (...args: any[]) => void>(fn: T, delay: number) {
+		let timeout: ReturnType<typeof setTimeout>
+		return (...args: Parameters<T>) => {
+			clearTimeout(timeout)
+			timeout = setTimeout(() => fn(...args), delay)
+		}
+	}	
 
 	return (
 		<AnimatedPageLayout ref={pageLayoutRef}>
@@ -60,10 +73,9 @@ export const HomeScreen = () => {
 			) : (
 				<InfiniteScrollView
                     onScrollNearBottom={loadMore}
-                    onScrollDirectionChange={(direction) => {
-						onLayoutTrigger(direction)
-                        
-                    }}
+                    onScrollDirectionChange={(direction) => onLayoutTrigger(direction)}
+					onScrolledToTop={debouncedShowHeaderFooter}
+					onScrolledToBottom={debouncedShowHeaderFooter}
                 >
 					{visiblePosts.map((post) => (
 						<PostListItem
