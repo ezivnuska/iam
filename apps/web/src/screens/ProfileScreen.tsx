@@ -65,7 +65,7 @@ export const ProfileScreen = () => {
                 <Row spacing={10}>
                     <Text style={styles.text}>{user?.bio || 'No bio yet.'}</Text>
                     <Pressable onPress={openEditModal} style={styles.editButton}>
-                        <Feather name='edit-3' size={18} color='#555' />
+                        <Feather name='edit-3' size={18} color='#eee' />
                     </Pressable>
                 </Row>
                 <View style={{ flex: 1 }}>
@@ -81,12 +81,13 @@ const styles = StyleSheet.create({
         flex: 1,
 		fontSize: 18,
 		textAlign: 'left',
+        color: '#eee',
 	},
 	username: {
 		fontWeight: 'bold',
 	},
 	email: {
-		color: '#77f',
+		color: '#0cc',
 	},
 	editButton: {
         marginLeft: 10,
@@ -112,6 +113,6 @@ const styles = StyleSheet.create({
 	},
 	loadingText: {
 		fontSize: 18,
-		color: '#888',
+		color: '#ccc',
 	},
 })

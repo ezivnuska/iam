@@ -3,16 +3,40 @@
 import React, { KeyboardEvent, useRef, useState, useEffect } from 'react'
 import { TextInput, TextInput as RNTextInput, Text, ScrollView, StyleSheet, FlatList, TouchableOpacity, View } from 'react-native'
 import { AutoScrollView, Column, Avatar, PageLayout, Row, InfiniteScrollView } from '@/components'
-import { paddingHorizontal, paddingVertical, Size } from '@/styles'
+import { paddingHorizontal, paddingVertical, Size, form as formStyles } from '@/styles'
 import { useAuth, useSocket } from '@/hooks'
 import Feather from '@expo/vector-icons/Feather'
+import { useForm, Controller, FieldErrors } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+const schema = z.object({
+    input: z.string().min(1, 'Message is required').max(280),
+})
+
+type ChatFormProps = z.infer<typeof schema>
 
 export const ChatScreen = () => {
 	const { user } = useAuth()
 	const [messages, setMessages] = useState<any[]>([])
 	const [input, setInput] = useState('')
+    const [focused, setFocused] = useState<string | null>(null)
 	const inputRef = useRef<RNTextInput>(null)
 	const scrollViewRef = useRef<ScrollView>(null)
+    const {
+        control,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+        setError,
+        setValue,
+        getValues,
+    } = useForm<ChatFormProps>({
+        resolver: zodResolver(schema),
+        mode: 'all',
+        defaultValues: {
+            input: '',
+        },
+    })
 
 	const { onChatMessage, emitChatMessage } = useSocket()
 
@@ -31,20 +55,66 @@ export const ChatScreen = () => {
 		scrollViewRef.current?.scrollToEnd({ animated: true })
 	}, [messages])
 
-	const sendMessage = () => {
-		if (input.trim()) {
+	const sendMessage = (text: string) => {
+		if (text.trim()) {
 			const author = {
 				id: user?.id,
 				role: user?.role,
 				username: user?.username,
 				avatar: user?.avatar,
 			}
-			setMessages((prev) => [...prev, { _id: Date.now(), text: input, user: author }])
-			emitChatMessage(input)
-			setInput('')
+			setMessages((prev) => [...prev, { _id: Date.now(), text, user: author }])
+			emitChatMessage(text)
+			setValue('input', '')
 			inputRef.current?.focus()
 		}
 	}
+
+    const onSubmit = async (data: ChatFormProps) => {
+		try {
+			sendMessage(data.input)
+		} catch (err: unknown) {
+			const errorObj = err as {
+				response?: {
+					data?: {
+						error?: {
+							details?: unknown
+						}
+					}
+				}
+			}
+		
+			const details = errorObj.response?.data?.error?.details
+		
+			if (Array.isArray(details) && details.length === 2) {
+				const [field, issue] = details
+		
+				if (typeof field === 'string' && typeof issue === 'string') {
+					setError(field as keyof ChatFormProps, { message: issue }, { shouldFocus: true })
+					return
+				}
+			}
+		}
+	}
+
+    const focusFirstError = (formErrors: FieldErrors<ChatFormProps>) => {
+        if (formErrors.input) {
+            inputRef.current?.focus()
+        }
+    }	  
+
+    const focusFirstEmptyField = () => {
+        const values = getValues()
+        if (!values.input.length) {
+            inputRef.current?.focus()
+        }
+    }
+
+	const onInvalid = (errors: FieldErrors<ChatFormProps>) => {
+        focusFirstError(errors)
+    }
+
+    const isFocused = (name: string) => focused === name
 
 	return (
 		<PageLayout>
@@ -69,23 +139,41 @@ export const ChatScreen = () => {
 				</View>
 
 				{/* Fixed Input at Bottom */}
-				<Row align='center' spacing={Size.S} style={styles.inputRow}>
-					<TextInput
-						value={input}
-						onChangeText={setInput}
-						placeholder='Say something...'
-						placeholderTextColor='#ccc'
-						style={styles.input}
-						returnKeyType='send'
-						onSubmitEditing={sendMessage}
-						ref={inputRef}
-						onFocus={() => {
-							setTimeout(() => {
-								scrollViewRef.current?.scrollToEnd({ animated: true })
-							}, 100)
-						}}
-					/>
-					<TouchableOpacity onPress={sendMessage} style={styles.sendButton}>
+				<Row
+                    align='center'
+                    spacing={Size.S}
+                    // style={styles.inputRow}
+                >
+                    <Controller
+                        control={control}
+                        name='input'
+                        render={({ field: { value, onChange, onBlur } }) => (
+                            <TextInput
+                                ref={inputRef}
+                                autoFocus
+                                // onChangeText={setInput}
+                                placeholder='Say something...'
+                                placeholderTextColor='#555'
+                                value={value}
+                                onChangeText={onChange}
+                                // style={styles.input}
+                                returnKeyType='send'
+                                onFocus={() => setFocused('input')}
+                                onBlur={() => {
+                                    onBlur()
+                                    setFocused(null)
+                                }}
+                                autoCapitalize='none'
+                                onSubmitEditing={handleSubmit(onSubmit, onInvalid)}
+                                style={[
+                                    // styles.input,
+                                    formStyles.input,
+                                    isFocused('input') && formStyles.inputFocused,
+                                ]}
+                            />
+                        )}
+                    />
+					<TouchableOpacity onPress={handleSubmit(onSubmit, onInvalid)} style={styles.sendButton}>
 						<Feather name='arrow-right' size={30} color='#fff' />
 					</TouchableOpacity>
 				</Row>
@@ -107,15 +195,16 @@ const styles = StyleSheet.create({
 	},
 	messages: {
 		flex: 1,
-		backgroundColor: '#fff',
-        borderWidth: 1,
-        borderColor: '#ccc',
-		borderRadius: 8,
+		// backgroundColor: '#fff',
+        // borderWidth: 1,
+        // borderColor: '#ccc',
+		// borderRadius: 8,
 		marginBottom: 12,
 	},
 	message: {
 		paddingVertical: 4,
 		fontSize: 14,
+        color: '#fff',
 	},
 	messageList: {
 		flexGrow: 1,
@@ -123,19 +212,20 @@ const styles = StyleSheet.create({
 	inputRow: {
 		paddingVertical,
 		paddingHorizontal,
-		backgroundColor: '#fff',
-		borderTopWidth: 1,
-		borderColor: '#eee',
+		// backgroundColor: '#fff',
+		// borderTopWidth: 1,
+		// borderColor: '#eee',
 	},	
 	input: {
 		flex: 1,
 		borderWidth: 1,
-		borderColor: '#ccc',
+		// borderColor: '#ccc',
 		borderRadius: 6,
 		paddingHorizontal: 12,
-		backgroundColor: '#fff',
+		backgroundColor: '#333',
 		lineHeight: 40,
 		fontSize: 20,
+        color: '#fff',
 	},
 	sendButton: {
 		backgroundColor: '#3a3',

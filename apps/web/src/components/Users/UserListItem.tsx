@@ -67,9 +67,10 @@ const styles = StyleSheet.create({
 	username: {
 		fontSize: 18,
 		fontWeight: '600',
+        color: '#fff',
 	},
 	email: {
-		color: '#666',
 		fontSize: 14,
+        color: '#ccc',
 	},
 })

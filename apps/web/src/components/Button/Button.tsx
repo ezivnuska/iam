@@ -10,6 +10,7 @@ export const Button: React.FC<ButtonProps> = ({
 	disabled = false,
 	style,
 	textStyle,
+    transparent = false,
 }) => {
 	return (
 		<Pressable
@@ -20,6 +21,7 @@ export const Button: React.FC<ButtonProps> = ({
                 disabled && styles.disabled,
                 pressed && styles.pressed,
                 style,
+                { backgroundColor: transparent ? 'transparent' : '#333' },
             ]}
 		>
             <Text style={[styles.text, textStyle]}>{label}</Text>
@@ -30,9 +32,9 @@ export const Button: React.FC<ButtonProps> = ({
 const styles = StyleSheet.create({
 	base: {
         // width: '100%',
+        flex: 1,
 		paddingVertical: 12,
 		paddingHorizontal: 16,
-		backgroundColor: '#333',
 		borderRadius: 12,
 		alignItems: 'center',
 	},

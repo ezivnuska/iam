@@ -63,9 +63,10 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		fontWeight: '700',
 		lineHeight: 20,
+        color: '#fff',
 	},
 	description: {
 		fontSize: 14,
-		color: '#333',
+		color: '#eee',
 	},
 })

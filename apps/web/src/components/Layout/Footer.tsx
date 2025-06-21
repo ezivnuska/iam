@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
         // flexDirection: 'row',
         // alignItems: 'center',
         paddingVertical: Size.S,
-        backgroundColor: '#fff',
+        // backgroundColor: '#fff',
     },
     maxWidthContainer: {
         width: '100%',
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     },
     copy: {
         fontSize: 12,
-        color: '#aaa',
+        color: '#eee',
     },
     supportButton: {
         fontSize: 14,
@@ -76,6 +76,6 @@ const styles = StyleSheet.create({
     },
     privacy: {
         fontSize: 12,
-        color: '#aaa',
+        color: '#eee',
     },
 })

@@ -14,4 +14,5 @@ export interface ButtonProps {
 	active?: boolean
 	showLabel?: ResponsiveProp<boolean>
 	submitting?: boolean
+    transparent?: boolean
 }

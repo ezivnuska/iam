@@ -38,6 +38,6 @@ const styles = StyleSheet.create({
         flex: 1,
 		fontSize: 24,
 		fontWeight: '600',
-		color: '#111',
+		color: '#eee',
 	},
 })

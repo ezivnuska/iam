@@ -104,10 +104,10 @@ const styles = StyleSheet.create({
 		borderRadius: 5,
 	},
 	activeFilter: {
-		backgroundColor: '#007AFF',
+		// backgroundColor: '#007AFF',
 	},
 	filterText: {
-		color: '#333',
+		color: '#eee',
 	},
 	activeFilterText: {
 		color: '#fff',

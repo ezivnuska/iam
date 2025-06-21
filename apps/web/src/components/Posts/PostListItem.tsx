@@ -1,7 +1,7 @@
 // apps/web/src/components/PostListItem.tsx
 
 import React, { useRef, useState } from 'react'
-import { Text } from 'react-native'
+import { StyleSheet, Text } from 'react-native'
 import { Avatar, Column, Row, LikeCommentBar, PostComments, LinkPreview, AddCommentForm, IconButton, AutoSizeImage } from '@/components'
 import { PartialUser, Post } from '@iam/types'
 import { paddingHorizontal, Size } from '@/styles'
@@ -72,10 +72,10 @@ export const PostListItem: React.FC<Props> = ({
 		<Row spacing={Size.M} paddingHorizontal={paddingHorizontal} align='center'>
 			<Avatar user={post.author as PartialUser} size='md' />
 			<Column flex={1}>
-				<Text style={{ fontSize: 20, fontWeight: 'bold', lineHeight: 22 }}>
+				<Text style={styles.username}>
 					{post.author.username}
 				</Text>
-				<Text style={{ fontSize: 14, lineHeight: 16 }}>
+				<Text style={styles.date}>
 					{formatRelative(new Date(post.createdAt), new Date())}
 				</Text>
 			</Column>
@@ -94,8 +94,8 @@ export const PostListItem: React.FC<Props> = ({
             
 			<Autolink
 				text={post.content}
-				style={{ paddingHorizontal: paddingHorizontal, fontSize: 16, color: '#333' }}
-				linkStyle={{ color: '#007aff' }}
+				style={{ paddingHorizontal: paddingHorizontal, fontSize: 16, color: '#eee' }}
+				linkStyle={{ color: '#0ff' }}
 				url
 				email={false}
 				phone={false}
@@ -117,7 +117,7 @@ export const PostListItem: React.FC<Props> = ({
 				onToggleLike={handleToggleLike}
 				onToggleComments={() => setExpanded((prev) => !prev)}
 				onAddComment={handleAddComment}
-				textColor={isAuthenticated ? '#000' : '#ccc'}
+				textColor={isAuthenticated ? '#eee' : '#aaa'}
 			/>
 
 			{expanded && (
@@ -130,3 +130,17 @@ export const PostListItem: React.FC<Props> = ({
 		</Column>
 	)
 }
+
+const styles = StyleSheet.create({
+    username: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        lineHeight: 22,
+        color: '#fff',
+    },
+    date: {
+        fontSize: 14,
+        lineHeight: 16,
+        color: '#ccc',
+    },
+})

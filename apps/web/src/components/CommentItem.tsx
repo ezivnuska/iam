@@ -22,7 +22,7 @@ export const CommentItem = ({
 	isAuthor,
 	isDeleting,
 	onDelete,
-	textColor = '#000',
+	textColor = '#fff',
 	authorTextWeight = '700',
 	paddingVertical = Size.S,
 }: CommentItemProps) => {

@@ -1,4 +1,4 @@
-// apps/web/src/components/Layout/Row.tsx
+// apps/web/src/components/layout/Row.tsx
 
 import React from 'react'
 import FlexBox, { FlexBoxProps } from './FlexBox'

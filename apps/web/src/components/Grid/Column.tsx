@@ -1,4 +1,4 @@
-// apps/web/src/components/Layout/Column.tsx
+// apps/web/src/components/layout/Column.tsx
 
 import React, { ReactNode } from 'react'
 import type { ViewStyle, StyleProp } from 'react-native'

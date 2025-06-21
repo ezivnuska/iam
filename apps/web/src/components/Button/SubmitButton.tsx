@@ -34,10 +34,10 @@ export const SubmitButton: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
 	base: {
-        // width: '100%',
+        flex: 1,
 		paddingVertical: 12,
 		paddingHorizontal: 16,
-		backgroundColor: '#333',
+		backgroundColor: '#070',
 		borderRadius: 12,
 		alignItems: 'center',
 	},

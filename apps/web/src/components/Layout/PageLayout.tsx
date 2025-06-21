@@ -1,4 +1,4 @@
-// apps/web/src/components/Layout/PageLayout.tsx
+// apps/web/src/components/layout/PageLayout.tsx
 
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
@@ -35,7 +35,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
 const styles = StyleSheet.create({
 	outerContainer: {
 		flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#000',
 	},
 	header: {
 		height: 50,

@@ -1,4 +1,4 @@
-// apps/web/src/components/Layout/AnimatedPageLayout.tsx
+// apps/web/src/components/layout/AnimatedPageLayout.tsx
 
 import React, {
 	useRef,
@@ -128,7 +128,7 @@ export const AnimatedPageLayout = forwardRef<AnimatedPageLayoutHandles, Animated
 const styles = StyleSheet.create({
 	outerContainer: {
 		flex: 1,
-		backgroundColor: '#fff',
+		backgroundColor: '#000',
 	},
 	header: {
 		position: 'absolute',
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
 		left: 0,
 		right: 0,
 		zIndex: 10,
-		backgroundColor: '#fff',
+		// backgroundColor: '#fff',
 	},
 	footer: {
 		position: 'absolute',
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
 		left: 0,
 		right: 0,
 		zIndex: 10,
-		backgroundColor: '#fff',
+		// backgroundColor: '#fff',
 	},
 	contentWrapper: {
 		width: '100%',

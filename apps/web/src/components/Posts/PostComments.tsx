@@ -80,7 +80,7 @@ export const PostComments = forwardRef(({ refId, onCommentAdded, onCommentDelete
                         isAuthor={isAuthor}
                         isDeleting={isDeleting}
                         onDelete={handleDelete}
-                        textColor='#000'
+                        textColor='#eee'
                     />
                 )
             }}

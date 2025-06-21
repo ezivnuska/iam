@@ -1,6 +1,7 @@
 // types/layout.ts
 
-import type { FlexAlignType, FlexStyle } from 'react-native'
+import { ReactNode } from 'react'
+import type { FlexAlignType, FlexStyle, StyleProp, ViewStyle } from 'react-native'
 import type { ResponsiveProp } from './responsive'
 
 export interface FlexProps {
@@ -20,4 +21,9 @@ export interface PaddingProps {
     paddingBottom?: ResponsiveProp<number>
     paddingLeft?: ResponsiveProp<number>
     paddingRight?: ResponsiveProp<number>
+}
+
+export interface PageLayoutProps extends PaddingProps {
+    children: ReactNode
+    style?: StyleProp<ViewStyle>
 }

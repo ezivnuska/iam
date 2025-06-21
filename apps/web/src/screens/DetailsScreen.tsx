@@ -112,14 +112,17 @@ const styles = StyleSheet.create({
 	text: {
 		fontSize: 18,
 		textAlign: 'left',
+        color: 'yellow',
 	},
 	username: {
 		flex: 1,
 		fontWeight: 'bold',
+        color: 'orange',
 	},
 	email: {
-		color: '#77f',
+		// color: '#77f',
 		flex: 1,
+        color: 'green',
 	},
 	loadingContainer: {
 		flex: 1,

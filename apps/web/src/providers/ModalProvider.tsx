@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
 		width: '90%',
 		maxWidth: 600,
 		minHeight: 200,
-		backgroundColor: '#fff',
+		backgroundColor: '#000',
 		borderRadius: 8,
 		padding: 16,
 		elevation: 10,
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
 	},
 	fullscreenModalContent: {
 		...StyleSheet.absoluteFillObject,
-		backgroundColor: '#fff',
+		backgroundColor: '#000',
 		padding: 16,
 		zIndex: 10000,
 	},	  

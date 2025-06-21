@@ -70,14 +70,14 @@ export const Header: React.FC<HeaderProps> = () => {
                             <IconButton
                                 label='Chat'
                                 onPress={() => navigation.navigate('Chat' as never)}
-                                icon={<Ionicons name='chatbubbles-outline' size={iconSize} color='#777' />}
+                                icon={<Ionicons name='chatbubbles-outline' size={iconSize} color='#ccc' />}
                                 active={currentRoute === 'Chat'}
                                 showLabel={showLabel}
                             />
                             <IconButton
                                 label='Users'
                                 onPress={() => navigation.navigate('UserList' as never)}
-                                icon={<Ionicons name='people-outline' size={iconSize} color='#777' />}
+                                icon={<Ionicons name='people-outline' size={iconSize} color='#ccc' />}
                                 active={currentRoute === 'UserList'}
                                 showLabel={showLabel}
                             />
@@ -91,11 +91,11 @@ export const Header: React.FC<HeaderProps> = () => {
                         </Row>
                     ) : (
                         <Row spacing={1} style={styles.authButtons}>
-                            <Pressable onPress={showSignupModal} style={styles.authButton}>
-                                <Text>Sign Up</Text>
+                            <Pressable onPress={showSignupModal} style={[styles.authButton, { borderRightWidth: 1, borderRightColor: '#aaa' }]}>
+                                <Text style={styles.buttonLabel}>Sign Up</Text>
                             </Pressable>
                             <Pressable onPress={showSigninModal} style={[styles.authButton, { paddingRight: 0 }]}>
-                                <Text>Sign In</Text>
+                                <Text style={styles.buttonLabel}>Sign In</Text>
                             </Pressable>
                         </Row>
                     )}
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     },
 	iam: {
 		fontWeight: 'bold',
-        color: '#000',
+        color: '#fff',
 	},
 	eric: {
 		fontWeight: 'bold',
@@ -137,10 +137,15 @@ const styles = StyleSheet.create({
         flexBasis: 'auto',
     },
     authButtons: {
-        backgroundColor: '#ccc',
+        // backgroundColor: '#ccc',
     },
     authButton: {
         paddingHorizontal: Size.XS,
-        backgroundColor: 'white',
+        // backgroundColor: 'white',
+    },
+    buttonLabel: {
+        color: '#fff',
+        // paddingHorizontal: Size.XS,
+        // backgroundColor: 'white',
     },
 })

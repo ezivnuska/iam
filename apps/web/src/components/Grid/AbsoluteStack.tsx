@@ -1,4 +1,4 @@
-// apps/web/src/components/Layout/AbsoluteStack.tsx
+// apps/web/src/components/layout/AbsoluteStack.tsx
 
 import React from 'react'
 import type { ViewStyle, StyleProp } from 'react-native'

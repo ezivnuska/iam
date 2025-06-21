@@ -9,16 +9,25 @@ export const form: NamedStyles<any> = {
 		fontSize: 28,
 		fontWeight: '600',
 		marginBottom: 24,
+        color: '#fff',
 	} as TextStyle,
 
 	input: {
-		width: '100%',
-		padding: 12,
-		marginBottom: 12,
-		borderWidth: 1,
-		borderColor: '#ccc',
-		borderRadius: 8,
+		// width: '100%',
+        flex: 1,
+		// padding: 12,
+		paddingHorizontal: 12,
+        lineHeight: 48,
+		// marginBottom: 12,
+		// borderWidth: 1,
+		// borderColor: '#ccc',
+		borderRadius: 12,
 		fontSize: 24,
+        backgroundColor: '#222',
+        color: '#fff',
+        // outlineStyle: 'none',
+        outlineWidth: 0,
+        outlineColor: 'transparent',
 	} as TextStyle,
 
 	textArea: {
@@ -26,9 +35,9 @@ export const form: NamedStyles<any> = {
 	} as TextStyle,
 
 	inputFocused: {
-		borderWidth: 1,
-		backgroundColor: '#ccffcc',
-		borderColor: 'green',
+		// borderWidth: 1,
+		backgroundColor: '#033',
+		// borderColor: 'green',
 	} as TextStyle,
 
 	error: {

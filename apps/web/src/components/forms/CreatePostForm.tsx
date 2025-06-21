@@ -78,7 +78,7 @@ export const CreatePostForm = ({ onPostCreated }: { onPostCreated?: () => void }
 		} finally {
             setUploadingImage(false)
         }
-	}	  
+	}
 
 	const focusFirstEmptyField = () => {
 		if (!getValues().content.length) {
