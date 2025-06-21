@@ -4,7 +4,7 @@ import React, { useRef, useState } from 'react'
 import { Text } from 'react-native'
 import { Avatar, Column, Row, LikeCommentBar, PostComments, LinkPreview, AddCommentForm, IconButton, AutoSizeImage } from '@/components'
 import { PartialUser, Post } from '@iam/types'
-import { Size } from '@/styles'
+import { paddingHorizontal, Size } from '@/styles'
 import Autolink from 'react-native-autolink'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { formatRelative } from 'date-fns'
@@ -69,7 +69,7 @@ export const PostListItem: React.FC<Props> = ({
 	}
 
 	const renderHeader = () => (
-		<Row spacing={Size.M} paddingHorizontal={Size.M} align='center'>
+		<Row spacing={Size.M} paddingHorizontal={paddingHorizontal} align='center'>
 			<Avatar user={post.author as PartialUser} size='md' />
 			<Column flex={1}>
 				<Text style={{ fontSize: 20, fontWeight: 'bold', lineHeight: 22 }}>
@@ -94,7 +94,7 @@ export const PostListItem: React.FC<Props> = ({
             
 			<Autolink
 				text={post.content}
-				style={{ paddingHorizontal: Size.M, fontSize: 16, color: '#333' }}
+				style={{ paddingHorizontal: paddingHorizontal, fontSize: 16, color: '#333' }}
 				linkStyle={{ color: '#007aff' }}
 				url
 				email={false}

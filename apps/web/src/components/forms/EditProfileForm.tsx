@@ -23,7 +23,7 @@ export const EditProfileForm = () => {
     
     const { control, handleSubmit, formState: { errors, isSubmitting }, setError, trigger, getValues } = useForm<EditProfileFormProps>({
         resolver: zodResolver(schema),
-        mode: 'onBlur',
+        mode: 'all',
         defaultValues: {
 			bio: user?.bio ?? '',
         },

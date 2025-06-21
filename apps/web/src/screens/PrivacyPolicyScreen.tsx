@@ -3,7 +3,7 @@
 import React from 'react'
 import { StyleSheet, Text } from 'react-native'
 import { PageLayout } from '@/components'
-import { Size } from '@/styles'
+import { paddingHorizontal, Size } from '@/styles'
 
 export const PrivacyPolicyScreen = () => {
 
@@ -19,6 +19,6 @@ const styles = StyleSheet.create({
         flex: 1,
 		fontSize: 18,
 		textAlign: 'left',
-        paddingHorizontal: Size.M,
+        paddingHorizontal: paddingHorizontal,
 	},
 })

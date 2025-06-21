@@ -5,7 +5,7 @@ import { Text, Pressable, StyleSheet, View } from 'react-native'
 import { KoFiPanel, Row } from '@/components'
 import { useNavigation } from '@react-navigation/native'
 import { MAX_WIDTH } from './constants'
-import { Size } from '@/styles'
+import { paddingHorizontal, Size } from '@/styles'
 import type { StackNavigationProp } from '@react-navigation/stack'
 import type { RootStackParamList } from '@iam/types'
 import { useModal } from '@/hooks'
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
         width: '100%',
         maxWidth: MAX_WIDTH,
         marginHorizontal: 'auto',
-        paddingHorizontal: Size.M,
+        paddingHorizontal: paddingHorizontal,
     },
     text: {
         lineHeight: 24,

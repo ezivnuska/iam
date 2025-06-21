@@ -45,7 +45,7 @@ export const CreatePostForm = ({ onPostCreated }: { onPostCreated?: () => void }
 		getValues,
 	} = useForm<CreatePostFormProps>({
 		resolver: zodResolver(schema),
-		mode: 'onBlur',
+		mode: 'all',
 		defaultValues: {
 			content: '',
 		},

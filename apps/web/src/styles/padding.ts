@@ -53,5 +53,5 @@ function mapPaddingToStyleObject(padding: Size | Size[] | undefined): Partial<Vi
 	return {}
 }
 
-export const paddingHorizontal = Size.M
+export const paddingHorizontal = Size.S
 export const paddingVertical = Size.S

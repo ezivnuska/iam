@@ -12,7 +12,7 @@ import {
 } from '@/components'
 import { User, Image } from '@iam/types'
 import { getUserById, fetchUserImages } from '@services'
-import { Size } from '@/styles'
+import { paddingHorizontal, Size } from '@/styles'
 
 type DetailsParams = {
 	id: string
@@ -84,7 +84,7 @@ export const DetailsScreen = () => {
 	return (
 		<PageLayout>
 			{userDetails && (
-				<Column paddingVertical={Size.S} paddingHorizontal={Size.M} flex={1} spacing={15}>
+				<Column paddingVertical={Size.S} paddingHorizontal={paddingHorizontal} flex={1} spacing={15}>
 					<Row spacing={15}>
 						<Avatar user={userDetails} size='lg' />
 						<Column spacing={5}>

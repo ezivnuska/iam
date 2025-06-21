@@ -8,7 +8,7 @@ import { useNavigation, useNavigationState } from '@react-navigation/native'
 import { useAuth, useModal } from '@/hooks'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import type { AvatarSize } from '@/components'
-import { resolveResponsiveProp, Size } from '@/styles'
+import { paddingHorizontal, resolveResponsiveProp, Size } from '@/styles'
 
 interface HeaderProps {
     children?: ReactNode
@@ -94,7 +94,7 @@ export const Header: React.FC<HeaderProps> = () => {
                             <Pressable onPress={showSignupModal} style={styles.authButton}>
                                 <Text>Sign Up</Text>
                             </Pressable>
-                            <Pressable onPress={showSigninModal} style={styles.authButton}>
+                            <Pressable onPress={showSigninModal} style={[styles.authButton, { paddingRight: 0 }]}>
                                 <Text>Sign In</Text>
                             </Pressable>
                         </Row>
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
         width: '100%',
         maxWidth: MAX_WIDTH,
         marginHorizontal: 'auto',
-        paddingHorizontal: Size.M,
+        paddingHorizontal: paddingHorizontal,
     },
 	iam: {
 		fontWeight: 'bold',
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#ccc',
     },
     authButton: {
-        paddingHorizontal: Size.S,
+        paddingHorizontal: Size.XS,
         backgroundColor: 'white',
     },
 })

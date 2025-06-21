@@ -17,7 +17,7 @@ import { Feather } from '@expo/vector-icons'
 import type { StackNavigationProp } from '@react-navigation/stack'
 import type { RootStackParamList } from '@iam/types'
 import Ionicons from '@expo/vector-icons/Ionicons'
-import { Size } from '@/styles'
+import { paddingHorizontal, Size } from '@/styles'
 
 type ProfileScreenNavProp = StackNavigationProp<RootStackParamList, 'Profile'>
 
@@ -40,7 +40,7 @@ export const ProfileScreen = () => {
 		<PageLayout>
             <Column
                 paddingVertical={Size.S}
-                paddingHorizontal={Size.M}
+                paddingHorizontal={paddingHorizontal}
                 flex={1}
                 spacing={15}
             >

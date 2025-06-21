@@ -27,10 +27,6 @@ export const HomeScreen = () => {
 		setVisiblePosts(posts.slice(0, PAGE_SIZE))
 	}, [posts])
 
-	useEffect(() => {
-		console.log('visiblePosts', visiblePosts)
-	}, [visiblePosts])
-
 	const loadMore = useCallback(() => {
 		if (loadingMore || visiblePosts.length >= posts.length) return
 
@@ -46,7 +42,7 @@ export const HomeScreen = () => {
 		<PageLayout>
 			{initialLoading ? (
 				<View style={{ justifyContent: 'center', alignItems: 'center', paddingVertical: 50 }}>
-					<ActivityIndicator size="large" />
+					<ActivityIndicator size='large' />
 				</View>
 			) : (
 				<InfiniteScrollView onScrollNearBottom={loadMore}>
@@ -66,7 +62,7 @@ export const HomeScreen = () => {
 					))}
 					{loadingMore && (
 						<View style={{ paddingVertical: 20, alignItems: 'center' }}>
-							<ActivityIndicator size="small" />
+							<ActivityIndicator size='small' />
 						</View>
 					)}
 				</InfiniteScrollView>

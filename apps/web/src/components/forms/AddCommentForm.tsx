@@ -38,7 +38,7 @@ export const AddCommentForm: React.FC<AddCommentFormProps> = ({
 		trigger,
 	} = useForm<FormData>({
 		resolver: zodResolver(schema),
-		mode: 'onBlur',
+		mode: 'all',
 		defaultValues: { content: '' },
 	})
 

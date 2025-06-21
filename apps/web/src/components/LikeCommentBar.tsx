@@ -3,7 +3,7 @@
 import React from 'react'
 import { Pressable, StyleSheet, Text } from 'react-native'
 import { Row } from '@/components'
-import { Size } from '@/styles'
+import { paddingHorizontal, Size } from '@/styles'
 
 type Props = {
 	likeCount: number
@@ -36,7 +36,7 @@ export const LikeCommentBar: React.FC<Props> = ({
 	const commentDisabled = disabledComment || !isAuthenticated || commentCount === 0
 
 	return (
-		<Row paddingHorizontal={Size.M} spacing={8}>
+		<Row paddingHorizontal={paddingHorizontal} spacing={8}>
 			<Text style={[styles.bottomButton, { color: textColor }]}>
 				{likeCount} {likeCount === 1 ? 'like' : 'likes'}
 			</Text>
@@ -51,7 +51,7 @@ export const LikeCommentBar: React.FC<Props> = ({
 
 			<Pressable
 				onPress={onToggleComments}
-				style={{ paddingHorizontal: Size.M }}
+				style={{ paddingHorizontal: paddingHorizontal }}
 				disabled={commentDisabled}
 			>
 				<Text

@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { Image, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Column } from '@/components'
-import { resolveResponsiveProp, Size } from '@/styles'
+import { paddingHorizontal, resolveResponsiveProp, Size } from '@/styles'
 
 type LinkPreviewProps = {
 	url: string
@@ -18,7 +18,7 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, preview }) => {
 	const [aspectRatio, setAspectRatio] = useState<number>(1)
 
 	const maxWidth = useMemo(
-		() => resolveResponsiveProp({ xs: 400, sm: 400, md: 400 - Size.M * 2, lg: 400 - Size.M * 2 }),
+		() => resolveResponsiveProp({ xs: 400, sm: 400, md: 400 - paddingHorizontal * 2, lg: 400 - paddingHorizontal * 2 }),
 		[]
 	)
 
@@ -49,7 +49,7 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, preview }) => {
 						/>
 					</View>
 				)}
-				<Column spacing={Size.XS} paddingHorizontal={Size.M}>
+				<Column spacing={Size.XS} paddingHorizontal={paddingHorizontal}>
 					{preview.title && <Text style={styles.heading}>{preview.title}</Text>}
 					{preview.description && <Text style={styles.description}>{preview.description}</Text>}
 				</Column>
