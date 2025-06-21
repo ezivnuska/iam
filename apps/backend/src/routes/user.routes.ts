@@ -4,6 +4,7 @@ import express, { Router } from 'express'
 import {
   getAllUsers,
   getUserById,
+  getUserByUsername,
   updateUser,
   updateUserRole,
   deleteUser,
@@ -16,6 +17,7 @@ router.use(requireAuth())
 
 router.get('/', getAllUsers)
 router.get('/:id', getUserById)
+router.get('/user/:username', getUserByUsername)
 router.put('/:id', updateUser)
 router.put('/:id/role', updateUserRole)
 router.delete('/:id',   deleteUser)

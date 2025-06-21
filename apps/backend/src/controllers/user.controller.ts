@@ -21,6 +21,15 @@ export const getUserById: RequestHandler = async (req, res, next) => {
 	}
 }
 
+export const getUserByUsername: RequestHandler = async (req, res, next) => {
+	try {
+		const user = await userService.findUserByUsername(req.params.username)
+		res.json(user)
+	} catch (err) {
+		next(err)
+	}
+}
+
 export const updateUser: RequestHandler = async (req, res, next) => {
 	try {
 		const updatedUser = await userService.updateUser(req.params.id, req.body)

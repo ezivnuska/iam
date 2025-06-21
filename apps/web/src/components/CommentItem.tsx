@@ -4,7 +4,7 @@ import React from 'react'
 import { Pressable, StyleSheet, Text } from 'react-native'
 import { Avatar, Column, Row } from '@/components'
 import { Comment, PartialUser } from '@iam/types'
-import { Size } from '@/styles'
+import { paddingHorizontal, Size } from '@/styles'
 import Ionicons from '@expo/vector-icons/Ionicons'
 
 type CommentItemProps = {
@@ -29,7 +29,7 @@ export const CommentItem = ({
 	return (
 		<Row
 			spacing={Size.S}
-			paddingHorizontal={Size.M}
+			paddingHorizontal={paddingHorizontal}
 			align='flex-start'
             justify='flex-start'
             paddingVertical={paddingVertical}

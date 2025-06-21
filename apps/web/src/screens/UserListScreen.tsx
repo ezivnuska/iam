@@ -112,8 +112,8 @@ export const UserListScreen = () => {
 	}
 
 	const handleUserPress = (user: User) => {
-		navigation.navigate('Details', { id: user.id })
-	}
+        navigation.navigate('Details', { username: user.username })
+    }
 
 	if (loadingBonds) return <ActivityIndicator style={{ flex: 1, justifyContent: 'center' }} />
 	if (bondsError) return <Text>Error loading bonds</Text>

@@ -22,6 +22,18 @@ export const findUserById = async (id: string) => {
 	return result
 }
 
+export const findUserByUsername = async (username: string) => {
+	const user = await UserModel.findOne({ username })
+		.select('-password')
+		.populate('avatar')
+
+	if (!user) throw new HttpError('User not found', 404)
+
+	const result = user.toJSON()
+	
+	return result
+}
+
 export const changeUserRole = async (id: string, newRole: string) => {
 	const updated = await UserModel.findByIdAndUpdate(
 		id,

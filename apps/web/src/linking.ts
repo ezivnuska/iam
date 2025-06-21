@@ -5,7 +5,7 @@ export const linking = {
     config: {
         screens: {
             Chat: 'chat',
-            Details: 'details',
+            Details: ':username',
             ForgotPassword: 'forgot-password',
             Home: '/',
             ResetPassword: 'reset-password/:token',

@@ -11,16 +11,16 @@ import {
 	ImageGallery,
 } from '@/components'
 import { User, Image } from '@iam/types'
-import { getUserById, fetchUserImages } from '@services'
+import { getUserByUsername, fetchUserImages } from '@services'
 import { paddingHorizontal, Size } from '@/styles'
 
 type DetailsParams = {
-	id: string
+	username: string
 }
 
 export const DetailsScreen = () => {
 	const route = useRoute()
-	const { id } = route.params as DetailsParams
+	const { username } = route.params as DetailsParams
 
 	const [userDetails, setUserDetails] = useState<User | null>(null)
 	const [userLoading, setUserLoading] = useState(false)
@@ -34,9 +34,9 @@ export const DetailsScreen = () => {
 		const fetchDetails = async () => {
 			setUserLoading(true)
 			try {
-				const user = await getUserById(id)
+				const user = await getUserByUsername(username)
 				setUserDetails(user)
-				await loadImages(id, 1, true)
+				await loadImages(user._id, 1, true)
 			} catch (error: any) {
 				console.error('Failed to fetch user details:', error.message)
 			} finally {
@@ -44,7 +44,7 @@ export const DetailsScreen = () => {
 			}
 		}
 		fetchDetails()
-	}, [id])
+	}, [username])
 
 	const loadImages = useCallback(
 		async (userId: string, pageToLoad: number, reset = false) => {
