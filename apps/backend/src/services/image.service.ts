@@ -7,7 +7,8 @@ import { ImageModel } from '../models/image.model'
 import { Comment } from '../models/comment.model'
 import { sanitizeUsername, ensureDir, deleteFile } from '../utils/file'
 import { getUserDir } from '../utils/imagePaths'
-import type { ImageVariant } from '@iam/types'
+import type { ImageDocument, ImageVariant } from '@iam/types'
+import type { Document, Types } from 'mongoose'
 import { HttpError } from '../utils/HttpError'
 
 const VARIANT_SIZES = {
@@ -16,6 +17,12 @@ const VARIANT_SIZES = {
 	lg: 900,
 	thumb: 150,
 } as const
+
+export interface PaginatedImagesResult {
+	images: Array<Document<unknown, {}, ImageDocument> & ImageDocument & Required<{ _id: Types.ObjectId }>>
+	total: number
+	hasNextPage: boolean
+}
 
 export const getImagesByUsername = async (
 	username: string,
@@ -45,7 +52,7 @@ export const getImagesByUserId = async (
 	userId: string,
 	page = 1,
 	limit = 12
-) => {
+): Promise<PaginatedImagesResult> => {
 	const skip = (page - 1) * limit
 
 	if (!mongoose.Types.ObjectId.isValid(userId)) {
