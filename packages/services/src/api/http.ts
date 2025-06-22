@@ -91,11 +91,14 @@ api.interceptors.request.use(
 api.interceptors.response.use(
 	response => response,
 	async (error) => {
-		const originalRequest = error.config
+		const originalRequest = error?.config
+		if (!originalRequest || typeof originalRequest !== 'object') {
+			return Promise.reject(error)
+		}
+
 		const isRefreshEndpoint = originalRequest.url?.includes('/auth/refresh-token')
 		const isRetryAttempt = originalRequest._retry
 
-		// Handle 401 errors only if not retrying or on refresh endpoint
 		if (error.response?.status === 401 && !isRetryAttempt && !isRefreshEndpoint) {
 			originalRequest._retry = true
 
@@ -103,13 +106,11 @@ api.interceptors.response.use(
 				isRefreshing = true
 				try {
 					const { accessToken } = await refreshTokenRequest()
-
 					await saveToken(accessToken)
 					setAuthHeader(accessToken)
 					isRefreshing = false
 					onTokenRefreshed(accessToken)
 
-					// Retry original request
 					originalRequest.headers['Authorization'] = `Bearer ${accessToken}`
 					return api(originalRequest)
 				} catch (refreshError) {
@@ -118,16 +119,11 @@ api.interceptors.response.use(
 					await clearToken()
 					clearAuthHeader()
 					await logoutRequest()
-
-                    if (onUnauthorized) {
-                        onUnauthorized()
-                    }
-
+					if (onUnauthorized) onUnauthorized()
 					return Promise.reject(refreshError)
 				}
 			}
 
-			// If already refreshing, queue this request
 			return new Promise((resolve, reject) => {
 				subscribeTokenRefresh((token: string) => {
 					originalRequest.headers['Authorization'] = `Bearer ${token}`
