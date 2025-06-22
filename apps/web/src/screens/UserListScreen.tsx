@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react'
 import { Alert, ActivityIndicator, Text } from 'react-native'
-import { PageLayout, UserList } from '@/components'
+import { PageLayout, Spinner, UserList } from '@/components'
 import { useAuth, useBonds, usePresence, useSocket } from '@/hooks'
 import { usePaginatedFetch } from '@services'
 import type { Bond, User } from '@iam/types'
@@ -120,25 +120,31 @@ export const UserListScreen = () => {
 
 	return (
 		<PageLayout>
-			<UserList
-				users={filteredUsers.map(normalizeUser)}
-				filter={filter}
-				onFilterChange={setFilter}
-				getBond={getBondForUser}
-				isOnline={isOnline}
-				onConfirm={(id) => {
-					const bond = getBondForUser(id)
-					if (bond) updateBondStatus(bond._id, { confirmed: true })
-				}}
-				onCreate={requestBond}
-				onDelete={(id) => {
-					const bond = getBondForUser(id)
-					if (bond) deleteBond(bond._id)
-				}}
-				onUserPress={handleUserPress}
-				onEndReached={fetchNextPage}
-				loading={loading}
-			/>
+            {loading
+                ? <Spinner />
+                : (
+                    <UserList
+                        users={filteredUsers.map(normalizeUser)}
+                        filter={filter}
+                        onFilterChange={setFilter}
+                        getBond={getBondForUser}
+                        isOnline={isOnline}
+                        onConfirm={(id) => {
+                            const bond = getBondForUser(id)
+                            if (bond) updateBondStatus(bond._id, { confirmed: true })
+                        }}
+                        onCreate={requestBond}
+                        onDelete={(id) => {
+                            const bond = getBondForUser(id)
+                            if (bond) deleteBond(bond._id)
+                        }}
+                        onUserPress={handleUserPress}
+                        onEndReached={fetchNextPage}
+                        loading={loading}
+                    />
+                )
+            }
+			
 		</PageLayout>
 	)
 }

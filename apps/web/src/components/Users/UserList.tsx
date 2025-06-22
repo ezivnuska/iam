@@ -56,14 +56,6 @@ export const UserList = ({
 		)
 	}, [getBond, isOnline, onConfirm, onCreate, onDelete])
 
-    if (loading && users.length === 0) {
-        return (
-            <View style={styles.loadingContainer}>
-                <ActivityIndicator size='large' />
-            </View>
-        )
-    }
-
 	return (
 		<View style={styles.container}>
 			<View style={styles.filterContainer}>

@@ -9,6 +9,7 @@ import {
 	Row,
 	Column,
 	ImageGallery,
+    Spinner,
 } from '@/components'
 import { User, Image } from '@iam/types'
 import { getUserByUsername, fetchUserImages } from '@services'
@@ -73,37 +74,32 @@ export const DetailsScreen = () => {
 		}
 	}
 
-	if (userLoading) {
-		return (
-			<View style={styles.loadingContainer}>
-				<ActivityIndicator size={50} />
-			</View>
-		)
-	}
-
 	return (
 		<PageLayout>
-			{userDetails && (
-				<Column paddingVertical={Size.S} paddingHorizontal={paddingHorizontal} flex={1} spacing={15}>
-					<Row spacing={15}>
-						<Avatar user={userDetails} size='lg' />
-						<Column spacing={5}>
-							<Text style={[styles.text, styles.username]}>{userDetails.username}</Text>
-							<Text style={[styles.text, styles.email]}>{userDetails.email}</Text>
-						</Column>
-					</Row>
-					<Row spacing={10}>
-						<Text style={styles.text}>{userDetails.bio || 'No bio yet.'}</Text>
-					</Row>
-					<View style={{ flex: 1 }}>
-						<ImageGallery
-							images={images}
-							loading={isLoadingImages}
-							onEndReached={handleLoadMoreImages}
-						/>
-					</View>
-				</Column>
-			)}
+			{userLoading
+                ? <Spinner />
+                : (userDetails && (
+                    <Column paddingVertical={Size.S} paddingHorizontal={paddingHorizontal} flex={1} spacing={15}>
+                        <Row spacing={15}>
+                            <Avatar user={userDetails} size='lg' />
+                            <Column spacing={5}>
+                                <Text style={[styles.text, styles.username]}>{userDetails.username}</Text>
+                                <Text style={[styles.text, styles.email]}>{userDetails.email}</Text>
+                            </Column>
+                        </Row>
+                        <Row spacing={10}>
+                            <Text style={styles.text}>{userDetails.bio || 'No bio yet.'}</Text>
+                        </Row>
+                        <View style={{ flex: 1 }}>
+                            <ImageGallery
+                                images={images}
+                                loading={isLoadingImages}
+                                onEndReached={handleLoadMoreImages}
+                            />
+                        </View>
+                    </Column>
+                )
+            )}
 		</PageLayout>
 	)
 }
@@ -123,11 +119,5 @@ const styles = StyleSheet.create({
 		// color: '#77f',
 		flex: 1,
         color: 'green',
-	},
-	loadingContainer: {
-		flex: 1,
-		flexDirection: 'row',
-		alignItems: 'center',
-		justifyContent: 'center',
 	},
 })

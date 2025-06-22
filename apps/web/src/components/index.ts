@@ -17,6 +17,7 @@ export * from './ModalContainer'
 export * from './ModalHeader'
 export * from './PageHeader'
 export * from './Posts'
+export * from './Spinner'
 export * from './Users'
 
 export { default as AutoSizeImage } from './AutoSizeImage'

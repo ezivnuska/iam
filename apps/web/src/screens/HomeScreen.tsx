@@ -2,7 +2,7 @@
 
 import React, { useRef, useState, useEffect, useCallback } from 'react'
 import { View, ActivityIndicator } from 'react-native'
-import { InfiniteScrollView, AnimatedPageLayout, PostListItem } from '@/components'
+import { InfiniteScrollView, AnimatedPageLayout, PostListItem, Spinner } from '@/components'
 import { usePosts } from '@/hooks'
 import type { Post } from '@iam/types'
 import type { AnimatedPageLayoutHandles } from '@/components'
@@ -66,38 +66,37 @@ export const HomeScreen = () => {
 
 	return (
 		<AnimatedPageLayout ref={pageLayoutRef}>
-			{initialLoading ? (
-				<View style={{ justifyContent: 'center', alignItems: 'center', paddingVertical: 50 }}>
-					<ActivityIndicator size='large' />
-				</View>
-			) : (
-				<InfiniteScrollView
-                    onScrollNearBottom={loadMore}
-                    onScrollDirectionChange={(direction) => onLayoutTrigger(direction)}
-					onScrolledToTop={debouncedShowHeaderFooter}
-					onScrolledToBottom={debouncedShowHeaderFooter}
-                >
-					{visiblePosts.map((post) => (
-						<PostListItem
-							key={post._id}
-							post={post}
-							showPreview={!!post.linkPreview}
-							commentCount={commentCounts[post._id] ?? 0}
-							onCommentDeleted={() => {
-								setCommentCounts((prev) => ({
-									...prev,
-									[post._id]: Math.max((prev[post._id] ?? 1) - 1, 0),
-								}))
-							}}
-						/>
-					))}
-					{loadingMore && (
-						<View style={{ paddingVertical: 20, alignItems: 'center' }}>
-							<ActivityIndicator size='small' />
-						</View>
-					)}
-				</InfiniteScrollView>
-			)}
+			{initialLoading
+				? <Spinner />
+				: (
+					<InfiniteScrollView
+						onScrollNearBottom={loadMore}
+						onScrollDirectionChange={(direction) => onLayoutTrigger(direction)}
+						onScrolledToTop={debouncedShowHeaderFooter}
+						onScrolledToBottom={debouncedShowHeaderFooter}
+					>
+						{visiblePosts.map((post) => (
+							<PostListItem
+								key={post._id}
+								post={post}
+								showPreview={!!post.linkPreview}
+								commentCount={commentCounts[post._id] ?? 0}
+								onCommentDeleted={() => {
+									setCommentCounts((prev) => ({
+										...prev,
+										[post._id]: Math.max((prev[post._id] ?? 1) - 1, 0),
+									}))
+								}}
+							/>
+						))}
+						{loadingMore && (
+							<View style={{ paddingVertical: 20, alignItems: 'center' }}>
+								<ActivityIndicator size='small' />
+							</View>
+						)}
+					</InfiniteScrollView>
+				)
+			}
 		</AnimatedPageLayout>
 	)
 }
