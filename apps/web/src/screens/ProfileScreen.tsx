@@ -9,8 +9,9 @@ import {
     EditProfileForm,
     IconButton,
     PageLayout,
-    UserImageManager,
     Row,
+    Spinner,
+    UserImageManager,
 } from '@/components'
 import { useAuth, useModal } from '../hooks'
 import { Feather } from '@expo/vector-icons'
@@ -22,56 +23,50 @@ import { paddingHorizontal, Size } from '@/styles'
 type ProfileScreenNavProp = StackNavigationProp<RootStackParamList, 'Profile'>
 
 export const ProfileScreen = () => {
-	const { logout, user } = useAuth()
+	const { isAuthInitialized, user, logout } = useAuth()
 	const navigation = useNavigation<ProfileScreenNavProp>()
 	const { showModal } = useModal()
 
 	const openEditModal = () => showModal({ content: <EditProfileForm /> })
-    
-    if (!user) {
-        return (
-            <View style={styles.centered}>
-                <Text style={styles.loadingText}>Loading profile...</Text>
-            </View>
-        )
-    }
 
 	return (
 		<PageLayout>
-            <Column
-                paddingVertical={Size.S}
-                paddingHorizontal={paddingHorizontal}
-                flex={1}
-                spacing={15}
-            >
-                <Row>
-                    <Row flex={1} spacing={15}>
-                        <Avatar
-                            user={user}
-                            size='lg'
-                        />
-                        <Column spacing={5}>
-                            <Text style={[styles.text, styles.username]}>{user?.username}</Text>
-                            <Text style={[styles.text, styles.email]}>{user?.email}</Text>
-                        </Column>
-                    </Row>
-                    <IconButton
-                        icon={<Ionicons name='exit-outline' size={Size.L} color='#777' />}
-                        label='Sign Out'
-                        onPress={logout}
-                        showLabel={true}
-                    />
-                </Row>
-                <Row spacing={10}>
-                    <Text style={styles.text}>{user?.bio || 'No bio yet.'}</Text>
-                    <Pressable onPress={openEditModal} style={styles.editButton}>
-                        <Feather name='edit-3' size={18} color='#eee' />
-                    </Pressable>
-                </Row>
-                <View style={{ flex: 1 }}>
-                    <UserImageManager />
-                </View>
-            </Column>
+            {!isAuthInitialized
+                ? <Spinner />
+                : (
+                    <Column
+                        paddingVertical={Size.S}
+                        paddingHorizontal={paddingHorizontal}
+                        flex={1}
+                        spacing={15}
+                    >
+                        <Row>
+                            <Row flex={1} spacing={15}>
+                                {user && <Avatar user={user} size='lg' />}
+                                <Column spacing={5}>
+                                    <Text style={[styles.text, styles.username]}>{user?.username}</Text>
+                                    <Text style={[styles.text, styles.email]}>{user?.email}</Text>
+                                </Column>
+                            </Row>
+                            <IconButton
+                                icon={<Ionicons name='exit-outline' size={Size.L} color='#777' />}
+                                label='Sign Out'
+                                onPress={logout}
+                                showLabel={true}
+                            />
+                        </Row>
+                        <Row spacing={10}>
+                            <Text style={styles.text}>{user?.bio || 'No bio yet.'}</Text>
+                            <Pressable onPress={openEditModal} style={styles.editButton}>
+                                <Feather name='edit-3' size={18} color='#eee' />
+                            </Pressable>
+                        </Row>
+                        <View style={{ flex: 1 }}>
+                            <UserImageManager />
+                        </View>
+                    </Column>
+                )
+            }
 		</PageLayout>
 	)
 }
@@ -105,14 +100,4 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         alignSelf: 'center',
     },
-	centered: {
-		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
-		padding: 24,
-	},
-	loadingText: {
-		fontSize: 18,
-		color: '#ccc',
-	},
 })

@@ -162,7 +162,7 @@ export const processAndSaveImage = async ({
 export const getImageLikes = async (imageId: string, userId?: string) => {
 	const image = await ImageModel.findById(imageId)
 	if (!image) throw new HttpError('Image not found', 404)
-    
+
     let likedByCurrentUser = false
     if (userId) {
         const userObjectId = new mongoose.Types.ObjectId(userId)
@@ -189,7 +189,7 @@ export const toggleImageLike = async (userId: string, imageId: string) => {
 	}
 
 	await image.save()
-
+    
 	return {
 		likedByCurrentUser: image.likes.some(id => id.equals(userObjectId)),
 		count: image.likes.length,

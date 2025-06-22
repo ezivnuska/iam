@@ -23,7 +23,7 @@ const ImageSchema = new Schema<ImageDocument>(
 			type: [VariantSchema],
 			default: [],
 		},
-        likes: [{ type: Schema.Types.ObjectId, ref: 'User' }]
+        likes: [{ type: Schema.Types.ObjectId, ref: 'User', default: [] }]
 	},
 	{
 		timestamps: true,

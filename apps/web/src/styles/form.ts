@@ -14,13 +14,13 @@ export const form: NamedStyles<any> = {
 
 	input: {
 		// width: '100%',
-        flex: 1,
 		// padding: 12,
-		paddingHorizontal: 12,
-        lineHeight: 48,
 		// marginBottom: 12,
 		// borderWidth: 1,
 		// borderColor: '#ccc',
+        flex: 1,
+		paddingHorizontal: 12,
+        lineHeight: 48,
 		borderRadius: 12,
 		fontSize: 24,
         backgroundColor: '#222',
@@ -31,7 +31,9 @@ export const form: NamedStyles<any> = {
 	} as TextStyle,
 
 	textArea: {
+        lineHeight: 36,
 		minHeight: 200,
+        paddingVertical: 8,
 	} as TextStyle,
 
 	inputFocused: {
@@ -42,6 +44,8 @@ export const form: NamedStyles<any> = {
 
 	error: {
 		color: 'red',
-		marginBottom: 8,
+		marginTop: 8,
+        // lineHeight: 20,
+        // backgroundColor: 'yellow',
 	} as TextStyle,
 }

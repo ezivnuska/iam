@@ -1,31 +1,18 @@
-// apps/web/src/components/layout/AnimatedPageLayout.tsx
+// apps/web/src/components/Layout/AnimatedPageLayout.tsx
 
-import React, {
-	useRef,
-	useState,
-	useImperativeHandle,
-	forwardRef,
-	useEffect,
-} from 'react'
-import {
-	View,
-	StyleSheet,
-	Animated,
-} from 'react-native'
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import { Animated, StyleSheet, View } from 'react-native'
 import { Header, Footer } from '@/components'
 import { useDeviceInfo } from '@/hooks'
 import { MAX_WIDTH } from './constants'
+import type { PageLayoutProps } from './types'
 
 export interface AnimatedPageLayoutHandles {
 	showHeaderFooter: () => void
 	hideHeaderFooter: () => void
 }
 
-interface AnimatedPageLayoutProps {
-	children: React.ReactNode
-}
-
-export const AnimatedPageLayout = forwardRef<AnimatedPageLayoutHandles, AnimatedPageLayoutProps>(
+export const AnimatedPageLayout = forwardRef<AnimatedPageLayoutHandles, PageLayoutProps>(
 	({ children }, ref) => {
 		const { height: deviceHeight } = useDeviceInfo()
 
@@ -136,7 +123,6 @@ const styles = StyleSheet.create({
 		left: 0,
 		right: 0,
 		zIndex: 10,
-		// backgroundColor: '#fff',
 	},
 	footer: {
 		position: 'absolute',
@@ -144,7 +130,6 @@ const styles = StyleSheet.create({
 		left: 0,
 		right: 0,
 		zIndex: 10,
-		// backgroundColor: '#fff',
 	},
 	contentWrapper: {
 		width: '100%',

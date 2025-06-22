@@ -1,20 +1,9 @@
 // apps/web/src/providers/ModalProvider.tsx
 
-import React, {
-	createContext,
-	useState,
-	useContext,
-	useCallback,
-	ReactNode,
-} from 'react'
-import {
-	Modal,
-	View,
-	Platform,
-	Pressable,
-	StyleSheet,
-} from 'react-native'
+import React, { createContext, ReactNode, useCallback, useContext, useState } from 'react'
+import { Modal, Platform, Pressable, StyleSheet, View } from 'react-native'
 import { createPortal } from 'react-dom'
+import { MAX_WIDTH } from '@/components'
   
 export type ModalContentObject = {
 	content: ReactNode
@@ -97,7 +86,8 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
 						</Overlay>,
 						document.body
 					)
-				))}
+				))
+            }
 	  </ModalContext.Provider>
 	)
 }
@@ -142,15 +132,13 @@ const styles = StyleSheet.create({
 	},
 	backdrop: {
 		...StyleSheet.absoluteFillObject,
-		backgroundColor: 'rgba(0, 0, 0, 0.5)',
+		backgroundColor: 'rgba(0, 0, 0, 0.9)',
 	},
 	modalContent: {
-		width: '90%',
-		maxWidth: 600,
-		minHeight: 200,
+		width: MAX_WIDTH,
+		maxWidth: MAX_WIDTH,
 		backgroundColor: '#000',
-		borderRadius: 8,
-		padding: 16,
+		borderRadius: 12,
 		elevation: 10,
 		zIndex: 10000,
 	},

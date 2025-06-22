@@ -1,17 +1,17 @@
 // apps/web/src/components/forms/AddCommentForm.tsx
 
 import React, { useEffect, useRef, useState } from 'react'
-import { TextInput, Text, Alert, TextInput as RNTextInput } from 'react-native'
+import { TextInput, Text, Alert, TextInput as RNTextInput, View } from 'react-native'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { SubmitButton, ModalContainer } from '@/components'
+import { SubmitButton, ModalContainer, Column } from '@/components'
 import { useAuth, useModal } from '@/hooks'
 import { addComment } from '@services'
-import { form as styles, shadows } from '@/styles'
+import { form as styles, shadows, Size } from '@/styles'
 
 const schema = z.object({
-	content: z.string().min(1, 'Comment cannot be empty'),
+	content: z.string().min(1, 'Required field'),
 })
 
 type FormData = z.infer<typeof schema>
@@ -68,45 +68,46 @@ export const AddCommentForm: React.FC<AddCommentFormProps> = ({
 
 	return (
 		<ModalContainer title='Add Comment'>
+            <Column spacing={Size.S}>
+                <View>
+                    <Controller
+                        control={control}
+                        name='content'
+                        render={({ field: { value, onChange, onBlur } }) => (
+                            <TextInput
+                                ref={contentRef}
+                                placeholder='Add Comment...'
+                                placeholderTextColor='#070'
+                                value={value}
+                                onChangeText={onChange}
+                                onFocus={() => setFocusedField('content')}
+                                onBlur={() => {
+                                    onBlur()
+                                    setFocusedField(null)
+                                }}
+                                autoCapitalize='sentences'
+                                returnKeyType='default'
+                                onSubmitEditing={handleSubmit(onSubmit)}
+                                style={[
+                                    styles.input,
+                                    styles.textArea,
+                                    shadows.input,
+                                    focusedField === 'content' && styles.inputFocused,
+                                ]}
+                                multiline
+                            />
+                        )}
+                    />
 
-			<Controller
-				control={control}
-				name='content'
-				render={({ field: { value, onChange, onBlur } }) => (
-					<TextInput
-						ref={contentRef}
-						placeholder='Add Comment...'
-						placeholderTextColor='#070'
-						value={value}
-						onChangeText={onChange}
-						onFocus={() => setFocusedField('content')}
-						onBlur={() => {
-							onBlur()
-							setFocusedField(null)
-						}}
-						autoCapitalize='sentences'
-						returnKeyType='default'
-						onSubmitEditing={handleSubmit(onSubmit)}
-						style={[
-							styles.input,
-							styles.textArea,
-							shadows.input,
-							focusedField === 'content' && styles.inputFocused,
-						]}
-						multiline
-					/>
-				)}
-			/>
+                    <Text style={styles.error}>{errors.content ? errors.content.message : ' '}</Text>
+                </View>
 
-			{errors.content && (
-				<Text style={styles.error}>{errors.content.message}</Text>
-			)}
-
-			<SubmitButton
-				label='Submit'
-				onPress={handleSubmit(onSubmit)}
-				disabled={isSubmitting}
-			/>
+                <SubmitButton
+                    label='Submit'
+                    onPress={handleSubmit(onSubmit)}
+                    disabled={isSubmitting}
+                />
+            </Column>
 		</ModalContainer>
 	)
 }

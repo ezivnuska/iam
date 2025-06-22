@@ -1,14 +1,11 @@
-// apps/web/src/components/layout/PageLayout.tsx
+// apps/web/src/components/Layout/PageLayout.tsx
 
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Header, Footer } from '@/components'
 import { useDeviceInfo } from '@/hooks'
 import { MAX_WIDTH } from './constants'
-
-interface PageLayoutProps {
-	children: React.ReactNode
-}
+import type { PageLayoutProps } from './types'
 
 export const PageLayout: React.FC<PageLayoutProps> = ({
 	children,

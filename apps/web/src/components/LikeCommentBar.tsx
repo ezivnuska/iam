@@ -3,7 +3,7 @@
 import React from 'react'
 import { Pressable, StyleSheet, Text } from 'react-native'
 import { Row } from '@/components'
-import { paddingHorizontal, Size } from '@/styles'
+import { paddingHorizontal } from '@/styles'
 
 type Props = {
 	likeCount: number

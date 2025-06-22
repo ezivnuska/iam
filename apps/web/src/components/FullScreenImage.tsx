@@ -11,6 +11,7 @@ import {
 	ImageComments,
 	LikeCommentBar,
 	Row,
+    Spinner,
 } from '@/components'
 import { Size, resolveResponsiveProp } from '@/styles'
 import { useModal, useBestVariant } from '@/hooks'
@@ -125,25 +126,30 @@ const FullScreenImage: React.FC<Props> = ({
 			<View style={styles.imageContainer}>
 				{/* Header */}
 				<View style={[styles.header, { paddingHorizontal }]}>
-					<Row justify='flex-start' spacing={16}>
-						{onDelete && (
-							<Pressable onPress={onDelete}>
-								<Ionicons name='trash-bin' size={28} color='#fff' />
-							</Pressable>
-						)}
-						{onSetAvatar && (
-							<Pressable onPress={onSetAvatar}>
-								<FontAwesome
-									name='user-circle-o'
-									size={24}
-									color={isAvatar ? '#3498db' : '#fff'}
-								/>
-							</Pressable>
-						)}
-					</Row>
-					<Pressable onPress={onClose}>
-						<Ionicons name='close-sharp' size={28} color='#fff' />
-					</Pressable>
+                    <View style={[styles.headerContent, { minWidth: displayWidth, maxWidth: displayWidth }]}>
+                        <Row
+                            justify='flex-start'
+                            spacing={16}
+                        >
+                            {onDelete && (
+                                <Pressable onPress={onDelete}>
+                                    <Ionicons name='trash-bin' size={28} color='#fff' />
+                                </Pressable>
+                            )}
+                            {onSetAvatar && (
+                                <Pressable onPress={onSetAvatar}>
+                                    <FontAwesome
+                                        name='user-circle-o'
+                                        size={24}
+                                        color={isAvatar ? '#3498db' : '#fff'}
+                                    />
+                                </Pressable>
+                            )}
+                        </Row>
+                        <Pressable onPress={onClose}>
+                            <Ionicons name='close-sharp' size={28} color='#fff' />
+                        </Pressable>
+                    </View>
 				</View>
 
 				{/* Image */}
@@ -156,27 +162,29 @@ const FullScreenImage: React.FC<Props> = ({
 				</View>
 
 				{/* Footer */}
-				<Column spacing={Size.S} style={styles.footer}>
-					<LikeCommentBar
-						likeCount={likeCount}
-						liked={liked}
-						commentCount={commentCount}
-						isAuthenticated
-						onToggleLike={handleToggleLike}
-						onToggleComments={() => setExpanded(prev => !prev)}
-						onAddComment={handleAddComment}
-						textColor='#fff'
-						iconColor='#fff'
-						expanded={expanded}
-					/>
-					{expanded && (
-						<ImageComments
-							key={commentRefreshToken}
-							refId={image.id}
-							onCommentDeleted={handleCommentDeleted}
-						/>
-					)}
-				</Column>
+                <View style={styles.footer}>
+                    <Column spacing={Size.S} style={[styles.footerContent, { maxWidth: displayWidth }]}>
+                        <LikeCommentBar
+                            likeCount={likeCount}
+                            liked={liked}
+                            commentCount={commentCount}
+                            isAuthenticated
+                            onToggleLike={handleToggleLike}
+                            onToggleComments={() => setExpanded(prev => !prev)}
+                            onAddComment={handleAddComment}
+                            textColor='#fff'
+                            iconColor='#fff'
+                            expanded={expanded}
+                        />
+                        {expanded && (
+                            <ImageComments
+                                key={commentRefreshToken}
+                                refId={image.id}
+                                onCommentDeleted={handleCommentDeleted}
+                            />
+                        )}
+                    </Column>
+                </View>
 			</View>
 		</View>
 	)
@@ -202,6 +210,15 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'space-between',
 	},
+	headerContent: {
+		width: '100%',
+        marginHorizontal: 'auto',
+        paddingHorizontal: Size.S,
+		// backgroundColor: 'rgba(0,0,0,0.4)',
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+	},
 	imageWrapper: {
 		flex: 1,
 		justifyContent: 'center',
@@ -216,6 +233,11 @@ const styles = StyleSheet.create({
 		zIndex: 10,
 		backgroundColor: 'rgba(0,0,0,0.4)',
 		maxHeight: '50%',
+	},
+    footerContent: {
+		width: '100%',
+        marginHorizontal: 'auto',
+        paddingHorizontal: Size.S,
 	},
 })
 

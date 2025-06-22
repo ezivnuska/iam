@@ -1,4 +1,4 @@
-// apps/web/src/components/layout/types.ts
+// apps/web/src/components/Layout/types.ts
 
 import { ReactNode } from 'react'
 import { ViewStyle, StyleProp } from 'react-native'
