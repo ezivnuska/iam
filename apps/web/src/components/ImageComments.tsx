@@ -1,11 +1,11 @@
 // apps/web/src/components/ImageComments.tsx
 
 import React, { useEffect, useState } from 'react'
-import { View, FlatList, ActivityIndicator } from 'react-native'
+import { View, ScrollView, useWindowDimensions } from 'react-native'
 import { deleteComment, fetchComments } from '@services'
 import { useAuth } from '@/hooks'
 import { Size } from '@/styles'
-import { CommentItem } from '@/components'
+import { CommentItem, Spinner } from '@/components'
 import type { Comment } from '@iam/types'
 
 type ImageCommentsProps = {
@@ -17,8 +17,8 @@ export const ImageComments = ({ refId, onCommentDeleted }: ImageCommentsProps) =
 	const [comments, setComments] = useState<Comment[] | null>(null)
 	const [loading, setLoading] = useState(true)
 	const [deletingIds, setDeletingIds] = useState<string[]>([])
-
 	const { user } = useAuth()
+	const { height } = useWindowDimensions()
 
 	useEffect(() => {
 		const loadComments = async () => {
@@ -32,7 +32,6 @@ export const ImageComments = ({ refId, onCommentDeleted }: ImageCommentsProps) =
 				setLoading(false)
 			}
 		}
-
 		loadComments()
 	}, [refId])
 
@@ -49,27 +48,28 @@ export const ImageComments = ({ refId, onCommentDeleted }: ImageCommentsProps) =
 		}
 	}
 
-	if (loading) {
-		return (
-			<View style={{ padding: Size.M }}>
-				<ActivityIndicator size='small' />
-			</View>
-		)
-	}
-
 	return (
-		<FlatList
-			data={comments}
-			keyExtractor={(item) => item._id}
-			renderItem={({ item }) => (
-				<CommentItem
-					comment={item}
-					isAuthor={user?.id === item.author._id}
-					isDeleting={deletingIds.includes(item._id)}
-					onDelete={handleDelete}
-					textColor='#fff'
-				/>
+		<View style={{ maxHeight: height * 0.4 }}>
+			{loading ? (
+				<Spinner size={25} />
+			) : (
+				<ScrollView
+					style={{ flex: 1, maxHeight: height * 0.4 }}
+					contentContainerStyle={{ paddingBottom: Size.S }}
+                    showsVerticalScrollIndicator={false}
+				>
+					{comments?.map((item: Comment) => (
+						<CommentItem
+							key={item._id}
+							comment={item}
+							isAuthor={user?.id === item.author._id}
+							isDeleting={deletingIds.includes(item._id)}
+							onDelete={handleDelete}
+							textColor="#fff"
+						/>
+					))}
+				</ScrollView>
 			)}
-		/>
+		</View>
 	)
 }

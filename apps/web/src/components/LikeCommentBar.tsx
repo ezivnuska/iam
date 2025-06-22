@@ -3,7 +3,8 @@
 import React from 'react'
 import { Pressable, StyleSheet, Text } from 'react-native'
 import { Row } from '@/components'
-import { paddingHorizontal } from '@/styles'
+import { paddingHorizontal, Size } from '@/styles'
+import Ionicons from '@expo/vector-icons/Ionicons'
 
 type Props = {
 	likeCount: number
@@ -32,37 +33,59 @@ export const LikeCommentBar: React.FC<Props> = ({
 	iconColor = 'gray',
 	disabledComment = false,
 }) => {
-	const showHideText = expanded && commentCount > 0 ? 'Hide ' : ''
-	const commentDisabled = disabledComment || !isAuthenticated || commentCount === 0
+    const commentDisabled = disabledComment || !isAuthenticated || commentCount === 0
 
 	return (
-		<Row paddingHorizontal={paddingHorizontal} spacing={8}>
-			<Text style={[styles.bottomButton, { color: textColor }]}>
-				{likeCount} {likeCount === 1 ? 'like' : 'likes'}
-			</Text>
+		<Row
+            flex={1}
+            spacing={Size.M}
+            paddingHorizontal={paddingHorizontal}
+            align='center'
+            justify='space-between'
+            paddingVertical={Size.S}
+        >
+            <Pressable onPress={onToggleLike} disabled={!isAuthenticated}>
+                <Row
+                    spacing={Size.XS}
+                    justify='center'
+                    align='center'
+                >
+                    <Text style={[styles.bottomButton, { color: textColor }]}>
+                        {likeCount} {`like${likeCount !== 1 ? 's' : ''}`}
+                    </Text>
 
-			{isAuthenticated && (
-				<Pressable onPress={onToggleLike}>
-					<Text style={[styles.bottomButton, { color: liked ? 'red' : iconColor }]}>
-						{liked ? '♥' : '♡'}
-					</Text>
-				</Pressable>
-			)}
+                    {isAuthenticated && (
+                        <Text style={[styles.bottomButton, { color: liked ? 'red' : iconColor }]}>
+                            {liked ? '♥' : '♡'}
+                        </Text>
+                    )}
+                </Row>
+            </Pressable>
 
 			<Pressable
 				onPress={onToggleComments}
 				style={{ paddingHorizontal: paddingHorizontal }}
 				disabled={commentDisabled}
 			>
-				<Text
-					style={[
-						styles.bottomButton,
-						{ color: commentDisabled ? '#888' : textColor },
-					]}
-				>
-					{showHideText}
-					{commentCount} {commentCount === 1 ? 'comment' : 'comments'}
-				</Text>
+                <Row spacing={5} align='center'>
+                    <Text
+                        style={[
+                            styles.bottomButton,
+                            { color: commentDisabled ? '#888' : textColor },
+                        ]}
+                    >
+                        {commentCount} {`Comment${commentCount !== 1 ? 's' : ''}`}
+                    </Text>
+
+                    {commentCount > 0 && (
+                        <Ionicons
+                            name={`chevron-${expanded ? 'down' : 'up' }`}
+                            size={16}
+                            color='#fff'
+                            style={{ marginTop: 3 }}
+                        />
+                    )}
+                </Row>
 			</Pressable>
 
 			{isAuthenticated && (
@@ -75,6 +98,9 @@ export const LikeCommentBar: React.FC<Props> = ({
 }
 
 const styles = StyleSheet.create({
+	container: {
+		height: 50,
+	},
 	bottomButton: {
 		fontSize: 16,
 	},

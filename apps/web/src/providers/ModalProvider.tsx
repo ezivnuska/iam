@@ -61,7 +61,7 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
 	}, [])
   
 	return (
-	  <ModalContext.Provider value={{ showModal, hideModal, hideAllModals, modalStack }}>
+	    <ModalContext.Provider value={{ showModal, hideModal, hideAllModals, modalStack }}>
 			<View style={{ flex: 1 }}>
 				{children}
 			</View>
@@ -88,7 +88,7 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
 					)
 				))
             }
-	  </ModalContext.Provider>
+	    </ModalContext.Provider>
 	)
 }
 

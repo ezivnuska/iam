@@ -1,20 +1,18 @@
 // apps/web/src/components/FullScreenImage.tsx
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { View, StyleSheet, Pressable, useWindowDimensions } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import {
 	AddCommentForm,
 	AutoSizeImage,
-	Column,
 	ImageComments,
 	LikeCommentBar,
 	Row,
-    Spinner,
 } from '@/components'
 import { Size, resolveResponsiveProp } from '@/styles'
-import { useModal, useBestVariant } from '@/hooks'
+import { useAuth, useModal, useBestVariant } from '@/hooks'
 import type { Image } from '@iam/types'
 import {
 	fetchImageCommentCount,
@@ -26,7 +24,7 @@ type Props = {
 	image: Image
 	onClose: () => void
 	onDelete?: () => void
-	onSetAvatar?: () => void
+	onSetAvatar?: (id: string | undefined) => void
 	isAvatar?: boolean
 }
 
@@ -37,11 +35,13 @@ const FullScreenImage: React.FC<Props> = ({
 	onSetAvatar,
 	isAvatar,
 }) => {
+    const { user } = useAuth()
 	const [likeCount, setLikeCount] = useState(0)
 	const [liked, setLiked] = useState(false)
 	const [expanded, setExpanded] = useState(false)
 	const [commentCount, setCommentCount] = useState(0)
 	const [commentRefreshToken, setCommentRefreshToken] = useState(0)
+    const [isCurrentAvatar, setIsCurrentAvatar] = useState(isAvatar)
 
 	const { hideModal, showModal } = useModal()
 	const { width, height } = useWindowDimensions()
@@ -117,19 +117,37 @@ const FullScreenImage: React.FC<Props> = ({
 
 	const handleCommentDeleted = () => {
 		refreshCommentCount()
-		setCommentRefreshToken(prev => prev + 1)
+		// setCommentRefreshToken(prev => prev + 1)
 		if (commentCount === 1) setExpanded(false)
 	}
+
+    const handleSetAvatar = async () => {
+        if (!onSetAvatar) return
+        const currentAvatarId = user?.avatar?.id
+        const imagesMatch = image.id === currentAvatarId
+        if (currentAvatarId && imagesMatch) {
+            onSetAvatar(undefined)
+            setIsCurrentAvatar(false)
+        } else {
+            onSetAvatar(image.id)
+            setIsCurrentAvatar(true)
+        }
+    }
 
 	return (
 		<View style={[StyleSheet.absoluteFill, styles.fullscreenContainer]}>
 			<View style={styles.imageContainer}>
 				{/* Header */}
 				<View style={[styles.header, { paddingHorizontal }]}>
-                    <View style={[styles.headerContent, { minWidth: displayWidth, maxWidth: displayWidth }]}>
+                    <Row
+                        flex={1}
+                        align='center'
+                        justify='space-between'
+                        style={[styles.headerContent, { maxWidth: displayWidth }]}
+                    >
                         <Row
-                            justify='flex-start'
-                            spacing={16}
+                            align='center'
+                            spacing={Size.M}
                         >
                             {onDelete && (
                                 <Pressable onPress={onDelete}>
@@ -137,11 +155,11 @@ const FullScreenImage: React.FC<Props> = ({
                                 </Pressable>
                             )}
                             {onSetAvatar && (
-                                <Pressable onPress={onSetAvatar}>
+                                <Pressable onPress={handleSetAvatar}>
                                     <FontAwesome
                                         name='user-circle-o'
                                         size={24}
-                                        color={isAvatar ? '#3498db' : '#fff'}
+                                        color={isCurrentAvatar ? '#3498db' : '#fff'}
                                     />
                                 </Pressable>
                             )}
@@ -149,7 +167,7 @@ const FullScreenImage: React.FC<Props> = ({
                         <Pressable onPress={onClose}>
                             <Ionicons name='close-sharp' size={28} color='#fff' />
                         </Pressable>
-                    </View>
+                    </Row>
 				</View>
 
 				{/* Image */}
@@ -163,19 +181,28 @@ const FullScreenImage: React.FC<Props> = ({
 
 				{/* Footer */}
                 <View style={styles.footer}>
-                    <Column spacing={Size.S} style={[styles.footerContent, { maxWidth: displayWidth }]}>
-                        <LikeCommentBar
-                            likeCount={likeCount}
-                            liked={liked}
-                            commentCount={commentCount}
-                            isAuthenticated
-                            onToggleLike={handleToggleLike}
-                            onToggleComments={() => setExpanded(prev => !prev)}
-                            onAddComment={handleAddComment}
-                            textColor='#fff'
-                            iconColor='#fff'
-                            expanded={expanded}
-                        />
+                    <View
+                        style={[
+                            styles.footerContent, {
+                                maxWidth: displayWidth,
+                            },
+                            expanded && { backgroundColor: 'rgba(0,0,0,0.7)' }
+                        ]}
+                    >
+                        <Row align='center'>
+                            <LikeCommentBar
+                                likeCount={likeCount}
+                                liked={liked}
+                                commentCount={commentCount}
+                                isAuthenticated
+                                onToggleLike={handleToggleLike}
+                                onToggleComments={() => setExpanded(prev => !prev)}
+                                onAddComment={handleAddComment}
+                                textColor='#fff'
+                                iconColor='#fff'
+                                expanded={expanded}
+                            />
+                        </Row>
                         {expanded && (
                             <ImageComments
                                 key={commentRefreshToken}
@@ -183,7 +210,7 @@ const FullScreenImage: React.FC<Props> = ({
                                 onCommentDeleted={handleCommentDeleted}
                             />
                         )}
-                    </Column>
+                    </View>
                 </View>
 			</View>
 		</View>
@@ -192,8 +219,14 @@ const FullScreenImage: React.FC<Props> = ({
 
 const styles = StyleSheet.create({
 	fullscreenContainer: {
+        flex: 1,
 		backgroundColor: '#000',
 	},
+    drawer: {
+        flex: 1,
+        borderWidth: 1,
+        borderColor: 'yellow',
+    },
 	imageContainer: {
 		flex: 1,
 		position: 'relative',
@@ -205,19 +238,14 @@ const styles = StyleSheet.create({
 		right: 0,
 		height: 50,
 		zIndex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
 		backgroundColor: 'rgba(0,0,0,0.4)',
-		flexDirection: 'row',
-		alignItems: 'center',
-		justifyContent: 'space-between',
 	},
 	headerContent: {
 		width: '100%',
         marginHorizontal: 'auto',
         paddingHorizontal: Size.S,
-		// backgroundColor: 'rgba(0,0,0,0.4)',
-		flexDirection: 'row',
-		alignItems: 'center',
-		justifyContent: 'space-between',
 	},
 	imageWrapper: {
 		flex: 1,
@@ -225,19 +253,19 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 	footer: {
-		paddingVertical: Size.S,
 		position: 'absolute',
 		bottom: 0,
 		left: 0,
 		right: 0,
 		zIndex: 10,
 		backgroundColor: 'rgba(0,0,0,0.4)',
-		maxHeight: '50%',
+        maxHeight: '50%',
 	},
     footerContent: {
 		width: '100%',
         marginHorizontal: 'auto',
         paddingHorizontal: Size.S,
+        flexShrink: 1,
 	},
 })
 

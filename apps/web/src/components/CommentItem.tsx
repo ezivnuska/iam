@@ -1,7 +1,7 @@
 // apps/web/src/components/CommentItem.tsx
 
 import React from 'react'
-import { Pressable, StyleSheet, Text } from 'react-native'
+import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native'
 import { Avatar, Column, Row } from '@/components'
 import { Comment, PartialUser } from '@iam/types'
 import { paddingHorizontal, Size } from '@/styles'
@@ -53,7 +53,10 @@ export const CommentItem = ({
                 </Column>
                 {isAuthor && (
                     <Pressable onPress={() => onDelete(comment._id)} disabled={isDeleting}>
-                        <Ionicons name='trash-bin' size={20} color={textColor} />
+                        {isDeleting
+                            ? <ActivityIndicator size={20} color='#fff' />
+                            : <Ionicons name='trash-bin' size={20} color={textColor} />
+                        }
                     </Pressable>
                 )}
             </Row>
@@ -64,7 +67,6 @@ export const CommentItem = ({
 const styles = StyleSheet.create({
     author: {
         fontSize: 20,
-        // lineHeight: 40,
 	},
     avatar: {
         width: 40,

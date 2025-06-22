@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { ActivityIndicator, View, StyleSheet } from 'react-native'
+import { Size } from '@/styles'
 
 export interface SpinnerProps {
 	size?: number
@@ -21,5 +22,6 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'center',
+        paddingVertical: Size.XS,
 	},
 })

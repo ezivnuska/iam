@@ -2,10 +2,13 @@
 
 import React, { useEffect, useState } from 'react'
 import { Text, View } from 'react-native'
-import { Column, ImageGallery, ImageManagerHeader } from '@/components'
-import { useImage, useModal } from '@/hooks'
+import { Column, FullScreenImage, ImageManagerHeader } from '@/components'
+import ImageGalleryContainer from '@/components/ImageGalleryContainer'
+import { useAuth, useImage, useModal } from '@/hooks'
+import type { Image } from '@iam/types'
 
 const UserImageManager = () => {
+    const { user } = useAuth()
 	const {
 		images,
 		isLoading,
@@ -16,7 +19,7 @@ const UserImageManager = () => {
 		loadMoreImages,
 		hasNextPage,
 	} = useImage()
-	const { hideModal } = useModal()
+	const { hideModal, showModal } = useModal()
 	const [error, setError] = useState<string | null>(null)
 
 	useEffect(() => {
@@ -40,12 +43,29 @@ const UserImageManager = () => {
 		const newAvatarId = id === currentAvatarId ? undefined : id
 		try {
 			await setAvatar(newAvatarId)
-			hideModal()
+			// hideModal()
 		} catch (err) {
 			console.log('Failed to set avatar')
 			setError('Failed to set avatar.')
 		}
 	}
+
+    const handleImagePress = (image: Image) => {
+        const isAvatar = image.id === currentAvatarId
+        const newAvatarId = image.id === currentAvatarId ? undefined : image.id
+        showModal({
+            content: (
+                <FullScreenImage
+                    image={image}
+                    onClose={hideModal}
+                    onDelete={handleDelete ? () => handleDelete(image.id) : undefined}
+                    onSetAvatar={user?.username === image.username ? (id) => handleSetAvatar(id) : undefined}
+                    isAvatar={isAvatar}
+                />
+            ),
+            fullscreen: true,
+        })
+    }
 
 	return (
 		<Column flex={1} spacing={10}>
@@ -56,10 +76,11 @@ const UserImageManager = () => {
 				<Text>Loading images...</Text>
 			) : (
 				<View style={{ flex: 1 }}>
-					<ImageGallery
+					<ImageGalleryContainer
 						images={images}
 						onDelete={handleDelete}
-						onSetAvatar={handleSetAvatar}
+						onSetAvatar={(id) => handleSetAvatar(id)}
+                        onPressImage={handleImagePress}
 						currentAvatarId={currentAvatarId}
 						onEndReached={() => {
 							if (hasNextPage) loadMoreImages()
