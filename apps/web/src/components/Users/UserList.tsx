@@ -1,17 +1,14 @@
 // packages/screens/src/components/UserList.tsx
 
 import React, { useCallback } from 'react'
-import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native'
 import { Size } from '@/styles'
 import type { User, Bond } from '@iam/types'
 import { UserListItem } from '@/components'
 
-export type FilterType = 'all' | 'bonded' | 'pending'
-
 type Props = {
 	users: User[]
-	filter: FilterType
-	onFilterChange: (filter: FilterType) => void
+	loading: boolean
 	getBond: (userId: string) => Bond | undefined
 	isOnline: (userId: string) => boolean
 	onConfirm: (userId: string) => void
@@ -19,13 +16,11 @@ type Props = {
 	onDelete: (userId: string) => void
 	onUserPress: (user: User) => void
 	onEndReached: () => void
-	loading: boolean
 }
 
 export const UserList = ({
 	users,
-	filter,
-	onFilterChange,
+	loading,
 	getBond,
 	isOnline,
 	onConfirm,
@@ -33,13 +28,7 @@ export const UserList = ({
 	onDelete,
 	onUserPress,
 	onEndReached,
-	loading,
 }: Props) => {
-	const renderFilterButton = (label: string, value: FilterType) => (
-		<TouchableOpacity onPress={() => onFilterChange(value)} style={[styles.filterButton, filter === value && styles.activeFilter]}>
-			<Text style={filter === value ? styles.activeFilterText : styles.filterText}>{label}</Text>
-		</TouchableOpacity>
-	)
 
 	const renderItem = useCallback((item: User) => {
 	  
@@ -58,11 +47,6 @@ export const UserList = ({
 
 	return (
 		<View style={styles.container}>
-			<View style={styles.filterContainer}>
-				{renderFilterButton('All', 'all')}
-				{renderFilterButton('Connections', 'bonded')}
-				{renderFilterButton('Pending', 'pending')}
-			</View>
 			<FlatList
 				data={users}
 				keyExtractor={(item) => item.id || item.email}
@@ -86,23 +70,5 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
-	},
-	filterContainer: {
-		flexDirection: 'row',
-		justifyContent: 'space-around',
-	},
-	filterButton: {
-		padding: 10,
-		borderRadius: 5,
-	},
-	activeFilter: {
-		// backgroundColor: '#007AFF',
-	},
-	filterText: {
-		color: '#eee',
-	},
-	activeFilterText: {
-		color: '#fff',
-		fontWeight: 'bold',
 	},
 })

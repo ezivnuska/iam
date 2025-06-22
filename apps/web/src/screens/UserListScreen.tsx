@@ -1,18 +1,19 @@
 // packages/screens/src/screens/UserListScreen.tsx
 
 import React, { useCallback, useEffect, useState } from 'react'
-import { Alert, ActivityIndicator, Text } from 'react-native'
-import { PageLayout, Spinner, UserList } from '@/components'
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Column, PageLayout, Spinner, UserList } from '@/components'
 import { useAuth, useBonds, usePresence, useSocket } from '@/hooks'
 import { usePaginatedFetch } from '@services'
 import type { Bond, User } from '@iam/types'
 import { normalizeUser } from '@utils'
-import type { FilterType } from '@/components'
 import { useNavigation } from '@react-navigation/native'
 import type { StackNavigationProp } from '@react-navigation/stack'
 import type { RootStackParamList } from '@iam/types'
 
 type NavProps = StackNavigationProp<RootStackParamList, 'UserList'>
+
+export type FilterType = 'all' | 'bonded' | 'pending'
 
 export const UserListScreen = () => {
 	const [filter, setFilter] = useState<FilterType>('all')
@@ -114,37 +115,71 @@ export const UserListScreen = () => {
 	const handleUserPress = (user: User) => {
         navigation.navigate('Details', { username: user.username })
     }
+    
+    const renderFilterButton = (label: string, value: FilterType) => (
+        <TouchableOpacity onPress={() => setFilter(value)} style={[styles.filterButton, filter === value && styles.activeFilter]}>
+            <Text style={filter === value ? styles.activeFilterText : styles.filterText}>{label}</Text>
+        </TouchableOpacity>
+    )
 
-	if (loadingBonds) return <ActivityIndicator style={{ flex: 1, justifyContent: 'center' }} />
-	if (bondsError) return <Text>Error loading bonds</Text>
+    const onConfirmBond = (bondId: string) => {
+        const bond = getBondForUser(bondId)
+        if (bond) updateBondStatus(bond._id, { confirmed: true })
+    }
+
+    const onDeleteBond = (bondId: string) => {
+        const bond = getBondForUser(bondId)
+        if (bond) deleteBond(bond._id)
+    }
 
 	return (
-		<PageLayout>
-            {loading
+        <PageLayout>
+            {bondsError && <Text>Error loading bonds</Text>}
+            {(loading || loadingBonds)
                 ? <Spinner />
                 : (
-                    <UserList
-                        users={filteredUsers.map(normalizeUser)}
-                        filter={filter}
-                        onFilterChange={setFilter}
-                        getBond={getBondForUser}
-                        isOnline={isOnline}
-                        onConfirm={(id) => {
-                            const bond = getBondForUser(id)
-                            if (bond) updateBondStatus(bond._id, { confirmed: true })
-                        }}
-                        onCreate={requestBond}
-                        onDelete={(id) => {
-                            const bond = getBondForUser(id)
-                            if (bond) deleteBond(bond._id)
-                        }}
-                        onUserPress={handleUserPress}
-                        onEndReached={fetchNextPage}
-                        loading={loading}
-                    />
+                    <Column>
+                        <View style={styles.filterContainer}>
+                            {renderFilterButton('All', 'all')}
+                            {renderFilterButton('Connections', 'bonded')}
+                            {renderFilterButton('Pending', 'pending')}
+                        </View>
+                        <UserList
+                            users={filteredUsers.map(normalizeUser)}
+                            getBond={getBondForUser}
+                            isOnline={isOnline}
+                            onConfirm={onConfirmBond}
+                            onCreate={requestBond}
+                            onDelete={onDeleteBond}
+                            onUserPress={handleUserPress}
+                            onEndReached={fetchNextPage}
+                            loading={loading}
+                        />
+                    </Column>
                 )
             }
 			
 		</PageLayout>
 	)
 }
+
+const styles = StyleSheet.create({
+	filterContainer: {
+		flexDirection: 'row',
+		justifyContent: 'space-around',
+	},
+	filterButton: {
+		padding: 10,
+		borderRadius: 5,
+	},
+	activeFilter: {
+		// backgroundColor: '#007AFF',
+	},
+	filterText: {
+		color: '#eee',
+	},
+	activeFilterText: {
+		color: '#fff',
+		fontWeight: 'bold',
+	},
+})
