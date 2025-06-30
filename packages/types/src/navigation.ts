@@ -2,7 +2,7 @@
 
 export type RootStackParamList = {
     Chat: undefined
-    Details: { username: string }
+    UserProfile: { username: string }
     Feed: undefined
     ForgotPassword: { token: string }
     Home: undefined

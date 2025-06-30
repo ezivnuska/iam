@@ -5,7 +5,7 @@ import { TextInput, Text, Alert, TextInput as RNTextInput, View } from 'react-na
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Column, ModalContainer, SubmitButton } from '@/components'
+import { Column, SubmitButton } from '@/components'
 import { useAuth, useModal } from '@/hooks'
 import { updateSelf } from '@services'
 import { form as styles, shadows, Size } from '@/styles'
@@ -81,40 +81,38 @@ export const EditProfileForm = () => {
     const isFocused = (name: string): boolean => name === focused
 
 	return (
-		<ModalContainer title='Edit Bio'>
-            <Column spacing={Size.S}>
-                <View>
-                    <Controller
-                        control={control}
-                        name='bio'
-                        render={({ field: { value, onChange, onBlur } }) => (
-                            <TextInput
-                                ref={bioInputRef}
-                                placeholder='Who are you?'
-                                placeholderTextColor='#070'
-                                value={value}
-                                onChangeText={onChange}
-                                onFocus={() => setFocused('bio')}
-                                onBlur={async () => {
-                                    onBlur()
-                                    setFocused(null)
-                                }}
-                                autoCapitalize='sentences'
-                                returnKeyType='next'
-                                onSubmitEditing={handleSubmit(onSubmit, onInvalid)}
-                                style={[styles.input, styles.textArea, shadows.input, isFocused('bio') && styles.inputFocused]}
-                                multiline
-                            />
-                        )}
-                    />
-                    <Text style={styles.error}>{errors.bio ? errors.bio.message : ' '}</Text>
-                </View>
-                <SubmitButton
-                    label='Save'
-                    onPress={handleSubmit(onSubmit, onInvalid)}
-                    disabled={isSubmitting}
+        <Column spacing={Size.S}>
+            <View>
+                <Controller
+                    control={control}
+                    name='bio'
+                    render={({ field: { value, onChange, onBlur } }) => (
+                        <TextInput
+                            ref={bioInputRef}
+                            placeholder='Who are you?'
+                            placeholderTextColor='#070'
+                            value={value}
+                            onChangeText={onChange}
+                            onFocus={() => setFocused('bio')}
+                            onBlur={async () => {
+                                onBlur()
+                                setFocused(null)
+                            }}
+                            autoCapitalize='sentences'
+                            returnKeyType='next'
+                            onSubmitEditing={handleSubmit(onSubmit, onInvalid)}
+                            style={[styles.input, styles.textArea, shadows.input, isFocused('bio') && styles.inputFocused]}
+                            multiline
+                        />
+                    )}
                 />
-            </Column>
-		</ModalContainer>
+                <Text style={styles.error}>{errors.bio ? errors.bio.message : ' '}</Text>
+            </View>
+            <SubmitButton
+                label='Save'
+                onPress={handleSubmit(onSubmit, onInvalid)}
+                disabled={isSubmitting}
+            />
+        </Column>
 	)
 }

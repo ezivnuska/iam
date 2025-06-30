@@ -13,7 +13,7 @@ export const setUnauthorizedHandler = (handler: () => void) => {
 
 export const api = axios.create({
 	baseURL: apiBaseUrl,
-	withCredentials: true, // Send cookies if needed
+	withCredentials: true,
 })
 
 // Set auth header
@@ -58,6 +58,7 @@ api.interceptors.request.use(
 					refreshSubscribers = []
 					await clearToken()
 					clearAuthHeader()
+                    console.log('logoutRequest (req)', token)
 					await logoutRequest()
 					if (onUnauthorized) onUnauthorized()
 					return Promise.reject(err)
@@ -118,6 +119,7 @@ api.interceptors.response.use(
 					refreshSubscribers = []
 					await clearToken()
 					clearAuthHeader()
+                    console.log('logoutRequest (res)')
 					await logoutRequest()
 					if (onUnauthorized) onUnauthorized()
 					return Promise.reject(refreshError)

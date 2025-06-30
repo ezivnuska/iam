@@ -12,7 +12,6 @@ const PAGE_SIZE = 10
 export const PostList = () => {
 	const { commentCounts, setCommentCounts, posts, refreshPosts } = usePosts()
 	const [visiblePosts, setVisiblePosts] = useState<Post[]>([])
-	// const { showModal } = useModal()
 
 	useEffect(() => {
 		refreshPosts()

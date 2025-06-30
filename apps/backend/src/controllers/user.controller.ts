@@ -22,8 +22,13 @@ export const getUserById: RequestHandler = async (req, res, next) => {
 }
 
 export const getUserByUsername: RequestHandler = async (req, res, next) => {
+    console.log('server: getUserByUsername:', req.params.username)
 	try {
 		const user = await userService.findUserByUsername(req.params.username)
+		if (!user) {
+			res.status(404).json({ message: 'User not found' })
+            return
+		}
 		res.json(user)
 	} catch (err) {
 		next(err)

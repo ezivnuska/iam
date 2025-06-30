@@ -5,6 +5,7 @@ import * as bondService from '../services/bond.service'
 import { Types } from 'mongoose'
 import { Server, Socket } from 'socket.io'
 import { bondEvents } from '../events/bond.events'
+import { toBond } from '../utils/toBond'
 
 interface BondStatusUpdatePayload {
 	bondId: string
@@ -26,8 +27,9 @@ export const registerBondHandlers = (io: Server, socket: Socket) => {
 			if (!responder) throw new Error('Responder is required')
 			const bond = await bondService.createBond({ sender: userId, responder })
 
-			io.to(bond.sender.toString()).emit('bond:created', bond)
-			io.to(bond.responder.toString()).emit('bond:created', bond)
+			const serializedBond = toBond(bond)
+			io.to(serializedBond.sender).emit('bond:created', serializedBond)
+			io.to(serializedBond.responder).emit('bond:created', serializedBond)
 		} catch (err) {
 			console.error('Socket bond:create error:', err)
 			socket.emit('bond:error', 'Unable to create bond')
@@ -38,8 +40,9 @@ export const registerBondHandlers = (io: Server, socket: Socket) => {
 		try {
 			const bond = await bondService.updateBondStatus(bondId, status, userId)
 
-			io.to(bond.sender.toString()).emit('bond:updated', bond)
-			io.to(bond.responder.toString()).emit('bond:updated', bond)
+			const serializedBond = toBond(bond)
+			io.to(serializedBond.sender).emit('bond:updated', serializedBond)
+			io.to(serializedBond.responder).emit('bond:updated', serializedBond)
 		} catch (err) {
 			console.error('Socket bond:update error:', err)
 			socket.emit('bond:error', 'Unable to update bond')
@@ -49,8 +52,9 @@ export const registerBondHandlers = (io: Server, socket: Socket) => {
 	socket.on('bond:delete', async ({ bondId }) => {
 		try {
 			const deletedBond = await bondService.deleteBond(bondId)
-			io.to(deletedBond.sender.toString()).emit('bond:deleted', deletedBond)
-			io.to(deletedBond.responder.toString()).emit('bond:deleted', deletedBond)
+			const serializedBond = toBond(deletedBond)
+			io.to(serializedBond.sender).emit('bond:deleted', serializedBond)
+			io.to(serializedBond.responder).emit('bond:deleted', serializedBond)
 		} catch (err) {
 			console.error('Socket bond:delete error:', err)
 			socket.emit('bond:error', 'Unable to delete bond')
@@ -68,9 +72,11 @@ export const createBond = async (req: Request, res: Response, next: NextFunction
 		
 		const bond = await bondService.createBond({ sender, responder })
 
-		bondEvents.emit('bond:created', bond)
+		const serializedBond = toBond(bond)
 
-		res.status(201).json(bond)
+		bondEvents.emit('bond:created', serializedBond)
+
+		res.status(201).json(serializedBond)
 	} catch (error) {
 		next(error)
 	}
@@ -91,9 +97,11 @@ export const updateBondStatus = async (req: Request, res: Response, next: NextFu
 			userId,
 		)
 
-		bondEvents.emit('bond:updated', bond)
+		const serializedBond = toBond(bond)
 
-		res.status(200).json(bond)
+		bondEvents.emit('bond:updated', serializedBond)
+
+		res.status(200).json(serializedBond)
 	} catch (error) {
 		next(error)
 	}
@@ -106,7 +114,8 @@ export const getUserBonds = async (req: Request, res: Response, next: NextFuncti
 		if (!Types.ObjectId.isValid(userId)) throw new Error('Invalid user ID')
 
 		const bonds = await bondService.getUserBonds(userId)
-		res.status(200).json(bonds)
+
+		res.status(200).json(bonds.map(toBond))
 	} catch (error) {
 		next(error)
 	}
@@ -117,7 +126,9 @@ export const deleteBond = async (req: Request, res: Response, next: NextFunction
 		const bondId = req.params.id
 		const bond = await bondService.deleteBond(bondId)
 
-		bondEvents.emit('bond:deleted', bond)
+		const serializedBond = toBond(bond)
+		
+		bondEvents.emit('bond:deleted', serializedBond)
 
 		res.status(204).send()
 	} catch (error) {

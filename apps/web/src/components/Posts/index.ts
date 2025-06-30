@@ -2,5 +2,5 @@
 
 export * from './LinkPreview'
 export * from './PostComments'
-export * from './PostList'
+export * from './PostFeed'
 export * from './PostListItem'

@@ -1,29 +1,51 @@
 // apps/web/src/providers/ModalProvider.tsx
 
-import React, { createContext, ReactNode, useCallback, useContext, useState } from 'react'
-import { Modal, Platform, Pressable, StyleSheet, View } from 'react-native'
+import React, {
+	createContext,
+	ReactNode,
+	useCallback,
+	useContext,
+	useState,
+} from 'react'
+import {
+	Modal,
+	Platform,
+	Pressable,
+	StyleSheet,
+	View,
+} from 'react-native'
 import { createPortal } from 'react-dom'
 import { MAX_WIDTH } from '@/components'
-  
+import { ModalContainer } from '@/components'
+
+// --- Types ---
 export type ModalContentObject = {
 	content: ReactNode
 	fullscreen?: boolean
 }
- 
-export type ModalContent = ModalContentObject | null  
+
+export type ModalContent = ModalContentObject | null
 
 export type ModalContextType = {
 	showModal: (content: ModalContent) => void
 	hideModal: () => void
 	hideAllModals: () => void
 	modalStack: ModalContent[]
-}
-  
-export const ModalContext = createContext<ModalContextType | undefined>(undefined)
+	openFormModal: (
+		Component: React.FC<any>,
+		props: Record<string, any>,
+		options: { title?: string; fullscreen?: boolean }
+	) => void
+}  
 
+// --- Context ---
+export const ModalContext = createContext<ModalContextType | undefined>(
+	undefined
+)
+
+// --- Provider ---
 export const ModalProvider = ({ children }: { children: ReactNode }) => {
 	const [modalStack, setModalStack] = useState<ModalContent[]>([])
-
 	const topModal = modalStack[modalStack.length - 1]
 	const useNativeModal = Platform.OS !== 'web'
 
@@ -37,35 +59,61 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
 			? topModal.fullscreen ?? false
 			: false
 
-  
-	const showModal = useCallback((modalContent: ReactNode | ModalContentObject | null) => {
+	// --- Modal Stack Controls ---
+	const showModal = useCallback((modalContent: ModalContent) => {
 		if (modalContent === null) return
-	
+
 		const contentObj: ModalContentObject =
 			typeof modalContent === 'object' &&
 			modalContent !== null &&
 			'content' in modalContent
 				? modalContent
 				: { content: modalContent }
-		
-			setModalStack(prev => [...prev, contentObj])
-		},
-	[])	  
-  
+
+		setModalStack((prev) => [...prev, contentObj])
+	}, [])
+
 	const hideModal = useCallback(() => {
-	  setModalStack(prev => prev.slice(0, -1))
+		setModalStack((prev) => prev.slice(0, -1))
 	}, [])
-  
+
 	const hideAllModals = useCallback(() => {
-	  setModalStack([])
+		setModalStack([])
 	}, [])
-  
+
+	// --- Factory Method for Standard Form Modals ---
+	const openFormModal = useCallback(
+		(
+			Component: React.FC<any>,
+			props: Record<string, any> = {},
+			options: { title?: string; fullscreen?: boolean } = {}
+		) => {
+			const wrappedContent = (
+				<ModalContainer title={options.title || ''}>
+					<Component {...props} />
+				</ModalContainer>
+			)
+
+			showModal({
+				content: wrappedContent,
+				fullscreen: options.fullscreen ?? false,
+			})
+		},
+		[showModal]
+	)
+
 	return (
-	    <ModalContext.Provider value={{ showModal, hideModal, hideAllModals, modalStack }}>
-			<View style={{ flex: 1 }}>
-				{children}
-			</View>
-	
+		<ModalContext.Provider
+			value={{
+				showModal,
+				hideModal,
+				hideAllModals,
+				openFormModal,
+				modalStack,
+			}}
+		>
+			<View style={{ flex: 1 }}>{children}</View>
+
 			{modalContent &&
 				(useNativeModal ? (
 					<Modal
@@ -80,18 +128,19 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
 						</Overlay>
 					</Modal>
 				) : (
-					typeof document !== 'undefined' && createPortal(
+					typeof document !== 'undefined' &&
+					createPortal(
 						<Overlay fullscreen={fullscreen} onClose={hideModal}>
 							{modalContent}
 						</Overlay>,
 						document.body
 					)
-				))
-            }
-	    </ModalContext.Provider>
+				))}
+		</ModalContext.Provider>
 	)
 }
 
+// --- Overlay ---
 const Overlay = ({
 	children,
 	fullscreen = false,
@@ -109,8 +158,9 @@ const Overlay = ({
 			</View>
 		</View>
 	)
-}  
-  
+}
+
+// --- Context Hook ---
 export const useModalContext = () => {
 	const context = useContext(ModalContext)
 	if (!context) {
@@ -119,6 +169,7 @@ export const useModalContext = () => {
 	return context
 }
 
+// --- Styles ---
 const styles = StyleSheet.create({
 	overlay: {
 		position: 'absolute',
@@ -147,6 +198,5 @@ const styles = StyleSheet.create({
 		backgroundColor: '#000',
 		padding: 16,
 		zIndex: 10000,
-	},	  
+	},
 })
-  

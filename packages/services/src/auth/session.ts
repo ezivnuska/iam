@@ -1,7 +1,7 @@
 // packages/services/src/auth/session.ts
 
-import { getToken, clearToken } from './tokenStorage'
-import { setAuthHeader, clearAuthHeader, getProfile } from '../api'
+import { getToken } from './tokenStorage'
+import { setAuthHeader, getProfile } from '../api'
 import type { User } from '@iam/types'
 
 /**
@@ -11,14 +11,29 @@ import type { User } from '@iam/types'
 export const trySigninFromStoredToken = async (): Promise<User | null> => {
 	try {
 		const token = await getToken()
-		if (!token) return null
+
+		if (!token) {
+			console.warn('[auth] No token found in storage')
+			return null
+		}
 
 		setAuthHeader(token)
+
 		const profile = await getProfile()
+		console.info('[auth] Session restored from token:', profile.username)
+        console.log('profile from session', profile)
 		return profile
-	} catch (err) {
-		await clearToken()
-		clearAuthHeader()
-		return null
+	} catch (err: any) {
+		console.warn('[auth] Failed to restore session from token')
+
+		if (err?.response?.status === 401) {
+			console.warn('[auth] Token expired or unauthorized (401)')
+		} else if (err?.message?.includes?.('Network')) {
+			console.warn('[auth] Network issue — possibly offline')
+		} else {
+			console.error('[auth] Unexpected error:', err)
+		}
 	}
+
+	return null
 }

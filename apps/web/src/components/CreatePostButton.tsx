@@ -11,16 +11,10 @@ interface CreatePostButtonProps {
 }
 
 export const CreatePostButton = ({ onPostCreated }: CreatePostButtonProps) => {
-    const { showModal } = useModal()
-
-    const handlePostCreated = onPostCreated ?? (() => {})
+    const { openFormModal } = useModal()
 
     const openCreatePostModal = () => {
-        showModal({
-            content: (
-                <CreatePostForm onPostCreated={handlePostCreated} />
-            )
-        })
+        openFormModal(CreatePostForm, { onPostCreated }, { title: 'Create Post' })
     }
     return (
         <Pressable

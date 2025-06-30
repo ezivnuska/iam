@@ -1,80 +1,87 @@
 // apps/web/src/components/ImageGallery.tsx
 
-import React from 'react'
+import React, { useMemo, useState } from 'react'
 import {
 	ActivityIndicator,
 	FlatList,
 	StyleSheet,
 	TouchableOpacity,
 	View,
+	useWindowDimensions,
 } from 'react-native'
 import { AutoSizeImage, Spinner } from '@/components'
 import type { Image } from '@iam/types'
-
-const IMAGE_MARGIN = 8
+import { resolveResponsiveProp } from '@/styles'
 
 type Props = {
 	images: Image[]
 	currentAvatarId?: string | null
-	onPressImage: (image: Image) => void
-	containerWidth: number
-	imageSize: number
-	numColumns: number
-	onLayout: (e: any) => void
+	onImagePress: (image: Image) => void
 	onEndReached?: () => void
 	loading?: boolean
 }
 
+const IMAGE_MARGIN = 8
+
 const ImageGallery = ({
 	images,
 	currentAvatarId,
-	onPressImage,
-	containerWidth,
-	imageSize,
-	numColumns,
-	onLayout,
+	onImagePress,
 	onEndReached,
 	loading,
 }: Props) => {
+	const { width: windowWidth } = useWindowDimensions()
+	const [containerWidth, setContainerWidth] = useState<number>(windowWidth)
+
+	const numColumns = resolveResponsiveProp({ xs: 2, sm: 2, md: 3, lg: 4 }) ?? 2
+
+	const imageSize = useMemo(() => {
+		return (containerWidth - IMAGE_MARGIN * (numColumns + 1)) / numColumns
+	}, [containerWidth, numColumns])
+
+	const onLayout = (e: any) => {
+		const layoutWidth = e.nativeEvent.layout.width
+		if (layoutWidth !== containerWidth) setContainerWidth(layoutWidth)
+	}
+
+	if (!containerWidth) {
+		return <Spinner label='Calculating size...' />
+	}
+
 	return (
 		<View style={{ flex: 1 }} onLayout={onLayout}>
-			{!containerWidth ? (
-				<Spinner />
-			) : (
-				<FlatList
-					key={`image-gallery-${numColumns}`}
-					data={images}
-					style={{ flexGrow: 1 }}
-					renderItem={({ item }) => {
-						const isAvatar = item.id === currentAvatarId
-						return (
-							<TouchableOpacity
-								onPress={() => onPressImage(item)}
-								style={[styles.imageBlock, { width: imageSize }]}
-							>
-								<View style={[styles.imageWrapper, isAvatar && styles.avatarHighlight]}>
-									<AutoSizeImage image={item} />
-								</View>
-							</TouchableOpacity>
-						)
-					}}
-					keyExtractor={(item) => item.id}
-					numColumns={numColumns}
-					columnWrapperStyle={styles.columnWrapper}
-					scrollEnabled={true}
-					contentContainerStyle={styles.gallery}
-					showsVerticalScrollIndicator={false}
-					initialNumToRender={6}
-					maxToRenderPerBatch={10}
-					windowSize={5}
-					onEndReached={onEndReached}
-					onEndReachedThreshold={0.5}
-					ListFooterComponent={loading
-						? <ActivityIndicator style={{ marginVertical: 20 }} />
-						: null
-					}
-				/>
-			)}
+			<FlatList
+				data={images}
+				key={`image-gallery-${numColumns}`}
+				keyExtractor={(item) => item.id}
+				numColumns={numColumns}
+				columnWrapperStyle={styles.columnWrapper}
+				contentContainerStyle={styles.gallery}
+				style={{ flexGrow: 1 }}
+				showsVerticalScrollIndicator={false}
+				scrollEnabled={true}
+				onEndReached={onEndReached}
+				onEndReachedThreshold={0.5}
+				initialNumToRender={6}
+				maxToRenderPerBatch={10}
+				windowSize={5}
+				ListFooterComponent={
+					loading ? <ActivityIndicator style={{ marginVertical: 20 }} /> : null
+				}
+				renderItem={({ item }) => {
+					const isAvatar = item.id === currentAvatarId
+					return (
+						<TouchableOpacity
+							onPress={() => onImagePress(item)}
+							style={[styles.imageBlock, { width: imageSize }]}
+						>
+							<View style={[styles.imageWrapper, isAvatar && styles.avatarHighlight]}>
+								<AutoSizeImage image={item} />
+							</View>
+						</TouchableOpacity>
+					)
+				}}
+			/>
 		</View>
 	)
 }

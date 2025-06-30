@@ -1,7 +1,7 @@
 // packages/types/src/socket.types.ts
 
 import { ImageDocument, ImageVariant } from './image'
-import type { IBond } from './bond.types'
+import type { Bond } from './bond.types'
 
 export type SocketUser = {
 	id: string
@@ -26,8 +26,8 @@ export interface ServerToClientEvents {
 	'chat:message': (message: ChatMessage) => void
 	'kofi:donation': (data: any) => void
 
-	'bond:created': (bond: IBond) => void
-	'bond:updated': (bond: IBond) => void
+	'bond:created': (bond: Bond) => void
+	'bond:updated': (bond: Bond) => void
 	'bond:deleted': (bondId: string) => void
 	'bond:error': (message: string) => void
 }

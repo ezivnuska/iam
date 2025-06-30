@@ -67,47 +67,45 @@ export const AddCommentForm: React.FC<AddCommentFormProps> = ({
 	}
 
 	return (
-		<ModalContainer title='Add Comment'>
-            <Column spacing={Size.S}>
-                <View>
-                    <Controller
-                        control={control}
-                        name='content'
-                        render={({ field: { value, onChange, onBlur } }) => (
-                            <TextInput
-                                ref={contentRef}
-                                placeholder='Add Comment...'
-                                placeholderTextColor='#070'
-                                value={value}
-                                onChangeText={onChange}
-                                onFocus={() => setFocusedField('content')}
-                                onBlur={() => {
-                                    onBlur()
-                                    setFocusedField(null)
-                                }}
-                                autoCapitalize='sentences'
-                                returnKeyType='default'
-                                onSubmitEditing={handleSubmit(onSubmit)}
-                                style={[
-                                    styles.input,
-                                    styles.textArea,
-                                    shadows.input,
-                                    focusedField === 'content' && styles.inputFocused,
-                                ]}
-                                multiline
-                            />
-                        )}
-                    />
-
-                    <Text style={styles.error}>{errors.content ? errors.content.message : ' '}</Text>
-                </View>
-
-                <SubmitButton
-                    label='Submit'
-                    onPress={handleSubmit(onSubmit)}
-                    disabled={isSubmitting}
+        <Column spacing={Size.S}>
+            <>
+                <Controller
+                    control={control}
+                    name='content'
+                    render={({ field: { value, onChange, onBlur } }) => (
+                        <TextInput
+                            ref={contentRef}
+                            placeholder='Add Comment...'
+                            placeholderTextColor='#070'
+                            value={value}
+                            onChangeText={onChange}
+                            onFocus={() => setFocusedField('content')}
+                            onBlur={() => {
+                                onBlur()
+                                setFocusedField(null)
+                            }}
+                            autoCapitalize='sentences'
+                            returnKeyType='default'
+                            onSubmitEditing={handleSubmit(onSubmit)}
+                            style={[
+                                styles.input,
+                                styles.textArea,
+                                shadows.input,
+                                focusedField === 'content' && styles.inputFocused,
+                            ]}
+                            multiline
+                        />
+                    )}
                 />
-            </Column>
-		</ModalContainer>
+
+                <Text style={styles.error}>{errors.content ? errors.content.message : ' '}</Text>
+            </>
+
+            <SubmitButton
+                label='Submit'
+                onPress={handleSubmit(onSubmit)}
+                disabled={isSubmitting}
+            />
+        </Column>
 	)
 }

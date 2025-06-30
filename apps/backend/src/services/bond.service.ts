@@ -70,6 +70,7 @@ export const getUserBonds = async (
 		throw new HttpError('Invalid user ID', 400)
 	}
 
+	// optionally .populate('sender responder actionerId') if you want full user docs here
 	return await Bond.find({
 		$or: [{ sender: userId }, { responder: userId }],
 	})

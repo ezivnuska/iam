@@ -34,23 +34,13 @@ const parsePagination = (req: any) => {
 export const getImages: RequestHandler = async (req, res, next) => {
 	try {
 		const { page, limit } = parsePagination(req)
-		const result = await imageService.getImagesByUserId(req.user!.id, page, limit)
-		res.status(200).json(result)
-	} catch (err) {
-		next(err)
-	}
-}
-
-export const getUserImages: RequestHandler = async (req, res, next) => {
-	try {
-		const { page, limit } = parsePagination(req)
-		const userId = req.params!.userId
+		const userId = req.params.userId ?? req.user?.id
 
 		if (!userId) {
-			res.status(400).json({ message: 'User ID is required' })
+			res.status(400).json({ message: 'User ID could not be determined' })
 			return
 		}
-		
+
 		const result = await imageService.getImagesByUserId(userId, page, limit)
 		res.status(200).json(result)
 	} catch (err) {

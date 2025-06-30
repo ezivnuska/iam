@@ -10,18 +10,14 @@ import Ionicons from '@expo/vector-icons/Ionicons'
 export const ImageManagerHeader = () => {
 
     const { addImage } = useImage()
-    const { hideModal, showModal } = useModal()
+    const { hideModal, openFormModal } = useModal()
 
     const handleUploadSuccess = (newImage: UploadedImage) => {
         addImage(newImage)
         hideModal()
     }
 
-    const openImageUploadModal = () => showModal({
-        content: (
-            <ImageUploadForm onUploaded={handleUploadSuccess} />
-        )
-    })
+    const openImageUploadModal = () => openFormModal(ImageUploadForm, { onUploaded: handleUploadSuccess }, {})
 
 	return (
 		<Row spacing={10}>

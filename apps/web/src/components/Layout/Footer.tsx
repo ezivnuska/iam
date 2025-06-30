@@ -14,11 +14,8 @@ type NavProp = StackNavigationProp<RootStackParamList>
 
 export const Footer = () => {
     const navigation = useNavigation<NavProp>()
-    const { showModal } = useModal()
-    const showKofiModal = () => showModal({
-        content: <KoFiPanel />,
-        fullscreen: true,
-    })
+    const { openFormModal } = useModal()
+    const showKofiModal = () => openFormModal(KoFiPanel, {}, { fullscreen: true })
 	return (
         <Row flex={1} align='center' style={styles.container}>
             <View style={styles.maxWidthContainer}>

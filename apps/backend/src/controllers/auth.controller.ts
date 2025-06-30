@@ -8,9 +8,8 @@ import { ZodError } from 'zod'
 
 const refreshTokenCookieOptions = {
 	httpOnly: true,
-	sameSite: (process.env.NODE_ENV === 'production' ? 'strict' : 'lax') as 'strict' | 'lax',
+	sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'lax') as 'none' | 'lax',
 	secure: process.env.NODE_ENV === 'production',
-	maxAge: 7 * 24 * 60 * 60 * 1000,
 	path: '/',
 }
 
@@ -48,22 +47,22 @@ export const signin: RequestHandler = async (req, res, next) => {
 
 export const refreshToken: RequestHandler = async (req, res, next) => {
 	try {
+		console.log('🔍 Cookies in refresh-token route:', req.cookies)
+
 		const token = req.cookies.refreshToken
 		const { accessToken } = await authService.refreshAccessToken(token)
 		res.json({ accessToken })
 	} catch (err) {
-		res.clearCookie('refreshToken', {
-			httpOnly: true,
-			sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'lax') as 'none' | 'lax',
-			secure: process.env.NODE_ENV === 'production',
-			path: '/',
-		})
+		console.error('❌ Refresh token error:', err)
+		res.clearCookie('refreshToken', refreshTokenCookieOptions)
 		next(err)
 	}
 }
 
 export const logout: RequestHandler = (req, res) => {
-	res.clearCookie('refreshToken').json({ message: 'Logged out' })
+	console.log('LOGOUT')
+	res.clearCookie('refreshToken', refreshTokenCookieOptions)
+	res.json({ message: 'Logged out' })
 }
 
 export const verifyEmail: RequestHandler = async (req, res, next) => {

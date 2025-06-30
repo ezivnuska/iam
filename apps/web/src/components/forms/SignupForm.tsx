@@ -5,7 +5,7 @@ import { Text, TextInput, Alert, TextInput as RNTextInput } from 'react-native'
 import { useForm, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ModalContainer, SigninForm, SubmitButton } from '@/components'
+import { Button, Column, Row, SigninForm, SubmitButton } from '@/components'
 import { useAuth, useModal } from '@/hooks'
 import { signupRequest } from '@services'
 import { form as styles, shadows } from '@/styles'
@@ -24,7 +24,7 @@ type SignupFormProps = z.infer<typeof schema>
 
 export const SignupForm = () => {
 	const { login, user } = useAuth()
-	const { hideModal, showModal } = useModal()
+	const { hideModal, openFormModal } = useModal()
 	
     const { control, handleSubmit, formState: { errors, isSubmitting }, setError, trigger, getValues } = useForm<SignupFormProps>({
 		resolver: zodResolver(schema),
@@ -101,112 +101,118 @@ export const SignupForm = () => {
 
     const isFocused = (name: string): boolean => name === focused
 
-    const showSigninForm = () => showModal({ content: <SigninForm /> })
+    const showSigninForm = () => openFormModal(SigninForm, {}, { title: 'Sign In' })
 
 	return (
-		<ModalContainer title='Create Account'>
-
-			<Controller
-				control={control}
-				name='email'
-				render={({ field: { value, onChange, onBlur } }) => (
-					<TextInput
-                        ref={emailInputRef}
-                        autoFocus
-						placeholder='email'
-                        placeholderTextColor='#070'
-						value={value}
-						onChangeText={onChange}
-                        onFocus={() => setFocused('email')}
-						onBlur={async () => {
-                            onBlur()
-                            setFocused(null)
-                        }}
-						autoCapitalize='none'
-						keyboardType='email-address'
-						returnKeyType='next'
-						onSubmitEditing={() => usernameInputRef.current?.focus()}
-						style={[styles.input, shadows.input, isFocused('email') && styles.inputFocused]}
-					/>
-				)}
-			/>
-			{errors.email && <Text style={styles.error}>{errors.email.message}</Text>}
-
-			<Controller
-				control={control}
-				name='username'
-				render={({ field: { value, onChange, onBlur } }) => (
-					<TextInput
-						ref={usernameInputRef}
-						placeholder='username'
-                        placeholderTextColor='#070'
-						value={value}
-						onChangeText={onChange}
-                        onFocus={() => setFocused('username')}
-						onBlur={async () => {
-                            onBlur()
-                            setFocused(null)
-                        }}
-						autoCapitalize='none'
-						returnKeyType='default'
-						onSubmitEditing={() => passwordInputRef.current?.focus()}
-						style={[styles.input, shadows.input, isFocused('username') && styles.inputFocused]}
-					/>
-				)}
-			/>
-			{errors.username && <Text style={styles.error}>{errors.username.message}</Text>}
-
-			<Controller
-				control={control}
-				name='password'
-				render={({ field: { value, onChange, onBlur } }) => (
-					<TextInput
-						ref={passwordInputRef}
-						placeholder='password'
-                        placeholderTextColor='#070'
-						value={value}
-						onChangeText={onChange}
-                        onFocus={() => setFocused('password')}
-						onBlur={async () => {
-                            onBlur()
-                            setFocused(null)
-                        }}
-						secureTextEntry
-						autoCapitalize='none'
-						returnKeyType='next'
-						onSubmitEditing={() => confirmPasswordInputRef.current?.focus()}
-						style={[styles.input, shadows.input, isFocused('password') && styles.inputFocused]}
-					/>
-				)}
-			/>
-			{errors.password && <Text style={styles.error}>{errors.password.message}</Text>}
-
-			<Controller
-				control={control}
-				name='confirmPassword'
-				render={({ field: { value, onChange, onBlur } }) => (
-					<TextInput
-						ref={confirmPasswordInputRef}
-						placeholder='password again'
-                        placeholderTextColor='#070'
-						value={value}
-						onChangeText={onChange}
-                        onFocus={() => setFocused('confirmPassword')}
-						onBlur={async () => {
-                            onBlur()
-                            setFocused(null)
-                        }}
-						secureTextEntry
-						autoCapitalize='none'
-						returnKeyType='done'
-						onSubmitEditing={handleSubmit(onSubmit, onInvalid)}
-						style={[styles.input, shadows.input, isFocused('confirmPassword') && styles.inputFocused]}
-					/>
-				)}
-			/>
-			{errors.confirmPassword && <Text style={styles.error}>{errors.confirmPassword.message}</Text>}
-
-            <SubmitButton label='Sign Up' onPress={handleSubmit(onSubmit, onInvalid)} submitting={isSubmitting} />
-		</ModalContainer>
+        <Column>
+            <>
+                <Controller
+                    control={control}
+                    name='email'
+                    render={({ field: { value, onChange, onBlur } }) => (
+                        <TextInput
+                            ref={emailInputRef}
+                            autoFocus
+                            placeholder='email'
+                            placeholderTextColor='#070'
+                            value={value}
+                            onChangeText={onChange}
+                            onFocus={() => setFocused('email')}
+                            onBlur={async () => {
+                                onBlur()
+                                setFocused(null)
+                            }}
+                            autoCapitalize='none'
+                            keyboardType='email-address'
+                            returnKeyType='next'
+                            onSubmitEditing={() => usernameInputRef.current?.focus()}
+                            style={[styles.input, shadows.input, isFocused('email') && styles.inputFocused]}
+                        />
+                    )}
+                />
+                <Text style={styles.error}>{errors.email ? errors.email.message : ' '}</Text>
+            </>
+            <>
+                <Controller
+                    control={control}
+                    name='username'
+                    render={({ field: { value, onChange, onBlur } }) => (
+                        <TextInput
+                            ref={usernameInputRef}
+                            placeholder='username'
+                            placeholderTextColor='#070'
+                            value={value}
+                            onChangeText={onChange}
+                            onFocus={() => setFocused('username')}
+                            onBlur={async () => {
+                                onBlur()
+                                setFocused(null)
+                            }}
+                            autoCapitalize='none'
+                            returnKeyType='default'
+                            onSubmitEditing={() => passwordInputRef.current?.focus()}
+                            style={[styles.input, shadows.input, isFocused('username') && styles.inputFocused]}
+                        />
+                    )}
+                />
+                <Text style={styles.error}>{errors.username ? errors.username.message : ' '}</Text>
+            </>
+            <>
+                <Controller
+                    control={control}
+                    name='password'
+                    render={({ field: { value, onChange, onBlur } }) => (
+                        <TextInput
+                            ref={passwordInputRef}
+                            placeholder='password'
+                            placeholderTextColor='#070'
+                            value={value}
+                            onChangeText={onChange}
+                            onFocus={() => setFocused('password')}
+                            onBlur={async () => {
+                                onBlur()
+                                setFocused(null)
+                            }}
+                            secureTextEntry
+                            autoCapitalize='none'
+                            returnKeyType='next'
+                            onSubmitEditing={() => confirmPasswordInputRef.current?.focus()}
+                            style={[styles.input, shadows.input, isFocused('password') && styles.inputFocused]}
+                        />
+                    )}
+                />
+                <Text style={styles.error}>{errors.password ? errors.password.message : ' '}</Text>
+            </>
+            <>
+                <Controller
+                    control={control}
+                    name='confirmPassword'
+                    render={({ field: { value, onChange, onBlur } }) => (
+                        <TextInput
+                            ref={confirmPasswordInputRef}
+                            placeholder='password again'
+                            placeholderTextColor='#070'
+                            value={value}
+                            onChangeText={onChange}
+                            onFocus={() => setFocused('confirmPassword')}
+                            onBlur={async () => {
+                                onBlur()
+                                setFocused(null)
+                            }}
+                            secureTextEntry
+                            autoCapitalize='none'
+                            returnKeyType='done'
+                            onSubmitEditing={handleSubmit(onSubmit, onInvalid)}
+                            style={[styles.input, shadows.input, isFocused('confirmPassword') && styles.inputFocused]}
+                        />
+                    )}
+                />
+                <Text style={styles.error}>{errors.confirmPassword ? errors.confirmPassword.message : ' '}</Text>
+            </>
+            <Row spacing={10} justify='space-evenly'>
+                <SubmitButton label='Sign Up' onPress={handleSubmit(onSubmit, onInvalid)} submitting={isSubmitting} />
+                <Button label='Sign In' onPress={showSigninForm} transparent />
+            </Row>
+        </Column>
 	)
 }

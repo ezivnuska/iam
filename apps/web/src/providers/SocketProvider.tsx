@@ -3,6 +3,7 @@
 import React, {
 	createContext,
 	ReactNode,
+	useEffect,
 	useMemo,
 	useRef,
 	useState,
@@ -10,9 +11,11 @@ import React, {
 import { io, Socket } from 'socket.io-client'
 import { getToken } from '@services'
 import type {
-	ServerToClientEvents,
+	Bond,
 	ClientToServerEvents,
+	ServerToClientEvents,
 } from '@iam/types'
+import { useAuth } from '@/hooks'
 
 type KoFiDonation = {
 	from_name: string
@@ -32,8 +35,8 @@ export type SocketContextType = {
 	emitBondCreate: (responderId: string) => void
 	emitBondUpdate: (bondId: string, status: { confirmed?: boolean, declined?: boolean, cancelled?: boolean }) => void
 	emitBondDelete: (bondId: string) => void
-	onBondCreated: (cb: (bond: any) => void) => () => void
-	onBondUpdated: (cb: (bond: any) => void) => () => void
+	onBondCreated: (cb: (bond: Bond) => void) => () => void
+	onBondUpdated: (cb: (bond: Bond) => void) => () => void
 	onBondDeleted: (cb: (bondId: string) => void) => () => void
 	onBondError: (cb: (error: string) => void) => () => void
 }
@@ -42,18 +45,40 @@ export const SocketContext = createContext<SocketContextType | undefined>(undefi
 
 const SOCKET_URL = process.env.SOCKET_URL!
 
-export const SocketProvider = ({ children }: { children: ReactNode }) => {
-	const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents> | null>(null)
+type SocketProviderProps = {
+	children: ReactNode
+	token: string | null
+}
+
+export const SocketProvider = ({ children, token }: SocketProviderProps) => {
 	const socketRef = useRef<Socket<ServerToClientEvents, ClientToServerEvents> | null>(null)
+	const [socket, setSocket] = useState<Socket | null>(null)
+	const lastTokenRef = useRef<string | null>(null)
+
+	useEffect(() => {
+		if (!token) {
+			disconnectSocket()
+			lastTokenRef.current = null
+			return
+		}
+
+		if (lastTokenRef.current === token) return
+
+		lastTokenRef.current = token
+		connectSocket(token)
+	}, [token])
+
+	const bondListenersRef = useRef({
+		created: [] as ((bond: Bond) => void)[],
+		updated: [] as ((bond: Bond) => void)[],
+		deleted: [] as ((id: string) => void)[],
+		error: [] as ((msg: string) => void)[],
+	})
 
 	const connectSocket = (token: string) => {
-        if (!token) {
-            console.warn('No token found. Skipping socket connection.')
-            return
-        }
+		if (!token) return
 
 		if (socketRef.current) {
-			console.warn('Socket already exists, reconnecting...')
 			socketRef.current.disconnect()
 		}
 
@@ -72,11 +97,11 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 		})
 
 		socketInstance.on('connect', () => {
-			console.log('Connected to socket:', socketInstance.id)
+			console.log('Socket connected:', socketInstance.id)
 		})
 
 		socketInstance.on('disconnect', () => {
-			console.log('Disconnected from socket')
+			console.log('Socket disconnected')
 		})
 
 		socketInstance.on('connect_error', (err) => {
@@ -89,35 +114,29 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 
 	const disconnectSocket = () => {
 		if (socketRef.current) {
-			console.log('Disconnecting socket manually')
+			console.log('Socket manually disconnected')
 			socketRef.current.disconnect()
 			socketRef.current = null
 			setSocket(null)
 		}
 	}
 
-	// Listeners
-	const onDonation = (cb: (data: KoFiDonation) => void): (() => void) => {
-		if (!socketRef.current) return () => {}
-		socketRef.current.on('kofi:donation', cb)
+	// ----------- Event Listeners -----------
+	const onDonation = (cb: (data: KoFiDonation) => void) => {
+		socketRef.current?.on('kofi:donation', cb)
 		return () => socketRef.current?.off('kofi:donation', cb)
 	}
 
-	const onChatMessage = (cb: (msg: any) => void): (() => void) => {
-		if (!socketRef.current) return () => {}
-		socketRef.current.on('chat:message', cb)
+	const onChatMessage = (cb: (msg: any) => void) => {
+		socketRef.current?.on('chat:message', cb)
 		return () => socketRef.current?.off('chat:message', cb)
 	}
 
+	// ----------- Event Emitters -----------
 	const emitChatMessage = (msg: string) => {
-		if (socketRef.current?.connected) {
-			socketRef.current.emit('chat:message', msg)
-		} else {
-			console.warn('Cannot send message. Socket not connected.')
-		}
+		socketRef.current?.emit('chat:message', msg)
 	}
 
-	// BOND SOCKET EMITTERS
 	const emitBondCreate = (responderId: string) => {
 		socketRef.current?.emit('bond:create', { responder: responderId })
 	}
@@ -130,47 +149,58 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 		socketRef.current?.emit('bond:delete', { bondId })
 	}
 
-	// BOND SOCKET LISTENERS
-	const onBondCreated = (cb: (bond: any) => void): (() => void) => {
+	// ----------- Bond Listeners -----------
+	const onBondCreated = (cb: (bond: Bond) => void) => {
+		bondListenersRef.current.created.push(cb)
 		socketRef.current?.on('bond:created', cb)
-		return () => socketRef.current?.off('bond:created', cb)
+		return () => {
+			bondListenersRef.current.created = bondListenersRef.current.created.filter(fn => fn !== cb)
+			socketRef.current?.off('bond:created', cb)
+		}
 	}
 
-	const onBondUpdated = (cb: (bond: any) => void): (() => void) => {
+	const onBondUpdated = (cb: (bond: Bond) => void) => {
+		bondListenersRef.current.updated.push(cb)
 		socketRef.current?.on('bond:updated', cb)
-		return () => socketRef.current?.off('bond:updated', cb)
+		return () => {
+			bondListenersRef.current.updated = bondListenersRef.current.updated.filter(fn => fn !== cb)
+			socketRef.current?.off('bond:updated', cb)
+		}
 	}
 
-	const onBondDeleted = (cb: (bondId: string) => void): (() => void) => {
+	const onBondDeleted = (cb: (bondId: string) => void) => {
+		bondListenersRef.current.deleted.push(cb)
 		socketRef.current?.on('bond:deleted', cb)
-		return () => socketRef.current?.off('bond:deleted', cb)
+		return () => {
+			bondListenersRef.current.deleted = bondListenersRef.current.deleted.filter(fn => fn !== cb)
+			socketRef.current?.off('bond:deleted', cb)
+		}
 	}
 
-	const onBondError = (cb: (error: string) => void): (() => void) => {
+	const onBondError = (cb: (error: string) => void) => {
+		bondListenersRef.current.error.push(cb)
 		socketRef.current?.on('bond:error', cb)
-		return () => socketRef.current?.off('bond:error', cb)
+		return () => {
+			bondListenersRef.current.error = bondListenersRef.current.error.filter(fn => fn !== cb)
+			socketRef.current?.off('bond:error', cb)
+		}
 	}
 
-	const value = useMemo(
-		() => ({
-			socket,
-			connectSocket,
-			disconnectSocket,
-			onDonation,
-			onChatMessage,
-			emitChatMessage,
-
-			// BOND
-			emitBondCreate,
-			emitBondUpdate,
-			emitBondDelete,
-			onBondCreated,
-			onBondUpdated,
-			onBondDeleted,
-			onBondError,
-		}),
-		[socket]
-	)
+	const value = useMemo(() => ({
+		socket,
+		connectSocket,
+		disconnectSocket,
+		onDonation,
+		onChatMessage,
+		emitChatMessage,
+		emitBondCreate,
+		emitBondUpdate,
+		emitBondDelete,
+		onBondCreated,
+		onBondUpdated,
+		onBondDeleted,
+		onBondError,
+	}), [socket])
 
 	return (
 		<SocketContext.Provider value={value}>

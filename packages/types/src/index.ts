@@ -1,4 +1,5 @@
 export * from './bond.types'
+export * from './bond.model'
 export * from './comment'
 export * from './image'
 export * from './navigation'

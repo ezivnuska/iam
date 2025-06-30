@@ -7,7 +7,7 @@ import { uploadMemory } from '../middleware/upload.middleware'
 import {
     uploadImage,
     getImages,
-    getUserImages,
+    // getUserImages,
     deleteImageController,
     getLikes,
     toggleLike,
@@ -18,7 +18,7 @@ const router: Router = Router()
 
 router.post( '/upload', requireAuth(), uploadMemory.single('image'), uploadImage)
 router.get('/', requireAuth(), getImages)
-router.get('/user/:userId', requireAuth(), getUserImages)
+router.get('/user/:userId', requireAuth(), getImages)
 router.delete('/:imageId', requireAuth(), deleteImageController)
 router.get('/:id/likes', optionalAuth, getLikes)
 router.post('/:id/like', requireAuth(), toggleLike)

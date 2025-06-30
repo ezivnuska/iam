@@ -1,8 +1,8 @@
 // apps/web/src/providers/AuthProvider.tsx
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, createContext } from 'react'
 import {
-    getToken,
+	getToken,
 	saveToken,
 	clearToken,
 	signinRequest,
@@ -11,10 +11,10 @@ import {
 	clearAuthHeader,
 	trySigninFromStoredToken,
 } from '@services'
-import { navigate, navigationRef } from '../navigation'
-import { createContext } from 'react'
+import { SocketProvider } from '@/providers'
+import { navigate } from '../navigation'
 import type { User } from '@iam/types'
-import { useSocket } from '@/hooks'
+import { LoadingScreen } from '@/screens'
 
 export type AuthContextType = {
 	isAuthenticated: boolean
@@ -34,80 +34,77 @@ export const AuthContext = createContext<AuthContextType>({
 	setUser: () => {},
 })
 
-type AuthProviderProps = { children: React.ReactNode }
+type AuthProviderProps = {
+	children: React.ReactNode
+}
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
 	const [user, setUser] = useState<User | null>(null)
 	const [isAuthenticated, setIsAuthenticated] = useState(false)
-    const [isAuthInitialized, setIsAuthInitialized] = useState(false)
-    
-	const { connectSocket, disconnectSocket } = useSocket()
+	const [isAuthInitialized, setIsAuthInitialized] = useState(false)
+	const [token, setToken] = useState<string | null>(null)
 
 	const login = async (email: string, password: string) => {
 		const { accessToken, user: userProfile } = await signinRequest(email, password)
 		await saveToken(accessToken)
 		setAuthHeader(accessToken)
+		setToken(accessToken)
 		setUser(userProfile)
 		setIsAuthenticated(true)
-
-		connectSocket(accessToken)
-
-		navigate('Home')
+		// navigate('Home')
+        // return { user: userProfile }
 	}
 
 	const logout = async () => {
 		await logoutRequest()
 		await clearToken()
 		clearAuthHeader()
+		setToken(null)
 		setIsAuthenticated(false)
 		setUser(null)
-
-		disconnectSocket()
-
 		navigate('Home')
 	}
 
 	useEffect(() => {
-
 		const initialize = async () => {
 			const profile = await trySigninFromStoredToken()
-		
+            console.log('profile', profile)
 			if (profile) {
 				const token = await getToken()
-		
 				if (token) {
-					try {
-						connectSocket(token)
-					} catch (err) {
-						console.error('Socket failed to connect with stored token:', err)
-						disconnectSocket()
-					}
+					setAuthHeader(token)
+					setToken(token)
 				}
-		
 				setUser(profile)
 				setIsAuthenticated(true)
 			} else {
 				navigate('Home')
 			}
-
-            setIsAuthInitialized(true)
-		}		
+			setIsAuthInitialized(true)
+		}
 
 		initialize()
 	}, [])
 
 	return (
 		<AuthContext.Provider
-            value={{
-                isAuthenticated,
-                isAuthInitialized,
-                user,
-                login,
-                logout,
-                setUser,
-            }}
-        >
-			{children}
+			value={{
+				isAuthenticated,
+				isAuthInitialized,
+				user,
+				login,
+				logout,
+				setUser,
+			}}
+		>
+            {isAuthInitialized
+                ? (
+                    <SocketProvider token={token}>
+                        {children}
+                    </SocketProvider>
+                )
+                : <LoadingScreen label="Authenticating..." />
+            }
 		</AuthContext.Provider>
 	)
 }

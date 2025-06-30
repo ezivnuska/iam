@@ -1,6 +1,6 @@
 
+export * from './LoadingScreen'
 export * from './ChatScreen'
-export * from './DetailsScreen'
 export * from './ForgotPasswordScreen'
 export * from './HomeScreen'
 export * from './SigninScreen'
@@ -8,4 +8,4 @@ export * from './SignupScreen'
 export * from './ResetPasswordScreen'
 export * from './UserListScreen'
 export * from './PrivacyPolicyScreen'
-export * from './ProfileScreen'
+export * from './UserProfileScreen'

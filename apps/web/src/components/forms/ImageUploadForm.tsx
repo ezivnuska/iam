@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { Dimensions, Image, Platform, StyleSheet, Text } from 'react-native'
-import { Column, IconButton, ModalContainer, NativeCamera, Row, SubmitButton, WebCamera } from '@/components'
+import { Column, IconButton, NativeCamera, Row, SubmitButton, WebCamera } from '@/components'
 import { uploadImage } from '@services'
 import { selectImage } from '@/utils'
 import { useResponsiveImageSize } from '@/hooks'
@@ -121,40 +121,38 @@ export const ImageUploadForm: React.FC<ImageUploaderProps> = ({ onUploaded }) =>
 	return useCamera
         ? renderCamera()
         : (
-            <ModalContainer title='Upload Image'>
-                <Column spacing={10} style={styles.container}>
+            <Column spacing={10} style={styles.container}>
+                {upload && (
+                    <Image
+                        source={{ uri: upload.uri }}
+                        style={[styles.imagePreview, { width: imageWidth, height: imageHeight }]}
+                        resizeMode='contain'
+                    />
+                )}
+                <Text style={styles.errorText}>{error ? error : ' '}</Text>
+                <Row spacing={30} style={styles.controls}>
+                    <IconButton
+                        label='Library'
+                        onPress={handlePick}
+                        icon={<Ionicons name='images' size={24} color='#000' />}
+                        showLabel={upload ? false : true}
+                    />
+                    <IconButton
+                        label='Camera'
+                        onPress={() => setUseCamera(true)}
+                        icon={<FontAwesome name='camera-retro' size={24} color='#000' />}
+                        showLabel={upload ? false : true}
+                    />
                     {upload && (
-                        <Image
-                            source={{ uri: upload.uri }}
-                            style={[styles.imagePreview, { width: imageWidth, height: imageHeight }]}
-                            resizeMode='contain'
+                        <SubmitButton
+                            label='Upload'
+                            onPress={handleSubmit}
+                            submitting={uploading}
+                            style={styles.button}
                         />
                     )}
-                    <Row spacing={30} style={styles.controls}>
-                        <IconButton
-                            label='Library'
-                            onPress={handlePick}
-                            icon={<Ionicons name='images' size={24} color='#000' />}
-                            showLabel={upload ? false : true}
-                        />
-                        <IconButton
-                            label='Camera'
-                            onPress={() => setUseCamera(true)}
-                            icon={<FontAwesome name='camera-retro' size={24} color='#000' />}
-                            showLabel={upload ? false : true}
-                        />
-                        {upload && (
-                            <SubmitButton
-                                label='Upload'
-                                onPress={handleSubmit}
-                                submitting={uploading}
-                                style={styles.button}
-                            />
-                        )}
-                    </Row>
-                </Column>
-                {error && <Text style={styles.errorText}>{error}</Text>}
-            </ModalContainer>
+                </Row>
+            </Column>
         )
 }
 

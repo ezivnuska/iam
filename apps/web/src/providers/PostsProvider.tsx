@@ -1,20 +1,21 @@
 // apps/web/src/providers/PostsProvider.tsx
 
-import React, { createContext, useState } from 'react'
+import React, { createContext, useState, useEffect } from 'react'
 import * as postService from '@services'
 import { Post } from '@iam/types'
+import { LoadingScreen } from '@/screens'
 
 export type PostsContextType = {
 	posts: Post[]
 	loading: boolean
-    commentCounts: Record<string, number>
+	commentCounts: Record<string, number>
 	error: string | null
 	refreshPosts: () => Promise<void>
-    addPost: (post: Post) => void
-    setPosts: (posts: Post[]) => void
+	addPost: (post: Post) => void
+	setPosts: (posts: Post[]) => void
 	deletePost: (id: string) => Promise<void>
 	refreshCommentCounts: (posts?: Post[]) => Promise<void>
-    setCommentCounts: React.Dispatch<React.SetStateAction<Record<string, number>>>
+	setCommentCounts: React.Dispatch<React.SetStateAction<Record<string, number>>>
 }
 
 export const PostsContext = createContext<PostsContextType | undefined>(undefined)
@@ -23,7 +24,7 @@ export const PostsProvider = ({ children }: { children: React.ReactNode }) => {
 	const [posts, setPosts] = useState<Post[]>([])
 	const [loading, setLoading] = useState<boolean>(true)
 	const [error, setError] = useState<string | null>(null)
-
+	const [isPostsInitialized, setIsPostsInitialized] = useState(false)
 	const [commentCounts, setCommentCounts] = useState<Record<string, number>>({})
 
 	const refreshCommentCounts = async (targetPosts?: Post[]) => {
@@ -53,6 +54,7 @@ export const PostsProvider = ({ children }: { children: React.ReactNode }) => {
 			setError('Failed to load posts')
 		} finally {
 			setLoading(false)
+			setIsPostsInitialized(true)
 		}
 	}
 
@@ -68,7 +70,12 @@ export const PostsProvider = ({ children }: { children: React.ReactNode }) => {
 			throw err
 		}
 	}
-    
+
+	// 🔁 INITIAL FETCH
+	useEffect(() => {
+		refreshPosts()
+	}, [])
+
 	return (
 		<PostsContext.Provider
 			value={{
@@ -80,11 +87,11 @@ export const PostsProvider = ({ children }: { children: React.ReactNode }) => {
 				deletePost,
 				refreshCommentCounts,
 				refreshPosts,
-                setCommentCounts,
+				setCommentCounts,
 				setPosts,
 			}}
 		>
-			{children}
+			{isPostsInitialized ? children : <LoadingScreen label='Loading Posts...' />}
 		</PostsContext.Provider>
 	)
 }

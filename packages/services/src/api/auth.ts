@@ -1,11 +1,12 @@
 // packages/services/src/api/auth.ts
 
-import { api, clearToken, clearAuthHeader } from '../'
+import { api, clearToken, clearAuthHeader, rawApi } from '../'
 
 export const logoutRequest = async () => {
+    console.log('LOGOUT REQUEST')
 	try {
 		// Call the backend to clear the refresh token cookie
-		await api.post('/auth/logout')
+		await rawApi.post('logout')
 
 		// Clear token on the frontend (AsyncStorage)
 		await clearToken()
@@ -24,7 +25,9 @@ export const signupRequest = (email: string, username: string, password: string)
 	api.post('/auth/signup', { email, username, password }).then(res => res.data)
 
 export const refreshTokenRequest = async (): Promise<RefreshTokenResponse> => {
+	console.log('[Auth] Sending refresh-token request...')
 	const response = await api.post<RefreshTokenResponse>('/auth/refresh-token')
+	console.log('[Auth] Got new token:', response.data.accessToken)
 	return response.data
 }
 

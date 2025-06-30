@@ -95,8 +95,7 @@ export const CreatePostForm = ({ onPostCreated }: { onPostCreated?: () => void }
     const image = getValues('image')
 
 	return (
-        <ModalContainer title='Create Post'>
-
+        <>
             <Controller
                 control={control}
                 name='content'
@@ -151,6 +150,6 @@ export const CreatePostForm = ({ onPostCreated }: { onPostCreated?: () => void }
             ) : (
                 <Button label='Post' onPress={handleSubmit(onSubmit, onInvalid)} />
             )}
-        </ModalContainer>
+        </>
 	)
 }

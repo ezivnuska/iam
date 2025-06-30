@@ -7,8 +7,10 @@ import { Avatar, IconButton, Row, SigninForm, SignupForm } from '@/components'
 import { useNavigation, useNavigationState } from '@react-navigation/native'
 import { useAuth, useModal } from '@/hooks'
 import Ionicons from '@expo/vector-icons/Ionicons'
-import type { AvatarSize } from '@/components'
+import type { AvatarSize, SigninFormProps } from '@/components'
 import { paddingHorizontal, resolveResponsiveProp, Size } from '@/styles'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { AuthModal } from '../AuthModal'
 
 interface HeaderProps {
     children?: ReactNode
@@ -27,8 +29,8 @@ const Brand = ({ ...props }) => {
 }
 
 export const Header: React.FC<HeaderProps> = () => {
-    const { isAuthenticated, isAuthInitialized, user } = useAuth()
-    const { showModal } = useModal()
+    const { isAuthenticated, login, user } = useAuth()
+    const { hideModal, openFormModal } = useModal()
     const navigation = useNavigation()
 
     const iconSize = resolveResponsiveProp({ xs: 24, sm: 18, md: 18, lg: 20 })
@@ -39,8 +41,29 @@ export const Header: React.FC<HeaderProps> = () => {
 
     const currentRoute = useNavigationState((state) => state.routes[state.index].name)
 
-    const showSigninModal = () => showModal({ content: <SigninForm /> })
-    const showSignupModal = () => showModal({ content: <SignupForm /> })
+    const showSigninModal = () => openFormModal(AuthModal, { signin }, { title: 'Sign In' })
+    const showSignupModal = () => openFormModal(SignupForm, {}, { title: 'Sign Up' })
+
+	const signin = async (data: SigninFormProps) => {
+		try {
+			await login(data.email, data.password)
+			await AsyncStorage.setItem('user_email', data.email)
+			hideModal()
+		} catch (err: unknown) {
+			const errorObj = err as {
+				response?: {
+					data?: {
+						error?: {
+							details?: unknown
+						}
+					}
+				}
+			}
+			
+			const details = errorObj.response?.data?.error?.details
+			return { error: details }
+		}
+	}
 
 	return (
         <Row flex={1} align='center' style={styles.container}>
@@ -58,7 +81,7 @@ export const Header: React.FC<HeaderProps> = () => {
                         showUsername={showUsername}
                     />
 
-                    {!isAuthInitialized ? null : isAuthenticated ? (
+                    {isAuthenticated ? (
                         <Row
                             flex={5}
                             spacing={navSpacing}

@@ -5,12 +5,13 @@ export const linking = {
     config: {
         screens: {
             Chat: 'chat',
-            Details: ':username',
+            // Details: ':username',
             ForgotPassword: 'forgot-password',
-            Home: '/',
+            Home: '',
             ResetPassword: 'reset-password/:token',
             UserList: 'users',
             Profile: 'profile',
+            UserProfile: ':username',
             PrivacyPolicy: 'privacy',
         },
     },

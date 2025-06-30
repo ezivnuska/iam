@@ -26,5 +26,12 @@ export const generateRefreshToken = (payload: TokenPayload): string => {
 }
 
 export const verifyToken = (token: string): TokenPayload => {
-	return jwt.verify(token, JWT_SECRET) as TokenPayload
+	try {
+		const payload = jwt.verify(token, JWT_SECRET)
+		return payload as TokenPayload
+	} catch (err) {
+		console.error('[verifyToken] ERROR verifying token:', err)
+		throw err
+	}
 }
+  

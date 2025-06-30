@@ -3,7 +3,7 @@
 import React, { useRef, useState } from 'react'
 import { StyleSheet, Text } from 'react-native'
 import { Avatar, Column, Row, LikeCommentBar, PostComments, LinkPreview, AddCommentForm, IconButton, AutoSizeImage } from '@/components'
-import { PartialUser, Post } from '@iam/types'
+import { Comment, PartialUser, Post } from '@iam/types'
 import { paddingHorizontal, Size } from '@/styles'
 import Autolink from 'react-native-autolink'
 import Ionicons from '@expo/vector-icons/Ionicons'
@@ -31,7 +31,7 @@ export const PostListItem: React.FC<Props> = ({
 	const [expanded, setExpanded] = useState(false)
 
 	const { user, isAuthenticated } = useAuth()
-	const { showModal } = useModal()
+	const { openFormModal } = useModal()
 	const { deletePost, refreshCommentCounts } = usePosts()
 
 	const postCommentsRef = useRef<{ handleNewComment?: (c: Comment) => void }>(null)
@@ -48,19 +48,15 @@ export const PostListItem: React.FC<Props> = ({
 	}
 
 	const handleAddComment = () => {
-		showModal({
-            content: (
-                <AddCommentForm
-                    id={post._id}
-                    type='Post'
-                    onCommentAdded={(newComment) => {
-                        setExpanded(true)
-                        refreshCommentCounts([post])
-                        postCommentsRef.current?.handleNewComment?.(newComment)
-                    }}
-                />
-            )
-		})
+		openFormModal(AddCommentForm, {
+            id: post._id,
+            type: 'Post',
+            onCommentAdded: (newComment: Comment) => {
+                setExpanded(true)
+                refreshCommentCounts([post])
+                postCommentsRef.current?.handleNewComment?.(newComment)
+            },
+		}, { title: 'Add Comment' })
 	}
 
 	const handleDelete = async () => {

@@ -3,7 +3,6 @@
 import React, { useEffect } from 'react'
 import { Platform, StyleSheet } from 'react-native'
 import { WebView } from 'react-native-webview'
-import { ModalContainer } from '@/components'
 import { useModal, useSocket } from '@/hooks'
 
 const KOFI_URL = 'https://ko-fi.com/iameric/?hidefeed=true&widget=true&embed=true&preview=true'
@@ -42,9 +41,9 @@ export default function KoFiPanel() {
 	}
 
 	return (
-		<ModalContainer title='Donate'>
+		<>
 			{renderContent()}
-		</ModalContainer>
+		</>
 	)
 }
 

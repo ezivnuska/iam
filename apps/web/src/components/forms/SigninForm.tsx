@@ -9,17 +9,19 @@ import { Button, Column, ModalContainer, Row, SignupForm, SubmitButton } from '@
 import { useAuth, useModal } from '@/hooks'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { form as styles, shadows, Size } from '@/styles'
+import { User } from '@iam/types'
+import { error } from 'console'
 
 const schema = z.object({
 	email: z.string().email(),
 	password: z.string().min(6, 'Password must be at least 6 characters'),
 })
 
-type SigninFormProps = z.infer<typeof schema>
+export type SigninFormProps = z.infer<typeof schema>
 
-export const SigninForm = () => {
-    const { login, user } = useAuth()
-    const { hideModal, showModal } = useModal()
+export const SigninForm = ({ signin }: { signin: (data: SigninFormProps) => {} }) => {
+    const { user } = useAuth()
+    const { hideModal, openFormModal, showModal } = useModal()
     const { control, handleSubmit, formState: { errors, isSubmitting }, setError, trigger, setValue, getValues } = useForm<SigninFormProps>({
 		resolver: zodResolver(schema),
         mode: 'all',
@@ -69,38 +71,26 @@ export const SigninForm = () => {
 
     const onInvalid = (errors: FieldErrors<SigninFormProps>) => {
 		focusFirstError(errors)
-	}	  
+    }
 
 	const onSubmit = async (data: SigninFormProps) => {
-		try {
-			await login(data.email, data.password)
-			await AsyncStorage.setItem('user_email', data.email)
-			hideModal()
-		} catch (err: unknown) {
-			const errorObj = err as {
-				response?: {
-					data?: {
-						error?: {
-							details?: unknown
-						}
-					}
-				}
-			}
-		
-			const details = errorObj.response?.data?.error?.details
-		
-			if (Array.isArray(details) && details.length === 2) {
-				const [field, issue] = details
-		
-				if (typeof field === 'string' && typeof issue === 'string') {
-					setError(field as keyof SigninFormProps, { message: issue }, { shouldFocus: true })
-					Alert.alert('Login failed', issue)
-					return
-				}
-			}
-			
-			Alert.alert('Login failed', 'Something went wrong')
-		}
+        const response: { error?: Array<string>[], result?: User | null} = await signin(data)
+        console.log('response--->', response)
+        if (!response) {
+            console.log('Error: could not log in.')
+            return null
+        }
+        const { error, result } = response
+        if (error) {
+            const [field, issue] = error
+            
+            if (typeof field === 'string' && typeof issue === 'string') {
+                setError(field as keyof SigninFormProps, { message: issue }, { shouldFocus: true })
+                Alert.alert('Login failed', issue)
+                return
+            }
+        }
+        console.log('result', result)
 	}	  
 
     const isFocused = (name: string): boolean => name === focused
@@ -108,66 +98,64 @@ export const SigninForm = () => {
     const showSignupForm = () => showModal({ content: <SignupForm /> })
     
 	return (
-		<ModalContainer title='Sign In'>
-            <Column>
-                <>
-                    <Controller
-                        control={control}
-                        name='email'
-                        render={({ field: { value, onChange, onBlur } }) => (
-                            <TextInput
-                                ref={emailInputRef}
-                                autoFocus
-                                placeholder='Email'
-                                placeholderTextColor='#070'
-                                value={value}
-                                onChangeText={onChange}
-                                onFocus={() => setFocused('email')}
-                                onBlur={() => {
-                                    onBlur()
-                                    setFocused(null)
-                                }}
-                                autoCapitalize='none'
-                                keyboardType='email-address'
-                                returnKeyType='next'
-                                onSubmitEditing={() => passwordInputRef.current?.focus()}
-                                style={[styles.input, shadows.input, isFocused('email') && styles.inputFocused]}
-                            />
-                        )}
-                    />
-                    <Text style={styles.error}>{errors.email ? errors.email.message : ' '}</Text>
-                </>
-                <>
-                    <Controller
-                        control={control}
-                        name='password'
-                        render={({ field: { value, onChange, onBlur } }) => (
-                            <TextInput
-                                ref={passwordInputRef}
-                                placeholder='Password'
-                                placeholderTextColor='#070'
-                                value={value}
-                                onChangeText={onChange}
-                                onFocus={() => setFocused('password')}
-                                onBlur={() => {
-                                    onBlur()
-                                    setFocused(null)
-                                }}
-                                secureTextEntry
-                                autoCapitalize='none'
-                                returnKeyType='default'
-                                onSubmitEditing={handleSubmit(onSubmit, onInvalid)}
-                                style={[styles.input, shadows.input, isFocused('password') && styles.inputFocused]}
-                            />
-                        )}
-                    />
-                    <Text style={styles.error}>{errors.password ? errors.password.message : ' '}</Text>
-                </>    
-                <Row spacing={10} justify='space-evenly'>
-                    <SubmitButton label='Sign In' onPress={handleSubmit(onSubmit, onInvalid)} submitting={isSubmitting} />
-                    <Button label='Sign Up' onPress={showSignupForm} transparent />
-                </Row>
-            </Column>
-		</ModalContainer>
+        <Column spacing={4}>
+            <>
+                <Controller
+                    control={control}
+                    name='email'
+                    render={({ field: { value, onChange, onBlur } }) => (
+                        <TextInput
+                            ref={emailInputRef}
+                            autoFocus
+                            placeholder='Email'
+                            placeholderTextColor='#070'
+                            value={value}
+                            onChangeText={onChange}
+                            onFocus={() => setFocused('email')}
+                            onBlur={() => {
+                                onBlur()
+                                setFocused(null)
+                            }}
+                            autoCapitalize='none'
+                            keyboardType='email-address'
+                            returnKeyType='next'
+                            onSubmitEditing={() => passwordInputRef.current?.focus()}
+                            style={[styles.input, shadows.input, isFocused('email') && styles.inputFocused]}
+                        />
+                    )}
+                />
+                <Text style={styles.error}>{errors.email ? errors.email.message : ' '}</Text>
+            </>
+            <>
+                <Controller
+                    control={control}
+                    name='password'
+                    render={({ field: { value, onChange, onBlur } }) => (
+                        <TextInput
+                            ref={passwordInputRef}
+                            placeholder='Password'
+                            placeholderTextColor='#070'
+                            value={value}
+                            onChangeText={onChange}
+                            onFocus={() => setFocused('password')}
+                            onBlur={() => {
+                                onBlur()
+                                setFocused(null)
+                            }}
+                            secureTextEntry
+                            autoCapitalize='none'
+                            returnKeyType='default'
+                            onSubmitEditing={handleSubmit(onSubmit, onInvalid)}
+                            style={[styles.input, shadows.input, isFocused('password') && styles.inputFocused]}
+                        />
+                    )}
+                />
+                <Text style={styles.error}>{errors.password ? errors.password.message : ' '}</Text>
+            </>    
+            <Row spacing={10} justify='space-evenly'>
+                <SubmitButton label='Sign In' onPress={handleSubmit(onSubmit, onInvalid)} submitting={isSubmitting} />
+                <Button label='Sign Up' onPress={showSignupForm} transparent />
+            </Row>
+        </Column>
 	)
 }
