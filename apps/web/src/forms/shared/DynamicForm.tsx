@@ -1,7 +1,7 @@
 // apps/web/src/components/forms/DynamicForm.tsx
 
 import React, { useEffect, useRef, useState } from 'react'
-import { Alert, Platform, TextInput } from 'react-native'
+import { Alert, Platform, ScrollView, TextInput } from 'react-native'
 import { useForm, UseFormSetError, Path, PathValue } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { z, ZodTypeAny, ZodObject } from 'zod'
@@ -51,6 +51,7 @@ export function DynamicForm<T extends ZodTypeAny>({
 	})
 
 	const inputRefs = useRef<Record<string, React.RefObject<TextInput | null>>>({})
+	const scrollViewRef = useRef<ScrollView>(null)
 
 	fields.forEach(({ name }) => {
 		if (!inputRefs.current[name]) {
@@ -58,10 +59,8 @@ export function DynamicForm<T extends ZodTypeAny>({
 		}
 	})
 
-	// State to track if prefill is done
 	const [emailPrefilled, setEmailPrefilled] = useState(!prefillEmail)
 
-	// Prefill email effect
 	useEffect(() => {
 		if (prefillEmail && isZodObject(schema) && 'email' in schema.shape) {
 			AsyncStorage.getItem('user_email').then((storedEmail) => {
@@ -71,18 +70,18 @@ export function DynamicForm<T extends ZodTypeAny>({
 						storedEmail as PathValue<z.infer<T>, Path<z.infer<T>>>
 					)
 				}
-				setEmailPrefilled(true) // Mark prefill as done, even if no email found
+				setEmailPrefilled(true)
 			})
 		} else {
-			setEmailPrefilled(true) // No prefill required
+			setEmailPrefilled(true)
 		}
 	}, [prefillEmail])
 
-	const focusAndMoveCursorToEnd = (fieldName: string) => {
+	const focusAndScrollToField = (fieldName: string) => {
 		const ref = inputRefs.current[fieldName]
 		if (ref?.current) {
 			ref.current.focus()
-
+		
 			if (Platform.OS !== 'web') {
 				setTimeout(() => {
 					const value = form.getValues()[fieldName]
@@ -91,12 +90,19 @@ export function DynamicForm<T extends ZodTypeAny>({
 							selection: { start: value.length, end: value.length },
 						})
 					}
-				}, 0)
+			
+					ref.current?.measureLayout(
+						scrollViewRef.current?.getInnerViewNode(),
+						(x, y, width, height) => {
+							scrollViewRef.current?.scrollTo({ y: y - 20, animated: true })
+						},
+						() => console.warn('measureLayout error')
+					)
+				}, 100)
 			}
 		}
 	}
 
-	// Autofocus effect runs only after emailPrefilled is true
 	useEffect(() => {
 		if (!emailPrefilled) return
 
@@ -111,7 +117,7 @@ export function DynamicForm<T extends ZodTypeAny>({
 
 		const targetField = firstInvalid ?? firstIncomplete
 		if (targetField) {
-			focusAndMoveCursorToEnd(targetField.name as string)
+			focusAndScrollToField(targetField.name as string)
 		}
 	}, [emailPrefilled, form.formState.errors])
 
@@ -127,7 +133,7 @@ export function DynamicForm<T extends ZodTypeAny>({
 		if (!isValid) {
 			const firstInvalid = fields.find((f) => form.formState.errors[f.name])
 			if (firstInvalid) {
-				focusAndMoveCursorToEnd(firstInvalid.name)
+				focusAndScrollToField(firstInvalid.name)
 			}
 			return;
 		}
@@ -138,7 +144,7 @@ export function DynamicForm<T extends ZodTypeAny>({
 				return val === undefined || val === null || val === ''
 			})
 			if (firstEmpty) {
-				focusAndMoveCursorToEnd(firstEmpty.name)
+				focusAndScrollToField(firstEmpty.name)
 			}
 			return
 		}
@@ -147,7 +153,7 @@ export function DynamicForm<T extends ZodTypeAny>({
 			await onSubmit(data, form.setError)
 			const errorField = fields.find((field) => form.formState.errors[field.name])
 			if (errorField) {
-				focusAndMoveCursorToEnd(errorField.name as string)
+				focusAndScrollToField(errorField.name as string)
 			}
 		} catch (err: any) {
 			Alert.alert('Submission failed', err.message || 'Something went wrong')
@@ -166,7 +172,7 @@ export function DynamicForm<T extends ZodTypeAny>({
 					const isValid = await form.trigger(name as Path<z.infer<T>>)
 					if (!isValid) {
 						setTimeout(() => {
-							focusAndMoveCursorToEnd(name as string)
+							focusAndScrollToField(name as string)
 						}, 0)
 					}
 					return isValid
