@@ -6,6 +6,7 @@ import {
 	saveToken,
 	clearToken,
 	signinRequest,
+	signupRequest,
 	logoutRequest,
 	setAuthHeader,
 	clearAuthHeader,
@@ -23,6 +24,7 @@ export type AuthContextType = {
 	login: (email: string, password: string) => Promise<void>
 	logout: () => Promise<void>
 	setUser: (user: User | null) => void
+    signup: (email: string, username: string, password: string) => Promise<void>
 }
 
 export const AuthContext = createContext<AuthContextType>({
@@ -32,6 +34,7 @@ export const AuthContext = createContext<AuthContextType>({
 	login: async () => {},
 	logout: async () => {},
 	setUser: () => {},
+	signup: async () => {},
 })
 
 type AuthProviderProps = {
@@ -55,6 +58,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         // return { user: userProfile }
 	}
 
+    const signup = async (email: string, username: string, password: string) => {
+        const { accessToken, user: userProfile } = await signupRequest(email, username, password)
+        await saveToken(accessToken)
+        setAuthHeader(accessToken)
+        setToken(accessToken)
+        setUser(userProfile)
+        setIsAuthenticated(true)
+        // navigate('Home') // optional
+    }    
+
 	const logout = async () => {
 		await logoutRequest()
 		await clearToken()
@@ -68,7 +81,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 	useEffect(() => {
 		const initialize = async () => {
 			const profile = await trySigninFromStoredToken()
-            console.log('profile', profile)
 			if (profile) {
 				const token = await getToken()
 				if (token) {
@@ -95,6 +107,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 				login,
 				logout,
 				setUser,
+				signup,
 			}}
 		>
             {isAuthInitialized

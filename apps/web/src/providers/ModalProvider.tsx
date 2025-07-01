@@ -18,7 +18,6 @@ import { createPortal } from 'react-dom'
 import { MAX_WIDTH } from '@/components'
 import { ModalContainer } from '@/components'
 
-// --- Types ---
 export type ModalContentObject = {
 	content: ReactNode
 	fullscreen?: boolean
@@ -27,7 +26,7 @@ export type ModalContentObject = {
 export type ModalContent = ModalContentObject | null
 
 export type ModalContextType = {
-	showModal: (content: ModalContent) => void
+	showModal: (content: ReactNode, fullscreen?: boolean) => void
 	hideModal: () => void
 	hideAllModals: () => void
 	modalStack: ModalContent[]
@@ -38,12 +37,10 @@ export type ModalContextType = {
 	) => void
 }  
 
-// --- Context ---
 export const ModalContext = createContext<ModalContextType | undefined>(
 	undefined
 )
 
-// --- Provider ---
 export const ModalProvider = ({ children }: { children: ReactNode }) => {
 	const [modalStack, setModalStack] = useState<ModalContent[]>([])
 	const topModal = modalStack[modalStack.length - 1]
@@ -59,19 +56,15 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
 			? topModal.fullscreen ?? false
 			: false
 
-	// --- Modal Stack Controls ---
-	const showModal = useCallback((modalContent: ModalContent) => {
-		if (modalContent === null) return
-
-		const contentObj: ModalContentObject =
-			typeof modalContent === 'object' &&
-			modalContent !== null &&
-			'content' in modalContent
-				? modalContent
-				: { content: modalContent }
-
-		setModalStack((prev) => [...prev, contentObj])
-	}, [])
+    const showModal = useCallback(
+        (content: ReactNode, fullscreen: boolean = false) => {
+            setModalStack((prev) => [
+                ...prev,
+                { content, fullscreen },
+            ])
+        },
+        []
+    )            
 
 	const hideModal = useCallback(() => {
 		setModalStack((prev) => prev.slice(0, -1))
@@ -94,10 +87,7 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
 				</ModalContainer>
 			)
 
-			showModal({
-				content: wrappedContent,
-				fullscreen: options.fullscreen ?? false,
-			})
+			showModal(wrappedContent, options.fullscreen ?? false)
 		},
 		[showModal]
 	)

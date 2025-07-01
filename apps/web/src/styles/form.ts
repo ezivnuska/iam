@@ -14,7 +14,7 @@ export const form: NamedStyles<any> = {
 
 	label: {
         fontSize: 16,
-		lineHeight: 24,
+		lineHeight: 20,
 		fontWeight: '600',
 		marginBottom: 8,
         color: '#fff',
@@ -28,7 +28,6 @@ export const form: NamedStyles<any> = {
 		fontSize: 24,
         backgroundColor: '#222',
         color: '#fff',
-        // outlineStyle: 'none',
         outlineWidth: 0,
         outlineColor: 'transparent',
 	} as TextStyle,
@@ -45,6 +44,7 @@ export const form: NamedStyles<any> = {
 
 	error: {
 		color: 'red',
+        fontSize: 12,
         lineHeight: 24,
         textAlign: 'right',
 	} as TextStyle,

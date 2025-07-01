@@ -9,9 +9,8 @@ import { ScrapeError, scrapeMetadata } from '../utils/metadata.utils'
 
 export const createPost = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 	try {
-		const { content, image } = req.body
-
-		const post = await postService.createPost(req.user!.id, content, image)
+		const { content, imageId } = req.body
+		const post = await postService.createPost(req.user!.id, content, imageId)
 		res.status(201).json(post)
 	} catch (err) {
 		next(err)

@@ -11,8 +11,8 @@ import {
 	Spinner,
 	UserImageManager,
 	IconButton,
-	EditProfileForm,
 } from '@/components'
+import { EditProfileForm } from '@/forms'
 import { useAuth, useModal } from '@/hooks'
 import { getUserByUsername } from '@services'
 import { ImageProvider } from '@/providers'
@@ -20,6 +20,7 @@ import type { User } from '@iam/types'
 import { Feather } from '@expo/vector-icons'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { paddingHorizontal, Size } from '@/styles'
+import { normalizeUser } from '@utils'
 
 type DetailsParams = {
 	username?: string
@@ -48,12 +49,12 @@ export const UserProfileScreen = () => {
 	const isOwnProfile =
 	    isAuthInitialized && (username == null || authUser?.username === username)
 
-	const userToDisplay = isOwnProfile ? authUser : fetchedUser
+    const userToDisplay = useMemo(() => {
+        const user = isOwnProfile ? authUser : fetchedUser
+        return user ? normalizeUser(user) : null
+    }, [authUser, fetchedUser, isOwnProfile])
 
-    const normalizeUser = (user: any): User => ({
-        ...user,
-        id: user._id ?? user.id,
-    })
+    const currentUserId = useMemo(() => userToDisplay?.id, [userToDisplay?.id])
 
 	useEffect(() => {
         const fetchUser = async () => {
@@ -147,23 +148,23 @@ export const UserProfileScreen = () => {
 					)}
 				</Row>
 
-				<UserImageSection user={userToDisplay} />
+				<UserImageSection userId={currentUserId} />
 			</Column>
 		</PageLayout>
 	)
 }
 
-const UserImageSection = ({ user }: { user: User }) => {
+const UserImageSection = ({ userId }: { userId?: string }) => {
     
-    if (!user || !user.id || !user.username) {
-        console.warn('Invalid user passed to UserImageSection:', user)
+    if (!userId) {
+        console.warn('Invalid userId passed to UserImageSection:', userId)
         return null
     }
 
 	return (
 		<View style={{ flex: 1 }}>
-			<ImageProvider userId={user.id}>
-				<UserImageManager owner={user} />
+			<ImageProvider userId={userId}>
+				<UserImageManager userId={userId} />
 			</ImageProvider>
 		</View>
 	)

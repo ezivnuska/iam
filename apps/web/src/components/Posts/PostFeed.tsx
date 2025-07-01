@@ -4,7 +4,6 @@ import React, { useEffect, useState, useCallback } from 'react'
 import { View, ActivityIndicator } from 'react-native'
 import { InfiniteScrollView, PostListItem } from '@/components'
 import { usePosts } from '@/hooks'
-import { PostsProvider } from '@/providers'
 import type { Post } from '@iam/types'
 
 const PAGE_SIZE = 2
@@ -76,11 +75,9 @@ export const PostFeed = ({
 	onScrolledToTop,
 	onScrolledToBottom,
 }: PostFeedProps) => (
-	<PostsProvider>
-		<PostFeedContent
-			onScrollDirectionChange={onScrollDirectionChange}
-			onScrolledToTop={onScrolledToTop}
-			onScrolledToBottom={onScrolledToBottom}
-		/>
-	</PostsProvider>
+    <PostFeedContent
+        onScrollDirectionChange={onScrollDirectionChange}
+        onScrolledToTop={onScrolledToTop}
+        onScrolledToBottom={onScrolledToBottom}
+    />
 )

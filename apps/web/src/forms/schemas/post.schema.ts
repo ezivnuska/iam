@@ -1,0 +1,20 @@
+// apps/web/src/forms/schemas/post.schema.ts
+
+import { z } from 'zod'
+import type { FieldConfig } from '@/forms'
+import type { UploadedImage } from '@iam/types'
+
+export const postSchema = z
+	.object({
+		content: z.string().min(1, 'Post content is required').max(280),
+        image: z
+            .custom<UploadedImage>()
+            .optional()
+            .nullable(),
+	})
+
+export const postFields: FieldConfig<PostFormValues>[] = [
+    { name: 'content', label: 'Create Post', autoFocus: true },
+]
+
+export type PostFormValues = z.infer<typeof postSchema>

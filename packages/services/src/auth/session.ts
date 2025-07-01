@@ -21,7 +21,6 @@ export const trySigninFromStoredToken = async (): Promise<User | null> => {
 
 		const profile = await getProfile()
 		console.info('[auth] Session restored from token:', profile.username)
-        console.log('profile from session', profile)
 		return profile
 	} catch (err: any) {
 		console.warn('[auth] Failed to restore session from token')

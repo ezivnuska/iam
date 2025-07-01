@@ -6,16 +6,13 @@ import { HttpError } from '../utils/HttpError'
 import { scrapeMetadata } from '../utils/metadata.utils'
 import { extractFirstUrl } from '../utils/extractFirstUrl'
 
-export async function createPost(userId: string, content: string, image?: { id: string }) {
+export async function createPost(userId: string, content: string, imageId?: string) {
     const postData: any = {
         author: userId,
         content,
+        image: imageId, 
     }
-
-    if (image?.id) {
-        postData.image = image.id
-    }
-
+    
     const firstUrl = extractFirstUrl(content)
     if (firstUrl) {
         postData.linkUrl = firstUrl
@@ -25,7 +22,6 @@ export async function createPost(userId: string, content: string, image?: { id: 
             if (metadata) {
                 postData.linkPreview = metadata
             }
-            // If metadata is undefined, just skip setting linkPreview
         } catch (err) {
             console.warn(`Failed to scrape link metadata for ${firstUrl}:`, err)
         }

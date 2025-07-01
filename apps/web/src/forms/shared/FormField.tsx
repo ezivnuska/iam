@@ -51,7 +51,7 @@ export const FormField = <T extends FieldValues>({
 					<View style={{ position: 'relative' }}>
 						<RNTextInput
 							ref={ref}
-							value={value}
+							value={value ?? ''}
 							onChangeText={onChange}
 							onFocus={onFocus}
 							onBlur={() => {

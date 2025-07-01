@@ -3,13 +3,12 @@
 import React, { ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { MAX_WIDTH } from './constants'
-import { Avatar, IconButton, Row, SigninForm, SignupForm } from '@/components'
+import { Avatar, IconButton, Row } from '@/components'
 import { useNavigation, useNavigationState } from '@react-navigation/native'
 import { useAuth, useModal } from '@/hooks'
 import Ionicons from '@expo/vector-icons/Ionicons'
-import type { AvatarSize, SigninFormProps } from '@/components'
+import type { AvatarSize } from '@/components'
 import { paddingHorizontal, resolveResponsiveProp, Size } from '@/styles'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { AuthModal } from '../AuthModal'
 
 interface HeaderProps {
@@ -29,8 +28,8 @@ const Brand = ({ ...props }) => {
 }
 
 export const Header: React.FC<HeaderProps> = () => {
-    const { isAuthenticated, login, user } = useAuth()
-    const { hideModal, openFormModal } = useModal()
+    const { isAuthenticated, user } = useAuth()
+    const { showModal } = useModal()
     const navigation = useNavigation()
 
     const iconSize = resolveResponsiveProp({ xs: 24, sm: 18, md: 18, lg: 20 })
@@ -41,29 +40,8 @@ export const Header: React.FC<HeaderProps> = () => {
 
     const currentRoute = useNavigationState((state) => state.routes[state.index].name)
 
-    const showSigninModal = () => openFormModal(AuthModal, { signin }, { title: 'Sign In' })
-    const showSignupModal = () => openFormModal(SignupForm, {}, { title: 'Sign Up' })
-
-	const signin = async (data: SigninFormProps) => {
-		try {
-			await login(data.email, data.password)
-			await AsyncStorage.setItem('user_email', data.email)
-			hideModal()
-		} catch (err: unknown) {
-			const errorObj = err as {
-				response?: {
-					data?: {
-						error?: {
-							details?: unknown
-						}
-					}
-				}
-			}
-			
-			const details = errorObj.response?.data?.error?.details
-			return { error: details }
-		}
-	}
+    const showSigninModal = () => showModal(<AuthModal initialMode='signin' />)
+    const showSignupModal = () => showModal(<AuthModal initialMode='signup' />)
 
 	return (
         <Row flex={1} align='center' style={styles.container}>
@@ -130,13 +108,7 @@ export const Header: React.FC<HeaderProps> = () => {
 
 const styles = StyleSheet.create({
     container: {
-        // flex: 1,
         width: '100%',
-        // flexDirection: 'row',
-        // alignItems: 'center',
-        // paddingVertical: Size.S,
-        // backgroundColor: 'yellow',
-        // height: 50,
     },
     maxWidthContainer: {
         flex: 1,
@@ -144,7 +116,6 @@ const styles = StyleSheet.create({
         maxWidth: MAX_WIDTH,
         marginHorizontal: 'auto',
         paddingHorizontal: paddingHorizontal,
-        // backgroundColor: 'orange',
     },
 	iam: {
 		fontWeight: 'bold',
@@ -160,15 +131,12 @@ const styles = StyleSheet.create({
         flexBasis: 'auto',
     },
     authButtons: {
-        // backgroundColor: '#ccc',
+        
     },
     authButton: {
         paddingHorizontal: Size.XS,
-        // backgroundColor: 'white',
     },
     buttonLabel: {
         color: '#fff',
-        // paddingHorizontal: Size.XS,
-        // backgroundColor: 'white',
     },
 })

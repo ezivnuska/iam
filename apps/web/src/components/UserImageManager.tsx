@@ -7,13 +7,13 @@ import { useAuth, useImage, useModal } from '@/hooks'
 import type { Image, User } from '@iam/types'
 
 interface UserImageManagerProps {
-	owner?: User | null
+	userId?: string
 }
 
-const UserImageManager: React.FC<UserImageManagerProps> = ({ owner }) => {
+const UserImageManager: React.FC<UserImageManagerProps> = ({ userId }) => {
 	const { user: authUser } = useAuth()
 	const isAdmin = authUser?.role === 'admin'
-	const isOwner = !!owner && !!authUser?.username && authUser.username === owner.username
+	const isOwner = !!userId && !!authUser?.id && authUser.id === userId
 	
 	const {
 		images,
@@ -25,12 +25,12 @@ const UserImageManager: React.FC<UserImageManagerProps> = ({ owner }) => {
 		hasNextPage,
 	} = useImage()
 
-	const { hideModal, openFormModal } = useModal()
+	const { hideModal, showModal, openFormModal } = useModal()
 	const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
-		if (images.length === 0 && !isLoading) {
-			loadImages(owner?.id)
+		if (userId && images.length === 0 && !isLoading) {
+			loadImages(userId)
 		}
 	}, [images.length, isLoading, loadImages])
 
@@ -59,13 +59,15 @@ const UserImageManager: React.FC<UserImageManagerProps> = ({ owner }) => {
 	const handleImagePress = (image: Image) => {
 		const isAvatar = image.id === currentAvatarId
 
-        openFormModal(FullScreenImage, {
-            image,
-            onClose: hideModal,
-            onDelete: (isAdmin || isOwner) ? () => handleDelete(image.id) : undefined,
-            onSetAvatar: isOwner ? () => handleSetAvatar(image.id) : undefined,
-            isAvatar,
-        }, { fullscreen: true })
+        showModal((
+            <FullScreenImage
+                image={image}
+                onClose={hideModal}
+                onDelete={(isAdmin || isOwner) ? () => handleDelete(image.id) : undefined}
+                onSetAvatar={isOwner ? () => handleSetAvatar(image.id) : undefined}
+                isAvatar={isAvatar}
+            />
+        ), true)
 	}
 
 	return (

@@ -7,7 +7,7 @@ export const extractFirstUrl = (text: string): string | null => {
     const matches = text.match(urlRegex)
     if (matches?.length) url = matches[0]
 
-	if (!url?.startsWith('http')) {
+	if (url && !url?.startsWith('http')) {
 		url = 'https://' + url
 	}
 

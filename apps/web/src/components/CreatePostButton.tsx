@@ -1,40 +1,42 @@
 // apps/web/src/components/CreatePostButton.tsx
 
 import React from 'react'
-import { Pressable, StyleSheet, Text } from 'react-native'
-import { CreatePostForm } from '@/components'
-import { useModal } from '@/hooks'
-import { form as formStyles, paddingHorizontal, shadows, Size } from '@/styles'
+import { Pressable, Text, StyleSheet } from 'react-native'
+import { useModal, usePosts } from'@/hooks'
+import { PostForm } from '@/forms'
+import type { Post } from '@iam/types'
 
-interface CreatePostButtonProps {
-    onPostCreated?: () => void
-}
+export const CreatePostButton = () => {
+	const { hideModal, showModal, openFormModal } = useModal()
+	const { addPost } = usePosts()
 
-export const CreatePostButton = ({ onPostCreated }: CreatePostButtonProps) => {
-    const { openFormModal } = useModal()
+	const onPostCreated = (post: Post) => {
+		console.log('adding post', post)
+		addPost(post)
+		hideModal()
+	}
 
-    const openCreatePostModal = () => {
-        openFormModal(CreatePostForm, { onPostCreated }, { title: 'Create Post' })
-    }
-    return (
-        <Pressable
-            onPress={openCreatePostModal}
-            style={styles.container}
-        >
-            <Text style={[formStyles.input, shadows.input, styles.createPostButton]}>
-                Share something...
-            </Text>
-        </Pressable>
-    )
+	const showPostModal = () => {
+		openFormModal(PostForm, { onPostCreated }, { title: 'Create Post' })
+	}
+
+	return (
+		<Pressable style={styles.button} onPress={showPostModal}>
+			<Text style={styles.text}>Create Post</Text>
+		</Pressable>
+	)
 }
 
 const styles = StyleSheet.create({
-    container: {
-        paddingHorizontal: paddingHorizontal,
-    },
-    createPostButton: {
-        color: '#aaa',
-        paddingVertical: Size.S,
-        fontSize: 20,
-    },
+	button: {
+		backgroundColor: '#0f0',
+		padding: 12,
+		borderRadius: 8,
+		margin: 16,
+		alignItems: 'center',
+	},
+	text: {
+		color: '#000',
+		fontWeight: 'bold',
+	},
 })

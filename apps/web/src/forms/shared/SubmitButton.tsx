@@ -1,8 +1,8 @@
-// packages/ui/src/components/Button/SubmitButton.tsx
+// apps/web/src/forms/shared/SubmitButton.tsx
 
 import React from 'react'
-import { Pressable, Text, StyleSheet, StyleProp, ViewStyle, TextStyle, ActivityIndicator } from 'react-native'
-import type { ButtonProps } from './Button.types'
+import { Pressable, Text, StyleSheet, ActivityIndicator } from 'react-native'
+import type { ButtonProps } from '@/components'
 
 export const SubmitButton: React.FC<ButtonProps> = ({
 	label,

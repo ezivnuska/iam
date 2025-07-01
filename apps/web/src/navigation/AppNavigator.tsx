@@ -8,7 +8,6 @@ import {
     HomeScreen,
     ResetPasswordScreen,
     PrivacyPolicyScreen,
-    SigninScreen,
     UserListScreen,
     UserProfileScreen,
 } from '../screens'
@@ -30,7 +29,6 @@ export const AppNavigator = () => {
                 <Stack.Screen name='PrivacyPolicy' component={PrivacyPolicyScreen} />
                 <Stack.Screen name='UserProfile' component={UserProfileScreen} />
                 <Stack.Screen name='Profile' component={UserProfileScreen} />
-                <Stack.Screen name='Signin' component={SigninScreen} />
                 <Stack.Screen name='UserList' component={UserListScreen} />
             </Stack.Navigator>
         </NavigationContainer>

@@ -37,7 +37,6 @@ export const fetchUserImages = async ({
 	hasNextPage: boolean
 }> => {
 	const endpoint = `/images${userId && `/user/${userId}`}?page=${page}&limit=${limit}`
-    console.log('endpoint', endpoint)
 	const res = await api.get<{
 		images: UploadedImage[]
 		total: number

@@ -5,12 +5,12 @@ import { View, StyleSheet, Pressable, useWindowDimensions } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import {
-	AddCommentForm,
 	AutoSizeImage,
 	ImageComments,
 	LikeCommentBar,
 	Row,
 } from '@/components'
+import { CommentForm } from '@/forms'
 import { Size, resolveResponsiveProp } from '@/styles'
 import { useAuth, useModal, useBestVariant } from '@/hooks'
 import type { Image } from '@iam/types'
@@ -106,7 +106,7 @@ const FullScreenImage: React.FC<Props> = ({
     }
 
 	const handleAddComment = () => {
-		openFormModal(AddCommentForm, {
+		openFormModal(CommentForm, {
             id: image.id,
             type: 'Image',
             onCommentAdded,

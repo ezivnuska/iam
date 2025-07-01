@@ -2,7 +2,8 @@
 
 import React, { useRef, useState } from 'react'
 import { StyleSheet, Text } from 'react-native'
-import { Avatar, Column, Row, LikeCommentBar, PostComments, LinkPreview, AddCommentForm, IconButton, AutoSizeImage } from '@/components'
+import { Avatar, Column, Row, LikeCommentBar, PostComments, LinkPreview, IconButton, AutoSizeImage } from '@/components'
+import { CommentForm } from '@/forms'
 import { Comment, PartialUser, Post } from '@iam/types'
 import { paddingHorizontal, Size } from '@/styles'
 import Autolink from 'react-native-autolink'
@@ -48,7 +49,7 @@ export const PostListItem: React.FC<Props> = ({
 	}
 
 	const handleAddComment = () => {
-		openFormModal(AddCommentForm, {
+		openFormModal(CommentForm, {
             id: post._id,
             type: 'Post',
             onCommentAdded: (newComment: Comment) => {
@@ -78,7 +79,7 @@ export const PostListItem: React.FC<Props> = ({
 			{isAuthor && (
 				<IconButton
 					onPress={handleDelete}
-					icon={<Ionicons name='trash-outline' size={24} color='black' />}
+					icon={<Ionicons name='trash-outline' size={24} color='#fff' />}
 				/>
 			)}
 		</Row>

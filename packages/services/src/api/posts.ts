@@ -16,11 +16,11 @@ export const getPostById = async (id: string): Promise<Post> => {
 
 export const createPost = async (
 	content: string,
-	image?: UploadedImage
+	imageId?: string
 ): Promise<Post> => {
 	const res = await api.post(
 		'/posts',
-		{ content, image },
+		{ content, imageId },
 		{ withCredentials: true },
 	)
 	return res.data
@@ -54,15 +54,15 @@ export const addPostComment = async (postId: string, content: string) => {
 	return commentService.addComment(postId, 'Post', content)
 }
 
-export const scrape = async (url: string): Promise<any> => {
-	if (!url || typeof url !== 'string') {
-		throw new Error('INVALID_URL: Need to provide a valid URL')
-	}
-	try {
-		const { data } = await api.post('/posts/scrape', { url })
-		return data.response
-	} catch (err) {
-		console.error(`Scrape failed for ${url}`, err)
-		return null
-	}
-}
+// export const scrape = async (url: string): Promise<any> => {
+// 	if (!url || typeof url !== 'string') {
+// 		throw new Error('INVALID_URL: Need to provide a valid URL')
+// 	}
+// 	try {
+// 		const { data } = await api.post('/posts/scrape', { url })
+// 		return data.response
+// 	} catch (err) {
+// 		console.error(`Scrape failed for ${url}`, err)
+// 		return null
+// 	}
+// }
