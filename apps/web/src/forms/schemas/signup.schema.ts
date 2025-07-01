@@ -16,7 +16,7 @@ export const signupSchema = z
 	})
 
 export const signupFields: FieldConfig<SignupFormValues>[] = [
-    { name: 'email', label: 'Email Address', autoFocus: true },
+    { name: 'email', label: 'Email Address', autoFocus: true, keyboardType: 'email-address' },
     { name: 'username', label: 'Username' },
     { name: 'password', label: 'Password', secure: true },
     { name: 'confirmPassword', label: 'Confirm Password', secure: true },

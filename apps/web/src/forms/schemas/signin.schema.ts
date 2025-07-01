@@ -10,7 +10,7 @@ export const signinSchema = z
 	})
 
 export const signinFields: FieldConfig<SigninFormValues>[] = [
-    { name: 'email', label: 'Email Address', autoFocus: true },
+    { name: 'email', label: 'Email Address', autoFocus: true, keyboardType: 'email-address' },
     { name: 'password', label: 'Password', secure: true },
 ]
 

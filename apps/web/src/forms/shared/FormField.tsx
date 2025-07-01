@@ -27,6 +27,7 @@ type FormFieldProps<T extends FieldValues> = {
 	secure?: boolean
 	autoFocus?: boolean
 	inputRef?: React.RefObject<TextInput | null>
+	keyboardType?: React.ComponentProps<typeof TextInput>['keyboardType']
 	onSubmitEditing?: () => void
 	onFocus?: () => void
 	onBlur?: () => void
@@ -44,6 +45,7 @@ export const FormField = <T extends FieldValues>({
 	onSubmitEditing,
 	onFocus,
 	onBlur,
+	keyboardType = 'default',
 }: FormFieldProps<T>) => {
 	const [isSecure, setIsSecure] = useState(secure)
 
@@ -72,6 +74,7 @@ export const FormField = <T extends FieldValues>({
 							secureTextEntry={isSecure}
 							returnKeyType='done'
 							onSubmitEditing={onSubmitEditing}
+							keyboardType={keyboardType}
 							style={[
 								styles.input,
 								shadows.input,
