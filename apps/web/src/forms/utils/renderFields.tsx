@@ -4,30 +4,54 @@ import React from 'react'
 import type { Control, FieldValues, Path } from 'react-hook-form'
 import { FormField } from '@/forms'
 import type { FieldConfig } from '@/forms'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, TextInput } from 'react-native'
 
 export function renderFields<T extends FieldValues>(
-    fields: FieldConfig<T>[],
-    control: Control<T>,
-    errors: Partial<Record<keyof T, any>>
+	fields: FieldConfig<T>[],
+	control: Control<T>,
+	errors: Partial<Record<keyof T, any>>,
+	inputRefs: React.RefObject<Record<string, React.RefObject<TextInput | null>>>,
+	formValues: Partial<T>,
+	triggerField: (name: keyof T) => Promise<boolean>,
+	handleSubmit: () => void
 ) {
-    return (
-        <View style={styles.container}>
-            {fields.map(({ name, label, secure, autoFocus }) => (
-                <FormField<T>
-                    key={name as string}
-                    name={name as Path<T>}
-                    label={label}
-                    control={control}
-                    error={errors[name]}
-                    secure={secure}
-                    autoFocus={autoFocus}
-                />
-            ))}
-        </View>
-    )
-}
-
+	return (
+		<View style={styles.container}>
+			{fields.map((field, index) => {
+				const name = field.name as keyof T
+				const nextField = fields[index + 1]?.name as keyof T | undefined
+		
+				return (
+					<FormField<T>
+						key={name as string}
+						name={name as Path<T>}
+						label={field.label}
+						control={control}
+						error={errors[name]}
+						secure={field.secure}
+						autoFocus={field.autoFocus}
+						inputRef={inputRefs.current[name as string]}
+						onSubmitEditing={async () => {
+							const isValid = await triggerField(name)
+							if (!isValid) {
+								inputRefs.current[name as string]?.current?.focus()
+								return
+							}
+						
+							const allValid = fields.every((f) => !errors[f.name])
+						
+							if (allValid) {
+								handleSubmit()
+							} else if (nextField) {
+								inputRefs.current[nextField as string]?.current?.focus()
+							}
+						}}						
+					/>
+				)
+			})}
+		</View>
+	)
+}	
 
 const styles = StyleSheet.create({
 	container: {

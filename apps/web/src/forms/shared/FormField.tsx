@@ -8,7 +8,13 @@ import {
 	FieldValues,
 	FieldError,
 } from 'react-hook-form'
-import { TextInput as RNTextInput, Text, View, TouchableOpacity } from 'react-native'
+import {
+	TextInput as RNTextInput,
+	Text,
+	View,
+	TouchableOpacity,
+	TextInput,
+} from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { form as styles, shadows } from '@/styles'
 
@@ -20,6 +26,8 @@ type FormFieldProps<T extends FieldValues> = {
 	placeholder?: string
 	secure?: boolean
 	autoFocus?: boolean
+	inputRef?: React.RefObject<TextInput | null>
+	onSubmitEditing?: () => void
 	onFocus?: () => void
 	onBlur?: () => void
 }
@@ -32,6 +40,8 @@ export const FormField = <T extends FieldValues>({
 	placeholder,
 	secure = false,
 	autoFocus = false,
+	inputRef,
+	onSubmitEditing,
 	onFocus,
 	onBlur,
 }: FormFieldProps<T>) => {
@@ -39,18 +49,15 @@ export const FormField = <T extends FieldValues>({
 
 	return (
 		<View style={{ marginBottom: 0 }}>
-			{label && (
-				<Text style={styles.label}>
-					{label}
-				</Text>
-			)}
+			{label && <Text style={styles.label}>{label}</Text>}
+
 			<Controller
 				name={name}
 				control={control}
-				render={({ field: { onChange, onBlur: rhfBlur, value, ref } }) => (
+				render={({ field: { onChange, onBlur: rhfBlur, value } }) => (
 					<View style={{ position: 'relative' }}>
 						<RNTextInput
-							ref={ref}
+							ref={inputRef}
 							value={value ?? ''}
 							onChangeText={onChange}
 							onFocus={onFocus}
@@ -63,13 +70,15 @@ export const FormField = <T extends FieldValues>({
 							placeholderTextColor='#070'
 							autoCapitalize='none'
 							secureTextEntry={isSecure}
-							returnKeyType='next'
+							returnKeyType='done'
+							onSubmitEditing={onSubmitEditing}
 							style={[
 								styles.input,
 								shadows.input,
 								error && { borderColor: 'red' },
 							]}
 						/>
+
 						{secure && (
 							<TouchableOpacity
 								onPress={() => setIsSecure((prev) => !prev)}
@@ -80,20 +89,18 @@ export const FormField = <T extends FieldValues>({
 									zIndex: 1,
 								}}
 							>
-								{isSecure ? (
-									<Ionicons name='eye-off' size={20} color='#fff' />
-								) : (
-									<Ionicons name='eye' size={20} color='#fff' />
-								)}
+								<Ionicons
+									name={isSecure ? 'eye-off' : 'eye'}
+									size={20}
+									color='#fff'
+								/>
 							</TouchableOpacity>
 						)}
 					</View>
 				)}
 			/>
-			
-			<Text style={styles.error}>
-				{error?.message ?? ' '}
-			</Text>
+
+			<Text style={styles.error}>{error?.message ?? ' '}</Text>
 		</View>
 	)
 }
