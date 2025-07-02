@@ -1,7 +1,7 @@
 // packages/ui/src/components/Button/Button.tsx
 
 import React from 'react'
-import { Pressable, Text, StyleSheet, StyleProp, ViewStyle, TextStyle } from 'react-native'
+import { Pressable, Text, StyleSheet } from 'react-native'
 import type { ButtonProps } from './Button.types'
 
 export const Button: React.FC<ButtonProps> = ({
@@ -31,7 +31,6 @@ export const Button: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
 	base: {
-        // width: '100%',
         flex: 1,
 		paddingVertical: 12,
 		paddingHorizontal: 16,

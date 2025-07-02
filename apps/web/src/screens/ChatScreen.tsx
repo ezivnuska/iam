@@ -1,8 +1,8 @@
 // apps/web/src/screens/ChatScreen.tsx
 
-import React, { KeyboardEvent, useRef, useState, useEffect } from 'react'
-import { TextInput, TextInput as RNTextInput, Text, ScrollView, StyleSheet, FlatList, TouchableOpacity, View } from 'react-native'
-import { AutoScrollView, Column, Avatar, PageLayout, Row, InfiniteScrollView } from '@/components'
+import React, { useRef, useState, useEffect } from 'react'
+import { TextInput, TextInput as RNTextInput, Text, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { AutoScrollView, Avatar, PageLayout, Row } from '@/components'
 import { paddingHorizontal, paddingVertical, Size, form as formStyles } from '@/styles'
 import { useAuth, useSocket } from '@/hooks'
 import Feather from '@expo/vector-icons/Feather'
@@ -19,7 +19,6 @@ type ChatFormProps = z.infer<typeof schema>
 export const ChatScreen = () => {
 	const { user } = useAuth()
 	const [messages, setMessages] = useState<any[]>([])
-	const [input, setInput] = useState('')
     const [focused, setFocused] = useState<string | null>(null)
 	const inputRef = useRef<RNTextInput>(null)
 	const scrollViewRef = useRef<ScrollView>(null)
@@ -101,13 +100,6 @@ export const ChatScreen = () => {
         if (formErrors.input) {
             inputRef.current?.focus()
         }
-    }	  
-
-    const focusFirstEmptyField = () => {
-        const values = getValues()
-        if (!values.input.length) {
-            inputRef.current?.focus()
-        }
     }
 
 	const onInvalid = (errors: FieldErrors<ChatFormProps>) => {
@@ -138,11 +130,9 @@ export const ChatScreen = () => {
 					</AutoScrollView>
 				</View>
 
-				{/* Fixed Input at Bottom */}
 				<Row
                     align='center'
                     spacing={Size.S}
-                    // style={styles.inputRow}
                 >
                     <Controller
                         control={control}
@@ -151,12 +141,10 @@ export const ChatScreen = () => {
                             <TextInput
                                 ref={inputRef}
                                 autoFocus
-                                // onChangeText={setInput}
                                 placeholder='Say something...'
                                 placeholderTextColor='#555'
                                 value={value}
                                 onChangeText={onChange}
-                                // style={styles.input}
                                 returnKeyType='send'
                                 onFocus={() => setFocused('input')}
                                 onBlur={() => {
@@ -166,7 +154,6 @@ export const ChatScreen = () => {
                                 autoCapitalize='none'
                                 onSubmitEditing={handleSubmit(onSubmit, onInvalid)}
                                 style={[
-                                    // styles.input,
                                     formStyles.input,
                                     isFocused('input') && formStyles.inputFocused,
                                 ]}
@@ -182,7 +169,6 @@ export const ChatScreen = () => {
 	)
 }
 
-
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
@@ -195,10 +181,6 @@ const styles = StyleSheet.create({
 	},
 	messages: {
 		flex: 1,
-		// backgroundColor: '#fff',
-        // borderWidth: 1,
-        // borderColor: '#ccc',
-		// borderRadius: 8,
 		marginBottom: 12,
 	},
 	message: {
@@ -212,14 +194,10 @@ const styles = StyleSheet.create({
 	inputRow: {
 		paddingVertical,
 		paddingHorizontal,
-		// backgroundColor: '#fff',
-		// borderTopWidth: 1,
-		// borderColor: '#eee',
 	},	
 	input: {
 		flex: 1,
 		borderWidth: 1,
-		// borderColor: '#ccc',
 		borderRadius: 6,
 		paddingHorizontal: 12,
 		backgroundColor: '#333',

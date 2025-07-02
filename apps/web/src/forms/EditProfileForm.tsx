@@ -2,10 +2,10 @@
 
 import React from 'react'
 import { Alert } from 'react-native'
-import { DynamicForm, bioFields, bioSchema } from '@/forms'
 import { useAuth, useModal } from '@/hooks'
 import { updateSelf } from '@services'
 import type { Path, UseFormSetError } from 'react-hook-form'
+import { DynamicForm, bioFields, bioSchema } from '@/forms'
 import type { BioFormValues } from '@/forms'
 
 export const EditProfileForm = () => {

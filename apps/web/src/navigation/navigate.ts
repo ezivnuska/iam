@@ -33,7 +33,6 @@ export function resetTo<RouteName extends keyof RootStackParamList>(
     }
 }
 
-// Optional: goBack helper
 export function goBack() {
     if (navigationRef.canGoBack()) {
         navigationRef.goBack()

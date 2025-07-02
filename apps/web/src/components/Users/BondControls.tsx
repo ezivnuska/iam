@@ -59,7 +59,6 @@ export const BondControls = ({ bond, userId, onConfirm, onDelete, onCreate }: Bo
 		}
 	}
 
-	// Fallback: if bond exists and confirmed, allow delete
 	if (onDelete) {
 		return (
 			<IconButton

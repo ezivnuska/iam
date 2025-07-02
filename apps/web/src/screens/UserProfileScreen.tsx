@@ -80,8 +80,6 @@ export const UserProfileScreen = () => {
             fetchUser()
         }
     }, [username, isOwnProfile])
-    
-    // handle loading states
 
     if (userNotFound) {
         return <Text style={{ color: 'red', padding: 20 }}>User not found</Text>

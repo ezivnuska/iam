@@ -12,9 +12,6 @@ type StyleVariants<T> = {
 export function useResponsiveStyles<T>(variants: StyleVariants<T>): T {
 	const { isMobile, orientation } = useDeviceInfo()
 
-	// Priority:
-	// 1. Orientation specific
-	// 2. Device type specific
 	if (orientation === 'portrait' && variants.portrait) {
 		return variants.portrait
 	}

@@ -24,7 +24,6 @@ export const PostList = () => {
 		setVisiblePosts(posts.slice(0, PAGE_SIZE))
 	}, [posts])
 
-	// Load next "page"
 	const loadMore = useCallback(() => {
 		const next = posts.slice(0, visiblePosts.length + PAGE_SIZE)
 		if (next.length > visiblePosts.length) {
@@ -32,7 +31,6 @@ export const PostList = () => {
 		}
 	}, [posts, visiblePosts])
 
-	// Detect when user scrolls near the bottom
 	const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
 		const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent
 		const distanceFromBottom = contentSize.height - (contentOffset.y + layoutMeasurement.height)
@@ -41,26 +39,6 @@ export const PostList = () => {
 			loadMore()
 		}
 	}
-
-	// const renderItem = useCallback(
-	// 	(item: Post) => {
-	// 		return (
-	// 			<PostListItem
-	// 				key={item._id}
-	// 				post={item}
-	// 				showPreview={!!item.linkPreview}
-	// 				commentCount={commentCounts[item._id] ?? 0}
-	// 				onCommentDeleted={() => {
-	// 					setCommentCounts((prev) => ({
-	// 						...prev,
-	// 						[item._id]: Math.max((prev[item._id] ?? 1) - 1, 0),
-	// 					}))
-	// 				}}
-	// 			/>
-	// 		)
-	// 	},
-	// 	[commentCounts]
-	// )
 
 	return (
 		<View style={{ flex: 1 }}>

@@ -71,7 +71,6 @@ export const PostsProvider = ({ children }: { children: React.ReactNode }) => {
 		}
 	}
 
-	// 🔁 INITIAL FETCH
 	useEffect(() => {
 		refreshPosts()
 	}, [])

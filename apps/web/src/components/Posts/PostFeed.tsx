@@ -23,7 +23,6 @@ const PostFeedContent = ({
 	const [visiblePosts, setVisiblePosts] = useState<Post[]>([])
 	const [loadingMore, setLoadingMore] = useState(false)
 
-	// Update visiblePosts when posts change
 	useEffect(() => {
 		setVisiblePosts(posts.slice(0, PAGE_SIZE))
 	}, [posts])

@@ -12,13 +12,11 @@ type CommentParentType = 'Post' | 'Image'
 type CommentFormProps = {
 	id: string
 	type: CommentParentType
-	// onCommentAdded?: (newComment: Comment) => void
 }
 
 export const CommentForm: React.FC<CommentFormProps> = ({
 	id,
 	type,
-	// onCommentAdded,
 }) => {
 	const { user } = useAuth()
 	const { hideModal } = useModal()
@@ -31,7 +29,6 @@ export const CommentForm: React.FC<CommentFormProps> = ({
 
 		try {
 			const newComment = await addComment(id, type, values.content)
-			// onCommentAdded?.(newComment)
 			hideModal()
 		} catch (err: any) {
 			const message = err?.message || 'Unknown error'

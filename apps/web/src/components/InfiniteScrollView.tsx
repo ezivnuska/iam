@@ -33,25 +33,21 @@ export const InfiniteScrollView: React.FC<InfiniteScrollViewProps> = ({
 		const currentOffset = contentOffset.y
 		const direction = currentOffset > scrollOffset.current ? 'down' : 'up'
 	
-		// only trigger if scroll delta is significant (avoid jitter)
 		if (Math.abs(currentOffset - scrollOffset.current) > 10) {
 			onScrollDirectionChange?.(direction)
 		}
 		scrollOffset.current = currentOffset
 	
-		// Near bottom threshold
 		if (
 			currentOffset + layoutMeasurement.height >= contentSize.height - 200
 		) {
 			onScrollNearBottom?.()
 		}
 	
-		// At top
 		if (currentOffset <= 0) {
 			onScrolledToTop?.()
 		}
 	
-		// At bottom (exactly)
 		if (
 			Math.abs(currentOffset + layoutMeasurement.height - contentSize.height) < 5
 		) {
@@ -72,44 +68,6 @@ export const InfiniteScrollView: React.FC<InfiniteScrollViewProps> = ({
 		</ScrollView>
 	)
 }
-
-
-// export const InfiniteScrollView: React.FC<InfiniteScrollViewProps> = ({
-// 	children,
-// 	onScrollNearBottom,
-// 	threshold = 100,
-// }) => {
-// 	const triggeredRef = useRef(false)
-
-// 	const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-// 		const { layoutMeasurement, contentOffset, contentSize } = e.nativeEvent
-// 		const distanceFromBottom =
-// 			contentSize.height - (contentOffset.y + layoutMeasurement.height)
-
-// 		if (distanceFromBottom < threshold) {
-// 			if (!triggeredRef.current) {
-// 				triggeredRef.current = true
-// 				onScrollNearBottom?.()
-// 			}
-// 		} else {
-// 			triggeredRef.current = false
-// 		}
-// 	}
-
-// 	return (
-// 		<View style={styles.container}>
-// 			<ScrollView
-// 				style={styles.scrollView}
-// 				contentContainerStyle={styles.scrollContent}
-// 				showsVerticalScrollIndicator={false}
-// 				scrollEventThrottle={16}
-// 				onScroll={handleScroll}
-// 			>
-// 				{children}
-// 			</ScrollView>
-// 		</View>
-// 	)
-// }
 
 const styles = StyleSheet.create({
 	container: {

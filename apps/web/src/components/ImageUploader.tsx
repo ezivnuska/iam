@@ -30,7 +30,6 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected })
 		setUploadUri(uri)
 		setUseCamera(false)
 
-		// Here you could compute width/height if needed for imageData
 		onImageSelected({ uri, filename: `captured_${Date.now()}.jpg` })
 	}
 

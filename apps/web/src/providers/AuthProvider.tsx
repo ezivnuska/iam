@@ -54,8 +54,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 		setToken(accessToken)
 		setUser(userProfile)
 		setIsAuthenticated(true)
-		// navigate('Home')
-        // return { user: userProfile }
 	}
 
     const signup = async (email: string, username: string, password: string) => {
@@ -65,7 +63,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setToken(accessToken)
         setUser(userProfile)
         setIsAuthenticated(true)
-        // navigate('Home') // optional
     }    
 
 	const logout = async () => {

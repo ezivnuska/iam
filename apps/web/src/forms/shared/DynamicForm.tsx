@@ -7,17 +7,11 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import type { z, ZodTypeAny, ZodObject } from 'zod'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { renderFields, SubmitButton } from '@/forms'
-
-type FieldConfig<T extends z.ZodTypeAny> = {
-	name: Path<z.infer<T>>
-	label: string
-	secure?: boolean
-	autoFocus?: boolean
-}
+import type { FieldConfig } from '@/forms'
 
 interface DynamicFormProps<T extends ZodTypeAny> {
 	schema: T
-	fields: FieldConfig<T>[]
+	fields: FieldConfig<z.infer<T>>[]
 	submitLabel: string
 	prefillEmail?: boolean
 	defaultValues?: Partial<z.infer<T>>
@@ -54,8 +48,8 @@ export function DynamicForm<T extends ZodTypeAny>({
 	const scrollViewRef = useRef<ScrollView>(null)
 
 	fields.forEach(({ name }) => {
-		if (!inputRefs.current[name]) {
-			inputRefs.current[name] = React.createRef<TextInput>()
+		if (!inputRefs.current[name as string]) {
+			inputRefs.current[name as string] = React.createRef<TextInput>()
 		}
 	})
 
@@ -133,7 +127,7 @@ export function DynamicForm<T extends ZodTypeAny>({
 		if (!isValid) {
 			const firstInvalid = fields.find((f) => form.formState.errors[f.name])
 			if (firstInvalid) {
-				focusAndScrollToField(firstInvalid.name)
+				focusAndScrollToField(firstInvalid.name as string)
 			}
 			return;
 		}
@@ -144,7 +138,7 @@ export function DynamicForm<T extends ZodTypeAny>({
 				return val === undefined || val === null || val === ''
 			})
 			if (firstEmpty) {
-				focusAndScrollToField(firstEmpty.name)
+				focusAndScrollToField(firstEmpty.name as string)
 			}
 			return
 		}
