@@ -31,6 +31,7 @@ export function renderFields<T extends FieldValues>(
 						secure={field.secure}
 						autoFocus={field.autoFocus}
 						keyboardType={field.keyboardType}
+						placeholder={field.placeholder}
 						inputRef={inputRefs.current[name as string]}
 						onSubmitEditing={async () => {
 							const isValid = await triggerField(name)

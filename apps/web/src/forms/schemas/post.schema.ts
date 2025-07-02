@@ -14,7 +14,7 @@ export const postSchema = z
 	})
 
 export const postFields: FieldConfig<PostFormValues>[] = [
-    { name: 'content', label: 'Create Post', autoFocus: true },
+    { name: 'content', autoFocus: true, placeholder: 'Say something...' },
 ]
 
 export type PostFormValues = z.infer<typeof postSchema>

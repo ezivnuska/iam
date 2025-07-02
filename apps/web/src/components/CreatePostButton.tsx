@@ -5,6 +5,7 @@ import { Pressable, Text, StyleSheet } from 'react-native'
 import { useModal, usePosts } from'@/hooks'
 import { PostForm } from '@/forms'
 import type { Post } from '@iam/types'
+import { form as formStyles, Size, paddingHorizontal } from '@/styles'
 
 export const CreatePostButton = () => {
 	const { hideModal, showModal, openFormModal } = useModal()
@@ -21,8 +22,10 @@ export const CreatePostButton = () => {
 	}
 
 	return (
-		<Pressable style={styles.button} onPress={showPostModal}>
-			<Text style={styles.text}>Create Post</Text>
+		<Pressable style={styles.container} onPress={showPostModal}>
+            <Text style={[formStyles.input, styles.createPostButton]}>
+                Create Post
+            </Text>
 		</Pressable>
 	)
 }
@@ -30,13 +33,19 @@ export const CreatePostButton = () => {
 const styles = StyleSheet.create({
 	button: {
 		backgroundColor: '#0f0',
-		padding: 12,
 		borderRadius: 8,
-		margin: 16,
 		alignItems: 'center',
 	},
 	text: {
-		color: '#000',
+        color: '#000',
 		fontWeight: 'bold',
 	},
+    container: {
+        marginVertical: Size.XS,
+        paddingHorizontal: paddingHorizontal,
+    },
+    createPostButton: {
+        color: '#aaa',
+        fontSize: 20,
+    },
 })

@@ -15,7 +15,7 @@ export const Spinner: React.FC<SpinnerProps> = ({
     label,
 }) => (
     <View style={styles.outerContainer}>
-        <Column spacing={10} justify='center'>
+        <Column spacing={20} justify='center'>
             <ActivityIndicator color='#fff' size={size} />
             {label && <Text style={styles.label}>{label}</Text>}
         </Column>

@@ -9,7 +9,7 @@ export const commentSchema = z
 	})
 
 export const commentFields: FieldConfig<CommentFormValues>[] = [
-    { name: 'content', label: 'Add Comment', autoFocus: true },
+    { name: 'content', label: 'Add Comment', autoFocus: true, placeholder: 'comment...' },
 ]
 
 export type CommentFormValues = z.infer<typeof commentSchema>

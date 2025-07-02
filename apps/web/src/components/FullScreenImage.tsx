@@ -141,7 +141,10 @@ const FullScreenImage: React.FC<Props> = ({
                         flex={1}
                         align='center'
                         justify='space-between'
-                        style={[styles.headerContent, { maxWidth: displayWidth }]}
+                        style={[
+                            styles.headerContent,
+                            // { maxWidth: displayWidth },
+                        ]}
                     >
                         <Row
                             align='center'
@@ -182,7 +185,7 @@ const FullScreenImage: React.FC<Props> = ({
                     <View
                         style={[
                             styles.footerContent, {
-                                maxWidth: displayWidth,
+                                // maxWidth: displayWidth,
                             },
                             expanded && { backgroundColor: 'rgba(0,0,0,0.7)' }
                         ]}

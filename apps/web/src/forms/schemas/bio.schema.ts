@@ -9,7 +9,7 @@ export const bioSchema = z
 	})
 
 export const bioFields: FieldConfig<BioFormValues>[] = [
-    { name: 'bio', label: 'Bio', autoFocus: true },
+    { name: 'bio', label: 'Bio', autoFocus: true, placeholder: 'Who are you?' },
 ]
 
 export type BioFormValues = z.infer<typeof bioSchema>
