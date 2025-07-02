@@ -1,6 +1,5 @@
 // packages/forms/src/index.ts
 
-export * from './AuthForm'
 export * from './CommentForm'
 export * from './PostForm'
 export * from './EditProfileForm'
