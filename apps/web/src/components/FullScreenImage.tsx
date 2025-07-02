@@ -9,6 +9,7 @@ import {
 	ImageComments,
 	LikeCommentBar,
 	Row,
+    MAX_WIDTH,
 } from '@/components'
 import { CommentForm } from '@/forms'
 import { Size, resolveResponsiveProp } from '@/styles'
@@ -143,7 +144,7 @@ const FullScreenImage: React.FC<Props> = ({
                         justify='space-between'
                         style={[
                             styles.headerContent,
-                            // { maxWidth: displayWidth },
+                            { maxWidth: MAX_WIDTH },
                         ]}
                     >
                         <Row
@@ -185,7 +186,7 @@ const FullScreenImage: React.FC<Props> = ({
                     <View
                         style={[
                             styles.footerContent, {
-                                // maxWidth: displayWidth,
+                                maxWidth: MAX_WIDTH,
                             },
                             expanded && { backgroundColor: 'rgba(0,0,0,0.7)' }
                         ]}
