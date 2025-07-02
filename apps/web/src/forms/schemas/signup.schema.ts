@@ -15,11 +15,11 @@ export const signupSchema = z
 		path: ['confirmPassword'],
 	})
 
+export type SignupFormValues = z.infer<typeof signupSchema>
+
 export const signupFields: FieldConfig<SignupFormValues>[] = [
     { name: 'email', label: 'Email Address', autoFocus: true, keyboardType: 'email-address', placeholder: 'email' },
     { name: 'username', label: 'Username', placeholder: 'username' },
     { name: 'password', label: 'Password', secure: true, placeholder: 'password' },
     { name: 'confirmPassword', label: 'Confirm Password', secure: true, placeholder: 'confirm password' },
 ]
-
-export type SignupFormValues = z.infer<typeof signupSchema>

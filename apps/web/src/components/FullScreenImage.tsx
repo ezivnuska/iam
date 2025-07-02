@@ -51,7 +51,6 @@ const FullScreenImage: React.FC<Props> = ({
 	const bestVariantUrl = useBestVariant(image, width - paddingHorizontal * 2)
 	const bestVariant = image.variants.find(v => bestVariantUrl.includes(v.filename))
 
-	// Adjust dimensions to fit screen and maintain aspect ratio
 	let displayWidth = width - paddingHorizontal * 2
 	let displayHeight = height - paddingHorizontal * 2
 

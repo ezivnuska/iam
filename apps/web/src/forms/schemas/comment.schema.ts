@@ -4,7 +4,7 @@ import { z } from 'zod'
 import type { FieldConfig } from '@/forms'
 
 export const commentSchema = z.object({
-  content: z.string(),
+	content: z.string(),
 })
 
 export type CommentFormValues = z.infer<typeof commentSchema>

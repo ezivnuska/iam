@@ -8,8 +8,9 @@ export const bioSchema = z
 		bio: z.string().min(1, 'Bio is required'),
 	})
 
+export type BioFormValues = z.infer<typeof bioSchema>
+
 export const bioFields: FieldConfig<BioFormValues>[] = [
     { name: 'bio', label: 'Bio', autoFocus: true, placeholder: 'Who are you?' },
 ]
 
-export type BioFormValues = z.infer<typeof bioSchema>
