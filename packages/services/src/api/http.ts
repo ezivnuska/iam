@@ -58,7 +58,6 @@ api.interceptors.request.use(
 					refreshSubscribers = []
 					await clearToken()
 					clearAuthHeader()
-                    console.log('logoutRequest (req)', token)
 					await logoutRequest()
 					if (onUnauthorized) onUnauthorized()
 					return Promise.reject(err)
