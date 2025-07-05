@@ -32,13 +32,10 @@ export const ControlledTextInput = <T extends FieldValues>({
 	...rest
 }: Props<T>) => {
 	const inputRef = useRef<TextInput>(null)
-	const [height, setHeight] = useState(48)
+	const [height, setHeight] = useState(40)
+	const [isFocused, setIsFocused] = useState(false)
 
-	useEffect(() => {
-        if (rest.inputRef && inputRef.current) {
-            rest.inputRef.current = inputRef.current
-        }
-    }, [rest.inputRef])
+	useImperativeHandle(rest.inputRef, () => inputRef.current as TextInput)
 
 	const onContentSizeChange = (
 		e: NativeSyntheticEvent<TextInputContentSizeChangeEventData>
@@ -58,17 +55,26 @@ export const ControlledTextInput = <T extends FieldValues>({
                         ref={inputRef}
                         value={value}
                         onChangeText={onChange}
-                        onBlur={onBlur}
+						{...rest}
+						onFocus={(e) => {
+							setIsFocused(true)
+							rest.onFocus?.(e)
+						}}
+                        onBlur={(e) => {
+							setIsFocused(false)
+							onBlur()
+							rest.onBlur?.(e)
+						}}
                         multiline
                         onContentSizeChange={onContentSizeChange}
                         style={[
                             styles.input,
-                            { height, textAlignVertical: 'center' },
-                            error && styles.errorInput,
+                            { height, textAlignVertical: 'top' },
+							isFocused && styles.inputFocused,
+                            // error && styles.errorInput,
                             style,
                         ]}
                         placeholderTextColor='#999'
-                        {...rest}
                     />
                 )}
             />
@@ -80,17 +86,22 @@ export const ControlledTextInput = <T extends FieldValues>({
 const styles = StyleSheet.create({
 	input: {
 		borderWidth: 1,
+		outlineWidth: 0,
 		borderRadius: 6,
 		paddingHorizontal: 12,
-		paddingVertical: 10,
+		paddingVertical: 8,
 		fontSize: 16,
 		lineHeight: 24,
 		backgroundColor: '#333',
 		color: '#fff',
 	},
-	errorInput: {
-		borderColor: 'red',
+	inputFocused: {
+		backgroundColor: '#fff',
+		color: '#000',
 	},
+	// errorInput: {
+	// 	// borderColor: 'red',
+	// },
 	label: {
 		color: '#fff',
 		fontWeight: '600',

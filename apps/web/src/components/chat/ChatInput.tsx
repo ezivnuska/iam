@@ -1,11 +1,7 @@
 // apps/web/src/components/chat/ChatInput.tsx
 
-import React, { useRef, useState } from 'react'
-import {
-	TextInput as RNTextInput,
-	StyleSheet,
-	TouchableOpacity,
-} from 'react-native'
+import React, { useRef } from 'react'
+import { TextInput, TouchableOpacity, StyleSheet } from 'react-native'
 import { useForm, FieldErrors } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -25,8 +21,7 @@ type Props = {
 }
 
 export const ChatInput = ({ onSend }: Props) => {
-	const inputRef = useRef<RNTextInput>(null)
-	const [focused, setFocused] = useState<string | null>(null)
+	const inputRef = useRef<TextInput>(null)
 
 	const {
 		control,
@@ -80,8 +75,6 @@ export const ChatInput = ({ onSend }: Props) => {
 				autoFocus
 				placeholder='Say something...'
 				inputRef={inputRef}
-				onFocus={() => setFocused('input')}
-				onBlur={() => setFocused(null)}
 				onSubmitEditing={handleSubmit(onSubmit, onInvalid)}
 				returnKeyType='send'
 			/>
@@ -101,6 +94,9 @@ export const ChatInput = ({ onSend }: Props) => {
 
 const styles = StyleSheet.create({
 	sendButton: {
+		borderWidth: 1,
+		outlineWidth: 1,
+		outlineColor: '#fff',
 		backgroundColor: '#3a3',
 		height: 40,
 		width: 40,

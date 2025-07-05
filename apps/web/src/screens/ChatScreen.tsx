@@ -1,14 +1,10 @@
 // apps/web/src/screens/ChatScreen.tsx
 
 import React, { useRef, useState, useEffect } from 'react'
-import { TextInput, TextInput as RNTextInput, Text, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Text, TextInput, ScrollView, StyleSheet, View } from 'react-native'
 import { AutoScrollView, Avatar, ChatInput, PageLayout, Row } from '@/components'
-import { paddingHorizontal, paddingVertical, Size, form as formStyles } from '@/styles'
+import { paddingHorizontal, Size, form as formStyles } from '@/styles'
 import { useAuth, useSocket } from '@/hooks'
-import Feather from '@expo/vector-icons/Feather'
-import { useForm, Controller, FieldErrors } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
 
 export const ChatScreen = () => {
 	const { user } = useAuth()
@@ -53,7 +49,7 @@ export const ChatScreen = () => {
 								<View key={item._id}>
 									<Row paddingBottom={Size.XS}>
 										<View style={{ width: 40 }}>
-											{showAvatar && <Avatar user={item.user} size="xs" />}
+											{showAvatar && <Avatar user={item.user} size='xs' />}
 										</View>
 										<Text style={styles.message}>{item.text}</Text>
 									</Row>
@@ -72,48 +68,9 @@ export const ChatScreen = () => {
 }
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-        paddingVertical: 10,
-	},
-	heading: {
-		fontSize: 18,
-		fontWeight: 'bold',
-		marginBottom: 12,
-	},
-	messages: {
-		flex: 1,
-		marginBottom: 12,
-	},
 	message: {
 		paddingVertical: 4,
 		fontSize: 14,
         color: '#fff',
-	},
-	messageList: {
-		flexGrow: 1,
-	},
-	inputRow: {
-		paddingVertical,
-		paddingHorizontal,
-	},	
-	input: {
-		flex: 1,
-		borderWidth: 1,
-		borderRadius: 6,
-		paddingHorizontal: 12,
-		backgroundColor: '#333',
-		lineHeight: 40,
-		fontSize: 20,
-        color: '#fff',
-	},
-	sendButton: {
-		backgroundColor: '#3a3',
-		height: 40,
-		width: 40,
-		borderRadius: 20,
-		overflow: 'hidden',
-		alignItems: 'center',
-		justifyContent: 'center',
 	},
 })
