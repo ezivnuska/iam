@@ -1,4 +1,4 @@
-// packages/ui/src/hooks/useBreakpoint.ts
+// apps/web/src/hooks/useBreakpoint.ts
 
 import { useWindowDimensions } from 'react-native'
 import { breakpoints } from '../styles/breakpoints'

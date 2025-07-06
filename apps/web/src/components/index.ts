@@ -1,5 +1,6 @@
-// packages/ui/src/components/index.ts
+// apps/web/src/components/index.ts
 
+export * from './AuthLayer'
 export * from './AuthModal'
 export * from './AutoScrollView'
 export * from './Avatar'

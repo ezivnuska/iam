@@ -7,7 +7,7 @@ export const requireRefreshToken = (req: Request, res: Response, next: NextFunct
 	const token = req.cookies?.refreshToken
 
 	if (!token) {
-		res.status(401).json({ message: 'Refresh token missing' })
+		res.status(401).json({ message: 'Missing refresh token cookie' })
 		return
 	}
 

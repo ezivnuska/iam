@@ -3,13 +3,13 @@
 import React, { ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { MAX_WIDTH } from './constants'
-import { Avatar, IconButton, Row } from '@/components'
+import { AuthModal, Avatar, IconButton, Row } from '@/components'
 import { useNavigation, useNavigationState } from '@react-navigation/native'
 import { useAuth, useModal } from '@/hooks'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import type { AvatarSize } from '@/components'
 import { paddingHorizontal, resolveResponsiveProp, Size } from '@/styles'
-import { AuthModal } from '../AuthModal'
+import { AuthMode } from '@/forms'
 
 interface HeaderProps {
     children?: ReactNode
@@ -28,7 +28,7 @@ const Brand = ({ ...props }) => {
 }
 
 export const Header: React.FC<HeaderProps> = () => {
-    const { isAuthenticated, user } = useAuth()
+    const { isAuthenticated, user, authenticate } = useAuth()
     const { showModal } = useModal()
     const navigation = useNavigation()
 
@@ -40,8 +40,9 @@ export const Header: React.FC<HeaderProps> = () => {
 
     const currentRoute = useNavigationState((state) => state.routes[state.index].name)
 
-    const showSigninModal = () => showModal(<AuthModal initialMode='signin' />)
-    const showSignupModal = () => showModal(<AuthModal initialMode='signup' />)
+    const showAuthModal = (mode: AuthMode) => {
+        showModal(<AuthModal initialMode={mode} authenticate={authenticate} />)
+    }
 
 	return (
         <Row flex={1} align='center' style={styles.container}>
@@ -92,10 +93,10 @@ export const Header: React.FC<HeaderProps> = () => {
                         </Row>
                     ) : (
                         <Row spacing={1} style={styles.authButtons}>
-                            <Pressable onPress={showSignupModal} style={[styles.authButton, { borderRightWidth: 1, borderRightColor: '#aaa' }]}>
+                            <Pressable onPress={() => showAuthModal('signup')} style={[styles.authButton, { borderRightWidth: 1, borderRightColor: '#aaa' }]}>
                                 <Text style={styles.buttonLabel}>Sign Up</Text>
                             </Pressable>
-                            <Pressable onPress={showSigninModal} style={[styles.authButton, { paddingRight: 0 }]}>
+                            <Pressable onPress={() => showAuthModal('signin')} style={[styles.authButton, { paddingRight: 0 }]}>
                                 <Text style={styles.buttonLabel}>Sign In</Text>
                             </Pressable>
                         </Row>

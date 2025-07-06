@@ -47,7 +47,7 @@ export const signin: RequestHandler = async (req, res, next) => {
 
 export const refreshToken: RequestHandler = async (req, res, next) => {
 	try {
-		console.log('🔍 Cookies in refresh-token route:', req.cookies)
+		console.log('Cookies in refresh-token route:', req.cookies)
 
 		const token = req.cookies.refreshToken
 		const { accessToken } = await authService.refreshAccessToken(token)
@@ -60,9 +60,8 @@ export const refreshToken: RequestHandler = async (req, res, next) => {
 }
 
 export const logout: RequestHandler = (req, res) => {
-	console.log('LOGOUT')
-	res.clearCookie('refreshToken', refreshTokenCookieOptions)
-	res.json({ message: 'Logged out' })
+    res.clearCookie('refreshToken', refreshTokenCookieOptions)
+    res.status(204).send()
 }
 
 export const verifyEmail: RequestHandler = async (req, res, next) => {

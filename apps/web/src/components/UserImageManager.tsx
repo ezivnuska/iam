@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { Text } from 'react-native'
 import { Column, FullScreenImage, ImageGallery, ImageManagerHeader } from '@/components'
 import { useAuth, useImage, useModal } from '@/hooks'
-import type { Image, User } from '@iam/types'
+import type { Image } from '@iam/types'
 
 interface UserImageManagerProps {
 	userId?: string
@@ -29,11 +29,6 @@ const UserImageManager: React.FC<UserImageManagerProps> = ({ userId }) => {
 
 	const { hideModal, showModal, openFormModal } = useModal()
 	const [error, setError] = useState<string | null>(null)
-
-    useEffect(() => {
-        console.log('userId', userId)
-        console.log('isOwner', isOwner)
-	}, [userId])
 
     useEffect(() => {
 		if (userId && images.length === 0 && !isLoading) {

@@ -3,7 +3,6 @@
 import React, {
 	createContext,
 	ReactNode,
-	useEffect,
 	useMemo,
 	useRef,
 	useState,
@@ -15,7 +14,6 @@ import type {
 	ClientToServerEvents,
 	ServerToClientEvents,
 } from '@iam/types'
-import { useAuth } from '@/hooks'
 
 type KoFiDonation = {
 	from_name: string
@@ -47,26 +45,11 @@ const SOCKET_URL = process.env.SOCKET_URL!
 
 type SocketProviderProps = {
 	children: ReactNode
-	token: string | null
 }
 
-export const SocketProvider = ({ children, token }: SocketProviderProps) => {
+export const SocketProvider = ({ children }: SocketProviderProps) => {
 	const socketRef = useRef<Socket<ServerToClientEvents, ClientToServerEvents> | null>(null)
 	const [socket, setSocket] = useState<Socket | null>(null)
-	const lastTokenRef = useRef<string | null>(null)
-
-	useEffect(() => {
-		if (!token) {
-			disconnectSocket()
-			lastTokenRef.current = null
-			return
-		}
-
-		if (lastTokenRef.current === token) return
-
-		lastTokenRef.current = token
-		connectSocket(token)
-	}, [token])
 
 	const bondListenersRef = useRef({
 		created: [] as ((bond: Bond) => void)[],
@@ -77,7 +60,7 @@ export const SocketProvider = ({ children, token }: SocketProviderProps) => {
 
 	const connectSocket = (token: string) => {
 		if (!token) return
-
+        console.log('connecting socket...')
 		if (socketRef.current) {
 			socketRef.current.disconnect()
 		}
@@ -113,6 +96,7 @@ export const SocketProvider = ({ children, token }: SocketProviderProps) => {
 	}
 
 	const disconnectSocket = () => {
+        console.log('disconnecting socket...')
 		if (socketRef.current) {
 			console.log('Socket manually disconnected')
 			socketRef.current.disconnect()

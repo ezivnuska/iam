@@ -3,8 +3,8 @@
 import React, {
 	createContext,
 	ReactNode,
-	useCallback,
 	useContext,
+	useEffect,
 	useState,
 } from 'react'
 import {
@@ -14,7 +14,6 @@ import {
 	StyleSheet,
 	View,
 } from 'react-native'
-import { createPortal } from 'react-dom'
 import { MAX_WIDTH } from '@/components'
 import { ModalContainer } from '@/components'
 
@@ -29,7 +28,6 @@ export type ModalContextType = {
 	showModal: (content: ReactNode, fullscreen?: boolean) => void
 	hideModal: () => void
 	hideAllModals: () => void
-	modalStack: ModalContent[]
 	openFormModal: (
 		Component: React.FC<any>,
 		props: Record<string, any>,
@@ -56,41 +54,42 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
 			? topModal.fullscreen ?? false
 			: false
 
-    const showModal = useCallback(
-        (content: ReactNode, fullscreen: boolean = false) => {
-            setModalStack((prev) => [
-                ...prev,
-                { content, fullscreen },
-            ])
-        },
-        []
-    )            
+    const showModal = (content: ReactNode, fullscreen: boolean = false) => {
+        setModalStack((prev) => [
+            ...prev,
+            { content, fullscreen },
+        ])
+    }
 
-	const hideModal = useCallback(() => {
+    useEffect(() => {
+        console.log('ModalProvider mounted')
+        console.log('modalStack', modalStack)
+		return () => console.log('ModalProvider unmounted')
+    }, [])
+
+	const hideModal = () => {
 		setModalStack((prev) => prev.slice(0, -1))
-	}, [])
+	}
 
-	const hideAllModals = useCallback(() => {
+	const hideAllModals = () => {
 		setModalStack([])
-	}, [])
+	}
 
 	// --- Factory Method for Standard Form Modals ---
-	const openFormModal = useCallback(
-		(
-			Component: React.FC<any>,
-			props: Record<string, any> = {},
-			options: { title?: string; fullscreen?: boolean } = {}
-		) => {
-			const wrappedContent = (
-				<ModalContainer title={options.title || ''}>
-					<Component {...props} />
-				</ModalContainer>
-			)
+	const openFormModal = (
+        Component: React.FC<any>,
+        props: Record<string, any> = {},
+        options: { title?: string; fullscreen?: boolean } = {}
+    ) => {
+		console.log('openFormModal', options.title)
+        const wrappedContent = (
+            <ModalContainer title={options.title || ''}>
+                <Component {...props} />
+            </ModalContainer>
+        )
 
-			showModal(wrappedContent, options.fullscreen ?? false)
-		},
-		[showModal]
-	)
+        showModal(wrappedContent, options.fullscreen ?? false)
+    }
 
 	return (
 		<ModalContext.Provider
@@ -99,33 +98,37 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
 				hideModal,
 				hideAllModals,
 				openFormModal,
-				modalStack,
 			}}
 		>
 			<View style={{ flex: 1 }}>{children}</View>
 
-			{modalContent &&
-				(useNativeModal ? (
+			{modalContent ? (
+				useNativeModal ? (
 					<Modal
 						transparent
-						visible
+						visible={true}
 						animationType='fade'
 						presentationStyle='overFullScreen'
 						onRequestClose={hideModal}
 					>
-						<Overlay fullscreen={fullscreen} onClose={hideModal}>
+						<Overlay
+							key={modalStack.length}
+							fullscreen={fullscreen}
+							onClose={hideModal}
+						>
 							{modalContent}
 						</Overlay>
 					</Modal>
 				) : (
-					typeof document !== 'undefined' &&
-					createPortal(
-						<Overlay fullscreen={fullscreen} onClose={hideModal}>
-							{modalContent}
-						</Overlay>,
-						document.body
-					)
-				))}
+					<Overlay
+						key={modalStack.length}
+						fullscreen={fullscreen}
+						onClose={hideModal}
+					>
+						{modalContent}
+					</Overlay>
+				)
+			) : null}
 		</ModalContext.Provider>
 	)
 }

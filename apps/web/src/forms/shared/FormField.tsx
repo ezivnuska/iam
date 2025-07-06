@@ -77,7 +77,6 @@ export const FormField = <T extends FieldValues>({
 							keyboardType={keyboardType}
 							style={[
 								styles.input,
-								shadows.input,
 								error && { borderColor: 'red' },
 							]}
 						/>

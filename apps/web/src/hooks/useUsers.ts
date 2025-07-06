@@ -6,9 +6,9 @@ import { usePresence, useAuth } from '@/hooks'
 import type { User } from '@iam/types'
 
 export const useUsers = () => {
-	const { user: currentUser } = useAuth()
+	const { user: currentUser, loading: authLoading } = useAuth()
 	const { isOnline } = usePresence()
-	const { data, fetchNextPage, loading } = usePaginatedFetch<User>('users')
+	const { data, fetchNextPage, loading } = usePaginatedFetch<User>('users', 10, !authLoading)
 
 	const users = useMemo(() => {
 		return (data ?? []).filter((u) => u.email !== currentUser?.email)

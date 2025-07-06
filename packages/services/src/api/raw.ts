@@ -6,4 +6,8 @@ import { apiBaseUrl } from '../constants'
 export const rawApi = axios.create({
 	baseURL: apiBaseUrl,
 	withCredentials: true,
+	transformRequest: [(data, headers) => {
+		delete headers['Authorization']
+		return JSON.stringify(data)
+	}],
 })

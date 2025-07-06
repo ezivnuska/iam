@@ -43,3 +43,8 @@ export interface PartialUser {
 	username: string
 	avatar?: Image
 }
+
+export interface AuthResponseType {
+	accessToken: string
+	user: User
+}

@@ -129,7 +129,7 @@ export function DynamicForm<T extends ZodTypeAny>({
 			if (firstInvalid) {
 				focusAndScrollToField(firstInvalid.name as string)
 			}
-			return;
+			return
 		}
 	
 		if (!allFieldsComplete(data)) {

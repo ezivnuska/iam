@@ -2,98 +2,91 @@
 
 import React, { useEffect, useState, createContext } from 'react'
 import {
-	getToken,
-	saveToken,
 	clearToken,
-	signinRequest,
-	signupRequest,
 	logoutRequest,
 	setAuthHeader,
 	clearAuthHeader,
 	trySigninFromStoredToken,
 } from '@services'
-import { SocketProvider } from '@/providers'
 import { navigate } from '../navigation'
-import type { User } from '@iam/types'
+import type { AuthResponseType, User } from '@iam/types'
 import { LoadingScreen } from '@/screens'
+import { useModal, useSocket } from '@/hooks'
 
 export type AuthContextType = {
 	isAuthenticated: boolean
 	isAuthInitialized: boolean
 	user: User | null
-	login: (email: string, password: string) => Promise<void>
+    loading: boolean
 	logout: () => Promise<void>
 	setUser: (user: User | null) => void
-    signup: (email: string, username: string, password: string) => Promise<void>
+    authenticate: (response: AuthResponseType) => void
 }
 
 export const AuthContext = createContext<AuthContextType>({
 	isAuthenticated: false,
 	isAuthInitialized: false,
 	user: null,
-	login: async () => {},
+    loading: false,
 	logout: async () => {},
 	setUser: () => {},
-	signup: async () => {},
+	authenticate: () => {},
 })
 
 type AuthProviderProps = {
 	children: React.ReactNode
 }
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
+export const AuthProvider = ({
+	children,
+}: AuthProviderProps) => {
 	const [user, setUser] = useState<User | null>(null)
 	const [isAuthenticated, setIsAuthenticated] = useState(false)
 	const [isAuthInitialized, setIsAuthInitialized] = useState(false)
-	const [token, setToken] = useState<string | null>(null)
-
-	const login = async (email: string, password: string) => {
-		const { accessToken, user: userProfile } = await signinRequest(email, password)
-		await saveToken(accessToken)
-		setAuthHeader(accessToken)
-		setToken(accessToken)
-		setUser(userProfile)
-		setIsAuthenticated(true)
-	}
-
-    const signup = async (email: string, username: string, password: string) => {
-        const { accessToken, user: userProfile } = await signupRequest(email, username, password)
-        await saveToken(accessToken)
-        setAuthHeader(accessToken)
-        setToken(accessToken)
-        setUser(userProfile)
-        setIsAuthenticated(true)
-    }    
-
-	const logout = async () => {
-		await logoutRequest()
-		await clearToken()
-		clearAuthHeader()
-		setToken(null)
-		setIsAuthenticated(false)
-		setUser(null)
-		navigate('Home')
-	}
+    
+    const { hideModal } = useModal()
+    const { connectSocket, disconnectSocket } = useSocket()
+    
+    const loading = !isAuthInitialized
 
 	useEffect(() => {
 		const initialize = async () => {
-			const profile = await trySigninFromStoredToken()
-			if (profile) {
-				const token = await getToken()
-				if (token) {
-					setAuthHeader(token)
-					setToken(token)
+			try {
+				const authResponse = await trySigninFromStoredToken()
+				if (authResponse) {
+					await authenticate(authResponse)
+				} else {
+					navigate('Home')
 				}
-				setUser(profile)
-				setIsAuthenticated(true)
-			} else {
-				navigate('Home')
+			} catch (err) {
+				console.log('Error initializing')
+			} finally {
+				setIsAuthInitialized(true)
 			}
-			setIsAuthInitialized(true)
 		}
 
 		initialize()
 	}, [])
+
+	const authenticate = async (data: AuthResponseType) => {
+		const { accessToken, user: userProfile } = data
+		setAuthHeader(accessToken)
+		setUser(userProfile)
+		setIsAuthenticated(true)
+		connectSocket(accessToken)
+		hideModal()
+	}
+
+	const logout = async () => {
+		await logoutRequest()
+		await clearToken()
+		disconnectSocket()
+		clearAuthHeader()
+		setUser(null)
+		setIsAuthenticated(false)
+		hideModal()
+		navigate('Home')
+	}
 
 	return (
 		<AuthContext.Provider
@@ -101,20 +94,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 				isAuthenticated,
 				isAuthInitialized,
 				user,
-				login,
+                loading,
+				authenticate,
 				logout,
 				setUser,
-				signup,
 			}}
 		>
-            {isAuthInitialized
-                ? (
-                    <SocketProvider token={token}>
-                        {children}
-                    </SocketProvider>
-                )
-                : <LoadingScreen label="Authenticating..." />
-            }
+			{isAuthInitialized
+				? children 
+				: <LoadingScreen label='Initializing...' />
+			}
 		</AuthContext.Provider>
 	)
 }

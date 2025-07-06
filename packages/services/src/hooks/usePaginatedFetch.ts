@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { api } from '../api'
 
-export function usePaginatedFetch<T>(endpoint: string, pageSize = 10) {
+export function usePaginatedFetch<T>(endpoint: string, pageSize = 10, enabled = true) {
 	const [data, setData] = useState<T[]>([])
 	const [page, setPage] = useState(1)
 	const [loading, setLoading] = useState(false)
@@ -27,8 +27,8 @@ export function usePaginatedFetch<T>(endpoint: string, pageSize = 10) {
 	}, [page, loading, hasMore, endpoint, pageSize])
 
 	useEffect(() => {
-		fetchPage()
-	}, [])
+		if (enabled) fetchPage()
+	}, [enabled])
 
 	return { data, fetchNextPage: fetchPage, loading }
 }

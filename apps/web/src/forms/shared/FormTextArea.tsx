@@ -43,10 +43,9 @@ export const FormTextArea = <T extends FieldValues>({
 	onFocus,
 	onBlur,
 }: FormTextAreaProps<T>) => {
-	const [height, setHeight] = useState(40) // Default height for single line
+	const [height, setHeight] = useState(40)
 	const internalRef = useRef<TextInput>(null)
 
-	// Allow parent to access ref
 	useEffect(() => {
 		if (inputRef && internalRef.current) {
 			inputRef.current = internalRef.current

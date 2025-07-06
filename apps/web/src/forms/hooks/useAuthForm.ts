@@ -2,13 +2,25 @@
 
 import { Alert } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useAuth, useModal } from '@/hooks'
 import type { Path, UseFormSetError, FieldValues } from 'react-hook-form'
 import type { AuthMode } from '@/forms'
+import { saveToken, signinRequest, signupRequest } from '@services'
+import { AuthResponseType } from '@iam/types'
 
-export function useAuthForm<T extends FieldValues>() {
-	const { login, signup } = useAuth()
-	const { hideModal } = useModal()
+export function useAuthForm<T extends FieldValues>(
+	authenticate: (data: AuthResponseType) => void
+) {
+	const login = async (email: string, password: string) => {
+		const authenticatedUser = await signinRequest(email, password)
+		await saveToken(authenticatedUser.accessToken)
+		authenticate(authenticatedUser)
+	}
+
+	const signup = async (email: string, username: string, password: string) => {
+		const authenticatedUser = await signupRequest(email, username, password)
+		await saveToken(authenticatedUser.accessToken)
+		authenticate(authenticatedUser)
+	}
 
 	const handleSubmit = async (
 		data: T,
@@ -28,8 +40,6 @@ export function useAuthForm<T extends FieldValues>() {
 			if (opts.saveEmail) {
 				await AsyncStorage.setItem('user_email', data.email)
 			}
-
-			hideModal()
 		} catch (err: any) {
 			const message =
 				err?.response?.data?.error?.message ?? err?.message ?? 'Unknown error'

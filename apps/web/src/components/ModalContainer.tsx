@@ -11,55 +11,57 @@ interface ModalContainerProps {
 	children: ReactNode
 	style?: ViewStyle
 	title?: string
+	subtitle?: string
+	titleStyle?: StyleProp<TextStyle>
+	subtitleStyle?: StyleProp<TextStyle>
 	fullscreen?: boolean
-}
-
-interface ModalHeaderProps {
-    title?: string
-    subtitle?: string
-    titleStyle?: StyleProp<TextStyle>
-    subtitleStyle?: StyleProp<TextStyle>
+	onDismiss?: () => void
 }
 
 export const ModalContainer: React.FC<ModalContainerProps> = ({
 	children,
 	style,
 	title,
-	fullscreen = false,
-}) => (
-	<View style={[styles.container, style]}>
-		<Column
-            spacing={Size.M}
-			style={fullscreen ? styles.fullscreenContent : styles.content}
-		>
-			<ModalHeader title={title} />
-			<View style={styles.main}>
-				{children}
-			</View>
-		</Column>
-	</View>
-)
-
-const ModalHeader: React.FC<ModalHeaderProps> = ({
-	title,
 	subtitle,
 	titleStyle,
 	subtitleStyle,
+	fullscreen = false,
+	onDismiss,
 }) => {
-    const { hideModal } = useModal()
-    return (
-        <Row align='center'>
-            {title && (
-                <View style={styles.header}>
-                    <Text style={[styles.title, titleStyle]}>{title}</Text>
-                    {subtitle ? <Text style={[styles.subtitle, subtitleStyle]}>{subtitle}</Text> : null}
-                </View>
-            )}
-            <Pressable onPress={hideModal}>
-                <Ionicons name='close-sharp' size={28} color='#fff' />
-            </Pressable>
-        </Row>
-    )
+	const { hideModal } = useModal()
+
+	const handleClose = () => {
+        try {
+            onDismiss?.()
+        } finally {
+			hideModal()
+		}
+    }
+
+	return (
+		<View style={[styles.container, style]}>
+			<Column
+				spacing={Size.M}
+				style={fullscreen ? styles.fullscreenContent : styles.content}
+			>
+				<Row align='center'>
+					{title && (
+						<View style={styles.header}>
+							<Text style={[styles.title, titleStyle]}>{title}</Text>
+							{subtitle ? (
+								<Text style={[styles.subtitle, subtitleStyle]}>{subtitle}</Text>
+							) : null}
+						</View>
+					)}
+					<Pressable onPress={handleClose}>
+						<Ionicons name='close-sharp' size={28} color='#fff' />
+					</Pressable>
+				</Row>
+
+				<View style={styles.main}>{children}</View>
+			</Column>
+		</View>
+	)
 }
 
 const styles = StyleSheet.create({
@@ -67,10 +69,10 @@ const styles = StyleSheet.create({
 		flex: 1,
 		width: '100%',
 		backgroundColor: 'transparent',
-        paddingVertical: Size.M,
+		paddingVertical: Size.M,
 	},
 	header: {
-        flex: 1,
+		flex: 1,
 	},
 	title: {
 		fontSize: 24,

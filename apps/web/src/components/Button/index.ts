@@ -1,4 +1,4 @@
-// packages/ui/src/components/Button/index.ts
+// apps/web/src/components/Button/index.ts
 
 export * from './Button'
 export * from './IconButton'
