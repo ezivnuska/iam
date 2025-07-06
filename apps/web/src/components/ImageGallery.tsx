@@ -21,7 +21,7 @@ type Props = {
 	loading?: boolean
 }
 
-const IMAGE_MARGIN = 8
+const IMAGE_MARGIN = 0//8
 
 const ImageGallery = ({
 	images,

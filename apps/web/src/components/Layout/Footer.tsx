@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
         width: '100%',
         // flexDirection: 'row',
         // alignItems: 'center',
-        paddingVertical: Size.S,
+        // paddingVertical: Size.XS,
         // backgroundColor: '#fff',
     },
     maxWidthContainer: {

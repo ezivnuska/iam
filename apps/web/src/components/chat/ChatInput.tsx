@@ -86,7 +86,7 @@ export const ChatInput = ({ onSend }: Props) => {
 				]}
 				disabled={!inputValue.trim()}
 			>
-				<Feather name='arrow-right' size={30} color='#fff' />
+				<Feather name='arrow-right' size={30} color={inputValue.trim() ? '#fff' : '#000'} />
 			</TouchableOpacity>
 		</Row>
 	)

@@ -4,6 +4,7 @@ import React from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Header, Footer } from '@/components'
 import { useDeviceInfo } from '@/hooks'
+import { Size } from '@/styles'
 import { MAX_WIDTH } from './constants'
 import type { PageLayoutProps } from './types'
 
@@ -18,7 +19,11 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
 				<Header />
 			</View>
 
-			<View style={[styles.contentWrapper, { height: height - 100 }]}>
+			<View style={[
+                styles.contentWrapper,
+                // { height: height - 100 },
+                ]}
+            >
 				{children}
 			</View>
 
@@ -35,12 +40,14 @@ const styles = StyleSheet.create({
         backgroundColor: '#000',
 	},
 	header: {
-		height: 50,
+		// height: 50,
 	},
 	footer: {
-		height: 50,
+		// height: 50,
+        paddingVertical: Size.XS,
 	},
 	contentWrapper: {
+        flex: 1,
 		width: '100%',
 		maxWidth: MAX_WIDTH,
 		alignSelf: 'center',

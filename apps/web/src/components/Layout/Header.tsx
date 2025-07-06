@@ -52,7 +52,11 @@ export const Header: React.FC<HeaderProps> = () => {
                     align='center'
                     justify='space-between'
                     wrap={false}
-                    style={{ zIndex: 100, flexWrap: 'nowrap', minHeight: 50 }}
+                    style={{
+                        zIndex: 100,
+                        flexWrap: 'nowrap',
+                        // minHeight: 50,
+                    }}
                 >
                     <Brand
                         user={user}
@@ -110,6 +114,7 @@ export const Header: React.FC<HeaderProps> = () => {
 const styles = StyleSheet.create({
     container: {
         width: '100%',
+        paddingVertical: Size.XS,
     },
     maxWidthContainer: {
         flex: 1,

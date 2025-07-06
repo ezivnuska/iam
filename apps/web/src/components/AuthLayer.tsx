@@ -31,7 +31,7 @@ export const AuthLayer: React.FC<{
 	}
 
 	return (
-		<View style={{ flex: 1, backgroundColor: 'orange' }}>
+		<View style={{ flex: 1 }}>
 			{children}
 		</View>
 	)

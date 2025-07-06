@@ -1,7 +1,8 @@
 // apps/web/src/screens/HomeScreen.tsx
 
 import React from 'react'
-import { AnimatedPageLayout, CreatePostButton, PostFeed } from '@/components'
+import { View } from 'react-native'
+import { PageLayout, CreatePostButton, PostFeed } from '@/components'
 import { useAuth, useScrollHeaderFooterVisibility } from '@/hooks'
 import { PostsProvider } from '@/providers'
 
@@ -15,14 +16,16 @@ export const HomeScreen = () => {
 
 	return (
         <PostsProvider>
-            <AnimatedPageLayout ref={pageLayoutRef}>
+            <PageLayout>
 				{isAuthenticated && <CreatePostButton />}
-				<PostFeed
-					onScrollDirectionChange={onLayoutTrigger}
-					onScrolledToTop={debouncedShowHeaderFooter}
-					onScrolledToBottom={debouncedShowHeaderFooter}
-				/>
-            </AnimatedPageLayout>
+                <View style={{ flex: 1 }}>
+                    <PostFeed
+                        onScrollDirectionChange={onLayoutTrigger}
+                        onScrolledToTop={debouncedShowHeaderFooter}
+                        onScrolledToBottom={debouncedShowHeaderFooter}
+                    />
+                </View>
+            </PageLayout>
         </PostsProvider>
 	)
 }

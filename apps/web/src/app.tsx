@@ -19,7 +19,7 @@ const App = () => {
                 <SocketProvider>
                     <AuthProvider>
                         <AuthLayer>
-                            <View style={{ flex: 1 }}>
+                            <View style={{ flex: 1, borderWidth: 0.1, borderColor: 'transparent' }}>
                                 <AppNavigator />
                             </View>
                         </AuthLayer>

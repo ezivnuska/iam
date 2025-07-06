@@ -108,7 +108,7 @@ export const UserProfileScreen = () => {
 	return (
 		<PageLayout>
 			<Column
-				paddingVertical={Size.S}
+				// paddingVertical={Size.S}
 				paddingHorizontal={paddingHorizontal}
 				flex={1}
 				spacing={15}

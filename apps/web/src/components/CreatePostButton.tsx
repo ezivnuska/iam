@@ -41,6 +41,7 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 	},
     container: {
+		backgroundColor: 'transparent',
         marginVertical: Size.XS,
         paddingHorizontal: paddingHorizontal,
     },
