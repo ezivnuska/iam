@@ -1,4 +1,4 @@
-// apps/web/src/components/layout/FlexBox.tsx
+// apps/web/src/components/grid/FlexBox.tsx
 
 import React from 'react'
 import { View, ViewStyle, StyleSheet, StyleProp } from 'react-native'
