@@ -51,7 +51,6 @@ export const refreshToken: RequestHandler = async (req, res, next) => {
 		const { accessToken } = await authService.refreshAccessToken(token)
 		res.json({ accessToken })
 	} catch (err) {
-		console.error('Refresh token error:', err)
 		res.clearCookie('refreshToken', refreshTokenCookieOptions)
 		next(err)
 	}
