@@ -11,7 +11,7 @@ import {
 	Row,
     MAX_WIDTH,
 } from '@/components'
-import { CommentForm } from '@/forms'
+import { CommentForm } from '@/components/forms'
 import { Size, resolveResponsiveProp } from '@/styles'
 import { useAuth, useModal, useBestVariant } from '@/hooks'
 import type { Image } from '@iam/types'

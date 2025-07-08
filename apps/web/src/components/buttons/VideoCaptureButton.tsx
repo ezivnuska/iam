@@ -1,4 +1,4 @@
-// apps/web/src/components/Button/VideoCaptureButton.tsx
+// apps/web/src/components/buttons/VideoCaptureButton.tsx
 
 import React from 'react'
 import { Pressable, StyleSheet, View } from 'react-native'

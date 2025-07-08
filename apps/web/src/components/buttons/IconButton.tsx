@@ -1,4 +1,4 @@
-// apps/web/src/components/Button/Button.tsx
+// apps/web/src/components/buttons/IconButton.tsx
 
 import React from 'react'
 import { Pressable, Text, StyleSheet } from 'react-native'

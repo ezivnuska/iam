@@ -8,7 +8,7 @@ import {
 	signinFields,
 	signupSchema,
 	signupFields,
-} from '@/forms'
+} from '@/components/forms'
 import { useAuthForm } from '@/hooks'
 import { z } from 'zod'
 import type { AuthMode, FieldConfig } from '@/types'

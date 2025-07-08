@@ -3,7 +3,7 @@
 import React from 'react'
 import { Pressable, Text, StyleSheet } from 'react-native'
 import { useModal, usePosts } from'@/hooks'
-import { PostForm } from '@/forms'
+import { PostForm } from '@/components/forms'
 import type { Post } from '@iam/types'
 import { form as formStyles, Size, paddingHorizontal } from '@/styles'
 

@@ -6,7 +6,7 @@ import { useForm, FieldErrors } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Feather from '@expo/vector-icons/Feather'
-import { ControlledTextInput } from '@/forms'
+import { ControlledTextInput } from '@/components/forms'
 import { paddingHorizontal, Size } from '@/styles'
 import { Row } from '@/components'
 

@@ -1,30 +1,33 @@
-// apps/web/src/components/buttons/Button.tsx
+// apps/web/src/forms/shared/SubmitButton.tsx
 
 import React from 'react'
-import { Pressable, Text, StyleSheet } from 'react-native'
-import type { ButtonProps } from './Button.types'
+import { Pressable, Text, StyleSheet, ActivityIndicator } from 'react-native'
+import type { ButtonProps } from '@/components'
 
-export const Button: React.FC<ButtonProps> = ({
+export const SubmitButton: React.FC<ButtonProps> = ({
 	label,
 	onPress,
+    submitting = false,
 	disabled = false,
 	style,
 	textStyle,
-    transparent = false,
 }) => {
 	return (
 		<Pressable
             onPress={onPress}
-            disabled={disabled}
+            disabled={disabled || submitting}
             style={({ pressed }) => [
                 styles.base,
                 disabled && styles.disabled,
                 pressed && styles.pressed,
                 style,
-                { backgroundColor: transparent ? 'transparent' : '#333' },
             ]}
 		>
-            <Text style={[styles.text, textStyle]}>{label}</Text>
+            {submitting ? (
+                <ActivityIndicator color='#fff' size='small' />
+            ) : (
+                <Text style={[styles.text, textStyle]}>{label}</Text>
+            )}
 		</Pressable>
 	)
 }
@@ -34,6 +37,7 @@ const styles = StyleSheet.create({
         flex: 1,
 		paddingVertical: 12,
 		paddingHorizontal: 16,
+		backgroundColor: '#070',
 		borderRadius: 12,
 		alignItems: 'center',
 	},

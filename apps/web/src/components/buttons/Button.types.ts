@@ -1,4 +1,4 @@
-// apps/web/src/components/Button/Button.types.ts
+// apps/web/src/components/buttons/Button.types.ts
 
 import { ReactNode } from 'react'
 import { GestureResponderEvent, StyleProp, ViewStyle, TextStyle } from 'react-native'
