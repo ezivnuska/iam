@@ -1,4 +1,4 @@
-// apps/web/src/components/UserImageManager.tsx
+// apps/web/src/components/images/UserImageManager.tsx
 
 import React, { useEffect, useMemo, useState } from 'react'
 import { Text } from 'react-native'

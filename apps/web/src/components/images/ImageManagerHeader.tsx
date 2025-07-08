@@ -1,4 +1,4 @@
-// apps/web/src/components/ImageManagerHeader.tsx
+// apps/web/src/components/images/ImageManagerHeader.tsx
 
 import React from 'react'
 import { Text, StyleSheet, Pressable } from 'react-native'
