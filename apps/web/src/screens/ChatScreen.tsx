@@ -1,9 +1,9 @@
 // apps/web/src/screens/ChatScreen.tsx
 
 import React, { useRef, useState, useEffect } from 'react'
-import { Text, TextInput, ScrollView, StyleSheet, View } from 'react-native'
-import { AutoScrollView, Avatar, ChatInput, PageLayout, Row } from '@/components'
-import { paddingHorizontal, Size, form as formStyles } from '@/styles'
+import { Text, ScrollView, StyleSheet, View } from 'react-native'
+import { AutoScrollView, Avatar, ChatInput, Column, PageLayout, Row } from '@/components'
+import { paddingHorizontal, Size } from '@/styles'
 import { useAuth, useSocket } from '@/hooks'
 
 export const ChatScreen = () => {
@@ -40,24 +40,23 @@ export const ChatScreen = () => {
 	return (
 		<PageLayout>
 			<View style={{ flex: 1 }}>
-				<View style={{ flex: 1 }}>
+				{/* <View style={{ flex: 1 }}> */}
 					<AutoScrollView dependencies={[messages]}>
-						{messages.map((item, index) => {
-							const showAvatar =
-								index === 0 || messages[index - 1]?.user?.id !== item.user.id
-							return (
-								<View key={item._id}>
-									<Row paddingBottom={Size.XS}>
-										<View style={{ width: 40 }}>
-											{showAvatar && <Avatar user={item.user} size='xs' />}
-										</View>
-										<Text style={styles.message}>{item.text}</Text>
-									</Row>
-								</View>
-							)
-						})}
+                        <Column spacing={Size.XS}>
+                            {messages.map((item, index) => {
+                                const showAvatar =
+                                    index === 0 || messages[index - 1]?.user?.id !== item.user.id
+                                return (
+                                    <Row key={item._id}>
+                                        <View style={{ width: 40 }}>
+                                            {showAvatar && <Avatar user={item.user} size='xs' />}
+                                        </View>
+                                        <Text style={styles.message}>{item.text}</Text>
+                                    </Row>
+                                )
+                            })}
+                        </Column>
 					</AutoScrollView>
-				</View>
                 
                 <View style={{ paddingHorizontal }}>
                     <ChatInput onSend={sendMessage} />
@@ -69,8 +68,10 @@ export const ChatScreen = () => {
 
 const styles = StyleSheet.create({
 	message: {
+        flex: 1,
 		paddingVertical: 4,
 		fontSize: 14,
+        lineHeight: 20,
         color: '#fff',
 	},
 })

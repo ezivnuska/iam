@@ -26,7 +26,7 @@ export const form: NamedStyles<any> = {
         lineHeight: 48,
 		borderRadius: 12,
 		fontSize: 24,
-        backgroundColor: '#222',
+        backgroundColor: '#369',
         color: '#fff',
         outlineWidth: 0,
         outlineColor: 'transparent',

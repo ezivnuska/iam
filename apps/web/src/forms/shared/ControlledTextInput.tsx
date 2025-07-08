@@ -35,7 +35,11 @@ export const ControlledTextInput = <T extends FieldValues>({
 	const [height, setHeight] = useState(40)
 	const [isFocused, setIsFocused] = useState(false)
 
-	useImperativeHandle(rest.inputRef, () => inputRef.current as TextInput)
+	useEffect(() => {
+        if (rest.inputRef && inputRef.current) {
+            rest.inputRef.current = inputRef.current
+        }
+    }, [rest.inputRef])
 
 	const onContentSizeChange = (
 		e: NativeSyntheticEvent<TextInputContentSizeChangeEventData>

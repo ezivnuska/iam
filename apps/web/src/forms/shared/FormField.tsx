@@ -69,7 +69,7 @@ export const FormField = <T extends FieldValues>({
 							}}
 							autoFocus={autoFocus}
 							placeholder={placeholder ?? label ?? name}
-							placeholderTextColor='#070'
+							placeholderTextColor='#99f'
 							autoCapitalize='none'
 							secureTextEntry={isSecure}
 							returnKeyType='done'

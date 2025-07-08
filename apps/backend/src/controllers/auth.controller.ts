@@ -47,13 +47,11 @@ export const signin: RequestHandler = async (req, res, next) => {
 
 export const refreshToken: RequestHandler = async (req, res, next) => {
 	try {
-		console.log('Cookies in refresh-token route:', req.cookies)
-
 		const token = req.cookies.refreshToken
 		const { accessToken } = await authService.refreshAccessToken(token)
 		res.json({ accessToken })
 	} catch (err) {
-		console.error('❌ Refresh token error:', err)
+		console.error('Refresh token error:', err)
 		res.clearCookie('refreshToken', refreshTokenCookieOptions)
 		next(err)
 	}
