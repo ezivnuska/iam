@@ -1,6 +1,7 @@
 // apps/web/src/hooks/index.ts
 
 export * from './useAuth'
+export * from './useAuthForm'
 export * from './useBestVariant'
 export * from './useBonds'
 export * from './useBondSocket'

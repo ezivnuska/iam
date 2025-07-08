@@ -2,10 +2,10 @@
 
 import { Alert } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import type { Path, UseFormSetError, FieldValues } from 'react-hook-form'
-import type { AuthMode } from '@/forms'
 import { saveToken, signinRequest, signupRequest } from '@services'
-import { AuthResponseType } from '@iam/types'
+import type { Path, UseFormSetError, FieldValues } from 'react-hook-form'
+import type { AuthResponseType } from '@iam/types'
+import type { AuthMode } from '@/types'
 
 export function useAuthForm<T extends FieldValues>(
 	authenticate: (data: AuthResponseType) => void

@@ -1,12 +1,12 @@
-// apps/web/src/components/forms/types/index.ts
+// apps/web/src/types/form/index.ts
 
 import { TextInput } from 'react-native'
 
 export type FieldConfig<T> = {
-	name: keyof T
-	label?: string
-	secure?: boolean
-	autoFocus?: boolean
+    name: keyof T
+    label?: string
+    secure?: boolean
+    autoFocus?: boolean
     keyboardType?: React.ComponentProps<typeof TextInput>['keyboardType']
     placeholder?: string
 }

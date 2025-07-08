@@ -8,10 +8,10 @@ import {
 	signinFields,
 	signupSchema,
 	signupFields,
-	useAuthForm,
 } from '@/forms'
+import { useAuthForm } from '@/hooks'
 import { z } from 'zod'
-import type { AuthMode, FieldConfig } from '@/forms'
+import type { AuthMode, FieldConfig } from '@/types'
 import { AuthResponseType } from '@iam/types'
 
 type AuthModalProps = {

@@ -3,7 +3,7 @@
 import React from 'react'
 import type { Control, FieldValues, Path } from 'react-hook-form'
 import { FormField } from '@/forms'
-import type { FieldConfig } from '@/forms'
+import type { FieldConfig } from '@/types'
 import { StyleSheet, View, TextInput } from 'react-native'
 
 export function renderFields<T extends FieldValues>(

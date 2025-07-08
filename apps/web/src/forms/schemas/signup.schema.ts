@@ -1,7 +1,7 @@
 // apps/web/src/forms/schemas/signup.schema.ts
 
 import { z } from 'zod'
-import type { FieldConfig } from '@/forms'
+import type { FieldConfig } from '@/types'
 
 export const signupSchema = z
 	.object({

@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import type { z, ZodTypeAny, ZodObject } from 'zod'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { renderFields, SubmitButton } from '@/forms'
-import type { FieldConfig } from '@/forms'
+import type { FieldConfig } from '@/types'
 
 interface DynamicFormProps<T extends ZodTypeAny> {
 	schema: T
