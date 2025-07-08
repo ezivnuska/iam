@@ -1,4 +1,4 @@
-// apps/web/src/forms/hooks/useAuthForm.ts
+// apps/web/src/hooks/useAuthForm.ts
 
 import { Alert } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'

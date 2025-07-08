@@ -6,13 +6,13 @@ import { useRoute } from '@react-navigation/native'
 import {
 	Avatar,
 	Column,
+    EditProfileForm,
 	PageLayout,
 	Row,
 	Spinner,
 	UserImageManager,
 	IconButton,
 } from '@/components'
-import { EditProfileForm } from '@/forms'
 import { useAuth, useModal } from '@/hooks'
 import { getUserByUsername } from '@services'
 import { ImageProvider } from '@/providers'
