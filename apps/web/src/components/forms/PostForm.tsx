@@ -3,10 +3,8 @@
 import React, { useState } from 'react'
 import { ActivityIndicator, Image, View } from 'react-native'
 import { FormProvider, useForm } from 'react-hook-form'
-import { ImageUploader } from '@/components'
-import { DynamicForm } from '@/components/forms'
-import { postSchema, postFields } from '@/components/forms/schemas/post.schema'
-import type { PostFormValues } from '@/components/forms/schemas/post.schema'
+import { DynamicForm, ImageUploader, postSchema, postFields } from '@/components'
+import type { PostFormValues } from '@/components'
 import * as postService from '@services'
 import { zodResolver } from '@hookform/resolvers/zod'
 

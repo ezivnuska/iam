@@ -1,14 +1,17 @@
 // apps/web/src/components/modals/AuthModal.tsx
 
 import React, { useState } from 'react'
-import { ModalContainer, Column, Row, Button } from '@/components'
 import {
 	DynamicForm,
 	signinSchema,
 	signinFields,
 	signupSchema,
 	signupFields,
-} from '@/components/forms'
+    Column,
+    ModalContainer,
+    Row,
+    Button,
+} from '@/components'
 import { useAuthForm } from '@/hooks'
 import { z } from 'zod'
 import type { AuthMode, FieldConfig } from '@/types'

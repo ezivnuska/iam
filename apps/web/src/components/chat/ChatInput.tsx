@@ -6,9 +6,8 @@ import { useForm, FieldErrors } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Feather from '@expo/vector-icons/Feather'
-import { ControlledTextInput } from '@/components/forms'
+import { ControlledTextInput, Row } from '@/components'
 import { paddingHorizontal, Size } from '@/styles'
-import { Row } from '@/components'
 
 const schema = z.object({
 	input: z.string().min(1, 'Message is required').max(280),

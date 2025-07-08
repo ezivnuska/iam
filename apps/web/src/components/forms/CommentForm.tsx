@@ -2,10 +2,10 @@
 
 import React from 'react'
 import { Alert } from 'react-native'
-import { commentSchema, commentFields, DynamicForm } from '@/components/forms'
+import { commentSchema, commentFields, DynamicForm } from '@/components'
 import { useModal } from '@/hooks'
 import { addComment } from '@services'
-import type { CommentFormValues } from '@/components/forms'
+import type { CommentFormValues } from '@/components'
 import type { Comment } from '@iam/types'
 
 type CommentParentType = 'Post' | 'Image'

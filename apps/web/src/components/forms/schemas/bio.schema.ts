@@ -1,4 +1,4 @@
-// apps/web/src/forms/schemas/bio.schema.ts
+// apps/web/src/components/forms/schemas/bio.schema.ts
 
 import { z } from 'zod'
 import type { FieldConfig } from '@/types'

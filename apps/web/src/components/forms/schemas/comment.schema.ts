@@ -1,4 +1,4 @@
-// apps/web/src/forms/schemas/comment.schema.ts
+// apps/web/src/components/forms/schemas/comment.schema.ts
 
 import { z } from 'zod'
 import type { FieldConfig } from '@/types'

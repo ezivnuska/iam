@@ -1,4 +1,4 @@
-// apps/web/src/forms/schemas/signup.schema.ts
+// apps/web/src/components/forms/schemas/signup.schema.ts
 
 import { z } from 'zod'
 import type { FieldConfig } from '@/types'

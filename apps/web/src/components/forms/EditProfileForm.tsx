@@ -5,8 +5,8 @@ import { Alert } from 'react-native'
 import { useAuth, useModal } from '@/hooks'
 import { updateSelf } from '@services'
 import type { Path, UseFormSetError } from 'react-hook-form'
-import { DynamicForm, bioFields, bioSchema } from '@/components/forms'
-import type { BioFormValues } from '@/components/forms'
+import { DynamicForm, bioFields, bioSchema } from '@/components'
+import type { BioFormValues } from '@/components'
 
 export const EditProfileForm = () => {
 	const { user, setUser } = useAuth()

@@ -2,11 +2,11 @@
 
 import React, { useEffect, useState, useCallback } from 'react'
 import { View, ActivityIndicator } from 'react-native'
-import { InfiniteScrollView, PostListItem } from '@/components'
+import { Column, InfiniteScrollView, PostListItem } from '@/components'
 import { usePosts } from '@/hooks'
 import type { Post } from '@iam/types'
 
-const PAGE_SIZE = 2
+const PAGE_SIZE = 3
 
 type PostFeedProps = {
 	onScrollDirectionChange?: (direction: 'up' | 'down') => void
@@ -46,20 +46,22 @@ const PostFeedContent = ({
 			onScrolledToTop={onScrolledToTop}
 			onScrolledToBottom={onScrolledToBottom}
 		>
-			{visiblePosts.map((post) => (
-				<PostListItem
-					key={post._id}
-					post={post}
-					showPreview={!!post.linkPreview}
-					commentCount={commentCounts[post._id] ?? 0}
-					onCommentDeleted={() => {
-						setCommentCounts((prev) => ({
-							...prev,
-							[post._id]: Math.max((prev[post._id] ?? 1) - 1, 0),
-						}))
-					}}
-				/>
-			))}
+            <Column>
+                {visiblePosts.map((post) => (
+                    <PostListItem
+                        key={post._id}
+                        post={post}
+                        showPreview={!!post.linkPreview}
+                        commentCount={commentCounts[post._id] ?? 0}
+                        onCommentDeleted={() => {
+                            setCommentCounts((prev) => ({
+                                ...prev,
+                                [post._id]: Math.max((prev[post._id] ?? 1) - 1, 0),
+                            }))
+                        }}
+                    />
+                ))}
+            </Column>
 			{loadingMore && (
 				<View style={{ paddingVertical: 20, alignItems: 'center' }}>
 					<ActivityIndicator size='small' />

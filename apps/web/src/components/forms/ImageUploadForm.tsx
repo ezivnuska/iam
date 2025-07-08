@@ -2,8 +2,7 @@
 
 import React, { useState } from 'react'
 import { Dimensions, Image, Platform, StyleSheet, Text } from 'react-native'
-import { Column, IconButton, NativeCamera, Row, WebCamera } from '@/components'
-import { SubmitButton } from '@/components/forms'
+import { Column, IconButton, NativeCamera, Row, SubmitButton, WebCamera } from '@/components'
 import { uploadImage } from '@services'
 import { selectImage } from '@/utils'
 import { useResponsiveImageSize } from '@/hooks'

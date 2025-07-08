@@ -2,8 +2,7 @@
 
 import React from 'react'
 import { Text, StyleSheet, Pressable } from 'react-native'
-import { Row } from '@/components'
-import { ImageUploadForm } from '@/components/forms'
+import { ImageUploadForm, Row } from '@/components'
 import { useImage, useModal } from '@/hooks'
 import type { UploadedImage } from '@iam/types'
 import Ionicons from '@expo/vector-icons/Ionicons'

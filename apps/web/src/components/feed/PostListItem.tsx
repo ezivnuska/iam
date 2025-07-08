@@ -2,8 +2,17 @@
 
 import React, { useRef, useState } from 'react'
 import { StyleSheet, Text } from 'react-native'
-import { Avatar, Column, Row, LikeCommentBar, PostComments, LinkPreview, IconButton, AutoSizeImage } from '@/components'
-import { CommentForm } from '@/components/forms'
+import {
+    Avatar,
+    Column,
+    CommentForm,
+    Row,
+    LikeCommentBar,
+    PostComments,
+    LinkPreview,
+    IconButton,
+    AutoSizeImage,
+} from '@/components'
 import { Comment, PartialUser, Post } from '@iam/types'
 import { paddingHorizontal, Size } from '@/styles'
 import Autolink from 'react-native-autolink'

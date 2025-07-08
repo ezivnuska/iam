@@ -1,10 +1,10 @@
 // apps/web/src/forms/utils/renderFields.tsx
 
 import React from 'react'
-import type { Control, FieldValues, Path } from 'react-hook-form'
-import { FormField } from '@/components/forms'
-import type { FieldConfig } from '@/types'
 import { StyleSheet, View, TextInput } from 'react-native'
+import { FormField } from '@/components'
+import type { Control, FieldValues, Path } from 'react-hook-form'
+import type { FieldConfig } from '@/types'
 
 export function renderFields<T extends FieldValues>(
 	fields: FieldConfig<T>[],

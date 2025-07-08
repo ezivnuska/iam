@@ -7,6 +7,7 @@ import { useAuth } from '@/hooks'
 import { Size } from '@/styles'
 import { CommentItem, Spinner } from '@/components'
 import type { Comment } from '@iam/types'
+import { normalizeUser } from '@utils'
 
 type ImageCommentsProps = {
 	refId: string
@@ -58,16 +59,19 @@ export const ImageComments = ({ refId, onCommentDeleted }: ImageCommentsProps) =
 					contentContainerStyle={{ paddingBottom: Size.S }}
                     showsVerticalScrollIndicator={false}
 				>
-					{comments?.map((item: Comment) => (
-						<CommentItem
-							key={item._id}
-							comment={item}
-							isAuthor={user?.id === item.author._id}
-							isDeleting={deletingIds.includes(item._id)}
-							onDelete={handleDelete}
-							textColor="#fff"
-						/>
-					))}
+					{comments?.map((item: Comment) => {
+                        const author = normalizeUser(item.author)
+                        return (
+                            <CommentItem
+                                key={item._id}
+                                comment={item}
+                                isAuthor={user?.id === author.id}
+                                isDeleting={deletingIds.includes(item._id)}
+                                onDelete={handleDelete}
+                                textColor='#fff'
+                            />
+                        )
+                    })}
 				</ScrollView>
 			)}
 		</View>
