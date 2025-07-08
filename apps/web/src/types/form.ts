@@ -1,4 +1,4 @@
-// apps/web/src/types/form/index.ts
+// apps/web/src/types/form.ts
 
 import { TextInput } from 'react-native'
 
