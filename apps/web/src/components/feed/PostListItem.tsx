@@ -11,6 +11,7 @@ import Ionicons from '@expo/vector-icons/Ionicons'
 import { formatRelative } from 'date-fns'
 import { togglePostLike } from '@services'
 import { useAuth, useModal, usePosts } from '@/hooks'
+import { normalizeUser } from '@utils'
 
 type Props = {
 	post: Post
@@ -36,7 +37,8 @@ export const PostListItem: React.FC<Props> = ({
 	const { deletePost, refreshCommentCounts } = usePosts()
 
 	const postCommentsRef = useRef<{ handleNewComment?: (c: Comment) => void }>(null)
-	const isAuthor = user?.id === post.author.id
+    const author = normalizeUser(post.author)
+	const isAuthor = user?.id === author.id
 
 	const handleToggleLike = async () => {
 		try {
@@ -76,7 +78,7 @@ export const PostListItem: React.FC<Props> = ({
 					{formatRelative(new Date(post.createdAt), new Date())}
 				</Text>
 			</Column>
-			{isAuthor && (
+			{isAuthenticated && isAuthor && (
 				<IconButton
 					onPress={handleDelete}
 					icon={<Ionicons name='trash-outline' size={24} color='#fff' />}
