@@ -6,7 +6,7 @@ import { useForm, UseFormSetError, Path, PathValue } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { z, ZodTypeAny, ZodObject } from 'zod'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { renderFields, SubmitButton } from '@/components/forms'
+import { renderFields, SubmitButton } from '@/components'
 import type { FieldConfig } from '@/types'
 
 interface DynamicFormProps<T extends ZodTypeAny> {

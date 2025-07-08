@@ -9,7 +9,7 @@ import { useAuth, useModal } from '@/hooks'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import type { AvatarSize } from '@/components'
 import { paddingHorizontal, resolveResponsiveProp, Size } from '@/styles'
-import { AuthMode } from '@/components/forms'
+import { AuthMode } from '@/types'
 
 interface HeaderProps {
     children?: ReactNode
