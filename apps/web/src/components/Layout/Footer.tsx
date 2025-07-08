@@ -1,4 +1,4 @@
-// apps/web/src/components/Layout/Footer.tsx
+// apps/web/src/components/layout/Footer.tsx
 
 import React from 'react'
 import { Text, Pressable, StyleSheet, View } from 'react-native'

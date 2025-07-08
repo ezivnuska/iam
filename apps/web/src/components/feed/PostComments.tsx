@@ -1,4 +1,4 @@
-// apps/web/src/components/PostComments.tsx
+// apps/web/src/components/feed/PostComments.tsx
 
 import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react'
 import { View, FlatList, ActivityIndicator } from 'react-native'

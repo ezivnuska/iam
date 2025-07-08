@@ -1,4 +1,4 @@
-// apps/web/src/components/Users/index.ts
+// apps/web/src/components/users/index.ts
 
 export * from './BondControls'
 export * from './UserList'

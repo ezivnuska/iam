@@ -40,6 +40,7 @@ export interface User {
 }
 
 export interface PartialUser {
+    id: string,
 	username: string
 	avatar?: Image
 }

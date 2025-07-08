@@ -29,7 +29,7 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
 	onDismiss,
 }) => {
 	const { hideModal } = useModal()
-
+    
 	const handleClose = () => {
         try {
             onDismiss?.()
@@ -45,7 +45,7 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
 				style={fullscreen ? styles.fullscreenContent : styles.content}
 			>
 				<Row align='center'>
-					{title && (
+					{!!title && (
 						<View style={styles.header}>
 							<Text style={[styles.title, titleStyle]}>{title}</Text>
 							{subtitle ? (

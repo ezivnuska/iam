@@ -1,4 +1,4 @@
-// apps/web/src/components/Posts/PostFeed.tsx
+// apps/web/src/components/feed/PostFeed.tsx
 
 import React, { useEffect, useState, useCallback } from 'react'
 import { View, ActivityIndicator } from 'react-native'

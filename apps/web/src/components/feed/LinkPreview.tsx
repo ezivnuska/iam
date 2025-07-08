@@ -1,4 +1,4 @@
-// apps/web/src/components/Posts/LinkPreview.tsx
+// apps/web/src/components/feed/LinkPreview.tsx
 
 import React, { useEffect, useMemo, useState } from 'react'
 import { Image, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native'

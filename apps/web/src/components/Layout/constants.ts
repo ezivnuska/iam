@@ -1,3 +1,3 @@
-// apps/web/src/components/Layout/constants.ts
+// apps/web/src/components/layout/constants.ts
 
 export const MAX_WIDTH = 500

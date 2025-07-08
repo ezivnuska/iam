@@ -1,7 +1,7 @@
 // apps/backend/src/controllers/chat.controller.ts
 
 import { Server, Socket } from 'socket.io'
-import type { ChatMessage, ServerToClientEvents, ClientToServerEvents, SocketUser } from '@iam/types'
+import type { ChatMessage, ServerToClientEvents, ClientToServerEvents, PartialUser } from '@iam/types'
 
 export const registerChatHandlers = (
 	io: Server<ClientToServerEvents, ServerToClientEvents>,
@@ -9,7 +9,7 @@ export const registerChatHandlers = (
 ) => {
 	console.log(`Chat handlers attached to ${socket.id}`)
 
-	const user = socket.data.user as SocketUser | undefined
+	const user = socket.data.user as PartialUser | undefined
 
 	const onChatMessage = (message: string) => {
 		if (typeof message !== 'string') {
@@ -25,7 +25,6 @@ export const registerChatHandlers = (
 		const payload: ChatMessage = {
 			user: {
 				id: user.id,
-				role: user.role,
 				username: user.username,
 				avatar: user.avatar,
 			},

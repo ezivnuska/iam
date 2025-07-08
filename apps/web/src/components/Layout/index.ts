@@ -1,4 +1,4 @@
-// apps/web/src/components/Layout/index.ts
+// apps/web/src/components/layout/index.ts
 
 export * from './AnimatedPageLayout'
 export * from './constants'

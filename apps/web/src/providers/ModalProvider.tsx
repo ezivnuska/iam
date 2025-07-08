@@ -63,7 +63,6 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         console.log('ModalProvider mounted')
-        console.log('modalStack', modalStack)
 		return () => console.log('ModalProvider unmounted')
     }, [])
 
@@ -81,7 +80,6 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
         props: Record<string, any> = {},
         options: { title?: string; fullscreen?: boolean } = {}
     ) => {
-		console.log('openFormModal', options.title)
         const wrappedContent = (
             <ModalContainer title={options.title || ''}>
                 <Component {...props} />

@@ -1,4 +1,4 @@
-// apps/web/src/components/Layout/AnimatedPageLayout.tsx
+// apps/web/src/components/layout/AnimatedPageLayout.tsx
 
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { Animated, StyleSheet, View } from 'react-native'

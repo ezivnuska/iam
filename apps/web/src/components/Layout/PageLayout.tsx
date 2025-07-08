@@ -1,4 +1,4 @@
-// apps/web/src/components/Layout/PageLayout.tsx
+// apps/web/src/components/layout/PageLayout.tsx
 
 import React from 'react'
 import { View, StyleSheet } from 'react-native'

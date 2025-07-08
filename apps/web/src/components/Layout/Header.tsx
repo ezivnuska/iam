@@ -1,4 +1,4 @@
-// apps/web/src/components/Layout/Header.tsx
+// apps/web/src/components/layout/Header.tsx
 
 import React, { ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'

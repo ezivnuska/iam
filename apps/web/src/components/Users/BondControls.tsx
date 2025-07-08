@@ -1,4 +1,4 @@
-// app/web/src/components/Users/BondControls.tsx
+// app/web/src/components/users/BondControls.tsx
 
 import React from 'react'
 import { IconButton, Row } from '@/components'

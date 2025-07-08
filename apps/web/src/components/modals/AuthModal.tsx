@@ -1,4 +1,4 @@
-// apps/web/src/components/AuthModal.tsx
+// apps/web/src/components/modals/AuthModal.tsx
 
 import React, { useState } from 'react'
 import { ModalContainer, Column, Row, Button } from '@/components'

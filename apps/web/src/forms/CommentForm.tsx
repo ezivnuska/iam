@@ -2,33 +2,31 @@
 
 import React from 'react'
 import { Alert } from 'react-native'
-import { useAuth, useModal } from '@/hooks'
-import { addComment } from '@services'
 import { commentSchema, commentFields, DynamicForm } from '@/forms'
+import { useModal } from '@/hooks'
+import { addComment } from '@services'
 import type { CommentFormValues } from '@/forms'
+import type { Comment } from '@iam/types'
 
 type CommentParentType = 'Post' | 'Image'
 
 type CommentFormProps = {
 	id: string
 	type: CommentParentType
+    onCommentAdded: (comment: Comment) => void
 }
 
 export const CommentForm: React.FC<CommentFormProps> = ({
 	id,
 	type,
+    onCommentAdded,
 }) => {
-	const { user } = useAuth()
 	const { hideModal } = useModal()
 
 	const handleSubmit = async (values: CommentFormValues) => {
-		if (!user?.id) {
-			Alert.alert('Error', 'User ID is missing')
-			return
-		}
-
 		try {
 			const newComment = await addComment(id, type, values.content)
+            onCommentAdded(newComment)
 			hideModal()
 		} catch (err: any) {
 			const message = err?.message || 'Unknown error'

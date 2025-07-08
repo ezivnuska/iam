@@ -7,7 +7,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Feather from '@expo/vector-icons/Feather'
 import { ControlledTextInput } from '@/forms'
-import { Size } from '@/styles'
+import { paddingHorizontal, Size } from '@/styles'
 import { Row } from '@/components'
 
 const schema = z.object({
@@ -67,7 +67,7 @@ export const ChatInput = ({ onSend }: Props) => {
 	}
 
 	return (
-		<Row spacing={Size.S} align='flex-end'>
+		<Row spacing={Size.S} paddingHorizontal={paddingHorizontal} align='flex-end'>
 			<ControlledTextInput
 				name='input'
 				control={control}

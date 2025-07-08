@@ -36,7 +36,7 @@ export const PostListItem: React.FC<Props> = ({
 	const { deletePost, refreshCommentCounts } = usePosts()
 
 	const postCommentsRef = useRef<{ handleNewComment?: (c: Comment) => void }>(null)
-	const isAuthor = user?.id === post.author._id
+	const isAuthor = user?.id === post.author.id
 
 	const handleToggleLike = async () => {
 		try {

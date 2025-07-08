@@ -1,4 +1,4 @@
-// apps/web/src/components/Grid/index.ts
+// apps/web/src/components/grid/index.ts
 
 export { default as FlexBox } from './FlexBox'
 export { default as Column } from './Column'

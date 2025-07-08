@@ -4,7 +4,7 @@ import React from 'react'
 import { Pressable, Text, StyleSheet } from 'react-native'
 import { Column } from '@/components'
 import type { ButtonProps } from './Button.types'
-import { resolveResponsiveProp } from '../../styles'
+import { resolveResponsiveProp } from '@/styles'
 
 export const IconButton: React.FC<ButtonProps> = ({
 	label,

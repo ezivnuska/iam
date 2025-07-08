@@ -2,7 +2,8 @@
 
 import React from 'react'
 import { Text, StyleSheet, Pressable } from 'react-native'
-import { ImageUploadForm, Row } from '@/components'
+import { Row } from '@/components'
+import { ImageUploadForm } from '@/forms'
 import { useImage, useModal } from '@/hooks'
 import type { UploadedImage } from '@iam/types'
 import Ionicons from '@expo/vector-icons/Ionicons'
@@ -23,7 +24,7 @@ export const ImageManagerHeader = () => {
 		<Row spacing={10}>
 			<Text style={styles.title}>Images</Text>
             <Pressable onPress={openImageUploadModal}>
-                <Ionicons name='add-circle-outline' size={30} color='black' />
+                <Ionicons name='add-circle-outline' size={30} color='#fff' />
             </Pressable>
 		</Row>
 	)

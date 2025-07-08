@@ -37,7 +37,10 @@ const UserImageManager: React.FC<UserImageManagerProps> = ({ userId }) => {
 	}, [images.length, isLoading, loadImages])
 
 	const handleDelete = async (id: string) => {
-		if (!isAdmin) return
+		if (!isOwner && !isAdmin) {
+            console.log('Only the image owner or an admin can delete images.')
+            return
+        }
 		try {
 			if (id === currentAvatarId) await setAvatar(undefined)
 			await deleteImage(id)
@@ -60,7 +63,6 @@ const UserImageManager: React.FC<UserImageManagerProps> = ({ userId }) => {
 
 	const handleImagePress = (image: Image) => {
 		const isAvatar = image.id === currentAvatarId
-
         showModal((
             <FullScreenImage
                 image={image}

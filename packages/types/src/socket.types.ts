@@ -1,7 +1,7 @@
 // packages/types/src/socket.types.ts
 
 import { ImageDocument, ImageVariant } from './image'
-import type { Bond } from './bond.types'
+import type { Bond, ChatMessage } from '.'
 
 export type SocketUser = {
 	id: string
@@ -14,12 +14,6 @@ export type SocketUser = {
 		url?: string
 		variants: ImageVariant[]
 	}
-}
-
-export type ChatMessage = {
-	user: SocketUser
-	text: string
-	timestamp: string
 }
 
 export interface ServerToClientEvents {

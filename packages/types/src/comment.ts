@@ -1,13 +1,11 @@
 // packages/types/src/comment.ts
 
+import { PartialUser } from './user'
+
 export type Comment = {
 	_id: string
 	content: string
-	author: {
-		_id: string
-		username: string
-		avatar?: string
-	}
+	author: PartialUser
 	createdAt: string
 }
 

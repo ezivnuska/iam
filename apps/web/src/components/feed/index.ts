@@ -1,4 +1,4 @@
-// apps/web/src/components/Posts/index.ts
+// apps/web/src/components/feed/index.ts
 
 export * from './LinkPreview'
 export * from './PostComments'
