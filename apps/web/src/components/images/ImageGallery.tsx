@@ -1,4 +1,4 @@
-// apps/web/src/components/ImageGallery.tsx
+// apps/web/src/components/images/ImageGallery.tsx
 
 import React, { useMemo, useState } from 'react'
 import {

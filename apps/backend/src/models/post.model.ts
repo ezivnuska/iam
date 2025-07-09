@@ -21,7 +21,6 @@ const postSchema = new Schema<IPost>(
     {
         author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
         content: { type: String, required: true },
-        likes: [{ type: Schema.Types.ObjectId, ref: 'User' }],
         image: { type: Schema.Types.ObjectId, ref: 'Image', required: false },
         linkUrl: { type: String },
         linkPreview: {

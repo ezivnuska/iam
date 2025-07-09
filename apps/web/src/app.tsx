@@ -15,17 +15,17 @@ const App = () => {
     }, [])
 	return (
 		<GestureHandlerRootView style={{ flex: 1 }}>
-            <ModalProvider>
-                <SocketProvider>
-                    <AuthProvider>
+            <SocketProvider>
+                <AuthProvider>
+                    <ModalProvider>
                         <AuthLayer>
                             <View style={{ flex: 1, borderWidth: 0.1, borderColor: 'transparent' }}>
                                 <AppNavigator />
                             </View>
                         </AuthLayer>
-                    </AuthProvider>
-                </SocketProvider>
-            </ModalProvider>
+                    </ModalProvider>
+                </AuthProvider>
+            </SocketProvider>
 		</GestureHandlerRootView>
 	)
 }

@@ -26,6 +26,11 @@ export const createPost = async (
 	return res.data
 }
 
+export const fetchPostLikes = async (postId: string) => {
+	const res = await api.get(`/posts/${postId}/likes`)
+	return res.data
+}  
+
 export const togglePostLike = async (postId: string): Promise<Post> => {
 	const res = await api.post(`/posts/${postId}/like`, {}, { withCredentials: true })
 	return res.data

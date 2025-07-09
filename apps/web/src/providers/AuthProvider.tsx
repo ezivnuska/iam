@@ -11,7 +11,7 @@ import {
 import { navigate } from '../navigation'
 import type { AuthResponseType, User } from '@iam/types'
 import { LoadingScreen } from '@/screens'
-import { useModal, useSocket } from '@/hooks'
+import { useSocket } from '@/hooks'
 
 export type AuthContextType = {
 	isAuthenticated: boolean
@@ -44,7 +44,6 @@ export const AuthProvider = ({
 	const [isAuthenticated, setIsAuthenticated] = useState(false)
 	const [isAuthInitialized, setIsAuthInitialized] = useState(false)
     
-    const { hideModal } = useModal()
     const { connectSocket, disconnectSocket } = useSocket()
     
     const loading = !isAuthInitialized
@@ -74,7 +73,6 @@ export const AuthProvider = ({
 		setUser(userProfile)
 		setIsAuthenticated(true)
 		connectSocket(accessToken)
-		hideModal()
 	}
 
 	const logout = async () => {
@@ -84,7 +82,6 @@ export const AuthProvider = ({
 		clearAuthHeader()
 		setUser(null)
 		setIsAuthenticated(false)
-		hideModal()
 		navigate('Home')
 	}
 

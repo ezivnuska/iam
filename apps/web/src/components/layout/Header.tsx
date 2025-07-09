@@ -55,7 +55,6 @@ export const Header: React.FC<HeaderProps> = () => {
                     style={{
                         zIndex: 100,
                         flexWrap: 'nowrap',
-                        // minHeight: 50,
                     }}
                 >
                     <Brand

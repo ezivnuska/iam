@@ -1,31 +1,27 @@
 // apps/web/src/components/PostListItem.tsx
 
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, Text } from 'react-native'
 import {
+    AutoSizeImage,
     Avatar,
     Column,
-    CommentForm,
-    Row,
-    LikeCommentBar,
-    PostComments,
-    LinkPreview,
     IconButton,
-    AutoSizeImage,
+    LinkPreview,
+    Row,
+    LikeCommentBarContainer,
 } from '@/components'
-import { Comment, PartialUser, Post } from '@iam/types'
+import type { PartialUser, Post } from '@iam/types'
 import { paddingHorizontal, Size } from '@/styles'
 import Autolink from 'react-native-autolink'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { formatRelative } from 'date-fns'
-import { togglePostLike } from '@services'
-import { useAuth, useModal, usePosts } from '@/hooks'
+import { useAuth, usePosts } from '@/hooks'
 import { normalizeUser } from '@utils'
 
 type Props = {
 	post: Post
 	showPreview: boolean
-	commentCount: number
 	onPostDeleted?: (postId: string) => void
 	onCommentDeleted?: () => void
 }
@@ -33,43 +29,16 @@ type Props = {
 export const PostListItem: React.FC<Props> = ({
 	post,
 	showPreview,
-	commentCount,
 	onPostDeleted,
 	onCommentDeleted,
 }) => {
-	const [liked, setLiked] = useState(post.likedByCurrentUser)
-	const [likeCount, setLikeCount] = useState(post.likes.length)
-	const [expanded, setExpanded] = useState(false)
-
 	const { user, isAuthenticated } = useAuth()
-	const { openFormModal } = useModal()
-	const { deletePost, refreshCommentCounts } = usePosts()
+	const { deletePost } = usePosts()
 
-	const postCommentsRef = useRef<{ handleNewComment?: (c: Comment) => void }>(null)
-    const author = normalizeUser(post.author)
+	const author = normalizeUser(post.author)
 	const isAuthor = user?.id === author.id
 
-	const handleToggleLike = async () => {
-		try {
-			await togglePostLike(post._id)
-			setLiked((prev) => !prev)
-			setLikeCount((prev) => (liked ? prev - 1 : prev + 1))
-		} catch (err) {
-			console.error('Failed to toggle like:', err)
-		}
-	}
-
-	const handleAddComment = () => {
-		openFormModal(CommentForm, {
-            id: post._id,
-            type: 'Post',
-            onCommentAdded: (newComment: Comment) => {
-                setExpanded(true)
-                refreshCommentCounts([post])
-                postCommentsRef.current?.handleNewComment?.(newComment)
-            },
-		}, { title: 'Add Comment' })
-	}
+	const [expanded, setExpanded] = useState(false)
 
 	const handleDelete = async () => {
 		await deletePost(post._id)
@@ -80,9 +49,7 @@ export const PostListItem: React.FC<Props> = ({
 		<Row spacing={Size.M} paddingHorizontal={paddingHorizontal} align='center'>
 			<Avatar user={post.author as PartialUser} size='md' />
 			<Column flex={1}>
-				<Text style={styles.username}>
-					{post.author.username}
-				</Text>
+				<Text style={styles.username}>{post.author.username}</Text>
 				<Text style={styles.date}>
 					{formatRelative(new Date(post.createdAt), new Date())}
 				</Text>
@@ -99,10 +66,10 @@ export const PostListItem: React.FC<Props> = ({
 	return (
 		<Column spacing={Size.M} paddingVertical={Size.S}>
 			{renderHeader()}
-            
+
 			<Autolink
 				text={post.content}
-				style={{ paddingHorizontal: paddingHorizontal, fontSize: 16, color: '#eee' }}
+				style={{ paddingHorizontal, fontSize: 16, color: '#eee' }}
 				linkStyle={{ color: '#0ff' }}
 				url
 				email={false}
@@ -117,38 +84,29 @@ export const PostListItem: React.FC<Props> = ({
 				<LinkPreview url={post.linkUrl} preview={post.linkPreview} />
 			)}
 
-			<LikeCommentBar
-				likeCount={likeCount}
-				liked={liked}
-				commentCount={commentCount}
-				isAuthenticated={isAuthenticated}
-				onToggleLike={handleToggleLike}
-				onToggleComments={() => setExpanded((prev) => !prev)}
-				onAddComment={handleAddComment}
+			<LikeCommentBarContainer
+				refId={post._id}
+				refType='Post'
+				expanded={expanded}
+				setExpanded={setExpanded}
+				onCommentDeleted={onCommentDeleted}
 				textColor={isAuthenticated ? '#eee' : '#aaa'}
+				iconColor='#aaa'
 			/>
-
-			{expanded && (
-				<PostComments
-					refId={post._id}
-					ref={postCommentsRef}
-					onCommentDeleted={onCommentDeleted}
-				/>
-			)}
 		</Column>
 	)
 }
 
 const styles = StyleSheet.create({
-    username: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        lineHeight: 22,
-        color: '#fff',
-    },
-    date: {
-        fontSize: 14,
-        lineHeight: 16,
-        color: '#ccc',
-    },
+	username: {
+		fontSize: 20,
+		fontWeight: 'bold',
+		lineHeight: 22,
+		color: '#fff',
+	},
+	date: {
+		fontSize: 14,
+		lineHeight: 16,
+		color: '#ccc',
+	},
 })

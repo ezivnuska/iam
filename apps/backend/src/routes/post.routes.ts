@@ -25,7 +25,7 @@ router.get('/:id', asyncHandler(getPostById))
 router.post('/', requireAuth(), asyncHandler(createPost))
 router.put('/:id', requireAuth(), asyncHandler(updatePost))
 router.delete('/:id', requireAuth(), asyncHandler(deletePost))
-router.get('/:postId/likes', asyncHandler(getPostLikes))
-router.post('/:postId/like', requireAuth(), asyncHandler(toggleLike))
+// router.get('/:postId/likes', asyncHandler(getPostLikes))
+// router.post('/:postId/like', requireAuth(), asyncHandler(toggleLike))
 
 export default router

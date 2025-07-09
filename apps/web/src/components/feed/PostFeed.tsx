@@ -19,7 +19,7 @@ const PostFeedContent = ({
 	onScrolledToTop,
 	onScrolledToBottom,
 }: PostFeedProps) => {
-	const { posts, commentCounts, setCommentCounts } = usePosts()
+	const { posts } = usePosts()
 	const [visiblePosts, setVisiblePosts] = useState<Post[]>([])
 	const [loadingMore, setLoadingMore] = useState(false)
 
@@ -52,13 +52,6 @@ const PostFeedContent = ({
                         key={post._id}
                         post={post}
                         showPreview={!!post.linkPreview}
-                        commentCount={commentCounts[post._id] ?? 0}
-                        onCommentDeleted={() => {
-                            setCommentCounts((prev) => ({
-                                ...prev,
-                                [post._id]: Math.max((prev[post._id] ?? 1) - 1, 0),
-                            }))
-                        }}
                     />
                 ))}
             </Column>

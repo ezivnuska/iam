@@ -1,6 +1,6 @@
-// apps/web/src/hooks/useCommentLikeLogic.ts
+// apps/web/src/hooks/useLikeWithComments.ts
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 type LikeMeta = {
 	count: number
@@ -12,14 +12,16 @@ type Props = {
 	initialLikeMeta?: LikeMeta
 	initialCommentCount?: number
 	toggleLike: (refId: string) => Promise<LikeMeta>
+	fetchLikeMeta: (refId: string) => Promise<LikeMeta>
 	fetchCommentCount: (refId: string) => Promise<number>
 }
 
-export const useCommentLikeLogic = ({
+export const useLikeWithComments = ({
 	refId,
 	initialLikeMeta = { count: 0, likedByCurrentUser: false },
 	initialCommentCount = 0,
 	toggleLike,
+	fetchLikeMeta,
 	fetchCommentCount,
 }: Props) => {
 	const [likeCount, setLikeCount] = useState(initialLikeMeta.count)
@@ -27,6 +29,23 @@ export const useCommentLikeLogic = ({
 	const [commentCount, setCommentCount] = useState(initialCommentCount)
 	const [expanded, setExpanded] = useState(false)
 	const [commentRefreshToken, setCommentRefreshToken] = useState(0)
+
+	useEffect(() => {
+		const loadInitialMeta = async () => {
+			try {
+				const [likeData, commentCount] = await Promise.all([
+					fetchLikeMeta(refId),
+					fetchCommentCount(refId),
+				])
+				setLiked(likeData.likedByCurrentUser)
+				setLikeCount(likeData.count)
+				setCommentCount(commentCount)
+			} catch (err) {
+				console.error('Failed to fetch initial meta:', err)
+			}
+		}
+		loadInitialMeta()
+	}, [refId, fetchLikeMeta, fetchCommentCount])	
 
 	const handleToggleLike = async () => {
 		try {
@@ -42,25 +61,21 @@ export const useCommentLikeLogic = ({
 		setExpanded((prev) => !prev)
 	}
 
-	const refreshCommentCount = async () => {
+	const handleCommentAdded = () => {
+		setExpanded(true)
+		setCommentCount(prev => prev + 1)
+		setCommentRefreshToken(Date.now())
+	}
+
+	const handleCommentDeleted = async () => {
 		try {
 			const count = await fetchCommentCount(refId)
 			setCommentCount(count)
+			if (count === 0) setExpanded(false)
 		} catch (err) {
 			console.error('Failed to refresh comment count:', err)
 		}
-	}
-
-	const handleCommentAdded = () => {
-		setExpanded(true)
-		refreshCommentCount()
 		setCommentRefreshToken((prev) => prev + 1)
-	}
-
-	const handleCommentDeleted = () => {
-		refreshCommentCount()
-		setCommentRefreshToken((prev) => prev + 1)
-		if (commentCount === 1) setExpanded(false)
 	}
 
 	return {

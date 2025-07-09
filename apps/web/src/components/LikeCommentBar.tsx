@@ -29,8 +29,8 @@ export const LikeCommentBar: React.FC<Props> = ({
 	onToggleLike,
 	onToggleComments,
 	onAddComment,
-	textColor = '#000',
-	iconColor = 'gray',
+	textColor = '#fff',
+	iconColor = '#fff',
 	disabledComment = false,
 }) => {
     const commentDisabled = disabledComment || !isAuthenticated || commentCount === 0
@@ -55,9 +55,11 @@ export const LikeCommentBar: React.FC<Props> = ({
                     </Text>
 
                     {isAuthenticated && (
-                        <Text style={[styles.bottomButton, { color: liked ? 'red' : iconColor }]}>
-                            {liked ? '♥' : '♡'}
-                        </Text>
+                        <Ionicons
+                            name={liked ? 'heart' : 'heart-outline'}
+                            size={20}
+                            color={liked ? 'red' : iconColor}
+                        />                      
                     )}
                 </Row>
             </Pressable>
@@ -79,7 +81,7 @@ export const LikeCommentBar: React.FC<Props> = ({
 
                     {commentCount > 0 && (
                         <Ionicons
-                            name={`chevron-${expanded ? 'down' : 'up' }`}
+                            name={`chevron-${expanded ? 'up' : 'down' }`}
                             size={16}
                             color='#fff'
                             style={{ marginTop: 3 }}
