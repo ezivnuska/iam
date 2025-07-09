@@ -4,7 +4,7 @@ import React, { useEffect } from 'react'
 import { LoadingScreen } from '@/screens'
 import { AuthModal } from '@/components'
 import { useAuth, useModal } from '@/hooks'
-import { navigate } from '../navigation'
+import { navigate } from '@/navigation'
 
 type Props = {
 	children: React.ReactNode

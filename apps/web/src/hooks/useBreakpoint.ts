@@ -1,8 +1,5 @@
-// apps/web/src/hooks/useBreakpoint.ts
-
 import { useWindowDimensions } from 'react-native'
-import { breakpoints } from '../styles/breakpoints'
-import type { Breakpoint, ResponsiveProp } from '../styles/breakpoints'
+import { breakpoints, type Breakpoint, type ResponsiveProp } from '@/styles'
 
 export function useBreakpoint<T>(responsiveProp: ResponsiveProp<T>): T | undefined {
 	const { width } = useWindowDimensions()
@@ -13,12 +10,11 @@ export function useBreakpoint<T>(responsiveProp: ResponsiveProp<T>): T | undefin
 
 	const typedProp = responsiveProp as Partial<Record<Breakpoint, T>>
 
-	const sorted = Object.entries(breakpoints)
-		.sort((a, b) => b[1] - a[1]) as [Breakpoint, number][]
+	const sorted = Object.entries(breakpoints).sort((a, b) => b[1] - a[1]) as [Breakpoint, number][]
 
 	for (const [key, minWidth] of sorted) {
 		if (width >= minWidth && typedProp[key] !== undefined) {
-            return typedProp[key]
+			return typedProp[key]
 		}
 	}
 

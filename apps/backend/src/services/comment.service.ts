@@ -3,10 +3,11 @@
 import mongoose from 'mongoose'
 import { Comment } from '../models/comment.model'
 import { HttpError } from '../utils/HttpError'
+import type { CommentRefType } from '@iam/types'
 
 export const createComment = async (
 	refId: string,
-	refType: 'Post' | 'Image',
+	refType: CommentRefType,
 	userId: string,
 	content: string
 ) => {
@@ -25,7 +26,7 @@ export const createComment = async (
 
 export const getCommentsForRef = async (
 	refId: string,
-	refType: 'Post' | 'Image'
+	refType: CommentRefType
 ) => {
 	const refObjectId = new mongoose.Types.ObjectId(refId)
 
@@ -46,7 +47,7 @@ export const getCommentsForRef = async (
 
 export const getCommentSummaryForRef = async (
 	refId: string,
-	refType: 'Post' | 'Image'
+	refType: CommentRefType
 ) => {
 	const refObjectId = new mongoose.Types.ObjectId(refId)
 

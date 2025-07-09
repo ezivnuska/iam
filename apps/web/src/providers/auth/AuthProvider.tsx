@@ -1,4 +1,4 @@
-// apps/web/src/providers/AuthProvider.tsx
+// apps/web/src/providers/auth/AuthProvider.tsx
 
 import React, { useEffect, useState, createContext } from 'react'
 import {
@@ -8,7 +8,7 @@ import {
 	clearAuthHeader,
 	trySigninFromStoredToken,
 } from '@services'
-import { navigate } from '../navigation'
+import { navigate } from '@/navigation'
 import type { AuthResponseType, User } from '@iam/types'
 import { LoadingScreen } from '@/screens'
 import { useSocket } from '@/hooks'

@@ -1,6 +1,6 @@
 // apps/web/src/providers/index.ts
 
-export * from './AuthProvider'
+export * from './auth'
 export * from './ImageProvider'
 export * from './ModalProvider'
 export * from './PostsProvider'

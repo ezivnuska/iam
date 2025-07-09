@@ -2,14 +2,14 @@
 
 import React from 'react'
 import { StyleSheet, Text } from 'react-native'
-import { PageLayout, PageHeader } from '@/components'
-import { paddingHorizontal, Size } from '@/styles'
+import { Heading, PageLayout } from '@/components'
+import { paddingHorizontal } from '@/styles'
 
 export const PrivacyPolicyScreen = () => {
 
 	return (
 		<PageLayout>
-            <PageHeader
+            <Heading
                 title='Privacy Policy'
                 subtitle='Our policy on privacy'
             />

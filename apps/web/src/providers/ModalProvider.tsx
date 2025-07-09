@@ -4,7 +4,6 @@ import React, {
 	createContext,
 	ReactNode,
 	useContext,
-	useEffect,
 	useState,
 } from 'react'
 import {
@@ -61,11 +60,6 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
         ])
     }
 
-    useEffect(() => {
-        console.log('ModalProvider mounted')
-		return () => console.log('ModalProvider unmounted')
-    }, [])
-
 	const hideModal = () => {
 		setModalStack((prev) => prev.slice(0, -1))
 	}
@@ -74,7 +68,6 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
 		setModalStack([])
 	}
 
-	// --- Factory Method for Standard Form Modals ---
 	const openFormModal = (
         Component: React.FC<any>,
         props: Record<string, any> = {},
@@ -131,7 +124,6 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
 	)
 }
 
-// --- Overlay ---
 const Overlay = ({
 	children,
 	fullscreen = false,
@@ -151,7 +143,6 @@ const Overlay = ({
 	)
 }
 
-// --- Context Hook ---
 export const useModalContext = () => {
 	const context = useContext(ModalContext)
 	if (!context) {
@@ -160,7 +151,6 @@ export const useModalContext = () => {
 	return context
 }
 
-// --- Styles ---
 const styles = StyleSheet.create({
 	overlay: {
 		position: 'absolute',

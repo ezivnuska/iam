@@ -10,7 +10,7 @@ import {
 	PageLayout,
 	Row,
 	Spinner,
-	UserImageManager,
+	ImageGalleryContainer,
 	IconButton,
 } from '@/components'
 import { useAuth, useModal } from '@/hooks'
@@ -162,7 +162,7 @@ const UserImageSection = ({ userId }: { userId?: string }) => {
 	return (
 		<View style={{ flex: 1 }}>
 			<ImageProvider userId={userId}>
-				<UserImageManager userId={userId} />
+				<ImageGalleryContainer userId={userId} />
 			</ImageProvider>
 		</View>
 	)

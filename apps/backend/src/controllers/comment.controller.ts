@@ -2,6 +2,7 @@
 
 import { Request, Response, NextFunction } from 'express'
 import * as commentService from '../services/comment.service'
+import type { CommentRefType } from '@iam/types'
 
 export const addComment = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
@@ -28,7 +29,7 @@ export const getComments = async (req: Request, res: Response, next: NextFunctio
 	}
 
 	try {
-		const comments = await commentService.getCommentsForRef(refId as string, refType as 'Post' | 'Image')
+		const comments = await commentService.getCommentsForRef(refId as string, refType as CommentRefType)
 		res.json(comments)
 	} catch (err) {
 		next(err)
@@ -44,7 +45,7 @@ export const getCommentSummary = async (req: Request, res: Response, next: NextF
 	}
 
 	try {
-		const summary = await commentService.getCommentSummaryForRef(refId as string, refType as 'Post' | 'Image')
+		const summary = await commentService.getCommentSummaryForRef(refId as string, refType as CommentRefType)
 		res.json(summary)
 	} catch (err) {
 		next(err)

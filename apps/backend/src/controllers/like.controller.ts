@@ -41,11 +41,6 @@ export const getLikeMeta: RequestHandler = async (req, res) => {
 	const { refType } = req.query
 	const userId = req.user?.id
 
-	if (!userId) {
-		res.status(400).json({ message: 'User ID could not be determined' })
-		return
-	}
-
 	if (!likeService.isValidRefType(refType)) {
 		res.status(400).json({ error: 'Invalid refType' })
 		return

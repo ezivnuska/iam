@@ -1,29 +1,27 @@
 // apps/backend/src/services/like.service/ts
 
 import { LikeModel } from '../models/like.model'
-import { UserDocument, ImageDocument } from '@iam/types'
+import { LikeRefType, ImageDocument, UserDocument } from '@iam/types'
 import { Types } from 'mongoose'
-
-type RefType = 'Post' | 'Image'
 
 interface ToggleLikeParams {
 	userId: string | Types.ObjectId
 	refId: string
-	refType: RefType
+	refType: LikeRefType
 }
 
 interface GetLikesParams {
 	refId: string
-	refType: RefType
+	refType: LikeRefType
 }
 
 interface GetLikeMetaParams {
 	userId?: string | Types.ObjectId
 	refId: string
-	refType: RefType
+	refType: LikeRefType
 }
 
-export const isValidRefType = (refType: unknown): refType is RefType => {
+export const isValidRefType = (refType: unknown): refType is LikeRefType => {
 	return refType === 'Post' || refType === 'Image'
 }
 

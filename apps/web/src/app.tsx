@@ -1,27 +1,24 @@
 // apps/web/src/app.tsx
 
-import React, { useEffect } from 'react'
+import React from 'react'
 import { View } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
-import { AuthProvider, ModalProvider, SocketProvider } from './providers'
-import { AuthLayer } from '@/components'
-import { AppNavigator } from './navigation'
+import { AuthLayer, AuthProvider, ModalProvider, SocketProvider } from '@/providers'
+import { AppNavigator } from '@/navigation'
+import { PostsProvider } from '@/providers'
 
 const App = () => {
-
-    useEffect(() => {
-        console.log('App mounted')
-        return () => console.log('App unmounted')
-    }, [])
 	return (
 		<GestureHandlerRootView style={{ flex: 1 }}>
             <SocketProvider>
                 <AuthProvider>
                     <ModalProvider>
                         <AuthLayer>
-                            <View style={{ flex: 1, borderWidth: 0.1, borderColor: 'transparent' }}>
-                                <AppNavigator />
-                            </View>
+                            <PostsProvider>
+                                <View style={{ flex: 1, borderWidth: 0.1, borderColor: 'transparent' }}>
+                                    <AppNavigator />
+                                </View>
+                            </PostsProvider>
                         </AuthLayer>
                     </ModalProvider>
                 </AuthProvider>

@@ -1,4 +1,4 @@
-// apps/web/src/screens/AppLoadingScreen.tsx
+// apps/web/src/screens/LoadingScreen.tsx
 
 import React from 'react'
 import { View } from 'react-native'
