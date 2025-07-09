@@ -39,7 +39,7 @@ export const AuthModal = ({
 
 	return (
 		<ModalContainer title={title} onDismiss={onDismiss}>
-			<Column>
+			<Column spacing={10}>
 				<DynamicForm<typeof schema>
 					schema={schema}
 					fields={fields}
@@ -54,7 +54,7 @@ export const AuthModal = ({
 					<Button
 						label={isSignin ? 'Need an account?' : 'Already have one?'}
 						onPress={() => setMode(isSignin ? 'signup' : 'signin')}
-						transparent
+						variant='transparent'
 					/>
 				</Row>
 			</Column>

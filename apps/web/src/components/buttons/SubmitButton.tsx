@@ -1,54 +1,54 @@
-// apps/web/src/forms/shared/SubmitButton.tsx
+// apps/web/src/components/buttons/SubmitButton.tsx
 
 import React from 'react'
-import { Pressable, Text, StyleSheet, ActivityIndicator } from 'react-native'
-import type { ButtonProps } from '@/components'
+import {
+	ActivityIndicator,
+	Text,
+	StyleProp,
+	ViewStyle,
+	PressableStateCallbackType,
+} from 'react-native'
+import { Button, BaseButtonProps } from './Button'
+import { baseButtonStyles } from '@/styles/buttonStyles'
+import { useThemeColors } from '@/styles/theme'
 
-export const SubmitButton: React.FC<ButtonProps> = ({
+type SubmitButtonProps = BaseButtonProps & {
+	submitting?: boolean
+}
+
+export const SubmitButton: React.FC<SubmitButtonProps> = ({
 	label,
 	onPress,
-    submitting = false,
+	submitting = false,
 	disabled = false,
 	style,
 	textStyle,
 }) => {
+	const theme = useThemeColors()
+
+	const composedStyle =
+		typeof style === 'function'
+			? (state: PressableStateCallbackType): StyleProp<ViewStyle> => {
+					const base = style(state)
+					return [base]
+			  }
+			: style
+
 	return (
-		<Pressable
-            onPress={onPress}
-            disabled={disabled || submitting}
-            style={({ pressed }) => [
-                styles.base,
-                disabled && styles.disabled,
-                pressed && styles.pressed,
-                style,
-            ]}
+		<Button
+			onPress={onPress}
+			disabled={disabled || submitting}
+			style={composedStyle}
+			textStyle={textStyle}
+			variant="success"
 		>
-            {submitting ? (
-                <ActivityIndicator color='#fff' size='small' />
-            ) : (
-                <Text style={[styles.text, textStyle]}>{label}</Text>
-            )}
-		</Pressable>
+			{submitting ? (
+				<ActivityIndicator color={theme.text} size="small" />
+			) : (
+				<Text style={[baseButtonStyles.text, { color: theme.text }, textStyle]}>
+					{label}
+				</Text>
+			)}
+		</Button>
 	)
 }
-
-const styles = StyleSheet.create({
-	base: {
-        flex: 1,
-		paddingVertical: 12,
-		paddingHorizontal: 16,
-		backgroundColor: '#070',
-		borderRadius: 12,
-		alignItems: 'center',
-	},
-	text: {
-		color: '#fff',
-		fontWeight: '600',
-	},
-	disabled: {
-		backgroundColor: '#999',
-	},
-	pressed: {
-		opacity: 0.85,
-	},
-})

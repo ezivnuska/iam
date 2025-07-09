@@ -1,50 +1,75 @@
 // apps/web/src/components/buttons/Button.tsx
 
 import React from 'react'
-import { Pressable, Text, StyleSheet } from 'react-native'
-import type { ButtonProps } from './Button.types'
+import {
+	Pressable,
+	Text,
+	StyleProp,
+	TextStyle,
+	ViewStyle,
+	PressableStateCallbackType,
+	Platform,
+	Animated,
+} from 'react-native'
+import { baseButtonStyles } from '@/styles/buttonStyles'
+import { useThemeColors } from '@/styles/theme'
 
-export const Button: React.FC<ButtonProps> = ({
+export type BaseButtonProps = {
+	label?: string
+	onPress: () => void
+	disabled?: boolean
+	style?: StyleProp<ViewStyle> | ((state: PressableStateCallbackType) => StyleProp<ViewStyle>)
+	textStyle?: StyleProp<TextStyle>
+	children?: React.ReactNode
+	variant?: 'primary' | 'success' | 'danger' | 'transparent'
+	animateOnPress?: boolean
+}
+
+export const Button: React.FC<BaseButtonProps> = ({
 	label,
 	onPress,
 	disabled = false,
 	style,
 	textStyle,
-    transparent = false,
+	children,
+	variant = 'primary',
+	animateOnPress = true,
 }) => {
+	const theme = useThemeColors()
+
+	const backgroundColor =
+		variant === 'transparent'
+			? 'transparent'
+			: theme[variant] || theme.primary
+
 	return (
 		<Pressable
-            onPress={onPress}
-            disabled={disabled}
-            style={({ pressed }) => [
-                styles.base,
-                disabled && styles.disabled,
-                pressed && styles.pressed,
-                style,
-                { backgroundColor: transparent ? 'transparent' : '#333' },
-            ]}
+			onPress={onPress}
+			disabled={disabled}
+			style={({ pressed }) => {
+				const customStyle =
+					typeof style === 'function' ? style({ pressed }) : style
+
+				return [
+					baseButtonStyles.base,
+					{ backgroundColor },
+					disabled && baseButtonStyles.disabled,
+					pressed && baseButtonStyles.pressed,
+					customStyle,
+				]
+			}}
 		>
-            <Text style={[styles.text, textStyle]}>{label}</Text>
+			{children ?? (
+				<Text
+					style={[
+						baseButtonStyles.text,
+						{ color: theme.text },
+						textStyle,
+					]}
+				>
+					{label}
+				</Text>
+			)}
 		</Pressable>
 	)
 }
-
-const styles = StyleSheet.create({
-	base: {
-        flex: 1,
-		paddingVertical: 12,
-		paddingHorizontal: 16,
-		borderRadius: 12,
-		alignItems: 'center',
-	},
-	text: {
-		color: '#fff',
-		fontWeight: '600',
-	},
-	disabled: {
-		backgroundColor: '#999',
-	},
-	pressed: {
-		opacity: 0.85,
-	},
-})

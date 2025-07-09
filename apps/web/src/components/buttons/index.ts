@@ -1,5 +1,6 @@
 // apps/web/src/components/Button/index.ts
 
+export * from './AnimatedButton'
 export * from './Button'
 export * from './CreatePostButton'
 export * from './IconButton'
