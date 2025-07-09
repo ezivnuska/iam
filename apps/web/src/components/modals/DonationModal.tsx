@@ -7,7 +7,7 @@ import { useModal, useSocket } from '@/hooks'
 
 const KOFI_URL = 'https://ko-fi.com/iameric/?hidefeed=true&widget=true&embed=true&preview=true'
 
-export default function KoFiPanel() {
+export const DonationModal = () => {
 	const { hideModal } = useModal()
 	const { onDonation } = useSocket()
 

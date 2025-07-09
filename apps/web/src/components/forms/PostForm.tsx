@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { ActivityIndicator, Image, View } from 'react-native'
 import { FormProvider, useForm } from 'react-hook-form'
-import { DynamicForm, ImageUploader, postSchema, postFields } from '@/components'
+import { DynamicForm, ImageUploadModal, postSchema, postFields } from '@/components'
 import type { PostFormValues } from '@/components'
 import * as postService from '@services'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -84,7 +84,7 @@ export const PostForm = ({ onPostCreated }: PostFormProps) => {
 					/>
 				) : null}
 
-				<ImageUploader
+				<ImageUploadModal
 					onImageSelected={(imageData) => {
 						setLocalImageData(imageData)
 						setValue('image', undefined)

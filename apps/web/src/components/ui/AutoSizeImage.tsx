@@ -1,4 +1,4 @@
-// apps/web/src/components/AutoSizeImage.tsx
+// apps/web/src/components/ui/AutoSizeImage.tsx
 
 import React from 'react'
 import {
@@ -18,13 +18,13 @@ type AutoSizeImageProps = {
     forceSquare?: boolean
 }
 
-const AutoSizeImage = ({
-		image,
-		style,
-		resizeMode = 'cover',
-		containerWidth,
-		forceSquare = false,
-  }: AutoSizeImageProps) => {
+export const AutoSizeImage = ({
+	image,
+	style,
+	resizeMode = 'cover',
+	containerWidth,
+	forceSquare = false,
+}: AutoSizeImageProps) => {
 	if (!image) {
 		console.warn('AutoSizeImage: image prop is undefined/null')
 		return null
@@ -86,4 +86,3 @@ const AutoSizeImage = ({
 	)
 }
 
-export default AutoSizeImage

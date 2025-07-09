@@ -1,16 +1,16 @@
-// apps/web/src/components/images/UserImageManager.tsx
+// apps/web/src/components/images/ImageGalleryContainer.tsx
 
 import React, { useEffect, useMemo, useState } from 'react'
 import { Text } from 'react-native'
-import { Column, FullScreenImage, ImageGallery, ImageManagerHeader } from '@/components'
+import { Column, ImageGallery, ImageGalleryHeader, ImageModal } from '@/components'
 import { useAuth, useImage, useModal } from '@/hooks'
 import type { Image } from '@iam/types'
 
-interface UserImageManagerProps {
+interface ImageGalleryContainerProps {
 	userId?: string
 }
 
-const UserImageManager: React.FC<UserImageManagerProps> = ({ userId }) => {
+export const ImageGalleryContainer: React.FC<ImageGalleryContainerProps> = ({ userId }) => {
 	const { user: authUser } = useAuth()
 	const isAdmin = authUser?.role === 'admin'
 	const isOwner = useMemo(() => {
@@ -64,8 +64,8 @@ const UserImageManager: React.FC<UserImageManagerProps> = ({ userId }) => {
 	const handleImagePress = (image: Image) => {
 		const isAvatar = image.id === currentAvatarId
         showModal((
-            <FullScreenImage
-                image={image}
+            <ImageModal
+                selectedImage={image}
                 onClose={hideModal}
                 onDelete={(isAdmin || isOwner) ? () => handleDelete(image.id) : undefined}
                 onSetAvatar={isOwner ? () => handleSetAvatar(image.id) : undefined}
@@ -76,7 +76,7 @@ const UserImageManager: React.FC<UserImageManagerProps> = ({ userId }) => {
 
 	return (
 		<Column flex={1} spacing={10}>
-			<ImageManagerHeader />
+			<ImageGalleryHeader />
 			{error ? (
 				<Text>{error}</Text>
 			) : (
@@ -91,5 +91,3 @@ const UserImageManager: React.FC<UserImageManagerProps> = ({ userId }) => {
 		</Column>
 	)
 }
-
-export default UserImageManager

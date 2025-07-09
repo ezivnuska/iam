@@ -1,4 +1,4 @@
-// apps/web/src/components/feed/PostFeed.tsx
+// apps/web/src/components/feed/PostList.tsx
 
 import React, { useEffect, useState, useCallback } from 'react'
 import { View, ActivityIndicator } from 'react-native'
@@ -8,17 +8,17 @@ import type { Post } from '@iam/types'
 
 const PAGE_SIZE = 3
 
-type PostFeedProps = {
+type PostListProps = {
 	onScrollDirectionChange?: (direction: 'up' | 'down') => void
 	onScrolledToTop?: () => void
 	onScrolledToBottom?: () => void
 }
 
-const PostFeedContent = ({
+const PostListContent = ({
 	onScrollDirectionChange,
 	onScrolledToTop,
 	onScrolledToBottom,
-}: PostFeedProps) => {
+}: PostListProps) => {
 	const { posts } = usePosts()
 	const [visiblePosts, setVisiblePosts] = useState<Post[]>([])
 	const [loadingMore, setLoadingMore] = useState(false)
@@ -64,12 +64,12 @@ const PostFeedContent = ({
 	)
 }
 
-export const PostFeed = ({
+export const PostList = ({
 	onScrollDirectionChange,
 	onScrolledToTop,
 	onScrolledToBottom,
-}: PostFeedProps) => (
-    <PostFeedContent
+}: PostListProps) => (
+    <PostListContent
         onScrollDirectionChange={onScrollDirectionChange}
         onScrolledToTop={onScrolledToTop}
         onScrolledToBottom={onScrolledToBottom}

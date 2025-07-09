@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Text, Pressable, StyleSheet, View } from 'react-native'
-import { KoFiPanel, Row } from '@/components'
+import { DonationModal, Row } from '@/components'
 import { useNavigation } from '@react-navigation/native'
 import { MAX_WIDTH } from './constants'
 import { paddingHorizontal, Size } from '@/styles'
@@ -14,8 +14,8 @@ type NavProp = StackNavigationProp<RootStackParamList>
 
 export const Footer = () => {
     const navigation = useNavigation<NavProp>()
-    const { openFormModal } = useModal()
-    const showKofiModal = () => openFormModal(KoFiPanel, {}, { fullscreen: true })
+    const { showModal } = useModal()
+    const showDonationModal = () => showModal(<DonationModal />, true)
 	return (
         <Row flex={1} align='center' style={styles.container}>
             <View style={styles.maxWidthContainer}>
@@ -27,7 +27,7 @@ export const Footer = () => {
                     style={{ zIndex: 200, flexWrap: 'nowrap' }}
                 >
                     <Text style={[styles.text, styles.copy]}>&copy; iameric</Text>
-                    <Pressable onPress={showKofiModal} style={styles.supportButton}>
+                    <Pressable onPress={showDonationModal} style={styles.supportButton}>
                         <Text style={[styles.text, styles.support]}>Support</Text>
                     </Pressable>
                     <Pressable onPress={() => navigation.navigate('PrivacyPolicy')}>
@@ -42,10 +42,7 @@ export const Footer = () => {
 const styles = StyleSheet.create({
     container: {
         width: '100%',
-        // flexDirection: 'row',
-        // alignItems: 'center',
-        // paddingVertical: Size.XS,
-        // backgroundColor: '#fff',
+        paddingVertical: Size.XS,
     },
     maxWidthContainer: {
         width: '100%',

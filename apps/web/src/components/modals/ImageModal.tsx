@@ -1,28 +1,24 @@
-// apps/web/src/components/FullScreenImage.tsx
+// apps/web/src/components/modals/ImageModal.tsx
 
 import React, { useState } from 'react'
 import { View, StyleSheet, Pressable, useWindowDimensions } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
-import {
-	AutoSizeImage,
-	Row,
-	LikeCommentBarContainer,
-} from '@/components'
+import { AutoSizeImage, Row, LikeCommentBarContainer } from '@/components'
 import { Size, resolveResponsiveProp } from '@/styles'
 import { useAuth } from '@/hooks'
 import type { Image } from '@iam/types'
 
 type Props = {
-	image: Image
+	selectedImage: Image
 	onClose: () => void
 	onDelete?: () => void
 	onSetAvatar?: (id: string | undefined) => void
 	isAvatar?: boolean
 }
 
-const FullScreenImage: React.FC<Props> = ({
-	image,
+export const ImageModal: React.FC<Props> = ({
+	selectedImage,
 	onClose,
 	onDelete,
 	onSetAvatar,
@@ -36,8 +32,8 @@ const FullScreenImage: React.FC<Props> = ({
 	const { width, height } = useWindowDimensions()
 	const paddingHorizontal = resolveResponsiveProp({ xs: 8, sm: 8, md: 16, lg: 24 })
 
-	const bestVariantUrl = image.variants.find(v => v.filename)?.filename ?? ''
-	const bestVariant = image.variants.find(v => bestVariantUrl.includes(v.filename))
+	const bestVariantUrl = selectedImage.variants.find(v => v.filename)?.filename ?? ''
+	const bestVariant = selectedImage.variants.find(v => bestVariantUrl.includes(v.filename))
 
 	let displayWidth = width - paddingHorizontal * 2
 	let displayHeight = height - paddingHorizontal * 2
@@ -54,12 +50,12 @@ const FullScreenImage: React.FC<Props> = ({
 	const handleSetAvatar = () => {
 		if (!onSetAvatar) return
 		const currentAvatarId = user?.avatar?.id
-		const imagesMatch = image.id === currentAvatarId
+		const imagesMatch = selectedImage.id === currentAvatarId
 		if (currentAvatarId && imagesMatch) {
 			onSetAvatar(undefined)
 			setIsCurrentAvatar(false)
 		} else {
-			onSetAvatar(image.id)
+			onSetAvatar(selectedImage.id)
 			setIsCurrentAvatar(true)
 		}
 	}
@@ -67,8 +63,8 @@ const FullScreenImage: React.FC<Props> = ({
 	return (
 		<View style={[StyleSheet.absoluteFill, styles.fullscreenContainer]}>
 			<View style={styles.imageContainer}>
-				{/* Header */}
 				<View style={[styles.header, { paddingHorizontal }]}>
+
 					<Row
 						flex={1}
 						align='center'
@@ -97,16 +93,14 @@ const FullScreenImage: React.FC<Props> = ({
 					</Row>
 				</View>
 
-				{/* Image */}
 				<View style={styles.imageWrapper}>
 					<AutoSizeImage
-						image={image}
+						image={selectedImage}
 						resizeMode='contain'
 						style={{ width: displayWidth, height: displayHeight }}
 					/>
 				</View>
 
-				{/* Footer */}
 				<View style={styles.footer}>
 					<View
 						style={[
@@ -115,7 +109,7 @@ const FullScreenImage: React.FC<Props> = ({
 						]}
 					>
 						<LikeCommentBarContainer
-							refId={image.id}
+							refId={selectedImage.id}
 							refType='Image'
 							expanded={expanded}
 							setExpanded={setExpanded}
@@ -175,4 +169,3 @@ const styles = StyleSheet.create({
 	},
 })
 
-export default FullScreenImage

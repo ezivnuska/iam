@@ -1,4 +1,4 @@
-// apps/web/src/components/LikeCommentBar.tsx
+// apps/web/src/components/feedback/LikeCommentBar.tsx
 
 import React from 'react'
 import { Pressable, StyleSheet, Text } from 'react-native'

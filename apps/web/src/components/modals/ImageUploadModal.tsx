@@ -1,4 +1,4 @@
-// apps/web/src/components/ImageUploader.tsx
+// apps/web/src/components/modals/ImageUploadModal.tsx
 
 import React, { useState } from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'
@@ -16,11 +16,11 @@ type ImageDataType = {
 	height?: number
 }
 
-type ImageUploaderProps = {
+type ImageUploadModalProps = {
 	onImageSelected: (imageData: ImageDataType) => void
 }
 
-export const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelected }) => {
+export const ImageUploadModal: React.FC<ImageUploadModalProps> = ({ onImageSelected }) => {
 	const [uploadUri, setUploadUri] = useState<string | null>(null)
 	const [useCamera, setUseCamera] = useState(false)
 	const [error, setError] = useState<string | null>(null)

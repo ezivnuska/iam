@@ -1,10 +1,10 @@
-// apps/web/src/components/PageHeader.tsx
+// apps/web/src/components/ui/Heading.tsx
 
 import React from 'react'
 import { View, Text, StyleSheet, StyleProp, TextStyle, ViewStyle } from 'react-native'
 import { paddingHorizontal, Size } from '@/styles'
 
-export interface PageHeaderProps {
+export interface HeadingProps {
 	title: string
 	subtitle?: string
 	style?: StyleProp<ViewStyle>
@@ -12,7 +12,7 @@ export interface PageHeaderProps {
 	subtitleStyle?: StyleProp<TextStyle>
 }
 
-export const PageHeader: React.FC<PageHeaderProps> = ({
+export const Heading: React.FC<HeadingProps> = ({
 	title,
 	subtitle,
 	style,

@@ -6,13 +6,11 @@ import { commentSchema, commentFields, DynamicForm } from '@/components'
 import { useModal } from '@/hooks'
 import { addComment } from '@services'
 import type { CommentFormValues } from '@/components'
-import type { Comment } from '@iam/types'
-
-type CommentParentType = 'Post' | 'Image'
+import type { Comment, CommentRefType } from '@iam/types'
 
 type CommentFormProps = {
 	id: string
-	type: CommentParentType
+	type: CommentRefType
     onCommentAdded: (comment: Comment) => void
 }
 

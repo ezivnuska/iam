@@ -7,7 +7,7 @@ import { useImage, useModal } from '@/hooks'
 import type { UploadedImage } from '@iam/types'
 import Ionicons from '@expo/vector-icons/Ionicons'
 
-export const ImageManagerHeader = () => {
+export const ImageGalleryHeader = () => {
 
     const { addImage } = useImage()
     const { hideModal, openFormModal } = useModal()

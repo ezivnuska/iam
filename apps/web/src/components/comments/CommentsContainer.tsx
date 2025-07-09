@@ -3,14 +3,12 @@
 import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react'
 import { deleteComment, fetchComments } from '@services'
 import { useAuth } from '@/hooks'
-import type { Comment } from '@iam/types'
+import type { Comment, CommentRefType } from '@iam/types'
 import { CommentsList } from '.'
-
-type RefType = 'Post' | 'Image'
 
 type CommentsContainerProps = {
 	refId: string
-	refType: RefType
+	refType: CommentRefType
 	onCommentDeleted?: () => void
 	onCommentAdded?: () => void
 	textColor?: string

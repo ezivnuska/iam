@@ -3,7 +3,6 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Header, Footer } from '@/components'
-import { useDeviceInfo } from '@/hooks'
 import { Size } from '@/styles'
 import { MAX_WIDTH } from './constants'
 import type { PageLayoutProps } from './types'
@@ -11,23 +10,18 @@ import type { PageLayoutProps } from './types'
 export const PageLayout: React.FC<PageLayoutProps> = ({
 	children,
 }) => {
-	const { height } = useDeviceInfo()
 
 	return (
 		<View style={styles.outerContainer}>
-			<View style={styles.header}>
+			<View>
 				<Header />
 			</View>
 
-			<View style={[
-                styles.contentWrapper,
-                // { height: height - 100 },
-                ]}
-            >
+			<View style={styles.contentWrapper}>
 				{children}
 			</View>
 
-			<View style={styles.footer}>
+			<View>
 				<Footer />
 			</View>
 		</View>
@@ -38,13 +32,6 @@ const styles = StyleSheet.create({
 	outerContainer: {
 		flex: 1,
         backgroundColor: '#000',
-	},
-	header: {
-		// height: 50,
-	},
-	footer: {
-		// height: 50,
-        paddingVertical: Size.XS,
 	},
 	contentWrapper: {
         flex: 1,

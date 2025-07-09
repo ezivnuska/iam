@@ -1,10 +1,10 @@
-// apps/web/src/components/FilterTabs.tsx
+// apps/web/src/components/users/UserListNav.tsx
 
 import React from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import type { FilterType } from '@/hooks'
 
-interface FilterTabsProps {
+interface UserListNavProps {
 	filter: FilterType
 	setFilter: (value: FilterType) => void
 }
@@ -15,7 +15,7 @@ const filterOptions: { label: string; value: FilterType }[] = [
 	{ label: 'Pending', value: 'pending' },
 ]
 
-export const FilterTabs: React.FC<FilterTabsProps> = ({ filter, setFilter }) => {
+export const UserListNav: React.FC<UserListNavProps> = ({ filter, setFilter }) => {
 	return (
 		<View style={styles.container}>
 			{filterOptions.map(({ label, value }) => (

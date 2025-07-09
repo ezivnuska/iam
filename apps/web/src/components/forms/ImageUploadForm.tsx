@@ -1,4 +1,4 @@
-// apps/web/src/components/ImageUploader.tsx
+// apps/web/src/components/ImageUploadForm.tsx
 
 import React, { useState } from 'react'
 import { Dimensions, Image, Platform, StyleSheet, Text } from 'react-native'
@@ -22,11 +22,11 @@ type UploadType = {
 	imageData: ImageDataType
 }
 
-type ImageUploaderProps = {
+type ImageUploadFormProps = {
 	onUploaded?: (result: UploadedImage) => void
 }
 
-export const ImageUploadForm: React.FC<ImageUploaderProps> = ({ onUploaded }) => {
+export const ImageUploadForm: React.FC<ImageUploadFormProps> = ({ onUploaded }) => {
 	const [error, setError] = useState<string | null>(null)
 	const [upload, setUpload] = useState<UploadType | null>(null)
 	const [uploading, setUploading] = useState(false)
