@@ -9,8 +9,7 @@ import {
 	fetchLikeMeta,
 	toggleLike,
 } from '@services'
-
-type RefType = 'Image' | 'Post'
+import type { RefType } from '@iam/types'
 
 type Props = {
 	refId: string
@@ -19,8 +18,6 @@ type Props = {
 	setExpanded: (expanded: boolean) => void
 	onCommentAdded?: () => void
 	onCommentDeleted?: () => void
-	textColor?: string
-	iconColor?: string
 	disabledComment?: boolean
 }
 
@@ -31,8 +28,6 @@ export const LikeCommentBarContainer: React.FC<Props> = ({
 	setExpanded,
 	onCommentAdded,
 	onCommentDeleted,
-	textColor = '#fff',
-	iconColor = '#fff',
 	disabledComment = false,
 }) => {
 	const { isAuthenticated, user } = useAuth()
@@ -86,8 +81,6 @@ export const LikeCommentBarContainer: React.FC<Props> = ({
 					setExpanded(!expanded)
 				}}
 				onAddComment={handleAddComment}
-				textColor={textColor}
-				iconColor={iconColor}
 				disabledComment={disabledComment}
 			/>
 
@@ -98,7 +91,6 @@ export const LikeCommentBarContainer: React.FC<Props> = ({
 					refType={refType}
 					onCommentAdded={handleCommentAdded}
 					onCommentDeleted={onCommentDeleted || handleCommentDeleted}
-					textColor={textColor}
 				/>
 			)}
 		</>

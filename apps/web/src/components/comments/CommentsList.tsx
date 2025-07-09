@@ -13,7 +13,6 @@ type CommentsListProps = {
 	currentUserId?: string
 	onDelete: (id: string) => void
 	isLoading?: boolean
-	textColor?: string
 }
 
 export const CommentsList = ({
@@ -22,14 +21,13 @@ export const CommentsList = ({
 	currentUserId,
 	onDelete,
 	isLoading,
-	textColor = '#fff',
 }: CommentsListProps) => {
 	const { height } = useWindowDimensions()
 
 	if (isLoading) {
 		return (
 			<View style={{ padding: Size.M }}>
-				<ActivityIndicator size="small" />
+				<ActivityIndicator size='small' />
 			</View>
 		)
 	}
@@ -49,7 +47,6 @@ export const CommentsList = ({
 						isAuthor={currentUserId === author.id}
 						isDeleting={deletingIds.includes(item._id)}
 						onDelete={onDelete}
-						textColor={textColor}
 					/>
 				)
 			})}

@@ -15,8 +15,6 @@ type Props = {
 	onToggleLike: () => void
 	onToggleComments: () => void
 	onAddComment: () => void
-	textColor?: string
-	iconColor?: string
 	disabledComment?: boolean
 }
 
@@ -29,8 +27,6 @@ export const LikeCommentBar: React.FC<Props> = ({
 	onToggleLike,
 	onToggleComments,
 	onAddComment,
-	textColor = '#fff',
-	iconColor = '#fff',
 	disabledComment = false,
 }) => {
     const commentDisabled = disabledComment || !isAuthenticated || commentCount === 0
@@ -50,7 +46,7 @@ export const LikeCommentBar: React.FC<Props> = ({
                     justify='center'
                     align='center'
                 >
-                    <Text style={[styles.bottomButton, { color: textColor }]}>
+                    <Text style={[styles.bottomButton, { color: '#fff' }]}>
                         {likeCount} {`like${likeCount !== 1 ? 's' : ''}`}
                     </Text>
 
@@ -58,7 +54,7 @@ export const LikeCommentBar: React.FC<Props> = ({
                         <Ionicons
                             name={liked ? 'heart' : 'heart-outline'}
                             size={20}
-                            color={liked ? 'red' : iconColor}
+                            color={liked ? 'red' : '#fff'}
                         />                      
                     )}
                 </Row>
@@ -73,7 +69,7 @@ export const LikeCommentBar: React.FC<Props> = ({
                     <Text
                         style={[
                             styles.bottomButton,
-                            { color: commentDisabled ? '#888' : textColor },
+                            { color: commentDisabled ? '#888' : '#fff' },
                         ]}
                     >
                         {commentCount} {`Comment${commentCount !== 1 ? 's' : ''}`}
@@ -92,7 +88,7 @@ export const LikeCommentBar: React.FC<Props> = ({
 
 			{isAuthenticated && (
 				<Pressable onPress={onAddComment}>
-					<Text style={[styles.bottomButton, { color: textColor }]}>Add Comment</Text>
+					<Text style={[styles.bottomButton, { color: '#fff' }]}>Add Comment</Text>
 				</Pressable>
 			)}
 		</Row>

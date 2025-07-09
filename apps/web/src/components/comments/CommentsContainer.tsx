@@ -11,7 +11,6 @@ type CommentsContainerProps = {
 	refType: CommentRefType
 	onCommentDeleted?: () => void
 	onCommentAdded?: () => void
-	textColor?: string
 }
 
 export const CommentsContainer = forwardRef(
@@ -21,7 +20,6 @@ export const CommentsContainer = forwardRef(
 			refType,
 			onCommentDeleted,
 			onCommentAdded,
-			textColor = '#fff',
 		}: CommentsContainerProps,
 		ref
 	) => {
@@ -75,7 +73,6 @@ export const CommentsContainer = forwardRef(
 				deletingIds={deletingIds}
 				currentUserId={user?.id}
 				onDelete={handleDelete}
-				textColor={textColor}
 			/>
 		)
 	}
