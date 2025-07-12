@@ -4,6 +4,7 @@ import React from 'react'
 import { Pressable, StyleSheet, Text } from 'react-native'
 import { Row } from '@/components'
 import { paddingHorizontal, Size } from '@iam/theme'
+import { useTheme } from '@/hooks'
 import Ionicons from '@expo/vector-icons/Ionicons'
 
 type Props = {
@@ -29,8 +30,9 @@ export const LikeCommentBar: React.FC<Props> = ({
 	onAddComment,
 	disabledComment = false,
 }) => {
+    const { theme } = useTheme()
     const commentDisabled = disabledComment || !isAuthenticated || commentCount === 0
-
+    const textColor = (!isAuthenticated || commentDisabled) ? theme.colors.textSecondary : theme.colors.text
 	return (
 		<Row
             flex={1}
@@ -46,7 +48,7 @@ export const LikeCommentBar: React.FC<Props> = ({
                     justify='center'
                     align='center'
                 >
-                    <Text style={[styles.bottomButton, { color: '#fff' }]}>
+                    <Text style={[styles.bottomButton, { color: textColor }]}>
                         {likeCount} {`like${likeCount !== 1 ? 's' : ''}`}
                     </Text>
 
@@ -54,7 +56,7 @@ export const LikeCommentBar: React.FC<Props> = ({
                         <Ionicons
                             name={liked ? 'heart' : 'heart-outline'}
                             size={20}
-                            color={liked ? 'red' : '#fff'}
+                            color={liked ? 'red' : textColor}
                         />                      
                     )}
                 </Row>
@@ -69,7 +71,7 @@ export const LikeCommentBar: React.FC<Props> = ({
                     <Text
                         style={[
                             styles.bottomButton,
-                            { color: commentDisabled ? '#888' : '#fff' },
+                            { color: textColor },
                         ]}
                     >
                         {commentCount} {`Comment${commentCount !== 1 ? 's' : ''}`}
@@ -79,7 +81,7 @@ export const LikeCommentBar: React.FC<Props> = ({
                         <Ionicons
                             name={`chevron-${expanded ? 'up' : 'down' }`}
                             size={16}
-                            color='#fff'
+                            color={textColor}
                             style={{ marginTop: 3 }}
                         />
                     )}
@@ -88,7 +90,7 @@ export const LikeCommentBar: React.FC<Props> = ({
 
 			{isAuthenticated && (
 				<Pressable onPress={onAddComment}>
-					<Text style={[styles.bottomButton, { color: '#fff' }]}>Add Comment</Text>
+					<Text style={[styles.bottomButton, { color: textColor }]}>Add Comment</Text>
 				</Pressable>
 			)}
 		</Row>

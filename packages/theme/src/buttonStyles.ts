@@ -1,37 +1,90 @@
 // packages/theme/src/buttonStyles.ts
 
 import { StyleSheet, Platform } from 'react-native'
+import type { Theme } from './themes'
 
-export const baseButtonStyles = StyleSheet.create({
-	base: {
-		width: '100%',
-		minHeight: 48,
-		paddingVertical: Platform.OS === 'web' ? 14 : 12,
-		paddingHorizontal: 20,
-		borderRadius: 12,
-		alignItems: 'center',
-		justifyContent: 'center',
-	},
-	text: {
-		fontWeight: Platform.OS === 'ios' ? '600' : 'bold',
-		fontSize: 16,
-	},
-	disabled: {
-		opacity: 0.5,
-	},
-	pressed: {
-		opacity: 0.85,
-	},
-})
+export const getBaseButtonStyles = (theme: Theme) =>
+	StyleSheet.create({
+		base: {
+			// width: '100%',
+			minHeight: 40,
+			paddingVertical: Platform.OS === 'web' ? 7 : 6,
+			// paddingHorizontal: 10,
+			borderRadius: 12,
+			alignItems: 'center',
+			justifyContent: 'center',
+		},
+		text: {
+			fontWeight: Platform.OS === 'ios' ? '600' : 'bold',
+			fontSize: 16,
+			color: theme.colors.text,
+		},
+		disabled: {
+			opacity: 0.5,
+		},
+		pressed: {
+			opacity: 0.85,
+		},
+	})
 
-export const buttonVariants = StyleSheet.create({
+// export const getButtonVariantStyles = (theme: Theme) => ({
+// 	primary: {
+// 		backgroundColor: theme.colors.primary,
+// 		textColor: theme.colors.background,
+// 	},
+// 	secondary: {
+// 		backgroundColor: theme.colors.secondary,
+// 		textColor: theme.colors.background,
+// 	},
+// 	success: {
+// 		backgroundColor: theme.colors.success,
+// 		textColor: theme.colors.background,
+// 	},
+// 	danger: {
+// 		backgroundColor: theme.colors.error,
+// 		textColor: theme.colors.background,
+// 	},
+// 	transparent: {
+// 		backgroundColor: 'transparent',
+// 		textColor: theme.colors.text,
+// 	},
+// })
+
+export const getButtonVariantStyles = (theme: Theme) => ({
 	primary: {
-		backgroundColor: '#333',
+		backgroundColor: theme.colors.primary,
+		textColor: theme.colors.background,
+	},
+	secondary: {
+		backgroundColor: theme.colors.secondary,
+		textColor: theme.colors.background,
 	},
 	success: {
-		backgroundColor: '#070',
+		backgroundColor: theme.colors.success,
+		textColor: theme.colors.background,
+	},
+	danger: {
+		backgroundColor: theme.colors.error,
+		textColor: theme.colors.background,
+	},
+	warning: {
+		backgroundColor: theme.colors.warning ?? '#FBBF24', // fallback if not in theme
+		textColor: theme.colors.background,
+	},
+	info: {
+		backgroundColor: theme.colors.info ?? '#3B82F6',
+		textColor: theme.colors.background,
+	},
+	muted: {
+		backgroundColor: theme.colors.muted,
+		textColor: theme.colors.background,
+	},
+	tertiary: {
+		backgroundColor: theme.colors.tertiary ?? theme.colors.muted,
+		textColor: theme.colors.text,
 	},
 	transparent: {
 		backgroundColor: 'transparent',
+		textColor: theme.colors.text,
 	},
 })

@@ -1,9 +1,9 @@
 // apps/web/src/components/UserListItem.tsx
 
 import React from 'react'
-import { StyleSheet, Text, Pressable, View } from 'react-native'
+import { StyleSheet, Text, Pressable } from 'react-native'
 import { Avatar, BondControls, Column, Row } from '@/components'
-import { useAuth } from '@/hooks'
+import { useAuth, useTheme } from '@/hooks'
 import { User, Bond } from '@iam/types'
 import { paddingHorizontal, Size } from '@iam/theme'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
@@ -30,6 +30,7 @@ export const UserListItem = ({
 	onCreate,
 }: UserListItemProps) => {
 	const { user } = useAuth()
+    const { theme } = useTheme()
 	return (
 		<Row flex={1} spacing={Size.M} justify='space-between' align='center' style={styles.container}>
 			<Pressable onPress={onPress}>
@@ -37,10 +38,26 @@ export const UserListItem = ({
 					<Avatar user={profile} size='md' />
 					<Column flex={1}>
 						<Row flex={1} spacing={Size.S} align='center'>
-							<Text style={styles.username}>{profile.username}</Text>
+							<Text
+                                style={[
+                                    styles.username,
+                                    { color: theme.colors.text },
+                                ]}
+                            >
+                                {profile.username}
+                            </Text>
 							{isOnline && <MaterialIcons name='co-present' size={18} color='green' />}
 						</Row>
-						{showEmail && <Text style={styles.email}>{profile.email}</Text>}
+						{showEmail && (
+                            <Text
+                                style={[
+                                    styles.email,
+                                    { color: theme.colors.textSecondary },
+                                ]}
+                            >
+                                {profile.email}
+                            </Text>
+                        )}
 					</Column>
 				</Row>
 			</Pressable>
@@ -67,10 +84,8 @@ const styles = StyleSheet.create({
 	username: {
 		fontSize: 18,
 		fontWeight: '600',
-        color: '#fff',
 	},
 	email: {
 		fontSize: 14,
-        color: '#ccc',
 	},
 })

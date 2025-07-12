@@ -4,6 +4,7 @@ import React from 'react'
 import { Text, StyleSheet, View } from 'react-native'
 import { AutoScrollView, Avatar, Column, Row } from '@/components'
 import { Size } from '@iam/theme'
+import { useTheme } from '@/hooks'
 import type { ChatMessage } from '@iam/types'
 
 type ChatListProps = {
@@ -11,6 +12,7 @@ type ChatListProps = {
 }
 
 export const ChatList = ({ messages }: ChatListProps) => {
+    const { theme } = useTheme()
     return (
         <AutoScrollView dependencies={[messages]}>
             <Column spacing={Size.XS}>
@@ -22,7 +24,14 @@ export const ChatList = ({ messages }: ChatListProps) => {
                             <View style={{ width: 40 }}>
                                 {showAvatar && <Avatar user={item.user} size='xs' />}
                             </View>
-                            <Text style={styles.message}>{item.text}</Text>
+                            <Text
+                                style={[
+                                    styles.message,
+                                    { color: theme.colors.text },
+                                ]}
+                            >
+                                {item.text}
+                            </Text>
                         </Row>
                     )
                 })}

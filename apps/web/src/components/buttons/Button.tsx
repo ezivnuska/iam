@@ -2,25 +2,34 @@
 
 import React from 'react'
 import {
+    ActivityIndicator,
 	Pressable,
 	Text,
 	StyleProp,
-	TextStyle,
 	ViewStyle,
 	PressableStateCallbackType,
 } from 'react-native'
-import { baseButtonStyles, type Theme } from '@iam/theme'
+import { getBaseButtonStyles, getButtonVariantStyles, type Theme } from '@iam/theme'
 import { useTheme } from '@/hooks'
 
+export type ButtonVariant =
+    | 'primary'
+    | 'secondary'
+    | 'success'
+    | 'danger'
+    | 'warning'
+    | 'info'
+    | 'muted'
+    | 'tertiary'
+    | 'transparent'
+
 export type BaseButtonProps = {
-	label?: string
-	onPress: () => void
-	disabled?: boolean
-	style?: StyleProp<ViewStyle> | ((state: PressableStateCallbackType) => StyleProp<ViewStyle>)
-	textStyle?: StyleProp<TextStyle>
-	children?: React.ReactNode
-	variant?: keyof Theme['colors'] | 'transparent'
-	animateOnPress?: boolean
+    label?: string
+    onPress: () => void
+    disabled?: boolean
+    style?: StyleProp<ViewStyle> | ((state: PressableStateCallbackType) => StyleProp<ViewStyle>)
+    variant?: ButtonVariant
+    showActivity?: boolean
 }
 
 export const Button: React.FC<BaseButtonProps> = ({
@@ -28,46 +37,40 @@ export const Button: React.FC<BaseButtonProps> = ({
 	onPress,
 	disabled = false,
 	style,
-	textStyle,
-	children,
 	variant = 'primary',
-	animateOnPress = true,
+    showActivity = false,
 }) => {
 	const { theme } = useTheme()
-
-	const backgroundColor =
-		variant === 'transparent'
-			? 'transparent'
-			: theme.colors[variant as keyof typeof theme.colors] ?? theme.colors.primary
+    const baseButtonStyles = getBaseButtonStyles(theme)
+    const buttonVariants = getButtonVariantStyles(theme)
+    const variantStyles = buttonVariants[variant] ?? buttonVariants.primary
 
 	return (
 		<Pressable
 			onPress={onPress}
 			disabled={disabled}
 			style={({ pressed }) => {
-				const customStyle =
-					typeof style === 'function' ? style({ pressed }) : style
-
-				return [
-					baseButtonStyles.base,
-					{ backgroundColor },
-					disabled && baseButtonStyles.disabled,
-					pressed && baseButtonStyles.pressed,
-					customStyle,
-				]
-			}}
+                const customStyle =
+                    typeof style === 'function' ? style({ pressed }) : style
+            
+                return [
+                    baseButtonStyles.base,
+                    { backgroundColor: variantStyles.backgroundColor },
+                    disabled && baseButtonStyles.disabled,
+                    pressed && baseButtonStyles.pressed,
+                    customStyle,
+                ]
+            }}            
 		>
-			{children ?? (
-				<Text
-					style={[
-						baseButtonStyles.text,
-						{ color: theme.colors.text },
-						textStyle,
-					]}
-				>
-					{label}
-				</Text>
-			)}
+			{showActivity ?? <ActivityIndicator color={theme.colors.text} size='small' />}
+            <Text
+                style={[
+                    baseButtonStyles.text,
+                    { color: variantStyles.textColor },
+                ]}
+            >            
+                {label}
+            </Text>
 		</Pressable>
 	)
 }

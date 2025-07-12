@@ -12,11 +12,11 @@ import {
     LikeCommentBarContainer,
 } from '@/components'
 import type { PartialUser, Post } from '@iam/types'
+import { RefType } from '@iam/types'
 import { paddingHorizontal, Size } from '@iam/theme'
 import Autolink from 'react-native-autolink'
-import Ionicons from '@expo/vector-icons/Ionicons'
 import { formatRelative } from 'date-fns'
-import { useAuth, usePosts } from '@/hooks'
+import { useAuth, usePosts, useTheme } from '@/hooks'
 import { normalizeUser } from '@utils'
 
 type Props = {
@@ -34,6 +34,7 @@ export const PostListItem: React.FC<Props> = ({
 }) => {
 	const { user, isAuthenticated } = useAuth()
 	const { deletePost } = usePosts()
+	const { theme } = useTheme()
 
 	const author = normalizeUser(post.author)
 	const isAuthor = user?.id === author.id
@@ -49,15 +50,27 @@ export const PostListItem: React.FC<Props> = ({
 		<Row spacing={Size.M} paddingHorizontal={paddingHorizontal} align='center'>
 			<Avatar user={post.author as PartialUser} size='md' />
 			<Column flex={1}>
-				<Text style={styles.username}>{post.author.username}</Text>
-				<Text style={styles.date}>
+				<Text
+                    style={[
+                        styles.username,
+                        { color: theme.colors.text },
+                    ]}
+                >
+                    {post.author.username}
+                </Text>
+				<Text
+                    style={[
+                        styles.date,
+                        { color: theme.colors.textSecondary },
+                    ]}
+                >
 					{formatRelative(new Date(post.createdAt), new Date())}
 				</Text>
 			</Column>
 			{isAuthenticated && isAuthor && (
 				<IconButton
 					onPress={handleDelete}
-					icon={<Ionicons name='trash-outline' size={24} color='#fff' />}
+					iconName='trash-outline'
 				/>
 			)}
 		</Row>
@@ -69,8 +82,8 @@ export const PostListItem: React.FC<Props> = ({
 
 			<Autolink
 				text={post.content}
-				style={{ paddingHorizontal, fontSize: 16, color: '#eee' }}
-				linkStyle={{ color: '#0ff' }}
+				style={{ paddingHorizontal, fontSize: 16, color: theme.colors.text }}
+				linkStyle={{ color: theme.colors.link }}
 				url
 				email={false}
 				phone={false}
@@ -86,12 +99,10 @@ export const PostListItem: React.FC<Props> = ({
 
 			<LikeCommentBarContainer
 				refId={post._id}
-				refType='Post'
+				refType={RefType.Post}
 				expanded={expanded}
 				setExpanded={setExpanded}
 				onCommentDeleted={onCommentDeleted}
-				textColor={isAuthenticated ? '#eee' : '#aaa'}
-				iconColor='#aaa'
 			/>
 		</Column>
 	)
@@ -102,11 +113,9 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 		fontWeight: 'bold',
 		lineHeight: 22,
-		color: '#fff',
 	},
 	date: {
 		fontSize: 14,
 		lineHeight: 16,
-		color: '#ccc',
 	},
 })

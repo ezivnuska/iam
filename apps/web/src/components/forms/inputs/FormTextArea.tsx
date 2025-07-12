@@ -17,6 +17,7 @@ import {
 	TextInputContentSizeChangeEventData,
 } from 'react-native'
 import { form as styles } from '@iam/theme'
+import { useTheme } from '@/hooks'
 
 type FormTextAreaProps<T extends FieldValues> = {
 	name: FieldPath<T>
@@ -45,7 +46,7 @@ export const FormTextArea = <T extends FieldValues>({
 }: FormTextAreaProps<T>) => {
 	const [height, setHeight] = useState(40)
 	const internalRef = useRef<TextInput>(null)
-
+    const { theme } = useTheme()
 	useEffect(() => {
 		if (inputRef && internalRef.current) {
 			inputRef.current = internalRef.current
@@ -78,7 +79,7 @@ export const FormTextArea = <T extends FieldValues>({
 						multiline
 						autoFocus={autoFocus}
 						placeholder={placeholder ?? label ?? name}
-						placeholderTextColor='#070'
+						placeholderTextColor={theme.colors.muted}
 						autoCapitalize='none'
 						onSubmitEditing={onSubmitEditing}
 						onContentSizeChange={handleContentSizeChange}

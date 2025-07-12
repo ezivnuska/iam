@@ -17,6 +17,7 @@ import {
 } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { form as styles } from '@iam/theme'
+import { useTheme } from '@/hooks'
 
 type FormFieldProps<T extends FieldValues> = {
 	name: FieldPath<T>
@@ -48,7 +49,7 @@ export const FormField = <T extends FieldValues>({
 	keyboardType = 'default',
 }: FormFieldProps<T>) => {
 	const [isSecure, setIsSecure] = useState(secure)
-
+    const { theme } = useTheme()
 	return (
 		<View style={{ marginBottom: 0 }}>
 			{label && <Text style={styles.label}>{label}</Text>}
@@ -69,7 +70,7 @@ export const FormField = <T extends FieldValues>({
 							}}
 							autoFocus={autoFocus}
 							placeholder={placeholder ?? label ?? name}
-							placeholderTextColor='#99f'
+							placeholderTextColor={theme.colors.muted}
 							autoCapitalize='none'
 							secureTextEntry={isSecure}
 							returnKeyType='done'

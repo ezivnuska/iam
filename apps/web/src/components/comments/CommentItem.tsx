@@ -1,11 +1,11 @@
 // apps/web/src/components/CommentItem.tsx
 
 import React from 'react'
-import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native'
-import { Avatar, Column, Row } from '@/components'
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Avatar, Column, IconButton, Row } from '@/components'
 import { Comment, PartialUser } from '@iam/types'
 import { paddingHorizontal, Size } from '@iam/theme'
-import Ionicons from '@expo/vector-icons/Ionicons'
+import { useTheme } from '@/hooks'
 
 type CommentItemProps = {
 	comment: Comment
@@ -26,6 +26,7 @@ export const CommentItem = ({
 	authorTextWeight = '700',
 	paddingVertical = Size.S,
 }: CommentItemProps) => {
+    const { theme } = useTheme()
 	return (
 		<Row
 			spacing={Size.S}
@@ -52,12 +53,16 @@ export const CommentItem = ({
                     <Text style={[styles.text, { color: textColor }]}>{comment.content}</Text>
                 </Column>
                 {isAuthor && (
-                    <Pressable onPress={() => onDelete(comment._id)} disabled={isDeleting}>
+                    <View>
                         {isDeleting
-                            ? <ActivityIndicator size={20} color='#fff' />
-                            : <Ionicons name='trash-bin' size={20} color={textColor} />
+                            ? <ActivityIndicator size={20} color={theme.colors.text} />
+                            : <IconButton
+                                iconName='trash-bin'
+                                onPress={() => onDelete(comment._id)}
+                                disabled={isDeleting}
+                            />
                         }
-                    </Pressable>
+                    </View>
                 )}
             </Row>
         </Row>

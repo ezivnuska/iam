@@ -2,7 +2,7 @@
 
 import { ResponsiveProp, resolveResponsiveProp } from './breakpoints'
 import type { ViewStyle } from 'react-native'
-import { Size } from '.'
+import { Size } from './spacing'
 
 export type PaddingProps = {
 	padding?: ResponsiveProp<Size | Size[]>

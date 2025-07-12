@@ -3,20 +3,19 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Header, Footer } from '@/components'
-import { Size } from '@iam/theme'
 import { MAX_WIDTH } from './constants'
 import type { PageLayoutProps } from './types'
+import { useTheme } from '@/hooks'
 
-export const PageLayout: React.FC<PageLayoutProps> = ({
-	children,
-}) => {
+export const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
+	const { theme } = useTheme()
 
 	return (
-		<View style={styles.outerContainer}>
+		<View style={[styles.outerContainer, { backgroundColor: theme.colors.background }]}>
 			<View>
 				<Header />
 			</View>
-
+			
 			<View style={styles.contentWrapper}>
 				{children}
 			</View>
@@ -31,10 +30,9 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
 const styles = StyleSheet.create({
 	outerContainer: {
 		flex: 1,
-        backgroundColor: '#000',
 	},
 	contentWrapper: {
-        flex: 1,
+		flex: 1,
 		width: '100%',
 		maxWidth: MAX_WIDTH,
 		alignSelf: 'center',

@@ -12,6 +12,7 @@ import {
 	StyleSheet,
 } from 'react-native'
 import { Controller, FieldError, Control, FieldPath, FieldValues } from 'react-hook-form'
+import { useTheme } from '@/hooks'
 
 type Props<T extends FieldValues> = {
 	name: FieldPath<T>
@@ -34,7 +35,7 @@ export const ControlledTextInput = <T extends FieldValues>({
 	const inputRef = useRef<TextInput>(null)
 	const [height, setHeight] = useState(40)
 	const [isFocused, setIsFocused] = useState(false)
-
+    const { theme } = useTheme()
 	useEffect(() => {
         if (rest.inputRef && inputRef.current) {
             rest.inputRef.current = inputRef.current
@@ -78,7 +79,7 @@ export const ControlledTextInput = <T extends FieldValues>({
                             // error && styles.errorInput,
                             style,
                         ]}
-                        placeholderTextColor='#999'
+                        placeholderTextColor={theme.colors.muted}
                     />
                 )}
             />

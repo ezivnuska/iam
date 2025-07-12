@@ -3,10 +3,9 @@
 import React, { ReactNode } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { MAX_WIDTH } from './constants'
-import { AuthModal, Avatar, IconButton, Row } from '@/components'
+import { AuthModal, Avatar, Button, IconButton, Row } from '@/components'
 import { useNavigation, useNavigationState } from '@react-navigation/native'
 import { useAuth, useModal, useTheme } from '@/hooks'
-import Ionicons from '@expo/vector-icons/Ionicons'
 import type { AvatarSize } from '@/components'
 import { paddingHorizontal, resolveResponsiveProp, Size } from '@iam/theme'
 import { AuthMode } from '@/types'
@@ -16,12 +15,37 @@ interface HeaderProps {
 }
 
 const Brand = ({ ...props }) => {
+    const { theme } = useTheme()
     const fontSize = resolveResponsiveProp({ xs: 34, sm: 34, md: 36, lg: 40 })
     return (
         <Pressable onPress={props.onPress} style={{ flex: 1, flexShrink: 1 }}>
             <Row wrap={true} style={{ flexShrink: 1, minWidth: 50, overflow: 'hidden' }}>
-                <Text style={[styles.iam, { fontSize, lineHeight: fontSize }]}>iam</Text>
-                {props.showUsername && <Text style={[styles.eric, { fontSize, lineHeight: fontSize }]}>{`${props.user ? props.user.username : 'eric'}`}</Text>}
+                <Text
+                    style={[
+                        styles.iam,
+                        {
+                            fontSize,
+                            lineHeight: fontSize,
+                            color: theme.colors.primary,
+                        }
+                    ]}
+                >
+                    iam
+                </Text>
+                {props.showUsername && (
+                    <Text
+                        style={[
+                            styles.eric,
+                            {
+                                fontSize,
+                                lineHeight: fontSize,
+                                color: theme.colors.tertiary,
+                            }
+                        ]}
+                    >
+                        {`${props.user ? props.user.username : 'eric'}`}
+                    </Text>
+                )}
             </Row>
         </Pressable>
     )
@@ -30,7 +54,7 @@ const Brand = ({ ...props }) => {
 export const Header: React.FC<HeaderProps> = () => {
     const { isAuthenticated, user, authenticate } = useAuth()
     const { showModal } = useModal()
-    const { isDark, toggleTheme } = useTheme()
+    const { isDark, theme, toggleTheme } = useTheme()
     const navigation = useNavigation()
 
     const iconSize = resolveResponsiveProp({ xs: 24, sm: 18, md: 18, lg: 20 })
@@ -65,16 +89,18 @@ export const Header: React.FC<HeaderProps> = () => {
                     />
 
                     <Row
-                        flex={5}
+                        flex={1}
                         spacing={navSpacing}
                         align='center'
                         justify='center'
                         wrap={false}
                         style={styles.nav}
                     >
-                        <Pressable onPress={toggleTheme}>
-                            <Ionicons name={isDark ? 'sunny' : 'moon'} size={iconSize} color='#ccc' />
-                        </Pressable>
+                        <IconButton
+							iconName={isDark ? 'sunny' : 'moon'}
+							onPress={toggleTheme}
+							iconSize={iconSize}
+						/>
                         {isAuthenticated ? (
                             <Row
                                 flex={5}
@@ -85,19 +111,22 @@ export const Header: React.FC<HeaderProps> = () => {
                                 style={styles.nav}
                             >
                                 <IconButton
-                                    label='Chat'
-                                    onPress={() => navigation.navigate('Chat' as never)}
-                                    icon={<Ionicons name='chatbubbles-outline' size={iconSize} color='#ccc' />}
-                                    active={currentRoute === 'Chat'}
-                                    showLabel={showLabel}
-                                />
-                                <IconButton
-                                    label='Users'
-                                    onPress={() => navigation.navigate('UserList' as never)}
-                                    icon={<Ionicons name='people-outline' size={iconSize} color='#ccc' />}
-                                    active={currentRoute === 'UserList'}
-                                    showLabel={showLabel}
-                                />
+									label='Chat'
+									onPress={() => navigation.navigate('Chat' as never)}
+									iconName='chatbubbles-outline'
+									iconSize={iconSize}
+									active={currentRoute === 'Chat'}
+									showLabel={showLabel}
+								/>
+
+								<IconButton
+									label='Users'
+									onPress={() => navigation.navigate('UserList' as never)}
+									iconName='people-outline'
+									iconSize={iconSize}
+									active={currentRoute === 'UserList'}
+									showLabel={showLabel}
+								/>
                                 {user && (
                                     <Avatar
                                         user={user}
@@ -107,14 +136,28 @@ export const Header: React.FC<HeaderProps> = () => {
                                 )}
                             </Row>
                         ) : (
-                            <Row spacing={1} style={styles.authButtons}>
-                                <Pressable onPress={() => showAuthModal('signup')} style={[styles.authButton, { borderRightWidth: 1, borderRightColor: '#aaa' }]}>
-                                    <Text style={styles.buttonLabel}>Sign Up</Text>
-                                </Pressable>
-                                <Pressable onPress={() => showAuthModal('signin')} style={[styles.authButton, { paddingRight: 0 }]}>
-                                    <Text style={styles.buttonLabel}>Sign In</Text>
-                                </Pressable>
-                            </Row>
+                            <Row
+								spacing={Size.S}
+								wrap={false}
+								align='center'
+								justify='flex-end'
+								style={{ flexShrink: 0, flexGrow: 0 }}
+							>
+								<Button
+									variant='transparent'
+									label='Sign Up'
+									onPress={() => showAuthModal('signup')}
+									// style={{ paddingHorizontal: 12 }}
+									// textStyle={{ fontWeight: '600' }}
+								/>
+								<Button
+									variant='transparent'
+									label='Sign In'
+									onPress={() => showAuthModal('signin')}
+									// style={{ paddingHorizontal: 12 }}
+									// textStyle={{ fontWeight: '600' }}
+								/>
+							</Row>
                         )}
                     </Row>
                 </Row>
@@ -137,22 +180,16 @@ const styles = StyleSheet.create({
     },
 	iam: {
 		fontWeight: 'bold',
-        color: '#fff',
+        // color: '#fff',
 	},
 	eric: {
 		fontWeight: 'bold',
-        color: '#777',
+        // color: '#777',
 	},
     nav: {
         flexShrink: 0,
         flexGrow: 0,
         flexBasis: 'auto',
-    },
-    authButtons: {
-        
-    },
-    authButton: {
-        paddingHorizontal: Size.XS,
     },
     buttonLabel: {
         color: '#fff',

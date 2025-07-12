@@ -7,7 +7,7 @@ import { Control, FieldValues, Path, PathValue } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { z, ZodTypeAny, ZodObject } from 'zod'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { Column, FormField, SubmitButton } from '@/components'
+import { Column, DynamicFormFields, FormField, Button } from '@/components'
 import type { FieldConfig } from '@/types'
 
 interface DynamicFormProps<T extends ZodTypeAny> {
@@ -57,13 +57,15 @@ export function DynamicForm<T extends ZodTypeAny>({
 	const [emailPrefilled, setEmailPrefilled] = useState(!prefillEmail)
 
     useEffect(() => {
-        form.reset({
-            ...(Object.fromEntries(
-                (isZodObject(schema) ? Object.keys(schema.shape) : []).map((key) => [key, ''])
-            ) as z.infer<T>),
-            ...defaultValues,
-        })
-    }, [defaultValues])      
+		if (defaultValues) {
+			form.reset({
+				...(Object.fromEntries(
+					(isZodObject(schema) ? Object.keys(schema.shape) : []).map((key) => [key, ''])
+				) as z.infer<T>),
+				...defaultValues,
+			})
+		}
+	}, [JSON.stringify(defaultValues)])	
 
 	useEffect(() => {
 		if (prefillEmail && isZodObject(schema) && 'email' in schema.shape) {
@@ -80,6 +82,17 @@ export function DynamicForm<T extends ZodTypeAny>({
 			setEmailPrefilled(true)
 		}
 	}, [prefillEmail])
+
+	const scrollToFieldIfInvalidOrEmpty = () => {
+		const data = form.getValues()
+		const firstInvalid = fields.find(f => form.formState.errors[f.name])
+		const firstEmpty = fields.find(f => {
+			const val = data[f.name]
+			return val === '' || val == null
+		})
+		const target = firstInvalid ?? firstEmpty
+		if (target) focusAndScrollToField(target.name as string)
+	}
 
 	const focusAndScrollToField = (fieldName: string) => {
 		const ref = inputRefs.current[fieldName]
@@ -109,20 +122,7 @@ export function DynamicForm<T extends ZodTypeAny>({
 
 	useEffect(() => {
 		if (!emailPrefilled) return
-
-		const data = form.getValues()
-
-		const firstInvalid = fields.find(field => !!form.formState.errors[field.name])
-
-		const firstIncomplete = fields.find(field => {
-			const value = data[field.name]
-			return value === undefined || value === null || value === ''
-		})
-
-		const targetField = firstInvalid ?? firstIncomplete
-		if (targetField) {
-			focusAndScrollToField(targetField.name as string)
-		}
+		scrollToFieldIfInvalidOrEmpty()
 	}, [emailPrefilled, form.formState.errors])
 
 	const allFieldsComplete = (data: z.infer<T>) =>
@@ -134,24 +134,10 @@ export function DynamicForm<T extends ZodTypeAny>({
 	const handleSubmit = async (data: z.infer<T>) => {
 		const isValid = await form.trigger()
 	
-		if (!isValid) {
-			const firstInvalid = fields.find((f) => form.formState.errors[f.name])
-			if (firstInvalid) {
-				focusAndScrollToField(firstInvalid.name as string)
-			}
+		if (!isValid || !allFieldsComplete(data)) {
+			scrollToFieldIfInvalidOrEmpty()
 			return
-		}
-	
-		if (!allFieldsComplete(data)) {
-			const firstEmpty = fields.find((f) => {
-				const val = data[f.name]
-				return val === undefined || val === null || val === ''
-			})
-			if (firstEmpty) {
-				focusAndScrollToField(firstEmpty.name as string)
-			}
-			return
-		}
+		}		
 	
 		try {
 			await onSubmit(data, form.setError)
@@ -166,28 +152,27 @@ export function DynamicForm<T extends ZodTypeAny>({
 
 	return (
 		<>
-			{renderFields(
-				fields,
-				form.control,
-				form.formState.errors,
-				inputRefs,
-				form.getValues(),
-				async (name: keyof z.infer<T>) => {
+			<DynamicFormFields
+				fields={fields}
+				control={form.control}
+				errors={form.formState.errors}
+				inputRefs={inputRefs}
+				formValues={form.getValues()}
+				triggerField={async (name) => {
 					const isValid = await form.trigger(name as Path<z.infer<T>>)
 					if (!isValid) {
-						setTimeout(() => {
-							focusAndScrollToField(name as string)
-						}, 0)
+						setTimeout(() => focusAndScrollToField(name as string), 0)
 					}
 					return isValid
-				},
-				form.handleSubmit(handleSubmit)
-			)}
+				}}
+				handleSubmit={form.handleSubmit(handleSubmit)}
+			/>
 
-			<SubmitButton
+			<Button
 				label={submitLabel}
 				onPress={form.handleSubmit(handleSubmit)}
-				submitting={form.formState.isSubmitting}
+				showActivity={form.formState.isSubmitting}
+				variant='primary'
 			/>
 		</>
 	)

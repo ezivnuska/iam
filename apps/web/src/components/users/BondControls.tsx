@@ -3,8 +3,6 @@
 import React from 'react'
 import { IconButton, Row } from '@/components'
 import { Bond } from '@iam/types'
-import MaterialIcons from '@expo/vector-icons/MaterialIcons'
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 
 type BondControlsProps = {
 	bond?: Bond | null
@@ -19,7 +17,7 @@ export const BondControls = ({ bond, userId, onConfirm, onDelete, onCreate }: Bo
 		if (onCreate) {
 			return (
 				<IconButton
-					icon={<MaterialIcons name='person-add' size={30} color='blue' />}
+					iconName='person-add'
 					onPress={onCreate}
 				/>
 			)
@@ -37,13 +35,13 @@ export const BondControls = ({ bond, userId, onConfirm, onDelete, onCreate }: Bo
 					{onConfirm && (
 						<IconButton
 							onPress={onConfirm}
-							icon={<MaterialIcons name='check-circle' size={30} color='green' />}
+							iconName='checkmark-circle'
 						/>
 					)}
 					{onDelete && (
 						<IconButton
 							onPress={onDelete}
-							icon={<MaterialIcons name='cancel' size={30} color='red' />}
+							iconName='close-circle'
 						/>
 					)}
 				</Row>
@@ -52,7 +50,7 @@ export const BondControls = ({ bond, userId, onConfirm, onDelete, onCreate }: Bo
 		if (!isResponder && onDelete) {
 			return (
 				<IconButton
-					icon={<MaterialCommunityIcons name='clock-minus' size={30} color='red' />}
+					iconName='remove-circle'
 					onPress={onDelete}
 				/>
 			)
@@ -62,7 +60,7 @@ export const BondControls = ({ bond, userId, onConfirm, onDelete, onCreate }: Bo
 	if (onDelete) {
 		return (
 			<IconButton
-				icon={<MaterialIcons name='person-remove' size={30} color='red' />}
+				iconName='person-remove-sharp'
 				onPress={onDelete}
 			/>
 		)

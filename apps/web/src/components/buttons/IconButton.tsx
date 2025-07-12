@@ -1,21 +1,36 @@
 // apps/web/src/components/buttons/IconButton.tsx
 
-import React from 'react'
+import React, { type ComponentProps } from 'react'
 import { Pressable, Text, StyleSheet } from 'react-native'
 import { Column } from '@/components'
-import type { ButtonProps } from './Button.types'
-import { resolveResponsiveProp } from '@iam/theme'
+import Ionicons from '@expo/vector-icons/Ionicons'
+import { useTheme } from '@/hooks'
 
-export const IconButton: React.FC<ButtonProps> = ({
+type IoniconsName = ComponentProps<typeof Ionicons>['name']
+
+export interface IconButtonProps {
+	label?: string
+	onPress: () => void
+	disabled?: boolean
+	active?: boolean
+	showLabel?: boolean
+	iconName: IoniconsName
+	iconSize?: number
+}
+
+export const IconButton: React.FC<IconButtonProps> = ({
 	label,
 	onPress,
 	disabled = false,
-	style,
 	active = false,
-	icon,
 	showLabel = true,
+	iconName,
+	iconSize = 20,
 }) => {
-	const shouldShowLabel = resolveResponsiveProp(showLabel)
+	const { theme } = useTheme()
+
+	const iconColor = active ? theme.colors.primary : theme.colors.muted
+	const labelColor = active ? theme.colors.primary : theme.colors.muted
 
 	return (
 		<Pressable
@@ -23,20 +38,14 @@ export const IconButton: React.FC<ButtonProps> = ({
 			disabled={disabled}
 			style={({ pressed }) => [
 				styles.button,
-				disabled && styles.disabled,
 				pressed && styles.pressed,
-				active && styles.activeButton,
+				active && { backgroundColor: theme.colors.surfaceVariant, borderRadius: 6 },
 			]}
 		>
 			<Column spacing={4} align='center'>
-				{icon}
-				{label && shouldShowLabel && (
-					<Text
-						style={[
-							styles.buttonLabel,
-							active && styles.activeButtonLabel,
-						]}
-					>
+				<Ionicons name={iconName as any} size={iconSize} color={iconColor} />
+				{label && showLabel && (
+					<Text style={[styles.label, { color: labelColor, fontWeight: active ? 'bold' : 'normal' }]}>
 						{label}
 					</Text>
 				)}
@@ -46,37 +55,15 @@ export const IconButton: React.FC<ButtonProps> = ({
 }
 
 const styles = StyleSheet.create({
-	content: {
-		alignItems: 'center',
-		justifyContent: 'center',
-	},
-	icon: {
-		marginBottom: 0,
-	},	
-	text: {
-		color: '#ccc',
-		fontWeight: '600',
-	},
-	disabled: {
-		// backgroundColor: 'rgba(255, 255, 255, 0.25)',
+	button: {
+		paddingHorizontal: 8,
+		paddingVertical: 4,
 	},
 	pressed: {
 		opacity: 0.85,
 	},
-    button: {
-        // paddingVertical: 4,
-        // paddingHorizontal: 12,
-    },
-    activeButton: {
-		// backgroundColor: 'rgba(255, 255, 255, 0.25)',
-    },
-    buttonLabel: {
-        fontSize: 14,
-        color: '#ccc',
-        lineHeight: 12,
-    },
-    activeButtonLabel: {
-        color: '#fff',
-        fontWeight: 'bold',
-    },
+	label: {
+		fontSize: 14,
+		lineHeight: 16,
+	},
 })
