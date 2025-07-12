@@ -4,6 +4,7 @@ import React from 'react'
 import { ActivityIndicator, View, StyleSheet, Text } from 'react-native'
 import { Size } from '@iam/theme'
 import { Column } from '@/components'
+import { useTheme } from '@/hooks'
 
 export interface SpinnerProps {
 	size?: number
@@ -13,14 +14,17 @@ export interface SpinnerProps {
 export const Spinner: React.FC<SpinnerProps> = ({
 	size = 50,
     label,
-}) => (
-    <View style={styles.outerContainer}>
-        <Column spacing={20} justify='center'>
-            <ActivityIndicator color='#fff' size={size} />
-            {label && <Text style={styles.label}>{label}</Text>}
-        </Column>
-    </View>
-)
+}) => {
+    const { theme } = useTheme()
+    return (
+        <View style={styles.outerContainer}>
+            <Column spacing={20} justify='center'>
+                <ActivityIndicator color={theme.colors.text} size={size} />
+                {label && <Text style={[styles.label, { color: theme.colors.text }]}>{label}</Text>}
+            </Column>
+        </View>
+    )
+}
 
 const styles = StyleSheet.create({
 	outerContainer: {
@@ -31,7 +35,6 @@ const styles = StyleSheet.create({
         paddingVertical: Size.XS,
 	},
 	label: {
-        color: '#fff',
         textAlign: 'center',
 	},
 })
