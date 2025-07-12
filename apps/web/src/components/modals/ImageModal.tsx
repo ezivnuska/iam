@@ -4,10 +4,10 @@ import React, { useState } from 'react'
 import { View, StyleSheet, Pressable, useWindowDimensions } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
-import { AutoSizeImage, Row, LikeCommentBarContainer } from '@/components'
-import { Size, resolveResponsiveProp } from '@iam/theme'
-import { useAuth } from '@/hooks'
-import type { Image } from '@iam/types'
+import { AutoSizeImage, Row, LikeCommentBarContainer, IconButton } from '@/components'
+import { withAlpha, Size, resolveResponsiveProp } from '@iam/theme'
+import { useAuth, useTheme } from '@/hooks'
+import { RefType, type Image } from '@iam/types'
 
 type Props = {
 	selectedImage: Image
@@ -24,10 +24,11 @@ export const ImageModal: React.FC<Props> = ({
 	onSetAvatar,
 	isAvatar,
 }) => {
-	const [expanded, setExpanded] = useState(false)
+	// const [expanded, setExpanded] = useState(false)
 	const [isCurrentAvatar, setIsCurrentAvatar] = useState(isAvatar)
 
 	const { user } = useAuth()
+	const { theme } = useTheme()
 
 	const { width, height } = useWindowDimensions()
 	const paddingHorizontal = resolveResponsiveProp({ xs: 8, sm: 8, md: 16, lg: 24 })
@@ -61,9 +62,9 @@ export const ImageModal: React.FC<Props> = ({
 	}
 
 	return (
-		<View style={[StyleSheet.absoluteFill, styles.fullscreenContainer]}>
+		<View style={[StyleSheet.absoluteFill, styles.fullscreenContainer, { backgroundColor: theme.colors.background }]}>
 			<View style={styles.imageContainer}>
-				<View style={[styles.header, { paddingHorizontal }]}>
+				<View style={[styles.header, { paddingHorizontal, backgroundColor: withAlpha(theme.colors.background, 0.5) }]}>
 
 					<Row
 						flex={1}
@@ -73,23 +74,25 @@ export const ImageModal: React.FC<Props> = ({
 					>
 						<Row align='center' spacing={Size.M}>
 							{onDelete && (
-								<Pressable onPress={onDelete}>
-									<Ionicons name='trash-bin' size={28} color='#fff' />
-								</Pressable>
+								<IconButton
+                                    onPress={onDelete}
+									iconName='trash-bin'
+                                    iconSize={28}
+								/>
 							)}
 							{onSetAvatar && (
-								<Pressable onPress={handleSetAvatar}>
-									<FontAwesome
-										name='user-circle-o'
-										size={24}
-										color={isCurrentAvatar ? '#3498db' : '#fff'}
-									/>
-								</Pressable>
+								<IconButton
+                                    onPress={handleSetAvatar}
+									iconName='person-circle'
+                                    iconSize={28}
+                                />
 							)}
 						</Row>
-						<Pressable onPress={onClose}>
-							<Ionicons name='close-sharp' size={28} color='#fff' />
-						</Pressable>
+						<IconButton
+                            onPress={onClose}
+							iconName='close-sharp'
+                            iconSize={28}
+                        />
 					</Row>
 				</View>
 
@@ -105,16 +108,16 @@ export const ImageModal: React.FC<Props> = ({
 					<View
 						style={[
 							styles.footerContent,
-							expanded && { backgroundColor: 'rgba(0,0,0,0.7)' },
+							{ backgroundColor: withAlpha(theme.colors.background, 0.5) },
 						]}
 					>
 						<LikeCommentBarContainer
 							refId={selectedImage.id}
-							refType='Image'
-							expanded={expanded}
-							setExpanded={setExpanded}
-							textColor='#fff'
-							iconColor='#fff'
+							refType={RefType.Image}
+							// expanded={expanded}
+							// setExpanded={setExpanded}
+							// textColor='#fff'
+							// iconColor='#fff'
 							disabledComment={false}
 						/>
 					</View>
@@ -127,7 +130,7 @@ export const ImageModal: React.FC<Props> = ({
 const styles = StyleSheet.create({
 	fullscreenContainer: {
 		flex: 1,
-		backgroundColor: '#000',
+		// backgroundColor: 'pink',
 	},
 	imageContainer: {
 		flex: 1,

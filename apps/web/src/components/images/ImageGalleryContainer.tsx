@@ -52,6 +52,7 @@ export const ImageGalleryContainer: React.FC<ImageGalleryContainerProps> = ({ us
 	}
 
 	const handleSetAvatar = async (id: string | undefined) => {
+        console.log('handleSetAvatar', id)
 		const newAvatarId = id === currentAvatarId ? undefined : id
 		try {
 			await setAvatar(newAvatarId)

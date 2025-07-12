@@ -1,7 +1,7 @@
 // apps/web/src/screens/UserProfileScreen.tsx
 
 import React, { useEffect, useState, useMemo } from 'react'
-import { StyleSheet, Text, View, Pressable } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import { useRoute } from '@react-navigation/native'
 import {
 	Avatar,
@@ -13,12 +13,10 @@ import {
 	ImageGalleryContainer,
 	IconButton,
 } from '@/components'
-import { useAuth, useModal } from '@/hooks'
+import { useAuth, useModal, useTheme } from '@/hooks'
 import { getUserByUsername } from '@services'
 import { ImageProvider } from '@/providers'
 import type { User } from '@iam/types'
-import { Feather } from '@expo/vector-icons'
-import Ionicons from '@expo/vector-icons/Ionicons'
 import { paddingHorizontal, Size } from '@iam/theme'
 import { normalizeUser } from '@utils'
 
@@ -41,6 +39,7 @@ export const UserProfileScreen = () => {
     }
 
 	const { openFormModal } = useModal()
+	const { theme } = useTheme()
 
 	const [fetchedUser, setFetchedUser] = useState<User | null>(null)
 	const [loadingUser, setLoadingUser] = useState(false)
@@ -120,29 +119,32 @@ export const UserProfileScreen = () => {
 							<Text style={[styles.text, styles.username]}>
 								{userToDisplay.username}
 							</Text>
-							<Text style={[styles.text, styles.email]}>
+							<Text style={[styles.text, { color: theme.colors.textSecondary }]}>
 								{userToDisplay.email}
 							</Text>
 						</Column>
 					</Row>
 					{isOwnProfile && (
 						<IconButton
-							icon={<Ionicons name='exit-outline' size={Size.L} color='#777' />}
-							label='Sign Out'
-							onPress={logout}
-							showLabel
+                            label='Sign Out'
+                            onPress={logout}
+							iconName='exit-outline'
+                            iconSize={Size.L}
+							// showLabel
 						/>
 					)}
 				</Row>
 
 				<Row spacing={10}>
-					<Text style={styles.text}>
+					<Text style={[styles.text, { color: theme.colors.text }]}>
 						{userToDisplay.bio || 'No bio yet.'}
 					</Text>
 					{isOwnProfile && (
-						<Pressable onPress={openEditModal} style={styles.editButton}>
-							<Feather name='edit-3' size={18} color='#eee' />
-						</Pressable>
+						<IconButton
+                            onPress={openEditModal}
+							iconName='create-outline'
+                            iconSize={28}
+                        />
 					)}
 				</Row>
 
@@ -172,14 +174,10 @@ const styles = StyleSheet.create({
 	text: {
 		fontSize: 18,
 		textAlign: 'left',
-		color: '#eee',
 		flex: 1,
 	},
 	username: {
 		fontWeight: 'bold',
-	},
-	email: {
-		color: '#0cc',
 	},
 	editButton: {
 		marginLeft: 10,

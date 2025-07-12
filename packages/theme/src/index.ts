@@ -8,6 +8,7 @@ export * from './padding'
 export * from './spacing'
 export * from './themes'
 export * from './typography'
+export * from './utils/colorUtils'
 
 // export const theme = {
 // 	colors,

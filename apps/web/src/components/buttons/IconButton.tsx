@@ -29,8 +29,8 @@ export const IconButton: React.FC<IconButtonProps> = ({
 }) => {
 	const { theme } = useTheme()
 
-	const iconColor = active ? theme.colors.primary : theme.colors.muted
-	const labelColor = active ? theme.colors.primary : theme.colors.muted
+	const iconColor = theme.colors.primary//active ? theme.colors.primary : theme.colors.muted
+	const labelColor = theme.colors.primary//active ? theme.colors.primary : theme.colors.muted
 
 	return (
 		<Pressable
