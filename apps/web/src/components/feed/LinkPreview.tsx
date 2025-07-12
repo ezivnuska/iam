@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { Image, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Column } from '@/components'
 import { paddingHorizontal, resolveResponsiveProp, Size } from '@iam/theme'
+import { useTheme } from '@/hooks'
 
 type LinkPreviewProps = {
 	url: string
@@ -16,6 +17,7 @@ type LinkPreviewProps = {
 
 export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, preview }) => {
 	const [aspectRatio, setAspectRatio] = useState<number>(1)
+    const { theme } = useTheme()
 
 	const maxWidth = useMemo(
 		() => resolveResponsiveProp({ xs: 400, sm: 400, md: 400 - paddingHorizontal * 2, lg: 400 - paddingHorizontal * 2 }),
@@ -50,8 +52,8 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, preview }) => {
 					</View>
 				)}
 				<Column spacing={Size.XS} paddingHorizontal={paddingHorizontal}>
-					{preview.title && <Text style={styles.heading}>{preview.title}</Text>}
-					{preview.description && <Text style={styles.description}>{preview.description}</Text>}
+					{preview.title && <Text style={[styles.heading, { color: theme.colors.text }]}>{preview.title}</Text>}
+					{preview.description && <Text style={[styles.description, { color: theme.colors.textSecondary }]}>{preview.description}</Text>}
 				</Column>
 			</Column>
 		</TouchableOpacity>
@@ -63,10 +65,8 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		fontWeight: '700',
 		lineHeight: 20,
-        color: '#fff',
 	},
 	description: {
 		fontSize: 14,
-		color: '#eee',
 	},
 })
