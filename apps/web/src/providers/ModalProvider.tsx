@@ -40,6 +40,7 @@ export const ModalContext = createContext<ModalContextType | undefined>(
 
 export const ModalProvider = ({ children }: { children: ReactNode }) => {
 	const [modalStack, setModalStack] = useState<ModalContent[]>([])
+
 	const topModal = modalStack[modalStack.length - 1]
 	const useNativeModal = Platform.OS !== 'web'
 

@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Text } from 'react-native'
-import { Column, FilterTabs, PageLayout, Spinner, UserList } from '@/components'
+import { Column, UserListNav, PageLayout, Spinner, UserList } from '@/components'
 import { useUserList } from '@/hooks'
 import { useNavigation } from '@react-navigation/native'
 import type { StackNavigationProp } from '@react-navigation/stack'
@@ -45,7 +45,7 @@ export const UserListScreen = () => {
 		<PageLayout>
 			{bondsError && <Text>Error loading bonds</Text>}
 			<Column>
-				<FilterTabs filter={filter} setFilter={setFilter} />
+				<UserListNav filter={filter} setFilter={setFilter} />
 				<UserList
 					users={filteredUsers.map(normalizeUser)}
 					getBond={getBondForUser}

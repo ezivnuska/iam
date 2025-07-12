@@ -80,6 +80,10 @@ export const UserProfileScreen = () => {
             fetchUser()
         }
     }, [username, isOwnProfile])
+    
+	const openEditModal = () => {
+		openFormModal(EditProfileForm, {}, { title: 'Edit Bio' })
+	}
 
     if (userNotFound) {
         return <Text style={{ color: 'red', padding: 20 }}>User not found</Text>
@@ -96,10 +100,6 @@ export const UserProfileScreen = () => {
     if (!isOwnProfile && (loadingUser || !fetchedUser)) {
         return <Spinner label='Loading user profile...' />
     }
-    
-	const openEditModal = () => {
-		openFormModal(EditProfileForm, {}, { title: 'Edit Bio' })
-	}
 
 	if (loadingUser || !userToDisplay) {
 		return <Spinner label='Loading user...' />

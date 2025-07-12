@@ -56,6 +56,15 @@ export function DynamicForm<T extends ZodTypeAny>({
 
 	const [emailPrefilled, setEmailPrefilled] = useState(!prefillEmail)
 
+    useEffect(() => {
+        form.reset({
+            ...(Object.fromEntries(
+                (isZodObject(schema) ? Object.keys(schema.shape) : []).map((key) => [key, ''])
+            ) as z.infer<T>),
+            ...defaultValues,
+        })
+    }, [defaultValues])      
+
 	useEffect(() => {
 		if (prefillEmail && isZodObject(schema) && 'email' in schema.shape) {
 			AsyncStorage.getItem('user_email').then((storedEmail) => {
