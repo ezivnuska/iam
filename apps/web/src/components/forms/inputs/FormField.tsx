@@ -16,7 +16,7 @@ import {
 	TextInput,
 } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons'
-import { form as styles, shadows } from '@/styles'
+import { form as styles } from '@iam/theme'
 
 type FormFieldProps<T extends FieldValues> = {
 	name: FieldPath<T>

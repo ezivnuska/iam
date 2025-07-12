@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { View, Text, StyleSheet, StyleProp, TextStyle, ViewStyle } from 'react-native'
-import { paddingHorizontal, Size } from '@/styles'
+import { paddingHorizontal, Size } from '@iam/theme'
 
 export interface HeadingProps {
 	title: string

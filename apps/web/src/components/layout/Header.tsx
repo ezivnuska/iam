@@ -5,10 +5,10 @@ import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { MAX_WIDTH } from './constants'
 import { AuthModal, Avatar, IconButton, Row } from '@/components'
 import { useNavigation, useNavigationState } from '@react-navigation/native'
-import { useAuth, useModal } from '@/hooks'
+import { useAuth, useModal, useTheme } from '@/hooks'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import type { AvatarSize } from '@/components'
-import { paddingHorizontal, resolveResponsiveProp, Size } from '@/styles'
+import { paddingHorizontal, resolveResponsiveProp, Size } from '@iam/theme'
 import { AuthMode } from '@/types'
 
 interface HeaderProps {
@@ -30,6 +30,7 @@ const Brand = ({ ...props }) => {
 export const Header: React.FC<HeaderProps> = () => {
     const { isAuthenticated, user, authenticate } = useAuth()
     const { showModal } = useModal()
+    const { isDark, toggleTheme } = useTheme()
     const navigation = useNavigation()
 
     const iconSize = resolveResponsiveProp({ xs: 24, sm: 18, md: 18, lg: 20 })
@@ -63,47 +64,59 @@ export const Header: React.FC<HeaderProps> = () => {
                         showUsername={showUsername}
                     />
 
-                    {isAuthenticated ? (
-                        <Row
-                            flex={5}
-                            spacing={navSpacing}
-                            align='center'
-                            justify='center'
-                            wrap={false}
-                            style={styles.nav}
-                        >
-                            <IconButton
-                                label='Chat'
-                                onPress={() => navigation.navigate('Chat' as never)}
-                                icon={<Ionicons name='chatbubbles-outline' size={iconSize} color='#ccc' />}
-                                active={currentRoute === 'Chat'}
-                                showLabel={showLabel}
-                            />
-                            <IconButton
-                                label='Users'
-                                onPress={() => navigation.navigate('UserList' as never)}
-                                icon={<Ionicons name='people-outline' size={iconSize} color='#ccc' />}
-                                active={currentRoute === 'UserList'}
-                                showLabel={showLabel}
-                            />
-                            {user && (
-                                <Avatar
-                                    user={user}
-                                    size={avatarSize}
-                                    onPress={() => navigation.navigate('Profile' as never)}
+                    <Row
+                        flex={5}
+                        spacing={navSpacing}
+                        align='center'
+                        justify='center'
+                        wrap={false}
+                        style={styles.nav}
+                    >
+                        <Pressable onPress={toggleTheme}>
+                            <Ionicons name={isDark ? 'sunny' : 'moon'} size={iconSize} color='#ccc' />
+                        </Pressable>
+                        {isAuthenticated ? (
+                            <Row
+                                flex={5}
+                                spacing={navSpacing}
+                                align='center'
+                                justify='center'
+                                wrap={false}
+                                style={styles.nav}
+                            >
+                                <IconButton
+                                    label='Chat'
+                                    onPress={() => navigation.navigate('Chat' as never)}
+                                    icon={<Ionicons name='chatbubbles-outline' size={iconSize} color='#ccc' />}
+                                    active={currentRoute === 'Chat'}
+                                    showLabel={showLabel}
                                 />
-                            )}
-                        </Row>
-                    ) : (
-                        <Row spacing={1} style={styles.authButtons}>
-                            <Pressable onPress={() => showAuthModal('signup')} style={[styles.authButton, { borderRightWidth: 1, borderRightColor: '#aaa' }]}>
-                                <Text style={styles.buttonLabel}>Sign Up</Text>
-                            </Pressable>
-                            <Pressable onPress={() => showAuthModal('signin')} style={[styles.authButton, { paddingRight: 0 }]}>
-                                <Text style={styles.buttonLabel}>Sign In</Text>
-                            </Pressable>
-                        </Row>
-                    )}
+                                <IconButton
+                                    label='Users'
+                                    onPress={() => navigation.navigate('UserList' as never)}
+                                    icon={<Ionicons name='people-outline' size={iconSize} color='#ccc' />}
+                                    active={currentRoute === 'UserList'}
+                                    showLabel={showLabel}
+                                />
+                                {user && (
+                                    <Avatar
+                                        user={user}
+                                        size={avatarSize}
+                                        onPress={() => navigation.navigate('Profile' as never)}
+                                    />
+                                )}
+                            </Row>
+                        ) : (
+                            <Row spacing={1} style={styles.authButtons}>
+                                <Pressable onPress={() => showAuthModal('signup')} style={[styles.authButton, { borderRightWidth: 1, borderRightColor: '#aaa' }]}>
+                                    <Text style={styles.buttonLabel}>Sign Up</Text>
+                                </Pressable>
+                                <Pressable onPress={() => showAuthModal('signin')} style={[styles.authButton, { paddingRight: 0 }]}>
+                                    <Text style={styles.buttonLabel}>Sign In</Text>
+                                </Pressable>
+                            </Row>
+                        )}
+                    </Row>
                 </Row>
             </View>
         </Row>

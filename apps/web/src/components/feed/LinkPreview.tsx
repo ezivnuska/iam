@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { Image, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Column } from '@/components'
-import { paddingHorizontal, resolveResponsiveProp, Size } from '@/styles'
+import { paddingHorizontal, resolveResponsiveProp, Size } from '@iam/theme'
 
 type LinkPreviewProps = {
 	url: string

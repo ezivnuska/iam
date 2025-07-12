@@ -3,7 +3,7 @@
 import React, { ReactNode } from 'react'
 import type { ViewStyle, StyleProp } from 'react-native'
 import { FlexProps, PaddingProps } from '@/types'
-import type { ResponsiveProp } from '@/styles'
+import type { ResponsiveProp } from '@iam/theme'
 import FlexBox from './FlexBox'
 
 export interface ColumnProps extends FlexProps, PaddingProps {

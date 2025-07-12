@@ -3,7 +3,7 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Header, Footer } from '@/components'
-import { Size } from '@/styles'
+import { Size } from '@iam/theme'
 import { MAX_WIDTH } from './constants'
 import type { PageLayoutProps } from './types'
 

@@ -11,7 +11,7 @@ import {
 } from 'react-native'
 import { AutoSizeImage, Spinner } from '@/components'
 import type { Image } from '@iam/types'
-import { resolveResponsiveProp } from '@/styles'
+import { resolveResponsiveProp } from '@iam/theme'
 
 type Props = {
 	images: Image[]

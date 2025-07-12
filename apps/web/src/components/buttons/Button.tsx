@@ -8,11 +8,9 @@ import {
 	TextStyle,
 	ViewStyle,
 	PressableStateCallbackType,
-	Platform,
-	Animated,
 } from 'react-native'
-import { baseButtonStyles } from '@/styles/buttonStyles'
-import { useThemeColors } from '@/styles/theme'
+import { baseButtonStyles, type Theme } from '@iam/theme'
+import { useTheme } from '@/hooks'
 
 export type BaseButtonProps = {
 	label?: string
@@ -21,7 +19,7 @@ export type BaseButtonProps = {
 	style?: StyleProp<ViewStyle> | ((state: PressableStateCallbackType) => StyleProp<ViewStyle>)
 	textStyle?: StyleProp<TextStyle>
 	children?: React.ReactNode
-	variant?: 'primary' | 'success' | 'danger' | 'transparent'
+	variant?: keyof Theme['colors'] | 'transparent'
 	animateOnPress?: boolean
 }
 
@@ -35,12 +33,12 @@ export const Button: React.FC<BaseButtonProps> = ({
 	variant = 'primary',
 	animateOnPress = true,
 }) => {
-	const theme = useThemeColors()
+	const { theme } = useTheme()
 
 	const backgroundColor =
 		variant === 'transparent'
 			? 'transparent'
-			: theme[variant] || theme.primary
+			: theme.colors[variant as keyof typeof theme.colors] ?? theme.colors.primary
 
 	return (
 		<Pressable
@@ -63,7 +61,7 @@ export const Button: React.FC<BaseButtonProps> = ({
 				<Text
 					style={[
 						baseButtonStyles.text,
-						{ color: theme.text },
+						{ color: theme.colors.text },
 						textStyle,
 					]}
 				>

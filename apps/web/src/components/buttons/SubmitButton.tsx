@@ -9,8 +9,8 @@ import {
 	PressableStateCallbackType,
 } from 'react-native'
 import { Button, BaseButtonProps } from './Button'
-import { baseButtonStyles } from '@/styles/buttonStyles'
-import { useThemeColors } from '@/styles/theme'
+import { baseButtonStyles } from '@iam/theme'
+import { useTheme } from '@/hooks'
 
 type SubmitButtonProps = BaseButtonProps & {
 	submitting?: boolean
@@ -24,7 +24,7 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
 	style,
 	textStyle,
 }) => {
-	const theme = useThemeColors()
+	const { theme } = useTheme()
 
 	const composedStyle =
 		typeof style === 'function'
@@ -40,12 +40,12 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
 			disabled={disabled || submitting}
 			style={composedStyle}
 			textStyle={textStyle}
-			variant="success"
+			variant='success'
 		>
 			{submitting ? (
-				<ActivityIndicator color={theme.text} size="small" />
+				<ActivityIndicator color={theme.colors.primary} size='small' />
 			) : (
-				<Text style={[baseButtonStyles.text, { color: theme.text }, textStyle]}>
+				<Text style={[baseButtonStyles.text, { color: theme.colors.primary }, textStyle]}>
 					{label}
 				</Text>
 			)}

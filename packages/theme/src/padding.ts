@@ -1,8 +1,8 @@
-// apps/web/src/styles/padding.ts
+// packages/theme/src/padding.ts
 
-import { Size } from './spacing'
 import { ResponsiveProp, resolveResponsiveProp } from './breakpoints'
 import type { ViewStyle } from 'react-native'
+import { Size } from '.'
 
 export type PaddingProps = {
 	padding?: ResponsiveProp<Size | Size[]>

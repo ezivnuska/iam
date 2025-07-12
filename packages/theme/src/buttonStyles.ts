@@ -1,4 +1,4 @@
-// apps/web/src/styles/buttonStyles.ts
+// packages/theme/src/buttonStyles.ts
 
 import { StyleSheet, Platform } from 'react-native'
 

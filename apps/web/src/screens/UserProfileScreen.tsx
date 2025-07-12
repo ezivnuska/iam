@@ -19,7 +19,7 @@ import { ImageProvider } from '@/providers'
 import type { User } from '@iam/types'
 import { Feather } from '@expo/vector-icons'
 import Ionicons from '@expo/vector-icons/Ionicons'
-import { paddingHorizontal, Size } from '@/styles'
+import { paddingHorizontal, Size } from '@iam/theme'
 import { normalizeUser } from '@utils'
 
 type DetailsParams = {

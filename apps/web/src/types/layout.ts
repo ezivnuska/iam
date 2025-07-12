@@ -6,7 +6,7 @@ import type {
 	StyleProp,
 	ViewStyle,
 } from 'react-native'
-import type { ResponsiveProp } from '@/styles'
+import type { ResponsiveProp } from '@iam/theme'
 import type { ReactNode } from 'react'
 
 export interface FlexProps {

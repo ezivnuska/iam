@@ -3,7 +3,7 @@
 import React from 'react'
 import { Text, StyleSheet, View } from 'react-native'
 import { AutoScrollView, Avatar, Column, Row } from '@/components'
-import { Size } from '@/styles'
+import { Size } from '@iam/theme'
 import type { ChatMessage } from '@iam/types'
 
 type ChatListProps = {

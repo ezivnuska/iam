@@ -2,10 +2,9 @@
 
 import React from 'react'
 import { View, ViewStyle, StyleSheet, StyleProp } from 'react-native'
-import { getResolvedPadding, resolveResponsiveProp } from '@/styles'
 import { useBreakpoint } from '@/hooks'
 import { FlexProps, PaddingProps } from '@/types'
-import type { ResponsiveProp } from '@/styles'
+import { getResolvedPadding, resolveResponsiveProp, type ResponsiveProp } from '@iam/theme'
 
 export interface FlexBoxProps extends FlexProps, PaddingProps {
 	children: React.ReactNode

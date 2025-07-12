@@ -5,7 +5,7 @@ import { Pressable, Text, StyleSheet } from 'react-native'
 import { useModal, usePosts } from'@/hooks'
 import { PostForm } from '@/components'
 import type { Post } from '@iam/types'
-import { form as formStyles, Size, paddingHorizontal } from '@/styles'
+import { form as formStyles, Size, paddingHorizontal } from '@iam/theme'
 
 export const CreatePostButton = () => {
 	const { hideModal, showModal, openFormModal } = useModal()

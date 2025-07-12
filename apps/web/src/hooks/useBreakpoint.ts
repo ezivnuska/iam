@@ -1,5 +1,5 @@
 import { useWindowDimensions } from 'react-native'
-import { breakpoints, type Breakpoint, type ResponsiveProp } from '@/styles'
+import { breakpoints, type Breakpoint, type ResponsiveProp } from '@iam/theme'
 
 export function useBreakpoint<T>(responsiveProp: ResponsiveProp<T>): T | undefined {
 	const { width } = useWindowDimensions()

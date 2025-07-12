@@ -1,4 +1,4 @@
-// apps/web/src/styles/form.ts
+// packages/theme/src/form.ts
 
 import { TextStyle, ViewStyle } from 'react-native'
 

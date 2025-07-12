@@ -16,7 +16,7 @@ import {
 	NativeSyntheticEvent,
 	TextInputContentSizeChangeEventData,
 } from 'react-native'
-import { form as styles, shadows } from '@/styles'
+import { form as styles } from '@iam/theme'
 
 type FormTextAreaProps<T extends FieldValues> = {
 	name: FieldPath<T>
@@ -84,7 +84,6 @@ export const FormTextArea = <T extends FieldValues>({
 						onContentSizeChange={handleContentSizeChange}
 						style={[
 							styles.input,
-							shadows.input,
 							{
 								height,
 								textAlignVertical: 'top',

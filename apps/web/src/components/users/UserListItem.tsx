@@ -5,7 +5,7 @@ import { StyleSheet, Text, Pressable, View } from 'react-native'
 import { Avatar, BondControls, Column, Row } from '@/components'
 import { useAuth } from '@/hooks'
 import { User, Bond } from '@iam/types'
-import { paddingHorizontal, Size } from '@/styles'
+import { paddingHorizontal, Size } from '@iam/theme'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 
 type UserListItemProps = {

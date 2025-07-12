@@ -5,7 +5,7 @@ import { View, Text, StyleSheet, StyleProp, TextStyle, ViewStyle, Pressable } fr
 import { Column, Row } from '@/components'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { useModal } from '@/hooks'
-import { Size } from '@/styles'
+import { Size } from '@iam/theme'
 
 interface ModalContainerProps {
 	children: ReactNode

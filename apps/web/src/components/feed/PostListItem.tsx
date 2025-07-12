@@ -12,7 +12,7 @@ import {
     LikeCommentBarContainer,
 } from '@/components'
 import type { PartialUser, Post } from '@iam/types'
-import { paddingHorizontal, Size } from '@/styles'
+import { paddingHorizontal, Size } from '@iam/theme'
 import Autolink from 'react-native-autolink'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { formatRelative } from 'date-fns'

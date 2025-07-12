@@ -4,7 +4,7 @@ import React from 'react'
 import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native'
 import { Avatar, Column, Row } from '@/components'
 import { Comment, PartialUser } from '@iam/types'
-import { paddingHorizontal, Size } from '@/styles'
+import { paddingHorizontal, Size } from '@iam/theme'
 import Ionicons from '@expo/vector-icons/Ionicons'
 
 type CommentItemProps = {

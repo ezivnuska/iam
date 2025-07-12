@@ -2,7 +2,7 @@
 
 import React, { useCallback } from 'react'
 import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native'
-import { Size } from '@/styles'
+import { Size } from '@iam/theme'
 import type { User, Bond } from '@iam/types'
 import { UserListItem } from '@/components'
 

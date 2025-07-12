@@ -5,7 +5,7 @@ import { View, ScrollView, ActivityIndicator, useWindowDimensions } from 'react-
 import { CommentItem } from '@/components'
 import type { Comment } from '@iam/types'
 import { normalizeUser } from '@utils'
-import { Size } from '@/styles'
+import { Size } from '@iam/theme'
 
 type CommentsListProps = {
 	comments: Comment[] | null

@@ -7,7 +7,7 @@ import {
 	StyleSheet,
 	ScrollViewProps,
 } from 'react-native'
-import { paddingHorizontal, paddingVertical } from '@/styles'
+import { paddingHorizontal, paddingVertical } from '@iam/theme'
 
 interface AutoScrollViewProps extends ScrollViewProps {
 	children: React.ReactNode

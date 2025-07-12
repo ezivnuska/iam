@@ -1,4 +1,4 @@
-// apps/web/src/styles/breakpoints.ts
+// packages/theme/src/breakpoints.ts
 
 import { Dimensions } from 'react-native'
 

@@ -3,7 +3,7 @@
 import React from 'react'
 import { StyleSheet, Text } from 'react-native'
 import { Heading, PageLayout } from '@/components'
-import { paddingHorizontal } from '@/styles'
+import { paddingHorizontal } from '@iam/theme'
 
 export const PrivacyPolicyScreen = () => {
 

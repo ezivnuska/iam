@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { ActivityIndicator, View, StyleSheet, Text } from 'react-native'
-import { Size } from '@/styles'
+import { Size } from '@iam/theme'
 import { Column } from '@/components'
 
 export interface SpinnerProps {
