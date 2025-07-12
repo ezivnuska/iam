@@ -1,6 +1,6 @@
 // packages/types/src/socket.types.ts
 
-import { ImageDocument, ImageVariant } from './image'
+import { ImageDocument, ImageVariant } from './image.types'
 import type { Bond, ChatMessage } from '.'
 
 export type SocketUser = {

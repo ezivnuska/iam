@@ -1,6 +1,6 @@
 // packages/types/src/comment.types.ts
 
-import { PartialUser } from './user'
+import { PartialUser } from './user.types'
 import { RefType } from './ref.types'
 
 export type CommentRefType = RefType

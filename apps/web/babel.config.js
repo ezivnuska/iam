@@ -22,6 +22,7 @@ module.exports = {
 					'@services': path.resolve(__dirname, '../../packages/services/src'),
 					'@utils': path.resolve(__dirname, '../../packages/utils/src'),
 					'@iam/types': path.resolve(__dirname, '../../packages/types/src'),
+					'@iam/theme': path.resolve(__dirname, '../../packages/theme/src'),
 				},
 				extensions: ['.web.js', '.js', '.web.ts', '.ts', '.web.tsx', '.tsx', '.json'],
 			},

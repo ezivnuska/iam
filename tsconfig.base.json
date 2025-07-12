@@ -1,26 +1,52 @@
 {
     "compilerOptions": {
-		"target": "ES2020",
-		"module": "CommonJS",
-		"moduleResolution": "Node",
-		"allowJs": true,
-		"strict": true,
-		"resolveJsonModule": true,
-		"esModuleInterop": true,
-		"allowSyntheticDefaultImports": true,
-		"skipLibCheck": true,
-		"forceConsistentCasingInFileNames": true,
-		"declaration": true,
-		"declarationMap": true,
-		"typeRoots": ["./node_modules/@types"],
-		"types": ["jest", "node"],
-		"baseUrl": ".",
-		"paths": {
+        "target": "ES2020",
+        "module": "CommonJS",
+        "moduleResolution": "Node",
+        "allowJs": true,
+        "strict": true,
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "declaration": true,
+        "declarationMap": true,
+        "typeRoots": ["./node_modules/@types"],
+        "types": ["jest", "node"],
+        "baseUrl": ".",
+        "paths": {
             "react-native": ["node_modules/react-native-web"],
-            "@auth/*": ["packages/auth/build/*"],
-            "@services/*": ["packages/services/build/*"],
-            "@iam/types/*": ["packages/types/build/*"],
-            "@utils/*": ["packages/utils/build/*"]
+    
+            "@auth": ["packages/auth/src/index.ts"],
+            "@auth/*": ["packages/auth/src/*"],
+    
+            "@services": ["packages/services/src/index.ts"],
+            "@services/*": ["packages/services/src/*"],
+    
+            "@iam/types": ["packages/types/src/index.ts"],
+            "@iam/types/*": ["packages/types/src/*"],
+    
+            "@utils": ["packages/utils/src/index.ts"],
+            "@utils/*": ["packages/utils/src/*"],
+    
+            "@iam/theme": ["packages/theme/src/index.ts"],
+            "@iam/theme/*": ["packages/theme/src/*"],
+    
+            "@auth/build": ["packages/auth/build/index.js"],
+            "@auth/build/*": ["packages/auth/build/*"],
+    
+            "@services/build": ["packages/services/build/index.js"],
+            "@services/build/*": ["packages/services/build/*"],
+    
+            "@iam/types/build": ["packages/types/build/index.js"],
+            "@iam/types/build/*": ["packages/types/build/*"],
+    
+            "@utils/build": ["packages/utils/build/index.js"],
+            "@utils/build/*": ["packages/utils/build/*"],
+    
+            "@iam/theme/build": ["packages/theme/build/index.js"],
+            "@iam/theme/build/*": ["packages/theme/build/*"]
         }
     }
 }

@@ -21,12 +21,24 @@ rm -rf apps/web/build
 rm -rf apps/backend/build
 rm -rf packages/auth/build
 rm -rf packages/types/build
+rm -rf packages/services/build
+rm -rf packages/utils/build
+rm -rf packages/theme/build
 
 # Build the types package first since others depend on it
 build_once "packages/types"
 
 # Now, build auth (which depends on types)
 build_once "packages/auth"
+
+# Now, build utils
+build_once "packages/utils"
+
+# Now, build theme
+build_once "packages/theme"
+
+# Now, build services
+build_once "packages/services"
 
 # Now we can build the web app (which depends on ui)
 build_once "apps/web"
@@ -43,6 +55,8 @@ echo "Initial build complete!"
 echo "Now watching the following packages for changes..."
 build_with_watch "packages/types" & # Watch types in background
 build_with_watch "packages/auth" & # Watch auth in background
+build_with_watch "packages/utils" & # Watch utils in background
+build_with_watch "packages/theme" & # Watch theme in background
 build_with_watch "apps/web" & # Watch web in background
 build_with_watch "apps/backend" # Watch backend (this will keep running)
 

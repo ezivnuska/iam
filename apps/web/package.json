@@ -52,6 +52,7 @@
 		"@iam/types": "workspace:*",
 		"@services": "workspace:*",
 		"@utils": "workspace:*",
+		"@iam/theme": "workspace:*",
 		"axios": "^0.27.2",
 		"date-fns": "^4.1.0",
 		"exif-js": "^2.3.0",
