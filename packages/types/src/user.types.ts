@@ -1,7 +1,7 @@
-//packages/types/src/user.ts
+//packages/types/src/user.types.ts
 
 import { Document, Types } from 'mongoose'
-import type { Image, ImageDocument } from './image'
+import type { Image, ImageDocument } from './image.types'
 
 export enum UserRole {
 	User = 'user',

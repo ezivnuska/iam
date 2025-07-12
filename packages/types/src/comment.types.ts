@@ -11,4 +11,3 @@ export type Comment = {
 	author: PartialUser
 	createdAt: string
 }
-

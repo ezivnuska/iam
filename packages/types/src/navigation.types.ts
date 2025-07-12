@@ -1,4 +1,4 @@
-// packages/types/src/navigation.ts
+// packages/types/src/navigation.types.ts
 
 export type RootStackParamList = {
     Chat: undefined

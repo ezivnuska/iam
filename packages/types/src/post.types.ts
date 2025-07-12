@@ -1,7 +1,7 @@
-// packages/types/src/post.ts
+// packages/types/src/post.types.ts
 
-import type { UploadedImage } from './image'
-import { PartialUser } from './user'
+import type { UploadedImage } from './image.types'
+import { PartialUser } from './user.types'
 
 export interface Post {
 	_id: string

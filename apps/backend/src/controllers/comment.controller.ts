@@ -2,7 +2,7 @@
 
 import { Request, Response, NextFunction } from 'express'
 import * as commentService from '../services/comment.service'
-import { CommentRefType } from '@iam/types'
+import type { CommentRefType } from '@iam/types'
 
 export const addComment = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
