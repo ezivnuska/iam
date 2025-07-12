@@ -4,7 +4,7 @@ import { Platform } from 'react-native'
 import { api } from './http'
 import { normalizeImage } from '@utils'
 import { uriToFile } from '../utils'
-import type { Image, UploadedImage } from '@iam/types'
+import { RefType, type Image, type UploadedImage } from '@iam/types'
 import * as commentService from './comments'
 
 type ImageData = {
@@ -77,14 +77,14 @@ export const toggleImageLike = async (imageId: string) => {
 }
 
 export const fetchImageCommentCount = async (imageId: string): Promise<number> => {
-	const summary = await commentService.fetchCommentSummary(imageId, 'Image')
+	const summary = await commentService.fetchCommentSummary(imageId, RefType.Image)
 	return summary.count
 }
 
 export const fetchImageComments = async (imageId: string) => {
-	return commentService.fetchComments(imageId, 'Image')
+	return commentService.fetchComments(imageId, RefType.Image)
 }
 
 export const addImageComment = async (imageId: string, content: string) => {
-	return commentService.addComment(imageId, 'Image', content)
+	return commentService.addComment(imageId, RefType.Image, content)
 }

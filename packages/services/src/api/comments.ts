@@ -1,12 +1,11 @@
 // packages/services/src/api/comments.ts
 
 import { api } from './'
-
-type RefType = 'Post' | 'Image'
+import type { CommentRefType } from '@iam/types'
 
 export const fetchCommentSummary = async (
 	refId: string,
-	refType: RefType
+	refType: CommentRefType
 ): Promise<{ count: number; commentIds: string[] }> => {
 	const res = await api.get('/comments/summary', {
 		params: { refId, refType },
@@ -14,14 +13,14 @@ export const fetchCommentSummary = async (
 	return res.data
 }
 
-export const fetchComments = async (refId: string, refType: RefType) => {
+export const fetchComments = async (refId: string, refType: CommentRefType) => {
 	const res = await api.get('/comments', {
 		params: { refId, refType },
 	})
 	return res.data
 }
 
-export const addComment = async (refId: string, refType: RefType, content: string) => {
+export const addComment = async (refId: string, refType: CommentRefType, content: string) => {
 	const res = await api.post('/comments', { refId, refType, content })
 	return res.data
 }

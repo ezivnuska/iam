@@ -1,6 +1,9 @@
-// packages/types/src/comment.ts
+// packages/types/src/comment.types.ts
 
 import { PartialUser } from './user'
+import { RefType } from './ref.types'
+
+export type CommentRefType = RefType
 
 export type Comment = {
 	_id: string

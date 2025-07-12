@@ -1,22 +1,22 @@
 // apps/web/src/services/likes.ts
 
 import { api } from './http'
-import type { Like } from '@iam/types'
+import type { LikeRefType, Like } from '@iam/types'
 
 export const toggleLike = (
 	refId: string,
-	refType: 'Post' | 'Image'
+	refType: LikeRefType
 ): Promise<{ count: number; likedByCurrentUser: boolean }> =>
 	api.post(`/likes/${refId}/like?refType=${refType}`).then((res) => res.data)
 
 export const fetchLikes = (
 	refId: string,
-	refType: 'Post' | 'Image'
+	refType: LikeRefType
 ): Promise<Like[]> =>
 	api.get(`/likes/${refId}/likes?refType=${refType}`).then((res) => res.data as Like[])
 
 export const fetchLikeMeta = (
 	refId: string,
-	refType: 'Post' | 'Image'
+	refType: LikeRefType
 ): Promise<{ count: number; likedByCurrentUser: boolean }> =>
 	api.get(`/likes/${refId}/meta?refType=${refType}`).then((res) => res.data)

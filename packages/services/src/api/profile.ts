@@ -1,11 +1,18 @@
 // packages/services/src/api/profile.ts
 
 import { api } from './http'
+import { normalizeUser } from '@utils'
+import type { User } from '@iam/types'
 
 export const getProfile = () => api.get('/profile').then(res => {
     return res.data
 })
-export const updateSelf = (data: any) => api.put(`/profile`, data).then(res => res.data)
+
+export const updateSelf = async (data: any): Promise<User> => {
+	const res = await api.put('/profile', data)
+	return normalizeUser(res.data)
+}
+
 export const setAvatar = async (imageId: string | null | undefined) => {
     if (imageId === undefined) {
         return api.delete('/profile/avatar')
