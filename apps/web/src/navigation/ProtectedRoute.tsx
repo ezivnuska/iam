@@ -1,8 +1,7 @@
 // apps/web/src/navigation/ProtectedRoute.tsx
 
 import React, { useEffect } from 'react'
-import { LoadingScreen } from '@/screens'
-import { AuthModal } from '@/components'
+import { AuthModal, Spinner } from '@/components'
 import { useAuth, useModal } from '@/hooks'
 import { navigate } from '@/navigation'
 
@@ -32,6 +31,6 @@ export const ProtectedRoute = ({ children }: Props) => {
     }
 
 	return !isAuthenticated
-        ? <LoadingScreen label='Authenticating...' />
+        ? <Spinner label='Authenticating...' />
         : children
 }

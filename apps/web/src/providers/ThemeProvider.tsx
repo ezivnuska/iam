@@ -22,6 +22,7 @@ export const ThemeContext = createContext<ThemeContextType | undefined>(undefine
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
 	const [isDark, setIsDark] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
 
 	useEffect(() => {
 		const loadTheme = async () => {
@@ -36,7 +37,9 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
 				}
 			} catch (err) {
 				console.error('Failed to load theme:', err)
-			}
+			} finally {
+                setIsLoading(false)
+            }
 		}
 		loadTheme()
 	}, [])
@@ -52,10 +55,10 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
 	}
 
 	const theme = isDark ? darkTheme : lightTheme
-
+    
 	return (
 		<ThemeContext.Provider value={{ theme, toggleTheme, isDark }}>
-			{children}
+			{!isLoading && children}
 		</ThemeContext.Provider>
 	)
 }

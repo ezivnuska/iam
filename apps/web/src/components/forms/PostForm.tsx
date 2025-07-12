@@ -36,30 +36,36 @@ export const PostForm = ({ onPostCreated }: PostFormProps) => {
 	const image = watch('image')
 
 	const onSubmit = async (data: PostFormValues) => {
-		let newPost: any
+        if (!localImageData && (!data.content || data.content.trim() === '')) {
+            setError('content', {
+                type: 'manual',
+                message: 'Please provide text or an image.',
+            })
+            return
+        }
+    
+        let newPost: any
+        setLoading(true)
+    
+        try {
+            const content = data.content ?? ''
 
-		setLoading(true)
-		if (localImageData) {
-			try {
-				const uploadedImage = await postService.uploadImage({ imageData: localImageData })
-				newPost = await postService.createPost(data.content, uploadedImage.id)
-			} catch (err) {
-				setError('content', { type: 'manual', message: 'Failed to create post' })
-			}
-		} else {
-			try {
-				newPost = await postService.createPost(data.content)
-			} catch (err) {
-				setError('content', { type: 'manual', message: 'Failed to create post' })
-			}
-		}
-
-		setLoading(false)
-
-		if (newPost) {
-			onPostCreated?.(newPost)
-		}
-	}
+            if (localImageData) {
+                const uploadedImage = await postService.uploadImage({ imageData: localImageData })
+                newPost = await postService.createPost(content, uploadedImage.id)
+            } else {
+                newPost = await postService.createPost(content)
+            }
+        } catch (err) {
+            setError('content', { type: 'manual', message: 'Failed to create post' })
+        } finally {
+            setLoading(false)
+        }
+    
+        if (newPost) {
+            onPostCreated?.(newPost)
+        }
+    }    
 
 	return (
 		<FormProvider {...methods}>
@@ -70,28 +76,29 @@ export const PostForm = ({ onPostCreated }: PostFormProps) => {
 					onSubmit={onSubmit}
 					submitLabel='Post'
 					defaultValues={{ image: null }}
-				/>
+				>
 
-				{localImageData ? (
-					<Image
-						source={{ uri: localImageData.uri }}
-						style={{ width: 150, height: 150, marginVertical: 10, borderRadius: 8 }}
-					/>
-				) : image?.url ? (
-					<Image
-						source={{ uri: image.url }}
-						style={{ width: 150, height: 150, marginVertical: 10, borderRadius: 8 }}
-					/>
-				) : null}
+                    {localImageData ? (
+                        <Image
+                            source={{ uri: localImageData.uri }}
+                            style={{ width: 150, height: 150, marginVertical: 10, borderRadius: 8 }}
+                        />
+                    ) : image?.url ? (
+                        <Image
+                            source={{ uri: image.url }}
+                            style={{ width: 150, height: 150, marginVertical: 10, borderRadius: 8 }}
+                        />
+                    ) : null}
 
-				<ImageUploadModal
-					onImageSelected={(imageData) => {
-						setLocalImageData(imageData)
-						setValue('image', undefined)
-					}}
-				/>
+                    <ImageUploadModal
+                        onImageSelected={(imageData) => {
+                            setLocalImageData(imageData)
+                            setValue('image', undefined)
+                        }}
+                    />
 
-				{loading && <ActivityIndicator style={{ marginTop: 20 }} />}
+                    {loading && <ActivityIndicator style={{ marginTop: 20 }} />}
+                </DynamicForm>
 			</View>
 		</FormProvider>
 	)

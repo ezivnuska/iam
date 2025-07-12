@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { Dimensions, Image, Platform, StyleSheet, Text } from 'react-native'
-import { Column, IconButton, NativeCamera, Row, SubmitButton, WebCamera } from '@/components'
+import { Button, Column, IconButton, NativeCamera, Row, WebCamera } from '@/components'
 import { uploadImage } from '@services'
 import { selectImage } from '@/utils'
 import { useResponsiveImageSize } from '@/hooks'
@@ -134,21 +134,20 @@ export const ImageUploadForm: React.FC<ImageUploadFormProps> = ({ onUploaded }) 
                     <IconButton
                         label='Library'
                         onPress={handlePick}
-                        icon={<Ionicons name='images' size={24} color='#fff' />}
+                        iconName='images'
                         showLabel={upload ? false : true}
                     />
                     <IconButton
                         label='Camera'
                         onPress={() => setUseCamera(true)}
-                        icon={<FontAwesome name='camera-retro' size={24} color='#fff' />}
+                        iconName='camera'
                         showLabel={upload ? false : true}
                     />
                     {upload && (
-                        <SubmitButton
+                        <Button
                             label='Upload'
                             onPress={handleSubmit}
-                            submitting={uploading}
-                            style={styles.button}
+                            showActivity={uploading}
                         />
                     )}
                 </Row>

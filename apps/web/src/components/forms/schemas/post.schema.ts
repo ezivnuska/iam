@@ -6,7 +6,7 @@ import type { UploadedImage } from '@iam/types'
 
 export const postSchema = z
 	.object({
-		content: z.string().min(1, 'Post content is required').max(280),
+		content: z.string().max(280).optional(),
         image: z
             .custom<UploadedImage>()
             .optional()

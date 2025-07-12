@@ -20,6 +20,7 @@ interface DynamicFormProps<T extends ZodTypeAny> {
 		data: z.infer<T>,
 		setError: UseFormSetError<z.infer<T>>
 	) => Promise<void>
+    children?: React.ReactNode
 }
 
 function isZodObject(schema: z.ZodTypeAny): schema is ZodObject<any> {
@@ -33,6 +34,7 @@ export function DynamicForm<T extends ZodTypeAny>({
 	prefillEmail = false,
 	defaultValues,
 	onSubmit,
+    children,
 }: DynamicFormProps<T>) {
 	const form = useForm<z.infer<T>>({
 		resolver: zodResolver(schema),
@@ -125,19 +127,19 @@ export function DynamicForm<T extends ZodTypeAny>({
 		scrollToFieldIfInvalidOrEmpty()
 	}, [emailPrefilled, form.formState.errors])
 
-	const allFieldsComplete = (data: z.infer<T>) =>
-		fields.every((field) => {
-			const val = data[field.name]
-			return val !== undefined && val !== null && val !== ''
-		})
+	// const allFieldsComplete = (data: z.infer<T>) =>
+	// 	fields.every((field) => {
+	// 		const val = data[field.name]
+	// 		return val !== undefined && val !== null && val !== ''
+	// 	})
 
 	const handleSubmit = async (data: z.infer<T>) => {
 		const isValid = await form.trigger()
 	
-		if (!isValid || !allFieldsComplete(data)) {
-			scrollToFieldIfInvalidOrEmpty()
-			return
-		}		
+		if (!isValid) {
+            scrollToFieldIfInvalidOrEmpty()
+            return
+        }	
 	
 		try {
 			await onSubmit(data, form.setError)
@@ -167,6 +169,8 @@ export function DynamicForm<T extends ZodTypeAny>({
 				}}
 				handleSubmit={form.handleSubmit(handleSubmit)}
 			/>
+
+            {children}
 
 			<Button
 				label={submitLabel}

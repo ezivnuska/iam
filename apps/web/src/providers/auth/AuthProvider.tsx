@@ -10,8 +10,8 @@ import {
 } from '@services'
 import { navigate } from '@/navigation'
 import type { AuthResponseType, User } from '@iam/types'
-import { LoadingScreen } from '@/screens'
 import { useSocket } from '@/hooks'
+import { LoadingScreen } from '@/screens'
 
 export type AuthContextType = {
 	isAuthenticated: boolean
@@ -45,7 +45,7 @@ export const AuthProvider = ({
 	const [isAuthInitialized, setIsAuthInitialized] = useState(false)
     
     const { connectSocket, disconnectSocket } = useSocket()
-    
+
     const loading = !isAuthInitialized
 
 	useEffect(() => {

@@ -39,8 +39,6 @@ export const PostListItem: React.FC<Props> = ({
 	const author = normalizeUser(post.author)
 	const isAuthor = user?.id === author.id
 
-	const [expanded, setExpanded] = useState(false)
-
 	const handleDelete = async () => {
 		await deletePost(post._id)
 		onPostDeleted?.(post._id)
@@ -100,8 +98,6 @@ export const PostListItem: React.FC<Props> = ({
 			<LikeCommentBarContainer
 				refId={post._id}
 				refType={RefType.Post}
-				expanded={expanded}
-				setExpanded={setExpanded}
 				onCommentDeleted={onCommentDeleted}
 			/>
 		</Column>

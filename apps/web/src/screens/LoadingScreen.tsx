@@ -6,12 +6,10 @@ import { Spinner } from '@/components'
 import { useTheme } from '@/hooks'
 
 type LoadingScreenProps = {
-    color?: string
     label?: string
 }
 
 export const LoadingScreen = ({
-    color = '#000',
     label = 'Loading...',
 }: LoadingScreenProps) => {
     const { theme } = useTheme()

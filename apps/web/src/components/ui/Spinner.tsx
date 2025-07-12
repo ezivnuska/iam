@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
         paddingVertical: Size.XS,
+        // backgroundColor: 'pink',
 	},
 	label: {
         textAlign: 'center',

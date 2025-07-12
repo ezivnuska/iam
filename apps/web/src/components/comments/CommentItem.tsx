@@ -1,7 +1,7 @@
 // apps/web/src/components/CommentItem.tsx
 
 import React from 'react'
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import { Avatar, Column, IconButton, Row } from '@/components'
 import { Comment, PartialUser } from '@iam/types'
 import { paddingHorizontal, Size } from '@iam/theme'
@@ -12,8 +12,6 @@ type CommentItemProps = {
 	isAuthor: boolean
 	isDeleting: boolean
 	onDelete: (id: string) => void
-	textColor?: string
-	authorTextWeight?: string | number
 	paddingVertical?: number
 }
 
@@ -22,8 +20,6 @@ export const CommentItem = ({
 	isAuthor,
 	isDeleting,
 	onDelete,
-	textColor = '#fff',
-	authorTextWeight = '700',
 	paddingVertical = Size.S,
 }: CommentItemProps) => {
     const { theme } = useTheme()
@@ -47,10 +43,10 @@ export const CommentItem = ({
                 style={{ opacity: isDeleting ? 0.5 : 1 }}
             >
                 <Column flex={1} spacing={Size.XS}>
-                    <Text style={[styles.author, { color: textColor, fontWeight: authorTextWeight as any }]}>
+                    <Text style={[styles.author, { color: theme.colors.text, fontWeight: 600 }]}>
                         {comment.author.username}
                     </Text>
-                    <Text style={[styles.text, { color: textColor }]}>{comment.content}</Text>
+                    <Text style={[styles.text, { color: theme.colors.textSecondary }]}>{comment.content}</Text>
                 </Column>
                 {isAuthor && (
                     <View>

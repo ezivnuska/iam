@@ -1,6 +1,6 @@
 // apps/web/src/components/feedback/LikeCommentBarContainer.tsx
 
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { LikeCommentBar, CommentsContainer, CommentForm } from '@/components'
 import { useAuth, useLikeWithComments, useModal } from '@/hooks'
 import {
@@ -14,8 +14,6 @@ import type { RefType } from '@iam/types'
 type Props = {
 	refId: string
 	refType: RefType
-	expanded: boolean
-	setExpanded: (expanded: boolean) => void
 	onCommentAdded?: () => void
 	onCommentDeleted?: () => void
 	disabledComment?: boolean
@@ -24,8 +22,6 @@ type Props = {
 export const LikeCommentBarContainer: React.FC<Props> = ({
 	refId,
 	refType,
-	expanded,
-	setExpanded,
 	onCommentAdded,
 	onCommentDeleted,
 	disabledComment = false,
@@ -33,7 +29,7 @@ export const LikeCommentBarContainer: React.FC<Props> = ({
 	const { isAuthenticated, user } = useAuth()
 	const { openFormModal } = useModal()
 	const commentsRef = useRef<{ handleNewComment?: (c: any) => void }>(null)
-
+    const [expanded, setExpanded] = useState(false)
 	const {
 		likeCount,
 		liked,
