@@ -10,7 +10,7 @@ export const getProfile = () => api.get('/profile').then(res => {
 
 export const updateSelf = async (data: any): Promise<User> => {
 	const res = await api.put('/profile', data)
-	return normalizeUser(res.data)
+	return res.data
 }
 
 export const setAvatar = async (imageId: string | null | undefined) => {

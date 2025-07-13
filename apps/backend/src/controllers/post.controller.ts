@@ -19,7 +19,7 @@ export const createPost = async (req: Request, res: Response, next: NextFunction
 
 export const getAllPosts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 	try {
-		const posts = await postService.getAllPosts(req.user?.id)
+		const posts = await postService.getAllPosts()
 		res.json(posts)
 	} catch (err) {
 		next(err)
@@ -29,9 +29,7 @@ export const getAllPosts = async (req: Request, res: Response, next: NextFunctio
 export const getPostById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 	try {
 		const post = await postService.getPostById(req.params.id)
-		const enrichedPost = post.toJSON()
-		enrichedPost.likedByCurrentUser = post.likes.some(id => id.equals(req.user!.id))
-		res.json(enrichedPost)
+		res.json(post)
 	} catch (err) {
 		next(err)
 	}
@@ -51,24 +49,6 @@ export const deletePost = async (req: Request, res: Response, next: NextFunction
 		await postService.deletePost(req.params.id, req.user!.id)
 		await Comment.deleteMany({ refId: req.params.id, refType: 'Post' })
 		res.status(204).end()
-	} catch (err) {
-		next(err)
-	}
-}
-
-export const getPostLikes = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-	try {
-		const likes = await postService.getPostLikes(req.params.postId)
-		res.json(likes)
-	} catch (err) {
-		next(err)
-	}
-}
-
-export const toggleLike = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-	try {
-		const post = await postService.togglePostLike(req.user!.id, req.params.postId)
-		res.json(post)
 	} catch (err) {
 		next(err)
 	}

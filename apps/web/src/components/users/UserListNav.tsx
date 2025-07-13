@@ -3,6 +3,7 @@
 import React from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import type { FilterType } from '@/hooks'
+import { Button } from '../buttons'
 
 interface UserListNavProps {
 	filter: FilterType
@@ -19,13 +20,13 @@ export const UserListNav: React.FC<UserListNavProps> = ({ filter, setFilter }) =
 	return (
 		<View style={styles.container}>
 			{filterOptions.map(({ label, value }) => (
-				<TouchableOpacity
+				<Button
 					key={value}
+                    label={label}
 					onPress={() => setFilter(value)}
-					style={[styles.button, filter === value && styles.activeButton]}
-				>
-					<Text style={filter === value ? styles.activeText : styles.text}>{label}</Text>
-				</TouchableOpacity>
+                    variant='transparent'
+					// style={filter === value && styles.activeButton}
+				/>
 			))}
 		</View>
 	)
@@ -34,7 +35,7 @@ export const UserListNav: React.FC<UserListNavProps> = ({ filter, setFilter }) =
 const styles = StyleSheet.create({
 	container: {
 		flexDirection: 'row',
-		justifyContent: 'space-around',
+		justifyContent: 'space-between',
 		marginBottom: 10,
 	},
 	button: {

@@ -3,7 +3,7 @@
 import React from 'react'
 import { Text, StyleSheet, View } from 'react-native'
 import { AutoScrollView, Avatar, Column, Row } from '@/components'
-import { Size } from '@iam/theme'
+import { Size, withAlpha } from '@iam/theme'
 import { useTheme } from '@/hooks'
 import type { ChatMessage } from '@iam/types'
 
@@ -14,7 +14,7 @@ type ChatListProps = {
 export const ChatList = ({ messages }: ChatListProps) => {
     const { theme } = useTheme()
     return (
-        <AutoScrollView dependencies={[messages]}>
+        <AutoScrollView dependencies={[messages]} style={{ borderWidth: 1, borderRadius: 8, borderColor: theme.colors.muted, backgroundColor: withAlpha(theme.colors.muted, 0.1) }}>
             <Column spacing={Size.XS}>
                 {messages.map((item, index) => {
                     const showAvatar =

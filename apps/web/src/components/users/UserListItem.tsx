@@ -33,10 +33,10 @@ export const UserListItem = ({
     const { theme } = useTheme()
 	return (
 		<Row flex={1} spacing={Size.M} justify='space-between' align='center' style={styles.container}>
-			<Pressable onPress={onPress}>
-				<Row flex={1} spacing={Size.M}>
+			<Pressable onPress={onPress} style={{ flex: 1 }}>
+				<Row flex={1} spacing={Size.M} align='center'>
 					<Avatar user={profile} size='md' />
-					<Column flex={1}>
+					{/* <Column flex={1}> */}
 						<Row flex={1} spacing={Size.S} align='center'>
 							<Text
                                 style={[
@@ -48,7 +48,7 @@ export const UserListItem = ({
                             </Text>
 							{isOnline && <MaterialIcons name='co-present' size={18} color='green' />}
 						</Row>
-						{showEmail && (
+						{/* {showEmail && (
                             <Text
                                 style={[
                                     styles.email,
@@ -58,17 +58,17 @@ export const UserListItem = ({
                                 {profile.email}
                             </Text>
                         )}
-					</Column>
+					</Column> */}
+
+                    <BondControls
+                        bond={bond}
+                        userId={user?.id}
+                        onConfirm={onConfirm}
+                        onDelete={onDelete}
+                        onCreate={onCreate}
+                    />
 				</Row>
 			</Pressable>
-
-			<BondControls
-				bond={bond}
-				userId={user?.id}
-				onConfirm={onConfirm}
-				onDelete={onDelete}
-				onCreate={onCreate}
-			/>
 		</Row>
 	)
 }
@@ -76,13 +76,13 @@ export const UserListItem = ({
 const styles = StyleSheet.create({
 	container: {
 		paddingVertical: Size.XS,
-        paddingHorizontal: paddingHorizontal,
+        // paddingHorizontal: paddingHorizontal,
 	},
 	info: {
 		flex: 1,
 	},
 	username: {
-		fontSize: 18,
+		fontSize: 24,
 		fontWeight: '600',
 	},
 	email: {

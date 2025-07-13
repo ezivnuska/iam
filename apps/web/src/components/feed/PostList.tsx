@@ -38,7 +38,7 @@ export const PostList = () => {
 			</Column>
 			{(isRefreshing || isMutating) && (
 				<View style={{ paddingVertical: 20, alignItems: 'center' }}>
-					<ActivityIndicator size="small" />
+					<ActivityIndicator size='small' />
 				</View>
 			)}
 		</InfiniteScrollView>

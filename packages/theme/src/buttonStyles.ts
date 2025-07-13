@@ -7,10 +7,11 @@ export const getBaseButtonStyles = (theme: Theme) =>
 	StyleSheet.create({
 		base: {
 			// width: '100%',
-			minHeight: 40,
-			paddingVertical: Platform.OS === 'web' ? 7 : 6,
-			// paddingHorizontal: 10,
-			borderRadius: 12,
+			// minHeight: 40,
+			// paddingVertical: Platform.OS === 'web' ? 7 : 6,
+			height: 40,
+			paddingHorizontal: 12,
+			borderRadius: 20,
 			alignItems: 'center',
 			justifyContent: 'center',
 		},

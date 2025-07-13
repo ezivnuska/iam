@@ -5,7 +5,6 @@ import { Schema, model, Types, Document } from 'mongoose'
 export interface IPost extends Document {
     author: Types.ObjectId
     content?: string
-    likes: Types.ObjectId[]
     image?: Types.ObjectId
     linkUrl?: string
     linkPreview?: {
@@ -20,11 +19,8 @@ export interface IPost extends Document {
 const postSchema = new Schema<IPost>(
     {
         author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-
         content: { type: String },
-
         image: { type: Schema.Types.ObjectId, ref: 'Image' },
-
         linkUrl: { type: String },
         linkPreview: {
             title: String,

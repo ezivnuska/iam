@@ -4,7 +4,7 @@ import React from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Header, Footer } from '@/components'
 import { MAX_WIDTH } from './constants'
-import type { PageLayoutProps } from './types'
+import type { PageLayoutProps } from '@/types'
 import { useTheme } from '@/hooks'
 
 export const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {

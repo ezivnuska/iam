@@ -42,7 +42,7 @@ export async function createPost(userId: string, content: string, imageId?: stri
     ])
 }
 
-export const getAllPosts = async (currentUserId?: string) => {
+export const getAllPosts = async () => {
 	const posts = await Post.find()
 		.populate({
 			path: 'author',
@@ -55,7 +55,6 @@ export const getAllPosts = async (currentUserId?: string) => {
 	return posts.map(post => {
 		const json = post.toJSON()
 	
-		// Clean up the linkPreview
 		if (json.linkPreview) {
 			if (
 				typeof json.linkPreview.description === 'string' &&
@@ -65,14 +64,8 @@ export const getAllPosts = async (currentUserId?: string) => {
 			}
 		}
 	
-		return {
-			...json,
-			likes: json.likes.map((id: mongoose.Types.ObjectId) => id.toString()),
-			likedByCurrentUser: currentUserId
-				? json.likes.some((id: mongoose.Types.ObjectId) => id.equals(currentUserId))
-				: false,
-		}
-	})	
+		return json
+	})
 }
 
 export const getPostById = async (id: string) => {
@@ -126,39 +119,6 @@ export const deletePost = async (id: string, userId: string) => {
 		success: true,
 		message: 'Post deleted successfully',
 	}
-}
-
-export const getPostLikes = async (postId: string) => {
-	const post = await Post.findById(postId)
-		.populate({
-			path: 'likes',
-			select: '_id username avatar',
-			populate: {
-				path: 'avatar',
-				select: '_id filename variants',
-			},
-		})
-
-	if (!post) throw new HttpError('Post not found', 404)
-	return post.likes
-}
-
-export const togglePostLike = async (userId: string, postId: string) => {
-	const post = await Post.findById(postId)
-
-	if (!post) throw new HttpError('Post not found', 404)
-
-	const userObjectId = new mongoose.Types.ObjectId(userId)
-	const index = post.likes.findIndex(id => id.equals(userObjectId))
-
-	if (index > -1) {
-		post.likes.splice(index, 1) // Unlike
-	} else {
-		post.likes.push(userObjectId) // Like
-	}
-
-	await post.save()
-	return post
 }
 
 export async function scrapeAndUpdateLinkPreview(postId: string) {

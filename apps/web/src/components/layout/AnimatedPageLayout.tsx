@@ -5,7 +5,7 @@ import { Animated, StyleSheet, View } from 'react-native'
 import { Header, Footer } from '@/components'
 import { useDeviceInfo } from '@/hooks'
 import { MAX_WIDTH } from './constants'
-import type { PageLayoutProps } from './types'
+import type { PageLayoutProps } from '@/types'
 
 export interface AnimatedPageLayoutHandles {
 	showHeaderFooter: () => void

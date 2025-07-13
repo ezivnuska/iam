@@ -47,3 +47,9 @@ export interface PageLayoutProps extends PaddingProps {
 	children: ReactNode
 	style?: StyleProp<ViewStyle>
 }
+
+export interface ScreenLayoutProps extends PaddingProps {
+    nav?: ReactNode,
+	children: ReactNode
+	style?: StyleProp<ViewStyle>
+}

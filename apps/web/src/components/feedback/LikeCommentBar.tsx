@@ -3,7 +3,7 @@
 import React from 'react'
 import { Pressable, StyleSheet, Text } from 'react-native'
 import { Row } from '@/components'
-import { paddingHorizontal, Size } from '@iam/theme'
+import { resolveResponsiveProp, Size } from '@iam/theme'
 import { useTheme } from '@/hooks'
 import Ionicons from '@expo/vector-icons/Ionicons'
 
@@ -33,6 +33,7 @@ export const LikeCommentBar: React.FC<Props> = ({
     const { theme } = useTheme()
     const commentDisabled = disabledComment || !isAuthenticated || commentCount === 0
     const textColor = (!isAuthenticated || commentDisabled) ? theme.colors.textSecondary : theme.colors.text
+    const paddingHorizontal = resolveResponsiveProp({ xs: 8, sm: 8, md: 16, lg: 24 })
 	return (
 		<Row
             flex={1}

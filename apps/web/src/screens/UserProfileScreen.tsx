@@ -5,13 +5,14 @@ import { StyleSheet, Text, View } from 'react-native'
 import { useRoute } from '@react-navigation/native'
 import {
 	Avatar,
+    Button,
 	Column,
     EditProfileForm,
-	PageLayout,
 	Row,
 	Spinner,
 	ImageGalleryContainer,
 	IconButton,
+    ScreenLayout,
 } from '@/components'
 import { useAuth, useModal, useTheme } from '@/hooks'
 import { getUserByUsername } from '@services'
@@ -33,10 +34,6 @@ export const UserProfileScreen = () => {
     }, [params])
 
 	const { user: authUser, logout, isAuthInitialized } = useAuth()
-
-    if (!isAuthInitialized) {
-        return <Spinner label='Authenticating...' />
-    }
 
 	const { openFormModal } = useModal()
 	const { theme } = useTheme()
@@ -84,6 +81,10 @@ export const UserProfileScreen = () => {
 		openFormModal(EditProfileForm, {}, { title: 'Edit Bio' })
 	}
 
+    if (!isAuthInitialized) {
+        return <Spinner label='Authenticating...' />
+    }
+
     if (userNotFound) {
         return <Text style={{ color: 'red', padding: 20 }}>User not found</Text>
     }
@@ -105,32 +106,30 @@ export const UserProfileScreen = () => {
 	}
 
 	return (
-		<PageLayout>
+		<ScreenLayout>
 			<Column
 				// paddingVertical={Size.S}
-				paddingHorizontal={paddingHorizontal}
+				// paddingHorizontal={paddingHorizontal}
 				flex={1}
 				spacing={15}
 			>
 				<Row>
-					<Row flex={1} spacing={15}>
-						<Avatar user={userToDisplay} size='lg' />
+					<Row flex={1} spacing={15} align='center'>
+						<Avatar user={userToDisplay} size='md' />
 						<Column spacing={5}>
-							<Text style={[styles.text, styles.username]}>
+							<Text style={{ fontSize: 32, fontWeight: 600, color: theme.colors.text }}>
 								{userToDisplay.username}
 							</Text>
-							<Text style={[styles.text, { color: theme.colors.textSecondary }]}>
+							{/* <Text style={[styles.text, { color: theme.colors.textSecondary }]}>
 								{userToDisplay.email}
-							</Text>
+							</Text> */}
 						</Column>
 					</Row>
 					{isOwnProfile && (
-						<IconButton
+						<Button
                             label='Sign Out'
                             onPress={logout}
-							iconName='exit-outline'
-                            iconSize={Size.L}
-							// showLabel
+                            variant='muted'
 						/>
 					)}
 				</Row>
@@ -150,7 +149,7 @@ export const UserProfileScreen = () => {
 
 				<UserImageSection userId={currentUserId} />
 			</Column>
-		</PageLayout>
+		</ScreenLayout>
 	)
 }
 

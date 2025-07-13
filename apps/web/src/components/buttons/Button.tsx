@@ -59,6 +59,7 @@ export const Button: React.FC<BaseButtonProps> = ({
                     disabled && baseButtonStyles.disabled,
                     pressed && baseButtonStyles.pressed,
                     customStyle,
+                    variant === 'transparent' && { height: 'auto', padding: 0 },
                 ]
             }}            
 		>

@@ -28,7 +28,7 @@ export const AutoScrollView: React.FC<AutoScrollViewProps> = ({
 	}, dependencies)
 
 	return (
-		<View style={styles.container}>
+		<View style={[styles.container, props?.style]}>
 			<ScrollView
 				ref={scrollRef}
 				style={styles.scrollView}

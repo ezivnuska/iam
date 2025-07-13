@@ -17,7 +17,7 @@ export const updateSelf: RequestHandler = async (req, res, next) => {
 	try {
 		const updates = req.body
 		const updatedUser = await userService.updateUserSelf(req.user!.id, updates)
-		res.json(updatedUser)
+		res.json(normalizeUser(updatedUser))
 	} catch (err) {
 		next(err)
 	}

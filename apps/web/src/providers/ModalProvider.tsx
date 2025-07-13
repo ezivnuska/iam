@@ -13,8 +13,8 @@ import {
 	StyleSheet,
 	View,
 } from 'react-native'
-import { MAX_WIDTH } from '@/components'
-import { ModalContainer } from '@/components'
+import { MAX_WIDTH, ModalContainer } from '@/components'
+import { useTheme } from '@/hooks'
 
 export type ModalContentObject = {
 	content: ReactNode
@@ -134,9 +134,10 @@ const Overlay = ({
 	fullscreen?: boolean
 	onClose: () => void
 }) => {
+	const { theme } = useTheme()
 	return (
 		<View pointerEvents='box-none' style={styles.overlay}>
-			<Pressable style={styles.backdrop} onPress={onClose} />
+			<Pressable style={[styles.backdrop, { backgroundColor: theme.colors.background }]} onPress={onClose} />
 			<View style={fullscreen ? styles.fullscreenModalContent : styles.modalContent}>
 				{children}
 			</View>
@@ -165,19 +166,19 @@ const styles = StyleSheet.create({
 	},
 	backdrop: {
 		...StyleSheet.absoluteFillObject,
-		backgroundColor: 'rgba(0, 0, 0, 0.9)',
 	},
 	modalContent: {
-		width: MAX_WIDTH,
+		width: '90%',
 		maxWidth: MAX_WIDTH,
 		backgroundColor: '#000',
+        overflow: 'hidden',
 		borderRadius: 12,
 		elevation: 10,
 		zIndex: 10000,
 	},
 	fullscreenModalContent: {
 		...StyleSheet.absoluteFillObject,
-		backgroundColor: '#000',
+		// backgroundColor: '#000',
 		padding: 16,
 		zIndex: 10000,
 	},

@@ -5,7 +5,7 @@ import { View, Text, StyleSheet, StyleProp, TextStyle, ViewStyle, Pressable } fr
 import { Column, Row } from '@/components'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { useModal } from '@/hooks'
-import { Size } from '@iam/theme'
+import { paddingHorizontal, Size } from '@iam/theme'
 
 interface ModalContainerProps {
 	children: ReactNode
@@ -68,8 +68,6 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		width: '100%',
-		backgroundColor: 'transparent',
-		paddingVertical: Size.M,
 	},
 	header: {
 		flex: 1,
@@ -90,10 +88,12 @@ const styles = StyleSheet.create({
 	content: {
 		flex: 1,
 		width: '100%',
-		paddingHorizontal: 16,
+		paddingHorizontal: Size.M,
+		paddingVertical: Size.M,
 		maxWidth: 400,
 		minWidth: 300,
 		alignSelf: 'center',
+        backgroundColor: 'yellow',
 	},
 	fullscreenContent: {
 		flex: 1,

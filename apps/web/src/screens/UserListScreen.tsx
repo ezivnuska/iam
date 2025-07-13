@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Text } from 'react-native'
-import { Column, UserListNav, PageLayout, Spinner, UserList } from '@/components'
+import { Column, UserListNav, PageLayout, Spinner, UserList, ScreenLayout } from '@/components'
 import { useUserList } from '@/hooks'
 import { useNavigation } from '@react-navigation/native'
 import type { StackNavigationProp } from '@react-navigation/stack'
@@ -33,31 +33,26 @@ export const UserListScreen = () => {
 		navigation.navigate('UserProfile', { username: user.username })
 	}
 
-	if (loadingUsers || loadingBonds) {
-		return (
-			<PageLayout>
-				<Spinner label='Loading users...' />
-			</PageLayout>
-		)
-	}
-
 	return (
-		<PageLayout>
-			{bondsError && <Text>Error loading bonds</Text>}
-			<Column>
-				<UserListNav filter={filter} setFilter={setFilter} />
-				<UserList
-					users={filteredUsers.map(normalizeUser)}
-					getBond={getBondForUser}
-					isOnline={isOnline}
-					onConfirm={confirmBond}
-					onCreate={requestBond}
-					onDelete={deleteBondByUser}
-					onUserPress={handleUserPress}
-					onEndReached={fetchNextPage}
-					loading={loadingUsers}
-				/>
-			</Column>
-		</PageLayout>
+		<ScreenLayout>
+			{(loadingUsers || loadingBonds) ? (
+                <Spinner label='Loading users...' />
+            ) : (
+                <Column>
+                    <UserListNav filter={filter} setFilter={setFilter} />
+                    <UserList
+                        users={filteredUsers.map(normalizeUser)}
+                        getBond={getBondForUser}
+                        isOnline={isOnline}
+                        onConfirm={confirmBond}
+                        onCreate={requestBond}
+                        onDelete={deleteBondByUser}
+                        onUserPress={handleUserPress}
+                        onEndReached={fetchNextPage}
+                        loading={loadingUsers}
+                    />
+                </Column>
+            )}
+		</ScreenLayout>
 	)
 }

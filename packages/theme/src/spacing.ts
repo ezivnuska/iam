@@ -10,7 +10,7 @@ export const spacing = {
 
 export enum Size {
 	None = 0,
-	XS = 6,
+	XS = 4,
 	S = 10,
 	M = 16,
 	L = 26,

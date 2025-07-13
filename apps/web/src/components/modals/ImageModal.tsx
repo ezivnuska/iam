@@ -1,9 +1,7 @@
 // apps/web/src/components/modals/ImageModal.tsx
 
 import React, { useState } from 'react'
-import { View, StyleSheet, Pressable, useWindowDimensions } from 'react-native'
-import Ionicons from '@expo/vector-icons/Ionicons'
-import FontAwesome from '@expo/vector-icons/FontAwesome'
+import { View, StyleSheet, useWindowDimensions } from 'react-native'
 import { AutoSizeImage, Row, LikeCommentBarContainer, IconButton } from '@/components'
 import { withAlpha, Size, resolveResponsiveProp } from '@iam/theme'
 import { useAuth, useTheme } from '@/hooks'
@@ -24,7 +22,6 @@ export const ImageModal: React.FC<Props> = ({
 	onSetAvatar,
 	isAvatar,
 }) => {
-	// const [expanded, setExpanded] = useState(false)
 	const [isCurrentAvatar, setIsCurrentAvatar] = useState(isAvatar)
 
 	const { user } = useAuth()
@@ -85,6 +82,7 @@ export const ImageModal: React.FC<Props> = ({
                                     onPress={handleSetAvatar}
 									iconName='person-circle'
                                     iconSize={28}
+                                    active={isCurrentAvatar}
                                 />
 							)}
 						</Row>
@@ -114,10 +112,6 @@ export const ImageModal: React.FC<Props> = ({
 						<LikeCommentBarContainer
 							refId={selectedImage.id}
 							refType={RefType.Image}
-							// expanded={expanded}
-							// setExpanded={setExpanded}
-							// textColor='#fff'
-							// iconColor='#fff'
 							disabledComment={false}
 						/>
 					</View>
@@ -149,7 +143,7 @@ const styles = StyleSheet.create({
 	},
 	headerContent: {
 		width: '100%',
-		paddingHorizontal: Size.S,
+		// paddingHorizontal: Size.S,
 	},
 	imageWrapper: {
 		flex: 1,
@@ -167,7 +161,7 @@ const styles = StyleSheet.create({
 	},
 	footerContent: {
 		width: '100%',
-		paddingHorizontal: Size.S,
+		// paddingHorizontal: Size.S,
 		flexShrink: 1,
 	},
 })

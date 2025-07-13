@@ -1,197 +1,148 @@
 // apps/web/src/components/layout/Header.tsx
 
 import React, { ReactNode } from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { Pressable, View, Text } from 'react-native'
+import { AuthModal, Avatar, Button, IconButton, FlexBox } from '@/components'
 import { MAX_WIDTH } from './constants'
-import { AuthModal, Avatar, Button, IconButton, Row } from '@/components'
+import type { AuthMode } from '@/types'
+import { useAuth, useDeviceInfo, useModal, useTheme } from '@/hooks'
+import { resolveResponsiveProp, Size } from '@iam/theme'
 import { useNavigation, useNavigationState } from '@react-navigation/native'
-import { useAuth, useModal, useTheme } from '@/hooks'
 import type { AvatarSize } from '@/components'
-import { paddingHorizontal, resolveResponsiveProp, Size } from '@iam/theme'
-import { AuthMode } from '@/types'
 
 interface HeaderProps {
     children?: ReactNode
 }
 
-const Brand = ({ ...props }) => {
-    const { theme } = useTheme()
-    const fontSize = resolveResponsiveProp({ xs: 34, sm: 34, md: 36, lg: 40 })
-    return (
-        <Pressable onPress={props.onPress} style={{ flex: 1, flexShrink: 1 }}>
-            <Row wrap={true} style={{ flexShrink: 1, minWidth: 50, overflow: 'hidden' }}>
-                <Text
-                    style={[
-                        styles.iam,
-                        {
-                            fontSize,
-                            lineHeight: fontSize,
-                            color: theme.colors.primary,
-                        }
-                    ]}
-                >
-                    iam
-                </Text>
-                {props.showUsername && (
-                    <Text
-                        style={[
-                            styles.eric,
-                            {
-                                fontSize,
-                                lineHeight: fontSize,
-                                color: theme.colors.tertiary,
-                            }
-                        ]}
-                    >
-                        {`${props.user ? props.user.username : 'eric'}`}
-                    </Text>
-                )}
-            </Row>
-        </Pressable>
-    )
-}
-
-export const Header: React.FC<HeaderProps> = () => {
+export const Header: React.FC<HeaderProps> = ({ children }) => {
     const { isAuthenticated, user, authenticate } = useAuth()
-    const { showModal } = useModal()
-    const { isDark, theme, toggleTheme } = useTheme()
-    const navigation = useNavigation()
-
-    const iconSize = resolveResponsiveProp({ xs: 24, sm: 18, md: 18, lg: 20 })
-    const showLabel = resolveResponsiveProp({ xs: false, sm: true, md: true, lg: true })
-    const navSpacing = resolveResponsiveProp({ xs: Size.M, sm: Size.M, md: Size.M, lg: Size.L })
-    const showUsername = resolveResponsiveProp({ xs: false, sm: true, md: true, lg: true })
-    const avatarSize = resolveResponsiveProp({ xs: 'sm', sm: 'md', md: 'md', lg: 'lg' }) as AvatarSize
-
+	const { showModal } = useModal()
     const currentRoute = useNavigationState((state) => state.routes[state.index].name)
+	const { isDark, theme, toggleTheme } = useTheme()
+    const { orientation } = useDeviceInfo()
+    const navigation = useNavigation()
+    const isLandscape = orientation === 'landscape'
+    const paddingHorizontal = resolveResponsiveProp({ xs: 10, sm: 12, md: 18, lg: 24 })
+    const paddingVertical = resolveResponsiveProp({ xs: 4, sm: 8, md: 12, lg: 24 })
+    const fontSize = resolveResponsiveProp({ xs: 34, sm: 34, md: 36, lg: 40 })
+    const lineHeight = fontSize * 0.9
+    const iconSize = resolveResponsiveProp({ xs: 24, sm: 24, md: 32, lg: 32 })
+    const showLabel = resolveResponsiveProp({ xs: false, sm: false, md: true, lg: true })
+    const navSpacing = resolveResponsiveProp({ xs: Size.M, sm: Size.M, md: Size.M, lg: Size.L })
+    const avatarSize = resolveResponsiveProp({ xs: 'sm', sm: 'md', md: 'md', lg: 'lg' }) as AvatarSize
 
     const showAuthModal = (mode: AuthMode) => {
         showModal(<AuthModal initialMode={mode} authenticate={authenticate} />)
     }
 
-	return (
-        <Row flex={1} align='center' style={styles.container}>
-            <View style={styles.maxWidthContainer}>
-                <Row
-                    flex={1}
+    return (
+        <FlexBox
+            direction={isLandscape ? 'column' : 'row'}
+            justify={isLandscape ? 'flex-start' : 'space-between'}
+            align='center'//{isLandscape ? 'flex-start' : 'center' }
+            spacing={18}
+            paddingHorizontal={paddingHorizontal}
+            paddingVertical={paddingVertical}
+        >
+            <Pressable
+                onPress={() => navigation.navigate('Home' as never)}
+            >
+                <FlexBox
+                    direction={isLandscape ? 'column' : 'row'}
                     align='center'
-                    justify='space-between'
-                    wrap={false}
-                    style={{
-                        zIndex: 100,
-                        flexWrap: 'nowrap',
-                    }}
                 >
-                    <Brand
-                        user={user}
-                        onPress={() => navigation.navigate('Home' as never)}
-                        showUsername={showUsername}
-                    />
-
-                    <Row
-                        flex={1}
-                        spacing={navSpacing}
-                        align='center'
-                        justify='center'
-                        wrap={false}
-                        style={styles.nav}
-                    >
+                    <Text style={{ fontSize, lineHeight, color: theme.colors.primary }}>iam</Text>
+                    <Text style={{ fontSize, lineHeight, color: theme.colors.secondary }}>eric</Text>
+                </FlexBox>
+            </Pressable>
+            
+            <FlexBox
+                flex={1}
+                direction={isLandscape ? 'column' : 'row-reverse'}
+                align={isLandscape ? 'stretch' : 'center'}
+                justify={isLandscape ? 'space-between' : 'flex-start'}
+                spacing={12}
+            >
+                <FlexBox
+                    flex={1}
+                    direction={isLandscape ? 'column-reverse' : 'row'}
+                    spacing={navSpacing}
+                    justify={isLandscape ? 'space-between' : 'flex-end'}
+                    align={isLandscape ? 'stretch' : 'flex-end'}
+                >
+                    <View style={{ alignSelf: 'center' }}>
                         <IconButton
-							iconName={isDark ? 'sunny' : 'moon'}
-							onPress={toggleTheme}
-							iconSize={iconSize}
-						/>
-                        {isAuthenticated ? (
-                            <Row
-                                flex={5}
-                                spacing={navSpacing}
-                                align='center'
-                                justify='center'
-                                wrap={false}
-                                style={styles.nav}
-                            >
-                                <IconButton
-									label='Chat'
-									onPress={() => navigation.navigate('Chat' as never)}
-									iconName='chatbubbles-outline'
-									iconSize={iconSize}
-									active={currentRoute === 'Chat'}
-									showLabel={showLabel}
-								/>
+                            iconName={isDark ? 'sunny' : 'moon'}
+                            onPress={toggleTheme}
+                            iconSize={iconSize}
+                        />
+                    </View>
 
-								<IconButton
-									label='Users'
-									onPress={() => navigation.navigate('UserList' as never)}
-									iconName='people-outline'
-									iconSize={iconSize}
-									active={currentRoute === 'UserList'}
-									showLabel={showLabel}
-								/>
-                                {user && (
+                    {children && (
+                        <View style={{ alignSelf: isLandscape ? 'flex-start' : 'center' }}>
+                            {children}
+                        </View>
+                    )}
+                    
+                    {isAuthenticated ? (
+                        <FlexBox
+                            direction={isLandscape ? 'column-reverse' : 'row'}
+                            spacing={navSpacing}
+                            align='center'//{isLandscape ? 'flex-start' : 'center'}
+                            justify='center'
+                            wrap={false}
+                        >
+                            {isLandscape ? (
+                                <Button
+                                    label='Chat'
+                                    onPress={() => navigation.navigate('Chat' as never)}
+                                    variant='transparent'
+                                />
+                            ) : (
+                                <IconButton
+                                    label='Chat'
+                                    onPress={() => navigation.navigate('Chat' as never)}
+                                    iconName='chatbubbles-outline'
+                                    iconSize={iconSize}
+                                    active={currentRoute === 'Chat'}
+                                    showLabel={showLabel}
+                                />
+                            )}
+
+                            {isLandscape ? (
+                                <Button
+                                    label='Users'
+                                    onPress={() => navigation.navigate('UserList' as never)}
+                                    variant='transparent'
+                                />
+                            ) : (
+                                <IconButton
+                                    label='Users'
+                                    onPress={() => navigation.navigate('UserList' as never)}
+                                    iconName='people-outline'
+                                    iconSize={iconSize}
+                                    active={currentRoute === 'UserList'}
+                                    showLabel={showLabel}
+                                />
+                            )}
+                            {user && (
+                                <View style={{ alignSelf: 'center' }}>
                                     <Avatar
                                         user={user}
                                         size={avatarSize}
                                         onPress={() => navigation.navigate('Profile' as never)}
                                     />
-                                )}
-                            </Row>
-                        ) : (
-                            <Row
-								spacing={Size.S}
-								wrap={false}
-								align='center'
-								justify='flex-end'
-								style={{ flexShrink: 0, flexGrow: 0 }}
-							>
-								<Button
-									variant='transparent'
-									label='Sign Up'
-									onPress={() => showAuthModal('signup')}
-									// style={{ paddingHorizontal: 12 }}
-									// textStyle={{ fontWeight: '600' }}
-								/>
-								<Button
-									variant='transparent'
-									label='Sign In'
-									onPress={() => showAuthModal('signin')}
-									// style={{ paddingHorizontal: 12 }}
-									// textStyle={{ fontWeight: '600' }}
-								/>
-							</Row>
-                        )}
-                    </Row>
-                </Row>
-            </View>
-        </Row>
+                                </View>
+                            )}
+                        </FlexBox>
+                    ) : (
+                        <Button
+                            label='Sign In'
+                            onPress={() => showAuthModal('signin')}
+                        />
+                    )}
+                </FlexBox>
+            </FlexBox>
+        </FlexBox>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        width: '100%',
-        paddingVertical: Size.XS,
-    },
-    maxWidthContainer: {
-        flex: 1,
-        width: '100%',
-        maxWidth: MAX_WIDTH,
-        marginHorizontal: 'auto',
-        paddingHorizontal: paddingHorizontal,
-    },
-	iam: {
-		fontWeight: 'bold',
-        // color: '#fff',
-	},
-	eric: {
-		fontWeight: 'bold',
-        // color: '#777',
-	},
-    nav: {
-        flexShrink: 0,
-        flexGrow: 0,
-        flexBasis: 'auto',
-    },
-    buttonLabel: {
-        color: '#fff',
-    },
-})

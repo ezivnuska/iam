@@ -24,7 +24,7 @@ export const Feed = () => {
 
 	return (
 		<>
-			{isAuthenticated && <CreatePostButton />}
+			{/* {isAuthenticated && <CreatePostButton />} */}
 			<View style={{ flex: 1 }}>
 				<PostList />
 			</View>

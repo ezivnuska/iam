@@ -5,6 +5,7 @@ import { Pressable, Text, StyleSheet } from 'react-native'
 import { Column } from '@/components'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { useTheme } from '@/hooks'
+import { Size } from '@iam/theme'
 
 type IoniconsName = ComponentProps<typeof Ionicons>['name']
 
@@ -29,8 +30,9 @@ export const IconButton: React.FC<IconButtonProps> = ({
 }) => {
 	const { theme } = useTheme()
 
-	const iconColor = theme.colors.primary//active ? theme.colors.primary : theme.colors.muted
-	const labelColor = theme.colors.primary//active ? theme.colors.primary : theme.colors.muted
+	const iconColor = active ? theme.colors.text : theme.colors.primary//active ? theme.colors.primary : theme.colors.muted
+	const labelColor = active ? theme.colors.text : theme.colors.primary//active ? theme.colors.primary : theme.colors.muted
+	const backgroundColor = active ? theme.colors.primary : 'transparent'//active ? theme.colors.primary : theme.colors.muted
 
 	return (
 		<Pressable
@@ -39,7 +41,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
 			style={({ pressed }) => [
 				styles.button,
 				pressed && styles.pressed,
-				active && { backgroundColor: theme.colors.surfaceVariant, borderRadius: 6 },
+				active && { backgroundColor, borderRadius: 6 },
 			]}
 		>
 			<Column spacing={4} align='center'>
@@ -56,8 +58,9 @@ export const IconButton: React.FC<IconButtonProps> = ({
 
 const styles = StyleSheet.create({
 	button: {
-		paddingHorizontal: 8,
-		paddingVertical: 4,
+        padding: Size.XS
+		// paddingHorizontal: 8,
+		// paddingVertical: 4,
 	},
 	pressed: {
 		opacity: 0.85,
