@@ -38,7 +38,7 @@ export const LikeCommentBar: React.FC<Props> = ({
 		<Row
             flex={1}
             spacing={Size.M}
-            paddingHorizontal={paddingHorizontal}
+            // paddingHorizontal={paddingHorizontal}
             align='center'
             justify='space-between'
             paddingVertical={Size.S}
@@ -65,7 +65,7 @@ export const LikeCommentBar: React.FC<Props> = ({
 
 			<Pressable
 				onPress={onToggleComments}
-				style={{ paddingHorizontal: paddingHorizontal }}
+				// style={{ paddingHorizontal: paddingHorizontal }}
 				disabled={commentDisabled}
 			>
                 <Row spacing={5} align='center'>

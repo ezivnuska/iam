@@ -20,7 +20,7 @@ export const Spinner: React.FC<SpinnerProps> = ({
         <View style={styles.outerContainer}>
             <Column spacing={20} justify='center'>
                 <ActivityIndicator color={theme.colors.text} size={size} />
-                {label && <Text style={[styles.label, { color: theme.colors.text }]}>{label}</Text>}
+                {label && <Text style={[styles.label, { color: theme.colors.textSecondary }]}>{label}</Text>}
             </Column>
         </View>
     )
@@ -37,5 +37,7 @@ const styles = StyleSheet.create({
 	},
 	label: {
         textAlign: 'center',
+        fontSize: 24,
+        fontWeight: 600,
 	},
 })

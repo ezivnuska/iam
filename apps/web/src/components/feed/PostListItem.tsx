@@ -39,7 +39,7 @@ export const PostListItem: React.FC<Props> = ({
 	const author = normalizeUser(post.author)
 	const isAuthor = user?.id === author.id
 
-    const iconSize = resolveResponsiveProp({ xs: 24, sm: 24, md: 32, lg: 32 })
+    const iconSize = resolveResponsiveProp({ xs: 24, sm: 24, md: 24, lg: 24 })
 
 	const handleDelete = async () => {
 		await deletePost(post._id)
@@ -78,7 +78,7 @@ export const PostListItem: React.FC<Props> = ({
 	)
 
 	return (
-		<Column spacing={Size.M}>
+		<Column spacing={Size.M} style={{ marginBottom: Size.M }}>
 			{renderHeader()}
 
 			<Autolink

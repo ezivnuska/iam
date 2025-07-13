@@ -138,7 +138,7 @@ const Overlay = ({
 	return (
 		<View pointerEvents='box-none' style={styles.overlay}>
 			<Pressable style={[styles.backdrop, { backgroundColor: theme.colors.background }]} onPress={onClose} />
-			<View style={fullscreen ? styles.fullscreenModalContent : styles.modalContent}>
+			<View style={[fullscreen ? styles.fullscreenModalContent : styles.modalContent, { backgroundColor: theme.colors.muted }]}>
 				{children}
 			</View>
 		</View>
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
 	modalContent: {
 		width: '90%',
 		maxWidth: MAX_WIDTH,
-		backgroundColor: '#000',
+		// backgroundColor: '#000',
         overflow: 'hidden',
 		borderRadius: 12,
 		elevation: 10,

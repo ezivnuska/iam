@@ -28,7 +28,7 @@ export const Header: React.FC<HeaderProps> = ({ children }) => {
     const lineHeight = fontSize * 0.9
     const iconSize = resolveResponsiveProp({ xs: 24, sm: 24, md: 32, lg: 32 })
     const showLabel = resolveResponsiveProp({ xs: false, sm: false, md: false, lg: true })
-    const navSpacing = resolveResponsiveProp({ xs: Size.M, sm: Size.M, md: Size.M, lg: Size.L })
+    const navSpacing = resolveResponsiveProp({ xs: Size.S, sm: Size.S, md: Size.S, lg: Size.M })
     const avatarSize = resolveResponsiveProp({ xs: 'sm', sm: 'md', md: 'md', lg: 'lg' }) as AvatarSize
 
     const showAuthModal = (mode: AuthMode) => {
