@@ -9,7 +9,6 @@ import {
 	Column,
     EditProfileForm,
 	Row,
-	Spinner,
 	ImageGalleryContainer,
 	IconButton,
     ScreenLayout,
@@ -18,8 +17,9 @@ import { useAuth, useModal, useTheme } from '@/hooks'
 import { getUserByUsername } from '@services'
 import { ImageProvider } from '@/providers'
 import type { User } from '@iam/types'
-import { paddingHorizontal, Size } from '@iam/theme'
+import { resolveResponsiveProp } from '@iam/theme'
 import { normalizeUser } from '@utils'
+import { LoadingScreen } from './LoadingScreen'
 
 type DetailsParams = {
 	username?: string
@@ -28,6 +28,7 @@ type DetailsParams = {
 export const UserProfileScreen = () => {
 	const route = useRoute()
     const params = route.params as DetailsParams
+    const paddingVertical = resolveResponsiveProp({ xs: 4, sm: 8, md: 16, lg: 24 })
 
     const username = useMemo(() => {
         return params?.username || null
@@ -82,7 +83,7 @@ export const UserProfileScreen = () => {
 	}
 
     if (!isAuthInitialized) {
-        return <Spinner label='Authenticating...' />
+        return <LoadingScreen label='Authenticating...' />
     }
 
     if (userNotFound) {
@@ -90,28 +91,27 @@ export const UserProfileScreen = () => {
     }
 
     if (typeof isOwnProfile === 'undefined') {
-        return <Spinner label='Loading profile...' />
+        return <LoadingScreen label='Loading profile...' />
     }
     
     if (isOwnProfile && (!authUser || !authUser.username)) {
-        return <Spinner label='Loading your profile...' />
+        return <LoadingScreen label='Loading your profile...' />
     }
     
     if (!isOwnProfile && (loadingUser || !fetchedUser)) {
-        return <Spinner label='Loading user profile...' />
+        return <LoadingScreen label='Loading user profile...' />
     }
 
 	if (loadingUser || !userToDisplay) {
-		return <Spinner label='Loading user...' />
+		return <LoadingScreen label='Loading user...' />
 	}
 
 	return (
 		<ScreenLayout>
 			<Column
-				// paddingVertical={Size.S}
-				// paddingHorizontal={paddingHorizontal}
 				flex={1}
 				spacing={15}
+				paddingVertical={paddingVertical}
 			>
 				<Row>
 					<Row flex={1} spacing={15} align='center'>

@@ -29,7 +29,6 @@ export const UserList = ({
 	onUserPress,
 	onEndReached,
 }: Props) => {
-
 	const renderItem = useCallback((item: User) => {
 	  
 		return (

@@ -1,10 +1,10 @@
 // apps/web/src/providers/auth/AuthLayer.tsx
 
 import React, { useEffect } from 'react'
-import { View } from 'react-native'
 import { AuthModal } from '@/components'
-import { useAuth, useModal } from '@/hooks'
+import { useAuth, useModal, useTheme } from '@/hooks'
 import { setUnauthorizedHandler } from '@services'
+import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context'
 
 // AuthLayer is required to handle unauthorized modal display
 // because useModal() is not accessible from within AuthProvider
@@ -16,6 +16,8 @@ export const AuthLayer: React.FC<{
 }) => {
 	const { authenticate } = useAuth()
 	const { showModal } = useModal()
+	const { theme } = useTheme()
+    const insets = useSafeAreaInsets()
 
 	useEffect(() => {
 		setUnauthorizedHandler(() => {
@@ -34,8 +36,17 @@ export const AuthLayer: React.FC<{
 	}
 
 	return (
-		<View style={{ flex: 1 }}>
+		<SafeAreaView
+            style={{
+                flex: 1,
+                paddingTop: insets.top,
+                paddingBottom: insets.bottom,
+                paddingLeft: insets.left,
+                paddingRight: insets.right,
+                backgroundColor: theme.colors.background,
+            }}
+        >
 			{children}
-		</View>
+		</SafeAreaView>
 	)
 }
