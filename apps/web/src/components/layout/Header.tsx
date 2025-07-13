@@ -27,7 +27,7 @@ export const Header: React.FC<HeaderProps> = ({ children }) => {
     const fontSize = resolveResponsiveProp({ xs: 34, sm: 34, md: 36, lg: 40 })
     const lineHeight = fontSize * 0.9
     const iconSize = resolveResponsiveProp({ xs: 24, sm: 24, md: 32, lg: 32 })
-    const showLabel = resolveResponsiveProp({ xs: false, sm: false, md: true, lg: true })
+    const showLabel = resolveResponsiveProp({ xs: false, sm: false, md: false, lg: true })
     const navSpacing = resolveResponsiveProp({ xs: Size.M, sm: Size.M, md: Size.M, lg: Size.L })
     const avatarSize = resolveResponsiveProp({ xs: 'sm', sm: 'md', md: 'md', lg: 'lg' }) as AvatarSize
 
@@ -43,6 +43,7 @@ export const Header: React.FC<HeaderProps> = ({ children }) => {
             spacing={18}
             paddingHorizontal={paddingHorizontal}
             paddingVertical={paddingVertical}
+            style={isLandscape && { minWidth: '15%' }}
         >
             <Pressable
                 onPress={() => navigation.navigate('Home' as never)}
@@ -77,12 +78,6 @@ export const Header: React.FC<HeaderProps> = ({ children }) => {
                             iconSize={iconSize}
                         />
                     </View>
-
-                    {children && (
-                        <View style={{ alignSelf: isLandscape ? 'flex-start' : 'center' }}>
-                            {children}
-                        </View>
-                    )}
                     
                     {isAuthenticated ? (
                         <FlexBox
@@ -92,6 +87,13 @@ export const Header: React.FC<HeaderProps> = ({ children }) => {
                             justify='center'
                             wrap={false}
                         >
+
+                            {children && (
+                                <View style={{ alignSelf: isLandscape ? 'flex-start' : 'center' }}>
+                                    {children}
+                                </View>
+                            )}
+                            
                             {isLandscape ? (
                                 <Button
                                     label='Chat'

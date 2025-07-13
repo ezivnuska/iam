@@ -1,9 +1,9 @@
 // apps/web/src/components/feed/LinkPreview.tsx
 
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Image, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Column } from '@/components'
-import { paddingHorizontal, resolveResponsiveProp, Size } from '@iam/theme'
+import { Size } from '@iam/theme'
 import { useTheme } from '@/hooks'
 
 type LinkPreviewProps = {
@@ -18,11 +18,6 @@ type LinkPreviewProps = {
 export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, preview }) => {
 	const [aspectRatio, setAspectRatio] = useState<number>(1)
     const { theme } = useTheme()
-
-	const maxWidth = useMemo(
-		() => resolveResponsiveProp({ xs: 400, sm: 400, md: 400 - paddingHorizontal * 2, lg: 400 - paddingHorizontal * 2 }),
-		[]
-	)
 
 	useEffect(() => {
 		if (!preview.image) return
@@ -43,7 +38,7 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, preview }) => {
 		<TouchableOpacity onPress={openExternalUrl}>
 			<Column spacing={16}>
 				{preview.image && (
-					<View style={{ width: '100%', maxWidth, marginHorizontal: 'auto' }}>
+					<View style={{ width: '100%', marginHorizontal: 'auto' }}>
 						<Image
 							source={{ uri: preview.image }}
 							style={{ width: '100%', aspectRatio }}
@@ -51,8 +46,8 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, preview }) => {
 						/>
 					</View>
 				)}
-				<Column spacing={Size.XS} paddingHorizontal={paddingHorizontal}>
-					{preview.title && <Text style={[styles.heading, { color: theme.colors.text }]}>{preview.title}</Text>}
+				<Column spacing={Size.XS}>
+					{preview.title && <Text style={[styles.title, { color: theme.colors.text }]}>{preview.title}</Text>}
 					{preview.description && <Text style={[styles.description, { color: theme.colors.textSecondary }]}>{preview.description}</Text>}
 				</Column>
 			</Column>
@@ -61,7 +56,7 @@ export const LinkPreview: React.FC<LinkPreviewProps> = ({ url, preview }) => {
 }
 
 const styles = StyleSheet.create({
-	heading: {
+	title: {
 		fontSize: 16,
 		fontWeight: '700',
 		lineHeight: 20,

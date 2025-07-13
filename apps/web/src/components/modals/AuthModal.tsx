@@ -16,6 +16,7 @@ import { useAuthForm } from '@/hooks'
 import { z } from 'zod'
 import type { AuthMode, FieldConfig } from '@/types'
 import { AuthResponseType } from '@iam/types'
+import { Size } from '@iam/theme'
 
 type AuthModalProps = {
 	initialMode?: AuthMode
@@ -39,7 +40,7 @@ export const AuthModal = ({
 
 	return (
 		<ModalContainer title={title} onDismiss={onDismiss}>
-			<Column spacing={10}>
+			<Column spacing={Size.L}>
 				<DynamicForm<typeof schema>
 					schema={schema}
 					fields={fields}
@@ -50,13 +51,11 @@ export const AuthModal = ({
 					prefillEmail
 				/>
 
-				<Row spacing={10} justify='space-evenly'>
-					<Button
-						label={isSignin ? 'Need an account?' : 'Already have one?'}
-						onPress={() => setMode(isSignin ? 'signup' : 'signin')}
-						variant='transparent'
-					/>
-				</Row>
+                <Button
+                    label={isSignin ? 'Need an account?' : 'Already have one?'}
+                    onPress={() => setMode(isSignin ? 'signup' : 'signin')}
+                    variant='transparent'
+                />
 			</Column>
 		</ModalContainer>
 	)

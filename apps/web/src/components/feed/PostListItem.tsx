@@ -1,6 +1,6 @@
 // apps/web/src/components/PostListItem.tsx
 
-import React, { useState } from 'react'
+import React from 'react'
 import { StyleSheet, Text } from 'react-native'
 import {
     AutoSizeImage,
@@ -13,7 +13,7 @@ import {
 } from '@/components'
 import type { PartialUser, Post } from '@iam/types'
 import { RefType } from '@iam/types'
-import { paddingHorizontal, Size } from '@iam/theme'
+import { resolveResponsiveProp, Size } from '@iam/theme'
 import Autolink from 'react-native-autolink'
 import { formatRelative } from 'date-fns'
 import { useAuth, usePosts, useTheme } from '@/hooks'
@@ -39,13 +39,15 @@ export const PostListItem: React.FC<Props> = ({
 	const author = normalizeUser(post.author)
 	const isAuthor = user?.id === author.id
 
+    const iconSize = resolveResponsiveProp({ xs: 24, sm: 24, md: 32, lg: 32 })
+
 	const handleDelete = async () => {
 		await deletePost(post._id)
 		onPostDeleted?.(post._id)
 	}
 
 	const renderHeader = () => (
-		<Row spacing={Size.M} paddingHorizontal={paddingHorizontal} align='center'>
+		<Row spacing={Size.M} align='center'>
 			<Avatar user={post.author as PartialUser} size='md' />
 			<Column flex={1}>
 				<Text
@@ -69,18 +71,19 @@ export const PostListItem: React.FC<Props> = ({
 				<IconButton
 					onPress={handleDelete}
 					iconName='trash-outline'
+                    iconSize={iconSize}
 				/>
 			)}
 		</Row>
 	)
 
 	return (
-		<Column spacing={Size.M} paddingVertical={Size.S}>
+		<Column spacing={Size.M}>
 			{renderHeader()}
 
 			<Autolink
 				text={post.content}
-				style={{ paddingHorizontal, fontSize: 16, color: theme.colors.text }}
+				style={{ fontSize: 16, color: theme.colors.text }}
 				linkStyle={{ color: theme.colors.link }}
 				url
 				email={false}

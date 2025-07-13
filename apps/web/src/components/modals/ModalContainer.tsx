@@ -89,11 +89,11 @@ const styles = StyleSheet.create({
 		flex: 1,
 		width: '100%',
 		paddingHorizontal: Size.M,
-		paddingVertical: Size.M,
+		paddingVertical: Size.L,
 		maxWidth: 400,
 		minWidth: 300,
 		alignSelf: 'center',
-        backgroundColor: 'yellow',
+        // backgroundColor: 'yellow',
 	},
 	fullscreenContent: {
 		flex: 1,
@@ -103,5 +103,6 @@ const styles = StyleSheet.create({
 	},
 	main: {
 		flex: 1,
+        paddingBottom: Size.S,
 	},
 })
