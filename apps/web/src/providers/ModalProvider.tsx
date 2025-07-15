@@ -3,22 +3,24 @@
 import React, {
 	createContext,
 	ReactNode,
-	useContext,
 	useState,
 } from 'react'
 import {
 	Modal,
 	Platform,
 	Pressable,
+	ScrollView,
 	StyleSheet,
 	View,
 } from 'react-native'
-import { MAX_WIDTH, ModalContainer } from '@/components'
-import { useTheme } from '@/hooks'
+import { MAX_WIDTH, ModalContainer, CenteredModal } from '@/components'
+import { useModal, useTheme } from '@/hooks'
+import { withAlpha } from '@iam/theme'
 
 export type ModalContentObject = {
 	content: ReactNode
 	fullscreen?: boolean
+    onDismiss?: () => {}
 }
 
 export type ModalContent = ModalContentObject | null
@@ -74,14 +76,40 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
         props: Record<string, any> = {},
         options: { title?: string; fullscreen?: boolean } = {}
     ) => {
+        const { title, fullscreen = false } = options
+    
         const wrappedContent = (
-            <ModalContainer title={options.title || ''}>
+            <ModalContainer title={title} {...props}>
                 <Component {...props} />
             </ModalContainer>
         )
+    
+        setModalStack((prev) => [
+            ...prev,
+            {
+                content: wrappedContent,
+                fullscreen,
+                onDismiss: props.onDismiss,
+            },
+        ])
+    }    
 
-        showModal(wrappedContent, options.fullscreen ?? false)
-    }
+    const renderOverlay = () => {
+        const onDismiss =
+            topModal && typeof topModal === 'object' && 'onDismiss' in topModal
+                ? topModal.onDismiss
+                : undefined
+    
+        return fullscreen ? (
+            <FullscreenOverlay key={modalStack.length}>
+                {modalContent}
+            </FullscreenOverlay>
+        ) : (
+            <CenteredModal key={modalStack.length} onDismiss={onDismiss}>
+                {modalContent}
+            </CenteredModal>
+        )
+    }    
 
 	return (
 		<ModalContext.Provider
@@ -92,8 +120,6 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
 				openFormModal,
 			}}
 		>
-			<View style={{ flex: 1 }}>{children}</View>
-
 			{modalContent ? (
 				useNativeModal ? (
 					<Modal
@@ -103,83 +129,113 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
 						presentationStyle='overFullScreen'
 						onRequestClose={hideModal}
 					>
-						<Overlay
-							key={modalStack.length}
-							fullscreen={fullscreen}
-							onClose={hideModal}
-						>
-							{modalContent}
-						</Overlay>
+						{renderOverlay()}
 					</Modal>
 				) : (
-					<Overlay
-						key={modalStack.length}
-						fullscreen={fullscreen}
-						onClose={hideModal}
-					>
-						{modalContent}
-					</Overlay>
+					renderOverlay()
 				)
 			) : null}
+			<View style={{ flex: 1 }}>{children}</View>
 		</ModalContext.Provider>
+	)
+}
+
+const FullscreenOverlay = ({
+	children,
+}: {
+	children: ReactNode,
+}) => {
+	const { theme } = useTheme()
+	return (
+		<View
+            pointerEvents='box-none'
+            style={[
+                styles.overlay,
+                { backgroundColor: withAlpha(theme.colors.background, 0.5) },
+            ]}
+        >
+            <View
+                style={[
+                    styles.fullscreenModalContent,
+                    { backgroundColor: theme.colors.background }
+                ]}
+            >
+                {children}
+            </View>
+		</View>
 	)
 }
 
 const Overlay = ({
 	children,
-	fullscreen = false,
-	onClose,
 }: {
 	children: ReactNode
-	fullscreen?: boolean
-	onClose: () => void
 }) => {
+	const { hideAllModals } = useModal()
 	const { theme } = useTheme()
 	return (
-		<View pointerEvents='box-none' style={styles.overlay}>
-			<Pressable style={[styles.backdrop, { backgroundColor: theme.colors.background }]} onPress={onClose} />
-			<View style={[fullscreen ? styles.fullscreenModalContent : styles.modalContent, { backgroundColor: theme.colors.muted }]}>
-				{children}
-			</View>
+		<View
+            style={[
+                styles.overlay,
+                { backgroundColor: withAlpha(theme.colors.muted, 0.8) },
+            ]}
+        >
+            <Pressable
+                onPress={hideAllModals}
+                style={{ ...StyleSheet.absoluteFillObject }}
+            />
+            <View
+                style={[
+                    styles.modalContent,
+                    { backgroundColor: theme.colors.background }
+                ]}
+            >
+                <ScrollView
+                    contentContainerStyle={styles.scrollViewContent}
+                    showsHorizontalScrollIndicator={false}
+                    showsVerticalScrollIndicator={false}
+                >
+                    {children}
+                </ScrollView>
+            </View>
 		</View>
 	)
 }
 
-export const useModalContext = () => {
-	const context = useContext(ModalContext)
-	if (!context) {
-		throw new Error('useModalContext must be used within a ModalProvider')
-	}
-	return context
-}
-
 const styles = StyleSheet.create({
-	overlay: {
-		position: 'absolute',
+    overlay: {
+        position: 'absolute',
 		top: 0,
 		left: 0,
 		right: 0,
 		bottom: 0,
 		zIndex: 9999,
-		justifyContent: 'center',
-		alignItems: 'center',
-	},
-	backdrop: {
-		...StyleSheet.absoluteFillObject,
+        justifyContent: 'center',
+        alignItems: 'center',
+        pointerEvents: 'box-none',
+    },
+    scrollView: {
+        flexGrow: 0,
+    },
+	container: {
+        flexGrow: 1,
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
 	},
 	modalContent: {
-		width: '90%',
-		maxWidth: MAX_WIDTH,
-		// backgroundColor: '#000',
-        overflow: 'hidden',
-		borderRadius: 12,
-		elevation: 10,
+		maxHeight: '95%',
+		borderRadius: 16,
+		overflow: 'hidden',
 		zIndex: 10000,
 	},
-	fullscreenModalContent: {
-		...StyleSheet.absoluteFillObject,
-		// backgroundColor: '#000',
+	scrollViewContent: {
 		padding: 16,
+	},
+	fullscreenModalContent: {
+        ...StyleSheet.absoluteFillObject,
+        flex: 1,
+        width: '100%',
 		zIndex: 10000,
 	},
 })

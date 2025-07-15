@@ -1,6 +1,6 @@
 // apps/web/src/components/buttons/Button.tsx
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import {
     ActivityIndicator,
 	Pressable,
@@ -9,6 +9,7 @@ import {
 	ViewStyle,
 	PressableStateCallbackType,
 } from 'react-native'
+import { Row } from '@/components'
 import { getBaseButtonStyles, getButtonVariantStyles, type Theme } from '@iam/theme'
 import { useTheme } from '@/hooks'
 
@@ -44,11 +45,11 @@ export const Button: React.FC<BaseButtonProps> = ({
     const baseButtonStyles = getBaseButtonStyles(theme)
     const buttonVariants = getButtonVariantStyles(theme)
     const variantStyles = buttonVariants[variant] ?? buttonVariants.primary
-
+    useMemo(() => console.log('showActivity', showActivity), [showActivity])
 	return (
 		<Pressable
 			onPress={onPress}
-			disabled={disabled}
+			disabled={disabled || showActivity}
 			style={({ pressed }) => {
                 const customStyle =
                     typeof style === 'function' ? style({ pressed }) : style
@@ -63,15 +64,19 @@ export const Button: React.FC<BaseButtonProps> = ({
                 ]
             }}            
 		>
-			{showActivity ?? <ActivityIndicator color={theme.colors.text} size='small' />}
-            <Text
-                style={[
-                    baseButtonStyles.text,
-                    { color: variantStyles.textColor },
-                ]}
-            >            
-                {label}
-            </Text>
+            <Row>
+                {showActivity ? <ActivityIndicator color={variantStyles.textColor} size='small' />
+                : (
+                    <Text
+                        style={[
+                            baseButtonStyles.text,
+                            { color: variantStyles.textColor },
+                        ]}
+                    >            
+                        {label}
+                    </Text>
+                )}
+            </Row>
 		</Pressable>
 	)
 }

@@ -10,7 +10,7 @@ export const getBaseButtonStyles = (theme: Theme) =>
 			// minHeight: 40,
 			// paddingVertical: Platform.OS === 'web' ? 7 : 6,
 			height: 40,
-			paddingHorizontal: 12,
+			paddingHorizontal: 16,
 			borderRadius: 20,
 			alignItems: 'center',
 			justifyContent: 'center',
@@ -54,7 +54,7 @@ export const getBaseButtonStyles = (theme: Theme) =>
 export const getButtonVariantStyles = (theme: Theme) => ({
 	primary: {
 		backgroundColor: theme.colors.primary,
-		textColor: theme.colors.background,
+		textColor: theme.colors.tertiary,
 	},
 	secondary: {
 		backgroundColor: theme.colors.secondary,

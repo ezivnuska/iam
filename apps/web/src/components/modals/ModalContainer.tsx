@@ -1,81 +1,65 @@
 // apps/web/src/components/ModalContainer.tsx
 
 import React, { ReactNode } from 'react'
-import { View, Text, StyleSheet, StyleProp, TextStyle, ViewStyle, Pressable } from 'react-native'
+import { View, Text, StyleSheet, Pressable } from 'react-native'
 import { Column, Row } from '@/components'
 import Ionicons from '@expo/vector-icons/Ionicons'
-import { useModal } from '@/hooks'
-import { paddingHorizontal, Size } from '@iam/theme'
+import { useModal, useTheme } from '@/hooks'
+import { Size } from '@iam/theme'
 
 interface ModalContainerProps {
 	children: ReactNode
-	style?: ViewStyle
 	title?: string
 	subtitle?: string
-	titleStyle?: StyleProp<TextStyle>
-	subtitleStyle?: StyleProp<TextStyle>
-	fullscreen?: boolean
 	onDismiss?: () => void
 }
 
 export const ModalContainer: React.FC<ModalContainerProps> = ({
 	children,
-	style,
 	title,
 	subtitle,
-	titleStyle,
-	subtitleStyle,
-	fullscreen = false,
-	onDismiss,
+    onDismiss,
 }) => {
-	const { hideModal } = useModal()
-    
-	const handleClose = () => {
+	const { hideAllModals } = useModal()
+	const { theme } = useTheme()
+
+    const handleClose = () => {
+        console.log('handleDismiss', onDismiss)
         try {
             onDismiss?.()
         } finally {
-			hideModal()
+			hideAllModals()
 		}
     }
 
-	return (
-		<View style={[styles.container, style]}>
-			<Column
-				spacing={Size.M}
-				style={fullscreen ? styles.fullscreenContent : styles.content}
-			>
-				<Row align='center'>
-					{!!title && (
-						<View style={styles.header}>
-							<Text style={[styles.title, titleStyle]}>{title}</Text>
-							{subtitle ? (
-								<Text style={[styles.subtitle, subtitleStyle]}>{subtitle}</Text>
-							) : null}
-						</View>
-					)}
-					<Pressable onPress={handleClose}>
-						<Ionicons name='close-sharp' size={28} color='#fff' />
-					</Pressable>
-				</Row>
+    // const containerStyle = fullscreen ? styles.fullscreenContent : styles.content
 
-				<View style={styles.main}>{children}</View>
-			</Column>
-		</View>
+	return (
+        <Column style={styles.content} spacing={Size.M}>
+            <Row align='center'>
+                {!!title && (
+                    <View style={styles.header}>
+                        <Text style={[styles.title, { color: theme.colors.text }]}>{title}</Text>
+                        {subtitle && <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>{subtitle}</Text>}
+                    </View>
+                )}
+                <Pressable onPress={handleClose}>
+                    <Ionicons name='close-sharp' size={28} color={theme.colors.text} />
+                </Pressable>
+            </Row>
+
+            <View style={styles.main}>{children}</View>
+        </Column>
 	)
 }
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		width: '100%',
-	},
 	header: {
 		flex: 1,
 	},
 	title: {
 		fontSize: 24,
 		fontWeight: '600',
-		color: '#eee',
 	},
 	subtitle: {
 		marginTop: 4,
@@ -88,12 +72,15 @@ const styles = StyleSheet.create({
 	content: {
 		flex: 1,
 		width: '100%',
-		paddingHorizontal: Size.M,
-		paddingVertical: Size.L,
+		// marginVertical: Size.L,
+		// paddingVertical: Size.M,
 		maxWidth: 400,
 		minWidth: 300,
-		alignSelf: 'center',
-        // backgroundColor: 'yellow',
+		// alignSelf: 'center',
+		// paddingHorizontal: Size.M,
+        // borderWidth: 5,
+        // borderColor: 'yellow',
+        // borderStyle: 'dotted',
 	},
 	fullscreenContent: {
 		flex: 1,

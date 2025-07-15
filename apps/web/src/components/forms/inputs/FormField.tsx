@@ -52,7 +52,7 @@ export const FormField = <T extends FieldValues>({
     const { theme } = useTheme()
 	return (
 		<View style={{ marginBottom: 0 }}>
-			{label && <Text style={styles.label}>{label}</Text>}
+			{label && <Text style={[styles.label, { color: theme.colors.textSecondary }]}>{label}</Text>}
 
 			<Controller
 				name={name}

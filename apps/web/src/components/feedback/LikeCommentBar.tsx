@@ -3,7 +3,7 @@
 import React from 'react'
 import { Pressable, StyleSheet, Text } from 'react-native'
 import { Row } from '@/components'
-import { resolveResponsiveProp, Size } from '@iam/theme'
+import { paddingHorizontal, resolveResponsiveProp, Size } from '@iam/theme'
 import { useTheme } from '@/hooks'
 import Ionicons from '@expo/vector-icons/Ionicons'
 
@@ -38,7 +38,7 @@ export const LikeCommentBar: React.FC<Props> = ({
 		<Row
             flex={1}
             spacing={Size.M}
-            // paddingHorizontal={paddingHorizontal}
+            paddingHorizontal={paddingHorizontal}
             align='center'
             justify='space-between'
             paddingVertical={Size.S}

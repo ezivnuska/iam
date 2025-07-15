@@ -2,8 +2,9 @@
 
 import React, { useEffect } from 'react'
 import { View } from 'react-native'
-import { AuthModal } from '@/components'
+import { SigninForm } from '@/components'
 import { useAuth, useModal, useTheme } from '@/hooks'
+import { navigate } from '@/navigation'
 import { setUnauthorizedHandler } from '@services'
 
 // AuthLayer is required to handle unauthorized modal display
@@ -15,7 +16,7 @@ export const AuthLayer: React.FC<{
 	children,
 }) => {
 	const { authenticate } = useAuth()
-	const { showModal } = useModal()
+	const { openFormModal, hideAllModals } = useModal()
 	const { theme } = useTheme()
 
 	useEffect(() => {
@@ -26,13 +27,16 @@ export const AuthLayer: React.FC<{
 
 	const showAuthModal = () => {
 		console.log('AUTH LAYER: showing auth modal')
-		showModal(
-			<AuthModal
-				initialMode='signin'
-				authenticate={authenticate}
-			/>
-		)
+		openFormModal(SigninForm, { onDismiss: handleClose }, { title: 'Sign In' })
 	}
+
+    const handleClose = () => {
+        try {
+            navigate('Home')
+        } finally {
+			hideAllModals()
+		}
+    }
 
 	return (
 		<View

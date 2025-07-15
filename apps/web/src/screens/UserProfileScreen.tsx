@@ -7,11 +7,11 @@ import {
 	Avatar,
     Button,
 	Column,
-    EditProfileForm,
 	Row,
 	ImageGalleryContainer,
 	IconButton,
     ScreenLayout,
+    EditProfileForm,
 } from '@/components'
 import { useAuth, useModal, useTheme } from '@/hooks'
 import { getUserByUsername } from '@services'

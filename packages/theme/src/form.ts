@@ -18,7 +18,6 @@ export const form: NamedStyles<any> = {
 		lineHeight: 20,
 		fontWeight: '600',
 		marginBottom: 8,
-		color: c.textSecondary,
 	} as TextStyle,
 
 	input: {
