@@ -1,7 +1,7 @@
 // apps/web/src/components/PostListItem.tsx
 
 import React from 'react'
-import { StyleSheet, Text } from 'react-native'
+import { Pressable, StyleSheet, Text } from 'react-native'
 import {
     AutoSizeImage,
     Avatar,
@@ -17,6 +17,7 @@ import { resolveResponsiveProp, Size } from '@iam/theme'
 import Autolink from 'react-native-autolink'
 import { formatRelative } from 'date-fns'
 import { useAuth, usePosts, useTheme } from '@/hooks'
+import { navigate } from '@/navigation'
 import { normalizeUser } from '@utils'
 
 type Props = {
@@ -46,35 +47,43 @@ export const PostListItem: React.FC<Props> = ({
 		onPostDeleted?.(post._id)
 	}
 
+    const handleUserPress = () => {
+		navigate('UserProfile', { username: author.username })
+	}
+
 	const renderHeader = () => (
-		<Row spacing={Size.M} align='center'>
-			<Avatar user={post.author as PartialUser} size='md' />
-			<Column flex={1}>
-				<Text
-                    style={[
-                        styles.username,
-                        { color: theme.colors.text },
-                    ]}
-                >
-                    {post.author.username}
-                </Text>
-				<Text
-                    style={[
-                        styles.date,
-                        { color: theme.colors.textSecondary },
-                    ]}
-                >
-					{formatRelative(new Date(post.createdAt), new Date())}
-				</Text>
-			</Column>
-			{isAuthenticated && isAuthor && (
-				<IconButton
-					onPress={handleDelete}
-					iconName='trash-outline'
-                    iconSize={iconSize}
-				/>
-			)}
-		</Row>
+        <Pressable
+            onPress={handleUserPress}
+        >
+            <Row spacing={Size.M} align='center'>
+                <Avatar user={post.author as PartialUser} size='md' />
+                <Column flex={1}>
+                    <Text
+                        style={[
+                            styles.username,
+                            { color: theme.colors.text },
+                        ]}
+                    >
+                        {post.author.username}
+                    </Text>
+                    <Text
+                        style={[
+                            styles.date,
+                            { color: theme.colors.textSecondary },
+                        ]}
+                    >
+                        {formatRelative(new Date(post.createdAt), new Date())}
+                    </Text>
+                </Column>
+                {isAuthenticated && isAuthor && (
+                    <IconButton
+                        onPress={handleDelete}
+                        iconName='trash-outline'
+                        iconSize={iconSize}
+                    />
+                )}
+            </Row>
+        </Pressable>
 	)
 
 	return (
