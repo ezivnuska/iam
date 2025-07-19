@@ -1,6 +1,6 @@
 // apps/web/src/components/buttons/Button.tsx
 
-import React, { useMemo } from 'react'
+import React from 'react'
 import {
     ActivityIndicator,
 	Pressable,
@@ -45,7 +45,6 @@ export const Button: React.FC<BaseButtonProps> = ({
     const baseButtonStyles = getBaseButtonStyles(theme)
     const buttonVariants = getButtonVariantStyles(theme)
     const variantStyles = buttonVariants[variant] ?? buttonVariants.primary
-    useMemo(() => console.log('showActivity', showActivity), [showActivity])
 	return (
 		<Pressable
 			onPress={onPress}

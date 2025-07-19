@@ -11,7 +11,6 @@ import {
 import { navigate } from '@/navigation'
 import type { AuthResponseType, User } from '@iam/types'
 import { useSocket } from '@/hooks'
-import { LoadingScreen } from '@/screens'
 
 export type AuthContextType = {
 	isAuthenticated: boolean
@@ -97,10 +96,7 @@ export const AuthProvider = ({
 				setUser,
 			}}
 		>
-			{isAuthInitialized
-				? children 
-				: <LoadingScreen label='Initializing...' />
-			}
+            {children}
 		</AuthContext.Provider>
 	)
 }

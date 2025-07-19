@@ -121,10 +121,12 @@ module.exports = {
 	entry: {
 		app: path.join(__dirname, 'src/index.ts'),
 	},
-	output: {
-		filename: '[name].bundle.js',
-		path: path.resolve(__dirname, 'dist'),
-	},
+    output: {
+        filename: '[name].bundle.js',
+        chunkFilename: '[name].chunk.js',
+        path: path.resolve(__dirname, 'dist'),
+        publicPath: '/',
+    },    
     optimization: {
         minimize: process.env.NODE_ENV === 'production',
         minimizer: [new TerserPlugin({

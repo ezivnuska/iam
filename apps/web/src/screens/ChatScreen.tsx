@@ -2,7 +2,7 @@
 
 import React, { useRef, useState, useEffect } from 'react'
 import { ScrollView } from 'react-native'
-import { ChatInput, ChatList, Column, ScreenLayout } from '@/components'
+import { ChatInput, ChatList, Column } from '@/components'
 import { useAuth, useSocket } from '@/hooks'
 import { resolveResponsiveProp } from '@iam/theme'
 
@@ -39,11 +39,9 @@ export const ChatScreen = () => {
 	}
 
 	return (
-		<ScreenLayout>
-            <Column flex={1} spacing={10} paddingVertical={paddingVertical}>
-                <ChatList messages={messages} />
-                <ChatInput onSend={sendMessage} />
-            </Column>
-		</ScreenLayout>
+        <Column flex={1} spacing={10} paddingVertical={paddingVertical}>
+            <ChatList messages={messages} />
+            <ChatInput onSend={sendMessage} />
+        </Column>
 	)
 }

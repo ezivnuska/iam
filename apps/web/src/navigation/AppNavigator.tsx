@@ -1,37 +1,52 @@
 // apps/web/src/navigation/AppNavigator.tsx
 
 import React from 'react'
-import { createStackNavigator } from '@react-navigation/stack'
-import {
-    ChatScreen,
-    ForgotPasswordScreen,
-    HomeScreen,
-    ResetPasswordScreen,
-    PrivacyPolicyScreen,
-    UserListScreen,
-    UserProfileScreen,
-} from '@/screens'
-import { navigationRef } from '.'
+import { View } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
-import { linking } from '@/linking'
-import { withProtectedRoute } from './withProtectedRoute'
-import type { RootStackParamList } from '@iam/types'
+import { navigationRef, RootNavigator } from '.'
+import { linking } from '@/navigation'
+import { FlexBox, Header } from '@/components'
+import { useAuth, useTheme, useDeviceInfo } from '@/hooks'
+import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context'
+import { LoadingScreen } from '@/screens'
 
-const Stack = createStackNavigator<RootStackParamList>()
 
 export const AppNavigator = () => {
+	const { isAuthInitialized } = useAuth()
+	const { theme } = useTheme()
+	const { orientation } = useDeviceInfo()
+	const isLandscape = orientation === 'landscape'
+	const insets = useSafeAreaInsets()
+	
     return (
         <NavigationContainer ref={navigationRef} linking={linking}>
-            <Stack.Navigator initialRouteName='Home' screenOptions={{ headerShown: false }}>
-                <Stack.Screen name='Chat' component={withProtectedRoute(ChatScreen)} />
-                <Stack.Screen name='ForgotPassword' component={ForgotPasswordScreen} />
-                <Stack.Screen name='Home' component={HomeScreen} />
-                <Stack.Screen name='ResetPassword' component={ResetPasswordScreen} />
-                <Stack.Screen name='PrivacyPolicy' component={PrivacyPolicyScreen} />
-                <Stack.Screen name='UserProfile' component={withProtectedRoute(UserProfileScreen)} />
-                <Stack.Screen name='Profile' component={withProtectedRoute(UserProfileScreen)} />
-                <Stack.Screen name='UserList' component={withProtectedRoute(UserListScreen)} />
-            </Stack.Navigator>
+			<SafeAreaView
+				style={{
+					flex: 1,
+					paddingTop: insets.top,
+					paddingBottom: insets.bottom,
+					paddingLeft: insets.left,
+					paddingRight: insets.right,
+				}}
+			>
+				<FlexBox
+					flex={1}
+					direction={isLandscape ? 'row' : 'column'}
+					align={isLandscape ? 'flex-start' : 'center'}
+					style={{
+						alignItems: 'stretch',
+						backgroundColor: theme.colors.background,
+					}}
+				>
+					<Header />
+					<View style={{ flex: 1, alignSelf: 'stretch' }}>
+						{isAuthInitialized
+                            ? <RootNavigator />
+                            : <LoadingScreen label='Authenticating...' />
+                        }
+					</View>
+				</FlexBox>
+			</SafeAreaView>
         </NavigationContainer>
     )
 }

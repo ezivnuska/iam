@@ -33,12 +33,12 @@ export const LikeCommentBar: React.FC<Props> = ({
     const { theme } = useTheme()
     const commentDisabled = disabledComment || !isAuthenticated || commentCount === 0
     const textColor = (!isAuthenticated || commentDisabled) ? theme.colors.textSecondary : theme.colors.text
-    const paddingHorizontal = resolveResponsiveProp({ xs: 8, sm: 8, md: 16, lg: 24 })
+    // const paddingHorizontal = resolveResponsiveProp({ xs: 8, sm: 8, md: 16, lg: 24 })
 	return (
 		<Row
             flex={1}
             spacing={Size.M}
-            paddingHorizontal={paddingHorizontal}
+            // paddingHorizontal={paddingHorizontal}
             align='center'
             justify='space-between'
             paddingVertical={Size.S}

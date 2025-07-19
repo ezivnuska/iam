@@ -13,7 +13,7 @@ import {
 } from '@/components'
 import type { PartialUser, Post } from '@iam/types'
 import { RefType } from '@iam/types'
-import { resolveResponsiveProp, Size } from '@iam/theme'
+import { paddingHorizontal, resolveResponsiveProp, Size } from '@iam/theme'
 import Autolink from 'react-native-autolink'
 import { formatRelative } from 'date-fns'
 import { useAuth, usePosts, useTheme } from '@/hooks'
@@ -48,14 +48,25 @@ export const PostListItem: React.FC<Props> = ({
 	}
 
     const handleUserPress = () => {
-		navigate('UserProfile', { username: author.username })
+        if (isAuthor) {
+            navigate('Profile')
+        } else {
+            navigate('Users', {
+                screen: 'UserProfile',
+                params: { username: author.username as string },
+            })
+        }
+		// navigate('UserProfile', { username: author.username as string })
 	}
 
 	const renderHeader = () => (
         <Pressable
             onPress={handleUserPress}
         >
-            <Row spacing={Size.M} align='center'>
+            <Row
+                spacing={Size.M}
+                align='center'
+            >
                 <Avatar user={post.author as PartialUser} size='md' />
                 <Column flex={1}>
                     <Text
@@ -87,7 +98,11 @@ export const PostListItem: React.FC<Props> = ({
 	)
 
 	return (
-		<Column spacing={Size.M} style={{ marginBottom: Size.M }}>
+		<Column
+            spacing={Size.M} 
+            paddingHorizontal={paddingHorizontal}
+            style={{ marginBottom: Size.M }}
+        >
 			{renderHeader()}
 
 			<Autolink

@@ -1,20 +1,20 @@
-// apps/web/src/screens/ProfileScreen.tsx
+// apps/web/src/screens/PrivacyPolicyScreen.tsx
 
 import React from 'react'
-import { StyleSheet, Text } from 'react-native'
-import { Heading, PageLayout } from '@/components'
+import { StyleSheet, Text, View } from 'react-native'
+import { Heading } from '@/components'
 import { paddingHorizontal } from '@iam/theme'
 
 export const PrivacyPolicyScreen = () => {
 
 	return (
-		<PageLayout>
+		<View style={{ flex: 1 }}>
             <Heading
                 title='Privacy Policy'
                 subtitle='Our policy on privacy'
             />
             <Text style={styles.text}>This app collects no personal data. That's it.</Text>
-		</PageLayout>
+		</View>
 	)
 }
 

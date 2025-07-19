@@ -1,35 +1,35 @@
 // apps/web/src/screens/UserProfileScreen.tsx
 
 import React, { useEffect, useState, useMemo } from 'react'
-import { StyleSheet, Text } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { useRoute } from '@react-navigation/native'
 import {
 	Avatar,
-    Button,
 	Column,
 	Row,
-	IconButton,
+	ImageGalleryContainer,
     EditProfileForm,
 } from '@/components'
 import { useAuth, useModal, useTheme } from '@/hooks'
 import { getUserByUsername } from '@services'
+import { ImageProvider } from '@/providers'
 import type { User } from '@iam/types'
 import { paddingHorizontal, resolveResponsiveProp } from '@iam/theme'
 import { normalizeUser } from '@utils'
-import { navigate } from '@/navigation'
 import { LoadingScreen } from './LoadingScreen'
+import { navigate } from '@/navigation'
 
 type DetailsParams = {
 	username?: string
 }
 
-export const UserProfileScreen = () => {
+export const UserImagesScreen = () => {
 	const route = useRoute()
     const params = route.params as DetailsParams
     const paddingVertical = resolveResponsiveProp({ xs: 4, sm: 8, md: 16, lg: 24 })
 
     const username = useMemo(() => {
-        return params?.username || undefined
+        return params?.username || null
     }, [params])
 
 	const { user: authUser, logout, isAuthInitialized } = useAuth()
@@ -48,6 +48,8 @@ export const UserProfileScreen = () => {
         const user = isOwnProfile ? authUser : fetchedUser
         return user ? normalizeUser(user) : null
     }, [authUser, fetchedUser, isOwnProfile])
+
+    const currentUserId = useMemo(() => userToDisplay?.id, [userToDisplay?.id])
 
 	useEffect(() => {
         const fetchUser = async () => {
@@ -73,15 +75,6 @@ export const UserProfileScreen = () => {
             fetchUser()
         }
     }, [username, isOwnProfile])
-    
-	const openEditModal = () => {
-		openFormModal(EditProfileForm, {}, { title: 'Edit Bio' })
-	}
-
-    const gotToImages = () => navigate('Users', {
-        screen: 'UserImages',
-        params: { username: username! },
-    })
 
     if (!isAuthInitialized) {
         return <LoadingScreen label='Authenticating...' />
@@ -111,11 +104,16 @@ export const UserProfileScreen = () => {
         <Column
             flex={1}
             spacing={15}
-            paddingVertical={paddingVertical}
             paddingHorizontal={paddingHorizontal}
+            paddingVertical={paddingVertical}
         >
-            <Row>
-                <Row flex={1} spacing={15} align='center'>
+            <Pressable
+                onPress={() => navigate('Users', {
+                    screen: 'UserProfile',
+                    params: { username: username as string },
+                })}
+            >
+                <Row spacing={15} align='center'>
                     <Avatar user={userToDisplay} size='md' />
                     <Column spacing={5}>
                         <Text style={{ fontSize: 32, fontWeight: 600, color: theme.colors.text }}>
@@ -123,43 +121,25 @@ export const UserProfileScreen = () => {
                         </Text>
                     </Column>
                 </Row>
-                {isOwnProfile && (
-                    <Button
-                        label='Sign Out'
-                        onPress={logout}
-                        variant='muted'
-                    />
-                )}
-            </Row>
+            </Pressable>
 
-            <Row spacing={10}>
-                <Text style={[styles.text, { color: theme.colors.text }]}>
-                    {userToDisplay.bio || 'No bio yet.'}
-                </Text>
-                {isOwnProfile && (
-                    <IconButton
-                        onPress={openEditModal}
-                        iconName='create-outline'
-                        iconSize={28}
-                    />
-                )}
-            </Row>
-            
-            <Button label='Images' onPress={gotToImages} />
+            <UserImageSection userId={currentUserId} />
         </Column>
 	)
 }
 
-const styles = StyleSheet.create({
-	text: {
-		fontSize: 18,
-		textAlign: 'left',
-		flex: 1,
-	},
-	username: {
-		fontWeight: 'bold',
-	},
-	editButton: {
-		marginLeft: 10,
-	},
-})
+const UserImageSection = ({ userId }: { userId?: string }) => {
+    
+    if (!userId) {
+        console.warn('Invalid userId passed to UserImageSection:', userId)
+        return null
+    }
+
+	return (
+		<View style={{ flex: 1 }}>
+			<ImageProvider userId={userId}>
+				<ImageGalleryContainer userId={userId} />
+			</ImageProvider>
+		</View>
+	)
+}
