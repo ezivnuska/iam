@@ -2,9 +2,12 @@
 
 import React from 'react'
 import { Feed } from '@/presentations'
+import { Screen } from '@/components'
 
 export const HomeScreen = () => {
 	return (
-        <Feed />
+        <Screen>
+            <Feed />
+        </Screen>
 	)
 }

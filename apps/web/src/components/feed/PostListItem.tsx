@@ -13,7 +13,7 @@ import {
 } from '@/components'
 import type { PartialUser, Post } from '@iam/types'
 import { RefType } from '@iam/types'
-import { paddingHorizontal, resolveResponsiveProp, Size } from '@iam/theme'
+import { resolveResponsiveProp, Size } from '@iam/theme'
 import Autolink from 'react-native-autolink'
 import { formatRelative } from 'date-fns'
 import { useAuth, usePosts, useTheme } from '@/hooks'
@@ -100,7 +100,6 @@ export const PostListItem: React.FC<Props> = ({
 	return (
 		<Column
             spacing={Size.M} 
-            paddingHorizontal={paddingHorizontal}
             style={{ marginBottom: Size.M }}
         >
 			{renderHeader()}

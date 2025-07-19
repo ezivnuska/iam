@@ -2,16 +2,14 @@
 
 import React, { useRef, useState, useEffect } from 'react'
 import { ScrollView } from 'react-native'
-import { ChatInput, ChatList, Column } from '@/components'
+import { ChatInput, ChatList, Column, Screen } from '@/components'
 import { useAuth, useSocket } from '@/hooks'
-import { resolveResponsiveProp } from '@iam/theme'
 
 export const ChatScreen = () => {
 	const { user } = useAuth()
 	const { onChatMessage, emitChatMessage } = useSocket()
 	const [messages, setMessages] = useState<any[]>([])
 	const scrollViewRef = useRef<ScrollView>(null)
-    const paddingVertical = resolveResponsiveProp({ xs: 4, sm: 8, md: 16, lg: 24 })
 
 	useEffect(() => {
 		const cleanup = onChatMessage((msg) => {
@@ -39,9 +37,11 @@ export const ChatScreen = () => {
 	}
 
 	return (
-        <Column flex={1} spacing={10} paddingVertical={paddingVertical}>
-            <ChatList messages={messages} />
-            <ChatInput onSend={sendMessage} />
-        </Column>
+        <Screen>
+            <Column flex={1} spacing={10}>
+                <ChatList messages={messages} />
+                <ChatInput onSend={sendMessage} />
+            </Column>
+        </Screen>
 	)
 }

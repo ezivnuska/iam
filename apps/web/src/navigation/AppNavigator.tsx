@@ -1,7 +1,6 @@
 // apps/web/src/navigation/AppNavigator.tsx
 
 import React from 'react'
-import { View } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { navigationRef, RootNavigator } from '.'
 import { linking } from '@/navigation'
@@ -27,6 +26,7 @@ export const AppNavigator = () => {
 					paddingBottom: insets.bottom,
 					paddingLeft: insets.left,
 					paddingRight: insets.right,
+                    backgroundColor: theme.colors.background,
 				}}
 			>
 				<FlexBox
@@ -39,12 +39,10 @@ export const AppNavigator = () => {
 					}}
 				>
 					<Header />
-					<View style={{ flex: 1, alignSelf: 'stretch' }}>
-						{isAuthInitialized
-                            ? <RootNavigator />
-                            : <LoadingScreen label='Authenticating...' />
-                        }
-					</View>
+                    {isAuthInitialized
+                        ? <RootNavigator />
+                        : <LoadingScreen label='Authenticating...' />
+                    }
 				</FlexBox>
 			</SafeAreaView>
         </NavigationContainer>

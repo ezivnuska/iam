@@ -3,16 +3,14 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import { useRoute } from '@react-navigation/native'
-import { Avatar, Column, ImageGalleryContainer, Row } from '@/components'
+import { Avatar, Column, ImageGalleryContainer, Row, Screen } from '@/components'
 import { useAuth, useTheme } from '@/hooks'
 import { getUserByUsername } from '@services'
 import { ImageProvider } from '@/providers'
 import type { User } from '@iam/types'
-import { resolveResponsiveProp } from '@iam/theme'
 import { normalizeUser } from '@utils'
 import { LoadingScreen } from './LoadingScreen'
 import { navigate } from '@/navigation'
-import { paddingHorizontal } from '@iam/theme'
 import { ProfileStackParamList } from '@iam/types'
 
 type DetailsParams = {
@@ -22,7 +20,6 @@ type DetailsParams = {
 export const ImagesScreen = () => {
 	const route = useRoute()
     const params = route.params as DetailsParams
-    const paddingVertical = resolveResponsiveProp({ xs: 4, sm: 8, md: 16, lg: 24 })
 
     const username = useMemo(() => {
         return params?.username || null
@@ -96,27 +93,27 @@ export const ImagesScreen = () => {
     }
 
 	return (
-        <Column
-            flex={1}
-            spacing={15}
-            paddingHorizontal={paddingHorizontal}
-            paddingVertical={paddingVertical}
-        >
-            <Pressable
-                onPress={() => navigate('Profile', { screen: 'Main' as keyof ProfileStackParamList })}
+        <Screen>
+            <Column
+                flex={1}
+                spacing={15}
             >
-                <Row spacing={15} align='center'>
-                    <Avatar user={userToDisplay} size='md' />
-                    <Column spacing={5}>
-                        <Text style={{ fontSize: 32, fontWeight: 600, color: theme.colors.text }}>
-                            {userToDisplay.username}
-                        </Text>
-                    </Column>
-                </Row>
-            </Pressable>
+                <Pressable
+                    onPress={() => navigate('Profile', { screen: 'Main' as keyof ProfileStackParamList })}
+                >
+                    <Row spacing={15} align='center'>
+                        <Avatar user={userToDisplay} size='md' />
+                        <Column spacing={5}>
+                            <Text style={{ fontSize: 32, fontWeight: 600, color: theme.colors.text }}>
+                                {userToDisplay.username}
+                            </Text>
+                        </Column>
+                    </Row>
+                </Pressable>
 
-            <UserImageSection userId={currentUserId} />
-        </Column>
+                <UserImageSection userId={currentUserId} />
+            </Column>
+        </Screen>
     )
 }
 

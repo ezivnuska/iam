@@ -1,22 +1,20 @@
 // apps/web/src/screens/UserProfileScreen.tsx
 
 import React, { useEffect, useState, useMemo } from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text } from 'react-native'
 import { useRoute } from '@react-navigation/native'
 import {
 	Avatar,
     Button,
 	Column,
 	Row,
-	ImageGalleryContainer,
 	IconButton,
     EditProfileForm,
+    Screen,
 } from '@/components'
 import { useAuth, useModal, useTheme } from '@/hooks'
 import { getUserByUsername } from '@services'
-import { ImageProvider } from '@/providers'
 import type { User } from '@iam/types'
-import { paddingHorizontal, resolveResponsiveProp } from '@iam/theme'
 import { normalizeUser } from '@utils'
 import { navigate } from '@/navigation'
 import { LoadingScreen } from './LoadingScreen'
@@ -28,7 +26,6 @@ type DetailsParams = {
 export const ProfileScreen = () => {
 	const route = useRoute()
     const params = route.params as DetailsParams
-    const paddingVertical = resolveResponsiveProp({ xs: 4, sm: 8, md: 16, lg: 24 })
 
     const username = useMemo(() => {
         return params?.username || undefined
@@ -50,8 +47,6 @@ export const ProfileScreen = () => {
         const user = isOwnProfile ? authUser : fetchedUser
         return user ? normalizeUser(user) : null
     }, [authUser, fetchedUser, isOwnProfile])
-
-    // const currentUserId = useMemo(() => userToDisplay?.id, [userToDisplay?.id])
 
 	useEffect(() => {
         const fetchUser = async () => {
@@ -82,7 +77,6 @@ export const ProfileScreen = () => {
 		openFormModal(EditProfileForm, {}, { title: 'Edit Bio' })
 	}
 
-    // const gotToImages = () => navigate('User' as never)
     const gotToImages = () => navigate('Images' as never)
 
     if (!isAuthInitialized) {
@@ -110,50 +104,50 @@ export const ProfileScreen = () => {
 	}
 
 	return (
-        <Column
-            flex={1}
-            spacing={15}
-            paddingHorizontal={paddingHorizontal}
-            paddingVertical={paddingVertical}
-        >
-            <Row>
-                <Row flex={1} spacing={15} align='center'>
-                    <Avatar user={userToDisplay} size='md' />
-                    <Column spacing={5}>
-                        <Text style={{ fontSize: 32, fontWeight: 600, color: theme.colors.text }}>
-                            {userToDisplay.username}
-                        </Text>
-                        {/* <Text style={[styles.text, { color: theme.colors.textSecondary }]}>
-                            {userToDisplay.email}
-                        </Text> */}
-                    </Column>
+        <Screen>
+            <Column
+                flex={1}
+                spacing={15}
+            >
+                <Row>
+                    <Row flex={1} spacing={15} align='center'>
+                        <Avatar user={userToDisplay} size='md' />
+                        <Column spacing={5}>
+                            <Text style={{ fontSize: 32, fontWeight: 600, color: theme.colors.text }}>
+                                {userToDisplay.username}
+                            </Text>
+                            {/* <Text style={[styles.text, { color: theme.colors.textSecondary }]}>
+                                {userToDisplay.email}
+                            </Text> */}
+                        </Column>
+                    </Row>
+                    {isOwnProfile && (
+                        <Button
+                            label='Sign Out'
+                            onPress={logout}
+                            variant='muted'
+                        />
+                    )}
                 </Row>
-                {isOwnProfile && (
-                    <Button
-                        label='Sign Out'
-                        onPress={logout}
-                        variant='muted'
-                    />
-                )}
-            </Row>
 
-            <Row spacing={10}>
-                <Text style={[styles.text, { color: theme.colors.text }]}>
-                    {userToDisplay.bio || 'No bio yet.'}
-                </Text>
-                {isOwnProfile && (
-                    <IconButton
-                        onPress={openEditModal}
-                        iconName='create-outline'
-                        iconSize={28}
-                    />
-                )}
-            </Row>
-            
-            <Button label='Images' onPress={gotToImages} />
+                <Row spacing={10}>
+                    <Text style={[styles.text, { color: theme.colors.text }]}>
+                        {userToDisplay.bio || 'No bio yet.'}
+                    </Text>
+                    {isOwnProfile && (
+                        <IconButton
+                            onPress={openEditModal}
+                            iconName='create-outline'
+                            iconSize={28}
+                        />
+                    )}
+                </Row>
+                
+                <Button label='Images' onPress={gotToImages} />
 
-            {/* <UserImageSection userId={currentUserId} /> */}
-        </Column>
+                {/* <UserImageSection userId={currentUserId} /> */}
+            </Column>
+        </Screen>
 	)
 }
 

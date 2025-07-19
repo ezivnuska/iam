@@ -28,7 +28,7 @@ export const Header: React.FC = () => {
 
     const showSigninModal = () => openFormModal(SigninForm, {}, { title: 'Sign In' })
     const goToProfile = () => navigate('Profile', { screen: 'Main' })
-    const navigateToUserList = () => navigate('Users')
+    const navigateToUserList = () => navigate('Users', { screen: 'UserList' })
 
     return (
         <FlexBox
@@ -38,7 +38,7 @@ export const Header: React.FC = () => {
             spacing={18}
             paddingHorizontal={paddingHorizontal}
             paddingVertical={paddingVertical}
-            style={isLandscape && { width: '20%' }}
+            style={isLandscape && { minWidth: '15%', maxWidth: '20%' }}
         >
             <Pressable onPress={() => navigate('Home')}>
                 <FlexBox direction='row' wrap justify='center' align='center'>

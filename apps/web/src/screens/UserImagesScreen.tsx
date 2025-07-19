@@ -1,20 +1,13 @@
 // apps/web/src/screens/UserProfileScreen.tsx
 
 import React, { useEffect, useState, useMemo } from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
 import { useRoute } from '@react-navigation/native'
-import {
-	Avatar,
-	Column,
-	Row,
-	ImageGalleryContainer,
-    EditProfileForm,
-} from '@/components'
-import { useAuth, useModal, useTheme } from '@/hooks'
+import { Avatar, Column, Row, ImageGalleryContainer, Screen } from '@/components'
+import { useAuth, useTheme } from '@/hooks'
 import { getUserByUsername } from '@services'
 import { ImageProvider } from '@/providers'
 import type { User } from '@iam/types'
-import { paddingHorizontal, resolveResponsiveProp } from '@iam/theme'
 import { normalizeUser } from '@utils'
 import { LoadingScreen } from './LoadingScreen'
 import { navigate } from '@/navigation'
@@ -26,15 +19,13 @@ type DetailsParams = {
 export const UserImagesScreen = () => {
 	const route = useRoute()
     const params = route.params as DetailsParams
-    const paddingVertical = resolveResponsiveProp({ xs: 4, sm: 8, md: 16, lg: 24 })
 
     const username = useMemo(() => {
         return params?.username || null
     }, [params])
 
-	const { user: authUser, logout, isAuthInitialized } = useAuth()
+	const { user: authUser, isAuthInitialized } = useAuth()
 
-	const { openFormModal } = useModal()
 	const { theme } = useTheme()
 
 	const [fetchedUser, setFetchedUser] = useState<User | null>(null)
@@ -101,30 +92,30 @@ export const UserImagesScreen = () => {
 	}
 
 	return (
-        <Column
-            flex={1}
-            spacing={15}
-            paddingHorizontal={paddingHorizontal}
-            paddingVertical={paddingVertical}
-        >
-            <Pressable
-                onPress={() => navigate('Users', {
-                    screen: 'UserProfile',
-                    params: { username: username as string },
-                })}
+        <Screen>
+            <Column
+                flex={1}
+                spacing={15}
             >
-                <Row spacing={15} align='center'>
-                    <Avatar user={userToDisplay} size='md' />
-                    <Column spacing={5}>
-                        <Text style={{ fontSize: 32, fontWeight: 600, color: theme.colors.text }}>
-                            {userToDisplay.username}
-                        </Text>
-                    </Column>
-                </Row>
-            </Pressable>
+                <Pressable
+                    onPress={() => navigate('Users', {
+                        screen: 'UserProfile',
+                        params: { username: username as string },
+                    })}
+                >
+                    <Row spacing={15} align='center'>
+                        <Avatar user={userToDisplay} size='md' />
+                        <Column spacing={5}>
+                            <Text style={{ fontSize: 32, fontWeight: 600, color: theme.colors.text }}>
+                                {userToDisplay.username}
+                            </Text>
+                        </Column>
+                    </Row>
+                </Pressable>
 
-            <UserImageSection userId={currentUserId} />
-        </Column>
+                <UserImageSection userId={currentUserId} />
+            </Column>
+        </Screen>
 	)
 }
 

@@ -4,7 +4,7 @@ import React from 'react'
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import { Avatar, Column, IconButton, Row } from '@/components'
 import { Comment, PartialUser } from '@iam/types'
-import { paddingHorizontal, Size } from '@iam/theme'
+import { Size } from '@iam/theme'
 import { useTheme } from '@/hooks'
 
 type CommentItemProps = {
@@ -26,7 +26,6 @@ export const CommentItem = ({
 	return (
 		<Row
 			spacing={Size.S}
-			paddingHorizontal={paddingHorizontal}
 			align='flex-start'
             justify='flex-start'
             paddingVertical={paddingVertical}
