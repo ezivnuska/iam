@@ -56,7 +56,6 @@ export const PostListItem: React.FC<Props> = ({
                 params: { username: author.username as string },
             })
         }
-		// navigate('UserProfile', { username: author.username as string })
 	}
 
 	const renderHeader = () => (
@@ -118,7 +117,7 @@ export const PostListItem: React.FC<Props> = ({
 			{post.image && <AutoSizeImage image={post.image} />}
 
 			{showPreview && post.linkUrl && post.linkPreview && (
-				<LinkPreview url={post.linkUrl} preview={post.linkPreview} />
+                <LinkPreview url={post.linkUrl} preview={post.linkPreview} />
 			)}
 
 			<LikeCommentBarContainer

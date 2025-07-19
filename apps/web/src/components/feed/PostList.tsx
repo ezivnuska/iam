@@ -4,7 +4,6 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { View, ActivityIndicator } from 'react-native'
 import { InfiniteScrollView, PostListItem, Column } from '@/components'
 import { usePosts } from '@/hooks'
-import { resolveResponsiveProp } from '@iam/theme'
 
 const PAGE_SIZE = 5
 
@@ -12,7 +11,6 @@ export const PostList = () => {
 	const { posts, isRefreshing, isMutating } = usePosts()
 
 	const [visiblePosts, setVisiblePosts] = useState(posts.slice(0, PAGE_SIZE))
-    const paddingVertical = resolveResponsiveProp({ xs: 4, sm: 8, md: 16, lg: 24 })
 
 	useEffect(() => {
 		setVisiblePosts(posts.slice(0, PAGE_SIZE))
@@ -29,7 +27,7 @@ export const PostList = () => {
 
 	return (
 		<InfiniteScrollView onScrollNearBottom={hasMore ? loadMorePosts : undefined}>
-			<Column paddingVertical={paddingVertical}>
+			<Column>
 				{visiblePosts.map((post) => (
 					<PostListItem
 						key={post._id}

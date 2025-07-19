@@ -13,22 +13,28 @@ import { LoadingScreen } from '@/screens'
 export const AppNavigator = () => {
 	const { isAuthInitialized } = useAuth()
 	const { theme } = useTheme()
-	const { orientation } = useDeviceInfo()
+	const { orientation, isMobile } = useDeviceInfo()
 	const isLandscape = orientation === 'landscape'
 	const insets = useSafeAreaInsets()
-	
+	const mobilePadding = {
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        paddingLeft: insets.left,
+        paddingRight: insets.right,
+    }
     return (
         <SafeAreaView
-            style={{
-                flex: 1,
-                paddingTop: insets.top,
-                paddingBottom: insets.bottom,
-                paddingLeft: insets.left,
-                paddingRight: insets.right,
-                backgroundColor: theme.colors.background,
-                borderWidth: 1,
-                borderColor: 'yellow',
-            }}
+            style={[
+                {
+                    flex: 1,
+                    backgroundColor: theme.colors.background,
+                },
+                isMobile && mobilePadding,
+                !isMobile && {
+                    marginVertical: 0,
+                    marginHorizontal: isLandscape ? 20 : 0,
+                },
+            ]}
         >
             <NavigationContainer ref={navigationRef} linking={linking}>
 				<FlexBox
