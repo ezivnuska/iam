@@ -18,17 +18,19 @@ export const AppNavigator = () => {
 	const insets = useSafeAreaInsets()
 	
     return (
-        <NavigationContainer ref={navigationRef} linking={linking}>
-			<SafeAreaView
-				style={{
-					flex: 1,
-					paddingTop: insets.top,
-					paddingBottom: insets.bottom,
-					paddingLeft: insets.left,
-					paddingRight: insets.right,
-                    backgroundColor: theme.colors.background,
-				}}
-			>
+        <SafeAreaView
+            style={{
+                flex: 1,
+                paddingTop: insets.top,
+                paddingBottom: insets.bottom,
+                paddingLeft: insets.left,
+                paddingRight: insets.right,
+                backgroundColor: theme.colors.background,
+                borderWidth: 1,
+                borderColor: 'yellow',
+            }}
+        >
+            <NavigationContainer ref={navigationRef} linking={linking}>
 				<FlexBox
 					flex={1}
 					direction={isLandscape ? 'row' : 'column'}
@@ -44,7 +46,7 @@ export const AppNavigator = () => {
                         : <LoadingScreen label='Authenticating...' />
                     }
 				</FlexBox>
-			</SafeAreaView>
-        </NavigationContainer>
+            </NavigationContainer>
+        </SafeAreaView>
     )
 }
