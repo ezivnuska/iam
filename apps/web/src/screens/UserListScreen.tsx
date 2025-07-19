@@ -5,10 +5,10 @@ import { Column, UserListNav, Spinner, UserList, Screen } from '@/components'
 import { useUserList } from '@/hooks'
 import { useNavigation } from '@react-navigation/native'
 import type { StackNavigationProp } from '@react-navigation/stack'
-import type { UserStackParamList } from '@iam/types'
+import type { RootStackParamList, UserStackParamList } from '@iam/types'
 import { normalizeUser } from '@utils'
 
-type NavProps = StackNavigationProp<UserStackParamList, 'UserList'>
+type NavProps = StackNavigationProp<UserStackParamList, 'UserProfile'>
 
 export const UserListScreen = () => {
 	const {

@@ -5,7 +5,7 @@ import { Pressable, View, Text } from 'react-native'
 import { Avatar, Button, IconButton, FlexBox, SigninForm } from '@/components'
 import { useAuth, useDeviceInfo, useModal, useTheme } from '@/hooks'
 import { useCurrentRoute } from '@/hooks/useCurrentRoute'
-import { resolveResponsiveProp, Size } from '@iam/theme'
+import { paddingVertical, paddingHorizontal, resolveResponsiveProp, Size } from '@iam/theme'
 import type { AvatarSize } from '@/components'
 import { navigate } from '@/navigation'
 
@@ -17,8 +17,8 @@ export const Header: React.FC = () => {
     const currentRoute = useCurrentRoute()
 
     const isLandscape = orientation === 'landscape'
-    const paddingHorizontal = resolveResponsiveProp({ xs: 10, sm: 12, md: 18, lg: 24 })
-    const paddingVertical = resolveResponsiveProp({ xs: 4, sm: 8, md: 12, lg: 24 })
+    // const paddingHorizontal = resolveResponsiveProp({ xs: 10, sm: 12, md: 18, lg: 24 })
+    // const paddingVertical = resolveResponsiveProp({ xs: 4, sm: 8, md: 12, lg: 24 })
     const fontSize = resolveResponsiveProp({ xs: 34, sm: 34, md: 40, lg: 40 })
     const lineHeight = fontSize * 0.9
     const iconSize = resolveResponsiveProp({ xs: 24, sm: 24, md: 32, lg: 32 })
@@ -36,9 +36,8 @@ export const Header: React.FC = () => {
             justify={isLandscape ? 'flex-start' : 'space-between'}
             align='center'
             spacing={18}
-            paddingHorizontal={paddingHorizontal}
             paddingVertical={paddingVertical}
-            style={isLandscape && { minWidth: '15%', maxWidth: '20%' }}
+            style={isLandscape && { width: 'auto', minWidth: '10%', maxWidth: '20%' }}
         >
             <Pressable onPress={() => navigate('Home')}>
                 <FlexBox direction='row' wrap justify='center' align='center'>

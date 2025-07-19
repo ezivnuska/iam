@@ -17,7 +17,7 @@ import { getUserByUsername } from '@services'
 import type { User } from '@iam/types'
 import { normalizeUser } from '@utils'
 import { navigate } from '@/navigation'
-import { LoadingScreen } from './LoadingScreen'
+import { LoadingScreen } from '.'
 
 type DetailsParams = {
 	username?: string

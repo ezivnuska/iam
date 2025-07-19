@@ -3,7 +3,7 @@
 import React from 'react'
 import { View } from 'react-native'
 import { useTheme } from '@/hooks'
-import { paddingHorizontal, paddingVertical } from '@iam/theme'
+import { paddingHorizontal, Size } from '@iam/theme'
 
 export const Screen: React.FC<{
     children: React.ReactNode
@@ -18,7 +18,7 @@ export const Screen: React.FC<{
                 flex: 1,
                 alignSelf: 'stretch',
                 paddingHorizontal,
-                paddingVertical,
+                paddingVertical: Size.L,
                 backgroundColor: theme.colors.background,
             }}
         >

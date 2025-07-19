@@ -9,7 +9,7 @@ import { getUserByUsername } from '@services'
 import { ImageProvider } from '@/providers'
 import type { User } from '@iam/types'
 import { normalizeUser } from '@utils'
-import { LoadingScreen } from './LoadingScreen'
+import { LoadingScreen } from '@/screens'
 import { navigate } from '@/navigation'
 
 type DetailsParams = {
