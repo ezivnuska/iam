@@ -33,17 +33,17 @@ export const CreatePostButton = () => {
     ) : (
         <Pressable
             onPress={showPostModal}
+            style={{
+                width: 40,
+                height: 40,
+                borderRadius: 20,
+                overflow: 'hidden',
+                backgroundColor: theme.colors.primary,
+            }}
         >
             <Row
-                style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: 20,
-                    overflow: 'hidden',
-                    backgroundColor: theme.colors.primary,
-                    alignContent: 'center',
-                    justifyContent: 'center',
-                }}
+                align='center'
+                justify='center'
             >
                 <Ionicons
                     name='add'
