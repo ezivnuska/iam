@@ -5,13 +5,12 @@ import { View } from 'react-native'
 import { useNavigationState } from '@react-navigation/native'
 import { useAuth, useTheme } from '@/hooks'
 import { navigate } from '@/navigation'
-import { Button, ImageGalleryHeader, UserProfileHeader, useUserProfile } from '@/components'
+import { Button, useUserProfile } from '@/components'
 
 export const UserViewHeader: React.FC<any> = () => {
     const { user } = useAuth()
     const { theme } = useTheme()
     const userToDisplay = useUserProfile()
-    const isOwner = user?.id === userToDisplay?.id
 
     const route = useNavigationState((state) => {
         const userRoute = state.routes.find((r) => r.name === 'User')
@@ -34,8 +33,7 @@ export const UserViewHeader: React.FC<any> = () => {
                         variant='muted'
                     />
                 )
-            case 'UserImages': return <ImageGalleryHeader owner={isOwner} />
-            default: return <View style={{ backgroundColor: 'red', height: 100, width: 100 }} />
+            default: return null
         }
     }
 	return (

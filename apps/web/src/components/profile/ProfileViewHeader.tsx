@@ -5,7 +5,7 @@ import { View } from 'react-native'
 import { useNavigationState } from '@react-navigation/native'
 import { useTheme } from '@/hooks'
 import { navigate } from '@/navigation'
-import { Button, ImageGalleryHeader } from '@/components'
+import { Button } from '@/components'
 
 export const ProfileViewHeader: React.FC<any> = () => {
     const { theme } = useTheme()
@@ -31,8 +31,7 @@ export const ProfileViewHeader: React.FC<any> = () => {
                         variant='muted'
                     />
                 )
-            case 'Images': return <ImageGalleryHeader owner={true} />
-            default: return <View style={{ backgroundColor: 'red', height: 100, width: 100 }} />
+            default: return null
         }
     }
 	return (
