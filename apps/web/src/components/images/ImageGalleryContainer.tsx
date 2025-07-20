@@ -27,7 +27,7 @@ export const ImageGalleryContainer: React.FC<ImageGalleryContainerProps> = ({ us
 		hasNextPage,
 	} = useImage()
 
-	const { hideModal, showModal, openFormModal } = useModal()
+	const { hideModal, showModal } = useModal()
 	const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
@@ -52,7 +52,6 @@ export const ImageGalleryContainer: React.FC<ImageGalleryContainerProps> = ({ us
 	}
 
 	const handleSetAvatar = async (id: string | undefined) => {
-        console.log('handleSetAvatar', id)
 		const newAvatarId = id === currentAvatarId ? undefined : id
 		try {
 			await setAvatar(newAvatarId)
@@ -77,7 +76,7 @@ export const ImageGalleryContainer: React.FC<ImageGalleryContainerProps> = ({ us
 
 	return (
 		<Column flex={1} spacing={10}>
-			<ImageGalleryHeader />
+			{/* <ImageGalleryHeader owner={isOwner} /> */}
 			{error ? (
 				<Text>{error}</Text>
 			) : (

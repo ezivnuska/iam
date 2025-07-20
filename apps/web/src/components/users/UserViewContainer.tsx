@@ -12,6 +12,7 @@ const UserProfileContext = createContext<User | null>(null)
 export const useUserProfile = () => useContext(UserProfileContext)
 
 export const UserViewContainer: React.FC<any> = ({ ...props }) => {
+    
 	const [fetchedUser, setFetchedUser] = useState<User | null>(null)
 	const [loadingUser, setLoadingUser] = useState(false)
 	const [userNotFound, setUserNotFound] = useState(false)

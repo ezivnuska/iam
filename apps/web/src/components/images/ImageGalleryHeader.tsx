@@ -1,12 +1,13 @@
 // apps/web/src/components/images/ImageManagerHeader.tsx
 
 import React from 'react'
-import { Text, StyleSheet } from 'react-native'
+import { Text } from 'react-native'
 import { IconButton, ImageUploadForm, Row } from '@/components'
 import { useImage, useModal, useTheme } from '@/hooks'
 import type { UploadedImage } from '@iam/types'
+import { paddingVertical } from '@iam/theme'
 
-export const ImageGalleryHeader = () => {
+export const ImageGalleryHeader = ({ ...props }) => {
 
     const { addImage } = useImage()
     const { hideModal, openFormModal } = useModal()
@@ -20,21 +21,18 @@ export const ImageGalleryHeader = () => {
     const openImageUploadModal = () => openFormModal(ImageUploadForm, { onUploaded: handleUploadSuccess }, {})
 
 	return (
-		<Row spacing={10}>
-			<Text style={[styles.title, { color: theme.colors.text }]}>Images</Text>
-            <IconButton
-                onPress={openImageUploadModal}
-                iconName='add-circle-outline'
-                iconSize={30}
-            />
+		<Row
+            spacing={10}
+            align='center'
+        >
+			<Text style={{ fontSize: 24, fontWeight: '600', color: theme.colors.text }}>Images</Text>
+            {props.owner && (
+                <IconButton
+                    onPress={openImageUploadModal}
+                    iconName='add-circle-outline'
+                    iconSize={30}
+                />
+            )}
 		</Row>
 	)
 }
-
-const styles = StyleSheet.create({
-	title: {
-        flex: 1,
-		fontSize: 24,
-		fontWeight: 600,
-	},
-})

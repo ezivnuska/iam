@@ -1,8 +1,8 @@
 // apps/web/src/screens/UserImagesScreen.tsx
 
 import React, { useMemo } from 'react'
-import { Text, View } from 'react-native'
-import { Column, ImageGalleryContainer, Screen } from '@/components'
+import { Text } from 'react-native'
+import { ImageGalleryContainer, Screen } from '@/components'
 import { useAuth } from '@/hooks'
 import { ImageProvider } from '@/providers'
 import { LoadingScreen } from '@/screens'
@@ -18,26 +18,14 @@ export const UserImagesScreen = () => {
 	if (!userToDisplay || !userToDisplay.username) return <LoadingScreen label='Loading user images...' />
 	if (!currentUserId) return <Text style={{ color: 'red', padding: 20 }}>User not found</Text>
 
-	return (
-		<Screen>
-			<Column flex={1} spacing={15}>
-				<UserImageSection userId={currentUserId} />
-			</Column>
-		</Screen>
-	)
-}
-
-const UserImageSection = ({ userId }: { userId?: string }) => {
-	if (!userId) {
-		console.warn('Invalid userId passed to UserImageSection:', userId)
+	if (!userToDisplay?.id) {
+		console.warn('Invalid userId passed to UserImageSection:')
 		return null
 	}
 
 	return (
-		<View style={{ flex: 1 }}>
-			<ImageProvider userId={userId}>
-				<ImageGalleryContainer userId={userId} />
-			</ImageProvider>
-		</View>
+		<Screen>
+            <ImageGalleryContainer userId={userToDisplay.id} />
+		</Screen>
 	)
 }

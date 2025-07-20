@@ -11,8 +11,9 @@ import {
 } from '@/screens'
 import { withProtectedRoute } from './withProtectedRoute'
 import type { RootStackParamList } from '@iam/types'
-import { ProfileNavigator } from './ProfileNavigator'
+// import { ProfileNavigator } from './ProfileNavigator'
 import { UserNavigator } from './UserNavigator'
+import { ProfileView } from '@/components'
 
 const Stack = createStackNavigator<RootStackParamList>()
 
@@ -27,7 +28,7 @@ export const RootNavigator = () => {
             <Stack.Screen name='Home' component={HomeScreen} />
             <Stack.Screen name='ResetPassword' component={ResetPasswordScreen} />
             <Stack.Screen name='PrivacyPolicy' component={PrivacyPolicyScreen} />
-            <Stack.Screen name='Profile' component={ProfileNavigator} />
+            <Stack.Screen name='Profile' component={ProfileView} />
             <Stack.Screen name='Users' component={UserNavigator} />
         </Stack.Navigator>
     )

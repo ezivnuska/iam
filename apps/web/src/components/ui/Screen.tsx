@@ -17,7 +17,7 @@ export const Screen: React.FC<{
             style={{
                 flex: 1,
                 alignSelf: 'stretch',
-                paddingHorizontal,
+                // paddingHorizontal,
                 paddingVertical: Size.S,
                 backgroundColor: theme.colors.background,
             }}

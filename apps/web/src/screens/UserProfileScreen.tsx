@@ -1,10 +1,10 @@
 // apps/web/src/screens/UserProfileScreen.tsx
 
-import React, { useMemo } from 'react'
+import React from 'react'
 import { StyleSheet, Text } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import { Button, Column, Row, IconButton, EditProfileForm, Screen } from '@/components'
-import { useAuth, useModal, useTheme } from '@/hooks'
+import { Button, Column, Row, Screen } from '@/components'
+import { useAuth, useTheme } from '@/hooks'
 import { LoadingScreen } from '.'
 import { useUserProfile } from '@/components'
 import type { StackNavigationProp } from '@react-navigation/stack'
@@ -13,20 +13,20 @@ import type { UserProfileStackParamList } from '@iam/types'
 export const UserProfileScreen = () => {
 	const { navigate } = useNavigation<StackNavigationProp<UserProfileStackParamList>>()
 	const userToDisplay = useUserProfile()
-	const { user: authUser, isAuthInitialized } = useAuth()
-	const { openFormModal } = useModal()
+	const { isAuthInitialized } = useAuth()
+	// const { openFormModal } = useModal()
 	const { theme } = useTheme()
 
-	const isOwnProfile = useMemo(
-		() => isAuthInitialized && authUser?.id === userToDisplay?.id,
-		[isAuthInitialized, authUser?.id, userToDisplay?.id]
-	)
+	// const isOwnProfile = useMemo(
+	// 	() => isAuthInitialized && authUser?.id === userToDisplay?.id,
+	// 	[isAuthInitialized, authUser?.id, userToDisplay?.id]
+	// )
 
 	if (!isAuthInitialized) return <LoadingScreen label='Authenticating...' />
 	if (!userToDisplay) return <LoadingScreen label='Loading user...' />
 
-    const showEditBioForm = () =>
-        openFormModal(EditProfileForm, {}, { title: 'Edit Bio' })
+    // const showEditBioForm = () =>
+    //     openFormModal(EditProfileForm, {}, { title: 'Edit Bio' })
 
 	return (
 		<Screen>
@@ -35,18 +35,18 @@ export const UserProfileScreen = () => {
 					<Text style={[styles.text, { color: theme.colors.text }]}>
 						{userToDisplay.bio || 'No bio yet.'}
 					</Text>
-					{isOwnProfile && (
+					{/* {isOwnProfile && (
 						<IconButton
 							onPress={showEditBioForm}
 							iconName='create-outline'
 							iconSize={28}
 						/>
-					)}
+					)} */}
 				</Row>
-				<Button
+				{/* <Button
 					label='Images'
 					onPress={() => navigate('UserImages')}
-				/>
+				/> */}
 			</Column>
 		</Screen>
 	)

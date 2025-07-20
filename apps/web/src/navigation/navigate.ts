@@ -17,6 +17,13 @@ export function navigate<RouteName extends keyof RootStackParamList>(
 	}
 }
 
+export function getCurrentRouteName() {
+    if (navigationRef.isReady()) {
+        return navigationRef.getCurrentRoute()?.name
+    }
+    return null
+}
+
 export function resetTo<RouteName extends keyof RootStackParamList>(
 	screen: RouteName,
 	params?: RootStackParamList[RouteName]
