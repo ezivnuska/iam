@@ -27,8 +27,8 @@ export const Header: React.FC = () => {
     const avatarSize = resolveResponsiveProp({ xs: 'sm', sm: 'md', md: 'md', lg: 'lg' }) as AvatarSize
 
     const showSigninModal = () => openFormModal(SigninForm, {}, { title: 'Sign In' })
-    const goToProfile = () => navigate('Profile', { screen: 'Main' })
-    const navigateToUserList = () => navigate('Users', { screen: 'UserList' })
+    const gotoProfile = () => navigate('Profile', { screen: 'Main' })
+    const gotoUserList = () => navigate('Users', { screen: 'UserList' })
 
     return (
         <FlexBox
@@ -89,7 +89,7 @@ export const Header: React.FC = () => {
         
                                     <IconButton
                                         label='Users'
-                                        onPress={navigateToUserList}
+                                        onPress={gotoUserList}
                                         iconName='people-outline'
                                         iconSize={iconSize}
                                         active={currentRoute === 'Users'}
@@ -101,7 +101,7 @@ export const Header: React.FC = () => {
                                             <Avatar
                                                 user={user}
                                                 size={avatarSize}
-                                                onPress={goToProfile}
+                                                onPress={gotoProfile}
                                             />
                                         </View>
                                     )}

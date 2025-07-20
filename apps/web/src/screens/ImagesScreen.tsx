@@ -13,84 +13,74 @@ import { LoadingScreen } from './LoadingScreen'
 import { navigate } from '@/navigation'
 import { ProfileStackParamList } from '@iam/types'
 
-type DetailsParams = {
-	username?: string
-}
-
 export const ImagesScreen = () => {
-	const route = useRoute()
-    const params = route.params as DetailsParams
 
-    const username = useMemo(() => {
-        return params?.username || null
-    }, [params])
-
-	const { user: authUser, isAuthInitialized } = useAuth()
+	const { user, isAuthInitialized } = useAuth()
 
 	const { theme } = useTheme()
 
-	const [fetchedUser, setFetchedUser] = useState<User | null>(null)
+	// const [fetchedUser, setFetchedUser] = useState<User | null>(null)
 	const [loadingUser, setLoadingUser] = useState(false)
     const [userNotFound, setUserNotFound] = useState(false)
 
-	const isOwnProfile =
-	    isAuthInitialized && (username == null || authUser?.username === username)
+	// const isOwnProfile =
+	//     isAuthInitialized && (username == null || authUser?.username === username)
 
-    const userToDisplay = useMemo(() => {
-        const user = isOwnProfile ? authUser : fetchedUser
-        return user ? normalizeUser(user) : null
-    }, [authUser, fetchedUser, isOwnProfile])
+    // const userToDisplay = useMemo(() => {
+    //     const user = isOwnProfile ? authUser : fetchedUser
+    //     return user ? normalizeUser(user) : null
+    // }, [authUser, fetchedUser, isOwnProfile])
 
-    const currentUserId = useMemo(() => userToDisplay?.id, [userToDisplay?.id])
+    // const currentUserId = useMemo(() => userToDisplay?.id, [userToDisplay?.id])
 
-	useEffect(() => {
-        const fetchUser = async () => {
-            if (!username || isOwnProfile) return
-            setLoadingUser(true)
-            setUserNotFound(false)
-            try {
-                const fetched = await getUserByUsername(username)
-                if (fetched) {
-                    setFetchedUser(normalizeUser(fetched))
-                } else {
-                    setUserNotFound(true)
-                }
-            } catch (error) {
-                console.error('[UserProfileScreen] Failed to fetch user by username:', error)
-                setUserNotFound(true)
-            } finally {
-                setLoadingUser(false)
-            }
-        }
+	// useEffect(() => {
+    //     const fetchUser = async () => {
+    //         if (!username || isOwnProfile) return
+    //         setLoadingUser(true)
+    //         setUserNotFound(false)
+    //         try {
+    //             const fetched = await getUserByUsername(username)
+    //             if (fetched) {
+    //                 setFetchedUser(normalizeUser(fetched))
+    //             } else {
+    //                 setUserNotFound(true)
+    //             }
+    //         } catch (error) {
+    //             console.error('[UserProfileScreen] Failed to fetch user by username:', error)
+    //             setUserNotFound(true)
+    //         } finally {
+    //             setLoadingUser(false)
+    //         }
+    //     }
     
-        if (!isOwnProfile) {
-            fetchUser()
-        }
-    }, [username, isOwnProfile])
+    //     if (!isOwnProfile) {
+    //         fetchUser()
+    //     }
+    // }, [username, isOwnProfile])
 
     if (!isAuthInitialized) {
         return <LoadingScreen label='Authenticating...' />
     }
 
-    if (userNotFound) {
-        return <Text style={{ color: 'red', padding: 20 }}>User not found</Text>
-    }
+    // if (userNotFound) {
+    //     return <Text style={{ color: 'red', padding: 20 }}>User not found</Text>
+    // }
 
-    if (typeof isOwnProfile === 'undefined') {
-        return <LoadingScreen label='Loading profile...' />
-    }
+    // if (typeof isOwnProfile === 'undefined') {
+    //     return <LoadingScreen label='Loading images...' />
+    // }
     
-    if (isOwnProfile && (!authUser || !authUser.username)) {
-        return <LoadingScreen label='Loading your profile...' />
-    }
+    // if (isOwnProfile && (!authUser || !authUser.username)) {
+    //     return <LoadingScreen label='Loading your profile...' />
+    // }
     
-    if (!isOwnProfile && (loadingUser || !fetchedUser)) {
-        return <LoadingScreen label='Loading user profile...' />
-    }
+    // if (!isOwnProfile && (loadingUser || !fetchedUser)) {
+    //     return <LoadingScreen label='Loading user profile...' />
+    // }
 
-    if (loadingUser || !userToDisplay) {
-        return <LoadingScreen label='Loading user...' />
-    }
+    // if (loadingUser || !userToDisplay) {
+    //     return <LoadingScreen label='Loading user...' />
+    // }
 
 	return (
         <Screen>
@@ -102,16 +92,16 @@ export const ImagesScreen = () => {
                     onPress={() => navigate('Profile', { screen: 'Main' as keyof ProfileStackParamList })}
                 >
                     <Row spacing={15} align='center'>
-                        <Avatar user={userToDisplay} size='md' />
+                        <Avatar user={user as User} size='md' />
                         <Column spacing={5}>
                             <Text style={{ fontSize: 32, fontWeight: 600, color: theme.colors.text }}>
-                                {userToDisplay.username}
+                                {user?.username}
                             </Text>
                         </Column>
                     </Row>
                 </Pressable>
 
-                <UserImageSection userId={currentUserId} />
+                <UserImageSection userId={user?.id} />
             </Column>
         </Screen>
     )

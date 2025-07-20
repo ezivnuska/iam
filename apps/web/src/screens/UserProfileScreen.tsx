@@ -1,164 +1,57 @@
 // apps/web/src/screens/UserProfileScreen.tsx
 
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { StyleSheet, Text } from 'react-native'
-import { useRoute } from '@react-navigation/native'
-import {
-	Avatar,
-    Button,
-	Column,
-	Row,
-	IconButton,
-    EditProfileForm,
-    Screen,
-} from '@/components'
+import { useNavigation } from '@react-navigation/native'
+import { Button, Column, Row, IconButton, EditProfileForm, Screen } from '@/components'
 import { useAuth, useModal, useTheme } from '@/hooks'
-import { getUserByUsername } from '@services'
-import type { User } from '@iam/types'
-import { normalizeUser } from '@utils'
-import { navigate } from '@/navigation'
 import { LoadingScreen } from '.'
-
-type DetailsParams = {
-	username?: string
-}
+import { useUserProfile } from '@/components'
+import type { StackNavigationProp } from '@react-navigation/stack'
+import type { UserProfileStackParamList } from '@iam/types'
 
 export const UserProfileScreen = () => {
-	const route = useRoute()
-    const params = route.params as DetailsParams
-
-    const username = useMemo(() => {
-        return params?.username || undefined
-    }, [params])
-
-	const { user: authUser, logout, isAuthInitialized } = useAuth()
-
+	const { navigate } = useNavigation<StackNavigationProp<UserProfileStackParamList>>()
+	const userToDisplay = useUserProfile()
+	const { user: authUser, isAuthInitialized } = useAuth()
 	const { openFormModal } = useModal()
 	const { theme } = useTheme()
 
-	const [fetchedUser, setFetchedUser] = useState<User | null>(null)
-	const [loadingUser, setLoadingUser] = useState(false)
-    const [userNotFound, setUserNotFound] = useState(false)
+	const isOwnProfile = useMemo(
+		() => isAuthInitialized && authUser?.id === userToDisplay?.id,
+		[isAuthInitialized, authUser?.id, userToDisplay?.id]
+	)
 
-	const isOwnProfile =
-	    isAuthInitialized && (username == null || authUser?.username === username)
+	if (!isAuthInitialized) return <LoadingScreen label='Authenticating...' />
+	if (!userToDisplay) return <LoadingScreen label='Loading user...' />
 
-    const userToDisplay = useMemo(() => {
-        const user = isOwnProfile ? authUser : fetchedUser
-        return user ? normalizeUser(user) : null
-    }, [authUser, fetchedUser, isOwnProfile])
-
-	useEffect(() => {
-        const fetchUser = async () => {
-            if (!username || isOwnProfile) return
-            setLoadingUser(true)
-            setUserNotFound(false)
-            try {
-                const fetched = await getUserByUsername(username)
-                if (fetched) {
-                    setFetchedUser(normalizeUser(fetched))
-                } else {
-                    setUserNotFound(true)
-                }
-            } catch (error) {
-                console.error('[UserProfileScreen] Failed to fetch user by username:', error)
-                setUserNotFound(true)
-            } finally {
-                setLoadingUser(false)
-            }
-        }
-    
-        if (!isOwnProfile) {
-            fetchUser()
-        }
-    }, [username, isOwnProfile])
-    
-	const openEditModal = () => {
-		openFormModal(EditProfileForm, {}, { title: 'Edit Bio' })
-	}
-
-    const gotToImages = () => navigate('Users', {
-        screen: 'UserImages',
-        params: { username: username! },
-    })
-
-    if (!isAuthInitialized) {
-        return <LoadingScreen label='Authenticating...' />
-    }
-
-    if (userNotFound) {
-        return <Text style={{ color: 'red', padding: 20 }}>User not found</Text>
-    }
-
-    if (typeof isOwnProfile === 'undefined') {
-        return <LoadingScreen label='Loading profile...' />
-    }
-    
-    if (isOwnProfile && (!authUser || !authUser.username)) {
-        return <LoadingScreen label='Loading your profile...' />
-    }
-    
-    if (!isOwnProfile && (loadingUser || !fetchedUser)) {
-        return <LoadingScreen label='Loading user profile...' />
-    }
-
-	if (loadingUser || !userToDisplay) {
-		return <LoadingScreen label='Loading user...' />
-	}
+    const showEditBioForm = () =>
+        openFormModal(EditProfileForm, {}, { title: 'Edit Bio' })
 
 	return (
-        <Screen>
-            <Column
-                flex={1}
-                spacing={15}
-            >
-                <Row>
-                    <Row flex={1} spacing={15} align='center'>
-                        <Avatar user={userToDisplay} size='md' />
-                        <Column spacing={5}>
-                            <Text style={{ fontSize: 32, fontWeight: 600, color: theme.colors.text }}>
-                                {userToDisplay.username}
-                            </Text>
-                        </Column>
-                    </Row>
-                    {isOwnProfile && (
-                        <Button
-                            label='Sign Out'
-                            onPress={logout}
-                            variant='muted'
-                        />
-                    )}
-                </Row>
-
-                <Row spacing={10}>
-                    <Text style={[styles.text, { color: theme.colors.text }]}>
-                        {userToDisplay.bio || 'No bio yet.'}
-                    </Text>
-                    {isOwnProfile && (
-                        <IconButton
-                            onPress={openEditModal}
-                            iconName='create-outline'
-                            iconSize={28}
-                        />
-                    )}
-                </Row>
-                
-                <Button label='Images' onPress={gotToImages} />
-            </Column>
-        </Screen>
+		<Screen>
+			<Column flex={1} spacing={15}>
+				<Row spacing={10}>
+					<Text style={[styles.text, { color: theme.colors.text }]}>
+						{userToDisplay.bio || 'No bio yet.'}
+					</Text>
+					{isOwnProfile && (
+						<IconButton
+							onPress={showEditBioForm}
+							iconName='create-outline'
+							iconSize={28}
+						/>
+					)}
+				</Row>
+				<Button
+					label='Images'
+					onPress={() => navigate('UserImages')}
+				/>
+			</Column>
+		</Screen>
 	)
 }
 
 const styles = StyleSheet.create({
-	text: {
-		fontSize: 18,
-		textAlign: 'left',
-		flex: 1,
-	},
-	username: {
-		fontWeight: 'bold',
-	},
-	editButton: {
-		marginLeft: 10,
-	},
+	text: { fontSize: 18, textAlign: 'left', flex: 1 },
 })

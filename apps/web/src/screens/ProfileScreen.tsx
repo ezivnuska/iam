@@ -31,47 +31,47 @@ export const ProfileScreen = () => {
         return params?.username || undefined
     }, [params])
 
-	const { user: authUser, logout, isAuthInitialized } = useAuth()
+	const { user, logout, isAuthInitialized } = useAuth()
 
 	const { openFormModal } = useModal()
 	const { theme } = useTheme()
 
-	const [fetchedUser, setFetchedUser] = useState<User | null>(null)
+	// const [fetchedUser, setFetchedUser] = useState<User | null>(null)
 	const [loadingUser, setLoadingUser] = useState(false)
-    const [userNotFound, setUserNotFound] = useState(false)
+    // const [userNotFound, setUserNotFound] = useState(false)
 
-	const isOwnProfile =
-	    isAuthInitialized && (username == null || authUser?.username === username)
+	// const isOwnProfile =
+	//     isAuthInitialized && (username == null || authUser?.username === username)
 
-    const userToDisplay = useMemo(() => {
-        const user = isOwnProfile ? authUser : fetchedUser
-        return user ? normalizeUser(user) : null
-    }, [authUser, fetchedUser, isOwnProfile])
+    // const userToDisplay = useMemo(() => {
+    //     const user = isOwnProfile ? authUser : fetchedUser
+    //     return user ? normalizeUser(user) : null
+    // }, [authUser, fetchedUser, isOwnProfile])
 
-	useEffect(() => {
-        const fetchUser = async () => {
-            if (!username || isOwnProfile) return
-            setLoadingUser(true)
-            setUserNotFound(false)
-            try {
-                const fetched = await getUserByUsername(username)
-                if (fetched) {
-                    setFetchedUser(normalizeUser(fetched))
-                } else {
-                    setUserNotFound(true)
-                }
-            } catch (error) {
-                console.error('[UserProfileScreen] Failed to fetch user by username:', error)
-                setUserNotFound(true)
-            } finally {
-                setLoadingUser(false)
-            }
-        }
+	// useEffect(() => {
+    //     const fetchUser = async () => {
+    //         if (!username || isOwnProfile) return
+    //         setLoadingUser(true)
+    //         setUserNotFound(false)
+    //         try {
+    //             const fetched = await getUserByUsername(username)
+    //             if (fetched) {
+    //                 setFetchedUser(normalizeUser(fetched))
+    //             } else {
+    //                 setUserNotFound(true)
+    //             }
+    //         } catch (error) {
+    //             console.error('[UserProfileScreen] Failed to fetch user by username:', error)
+    //             setUserNotFound(true)
+    //         } finally {
+    //             setLoadingUser(false)
+    //         }
+    //     }
     
-        if (!isOwnProfile) {
-            fetchUser()
-        }
-    }, [username, isOwnProfile])
+    //     if (!isOwnProfile) {
+    //         fetchUser()
+    //     }
+    // }, [username, isOwnProfile])
     
 	const openEditModal = () => {
 		openFormModal(EditProfileForm, {}, { title: 'Edit Bio' })
@@ -83,25 +83,25 @@ export const ProfileScreen = () => {
         return <LoadingScreen label='Authenticating...' />
     }
 
-    if (userNotFound) {
-        return <Text style={{ color: 'red', padding: 20 }}>User not found</Text>
-    }
+    // if (userNotFound) {
+    //     return <Text style={{ color: 'red', padding: 20 }}>User not found</Text>
+    // }
 
-    if (typeof isOwnProfile === 'undefined') {
-        return <LoadingScreen label='Loading profile...' />
-    }
+    // if (typeof isOwnProfile === 'undefined') {
+    //     return <LoadingScreen label='Loading profile...' />
+    // }
     
-    if (isOwnProfile && (!authUser || !authUser.username)) {
-        return <LoadingScreen label='Loading your profile...' />
-    }
+    // if (isOwnProfile && (!authUser || !authUser.username)) {
+    //     return <LoadingScreen label='Loading your profile...' />
+    // }
     
-    if (!isOwnProfile && (loadingUser || !fetchedUser)) {
-        return <LoadingScreen label='Loading user profile...' />
-    }
+    // if (!isOwnProfile && (loadingUser || !fetchedUser)) {
+    //     return <LoadingScreen label='Loading user profile...' />
+    // }
 
-	if (loadingUser || !userToDisplay) {
-		return <LoadingScreen label='Loading user...' />
-	}
+	// if (loadingUser || !userToDisplay) {
+	// 	return <LoadingScreen label='Loading user...' />
+	// }
 
 	return (
         <Screen>
@@ -111,36 +111,36 @@ export const ProfileScreen = () => {
             >
                 <Row>
                     <Row flex={1} spacing={15} align='center'>
-                        <Avatar user={userToDisplay} size='md' />
+                        <Avatar user={user as User} size='md' />
                         <Column spacing={5}>
                             <Text style={{ fontSize: 32, fontWeight: 600, color: theme.colors.text }}>
-                                {userToDisplay.username}
+                                {user?.username}
                             </Text>
                             {/* <Text style={[styles.text, { color: theme.colors.textSecondary }]}>
                                 {userToDisplay.email}
                             </Text> */}
                         </Column>
                     </Row>
-                    {isOwnProfile && (
+                    {/* {isOwnProfile && ( */}
                         <Button
                             label='Sign Out'
                             onPress={logout}
                             variant='muted'
                         />
-                    )}
+                    {/* )} */}
                 </Row>
 
                 <Row spacing={10}>
                     <Text style={[styles.text, { color: theme.colors.text }]}>
-                        {userToDisplay.bio || 'No bio yet.'}
+                        {user?.bio || 'No bio yet.'}
                     </Text>
-                    {isOwnProfile && (
+                    {/* {isOwnProfile && ( */}
                         <IconButton
                             onPress={openEditModal}
                             iconName='create-outline'
                             iconSize={28}
                         />
-                    )}
+                    {/* )} */}
                 </Row>
                 
                 <Button label='Images' onPress={gotToImages} />

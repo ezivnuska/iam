@@ -20,13 +20,18 @@ export const linking: LinkingOptions<RootStackParamList> = {
             },
             PrivacyPolicy: 'privacy',
             Users: {
-                path: 'users',
-                screens: {
-                    UserList: '',
-                    UserProfile: ':username',
-                    UserImages: ':username/images',
-                },
-            },
+				path: 'users',
+				screens: {
+				  UserList: '',
+				  User: {
+					path: ':username',
+					screens: {
+					  UserProfile: '',
+					  UserImages: 'images',
+					},
+				  },
+				},
+			},					
         },
     },
 }

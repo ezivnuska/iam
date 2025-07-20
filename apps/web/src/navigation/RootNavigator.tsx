@@ -8,7 +8,6 @@ import {
     HomeScreen,
     ResetPasswordScreen,
     PrivacyPolicyScreen,
-    UserListScreen,
 } from '@/screens'
 import { withProtectedRoute } from './withProtectedRoute'
 import type { RootStackParamList } from '@iam/types'
@@ -29,7 +28,6 @@ export const RootNavigator = () => {
             <Stack.Screen name='ResetPassword' component={ResetPasswordScreen} />
             <Stack.Screen name='PrivacyPolicy' component={PrivacyPolicyScreen} />
             <Stack.Screen name='Profile' component={ProfileNavigator} />
-            {/* <Stack.Screen name='UserList' component={UserListScreen} /> */}
             <Stack.Screen name='Users' component={UserNavigator} />
         </Stack.Navigator>
     )
