@@ -1,15 +1,14 @@
 // apps/web/src/components/CreatePostButton.tsx
 
 import React from 'react'
-import { Pressable, Text, StyleSheet } from 'react-native'
+import { Pressable } from 'react-native'
 import { useDeviceInfo, useModal, usePosts, useTheme } from'@/hooks'
-import { Button, IconButton, PostForm } from '@/components'
+import { Button, PostForm, Row } from '@/components'
 import type { Post } from '@iam/types'
-import { form as formStyles, Size, paddingHorizontal } from '@iam/theme'
 import Ionicons from '@expo/vector-icons/Ionicons'
 
 export const CreatePostButton = () => {
-	const { hideModal, showModal, openFormModal } = useModal()
+	const { hideModal, openFormModal } = useModal()
 	const { addPost } = usePosts()
     const { theme } = useTheme()
     const { orientation } = useDeviceInfo()
@@ -26,41 +25,32 @@ export const CreatePostButton = () => {
 	}
 
 	return isLandscape ? (
-		<Button
+        <Button
             label='New Post'
             onPress={showPostModal}
             variant='primary'
         />
-	) : (
+    ) : (
         <Pressable
             onPress={showPostModal}
-            style={{ padding: 3, borderRadius: '50%', backgroundColor: theme.colors.primary }}
         >
-            <Ionicons
-                name='add'
-                size={24}
-                color={theme.colors.tertiary}
-            />
+            <Row
+                style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 20,
+                    overflow: 'hidden',
+                    backgroundColor: theme.colors.primary,
+                    alignContent: 'center',
+                    justifyContent: 'center',
+                }}
+            >
+                <Ionicons
+                    name='add'
+                    size={32}
+                    color={theme.colors.tertiary}
+                />
+            </Row>
         </Pressable>
     )
 }
-
-const styles = StyleSheet.create({
-	// button: {
-	// 	backgroundColor: '#0f0',
-	// 	borderRadius: 8,
-	// 	alignItems: 'center',
-	// },
-	text: {
-        color: '#000',
-		fontWeight: 'bold',
-	},
-    container: {
-		backgroundColor: 'transparent',
-        marginVertical: Size.XS,
-    },
-    createPostButton: {
-        color: '#aaa',
-        fontSize: 20,
-    },
-})

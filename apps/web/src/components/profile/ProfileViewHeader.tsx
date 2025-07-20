@@ -3,12 +3,23 @@
 import React from 'react'
 import { View } from 'react-native'
 import { useNavigationState } from '@react-navigation/native'
-import { useTheme } from '@/hooks'
+import { useImage, useModal, useTheme } from '@/hooks'
 import { navigate } from '@/navigation'
-import { Button } from '@/components'
+import { Button, IconButton, ImageUploadForm } from '@/components'
+import { UploadedImage } from '@iam/types'
 
 export const ProfileViewHeader: React.FC<any> = () => {
+
+    const { addImage } = useImage()
+    const { hideModal, openFormModal } = useModal()
     const { theme } = useTheme()
+
+    const handleUploadSuccess = (newImage: UploadedImage) => {
+        addImage(newImage)
+        hideModal()
+    }
+
+    const openImageUploadModal = () => openFormModal(ImageUploadForm, { onUploaded: handleUploadSuccess }, {})
 
     const route = useNavigationState((state) => {
         const profileRoute = state.routes.find((r) => r.name === 'Profile')
@@ -29,6 +40,14 @@ export const ProfileViewHeader: React.FC<any> = () => {
                         label='Images'
                         onPress={gotoImages}
                         variant='muted'
+                    />
+                )
+            case 'Images':
+                return (
+                    <IconButton
+                        onPress={openImageUploadModal}
+                        iconName='add-circle-outline'
+                        iconSize={40}
                     />
                 )
             default: return null
