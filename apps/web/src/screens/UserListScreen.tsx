@@ -39,7 +39,7 @@ export const UserListScreen = () => {
 				<Spinner label="Loading users..." />
 			) : (
 				<Column>
-					<UserListNav filter={filter} setFilter={setFilter} />
+					{/* <UserListNav filter={filter} setFilter={setFilter} /> */}
 					<UserList
 						users={filteredUsers.map(normalizeUser)}
 						getBond={getBondForUser}
