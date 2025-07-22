@@ -3,10 +3,24 @@
 import type { NavigatorScreenParams } from '@react-navigation/native'
 
 /**
+ * Screens related to chat
+ */
+export type ChatStackParamList = {
+    Main: undefined
+}
+
+/**
+ * Screens related to feed
+ */
+export type FeedStackParamList = {
+    FeedList: undefined
+}
+
+/**
  * Screens related to a user's profile
  */
 export type UserProfileStackParamList = {
-    UserProfile: undefined
+    Main: undefined
     UserImages: undefined
 }  
 
@@ -16,7 +30,7 @@ export type UserProfileStackParamList = {
  */
 export type UserStackParamList = {
     UserList: undefined
-    User?: { screen: string, username: string | undefined }
+    User: { username: string | undefined }
 }
 
 /**
@@ -41,6 +55,7 @@ export type RootStackParamList = {
     ResetPassword: { token: string }
     Signin: undefined
     Users: NavigatorScreenParams<UserStackParamList>
+    // UserList: undefined
 }  
 
 /**

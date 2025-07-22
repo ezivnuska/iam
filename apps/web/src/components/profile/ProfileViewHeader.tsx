@@ -1,18 +1,18 @@
 // apps/web/src/components/profile/ProfileViewHeader.tsx
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import { View } from 'react-native'
 import { useNavigationState } from '@react-navigation/native'
-import { useImage, useModal, useTheme } from '@/hooks'
+import { useAuth, useImage, useModal } from '@/hooks'
 import { navigate } from '@/navigation'
-import { Button, IconButton, ImageUploadForm } from '@/components'
-import { UploadedImage } from '@iam/types'
+import { Button, IconButton, ImageUploadForm, ScreenHeaderContainer, UserButton } from '@/components'
+import { UploadedImage, User } from '@iam/types'
 
 export const ProfileViewHeader: React.FC<any> = () => {
 
+    const { user, logout } = useAuth()
     const { addImage } = useImage()
     const { hideModal, openFormModal } = useModal()
-    const { theme } = useTheme()
 
     const handleUploadSuccess = (newImage: UploadedImage) => {
         addImage(newImage)
@@ -32,30 +32,26 @@ export const ProfileViewHeader: React.FC<any> = () => {
     
     const gotoImages = () => navigate('Images' as never)
 
-    const renderContent = () => {
-        switch (route) {
-            case 'Main':
-                return (
-                    <Button
-                        label='Images'
-                        onPress={gotoImages}
-                        variant='muted'
-                    />
-                )
-            case 'Images':
-                return (
-                    <IconButton
-                        onPress={openImageUploadModal}
-                        iconName='add-circle-outline'
-                        iconSize={40}
-                    />
-                )
-            default: return null
-        }
-    }
 	return (
-        <View style={{ backgroundColor: theme.colors.background }}>
-            {renderContent()}
-        </View>
+        <ScreenHeaderContainer>
+            <UserButton user={user as User} />
+            <Button
+                label='Images'
+                onPress={gotoImages}
+                variant={route === 'Images' ? 'transparent' : 'muted'}
+                disabled={route === 'Images'}
+            />
+            <IconButton
+                onPress={openImageUploadModal}
+                iconName='add-circle-outline'
+                iconSize={40}
+            />
+            
+            <Button
+                label='Sign Out'
+                onPress={logout}
+                variant='muted'
+            />
+        </ScreenHeaderContainer>
 	)
 }

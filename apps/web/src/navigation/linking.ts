@@ -7,8 +7,19 @@ export const linking: LinkingOptions<RootStackParamList> = {
     prefixes: ['http://localhost:3000', 'https://iameric.me'],
     config: {
         screens: {
-            Chat: 'chat',
+            Chat: {
+                path: 'chat',
+                screens: {
+                    Main: '',
+                },
+            },
             ForgotPassword: 'forgot-password',
+            Feed: {
+                path: 'feed',
+                screens: {
+                    FeedList: '',
+                },
+            },
             Home: '',
             ResetPassword: 'reset-password/:token',
             Profile: {
@@ -20,18 +31,18 @@ export const linking: LinkingOptions<RootStackParamList> = {
             },
             PrivacyPolicy: 'privacy',
             Users: {
-				path: 'users',
-				screens: {
-				  UserList: '',
-				  User: {
-					path: ':username',
-					screens: {
-					  UserProfile: '',
-					  UserImages: 'images',
-					},
-				  },
-				},
-			},					
+                path: 'users',
+                screens: {
+                    UserList: '',
+                    User: {
+                        path: ':username',
+                        screens: {
+                            Main: '',
+                            UserImages: 'images',
+                        },
+                    },
+                },
+            },
         },
     },
 }

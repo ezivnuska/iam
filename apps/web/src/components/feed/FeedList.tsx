@@ -1,13 +1,13 @@
-// apps/web/src/components/feed/PostList.tsx
+// apps/web/src/components/feed/FeedList.tsx
 
 import React, { useState, useEffect, useCallback } from 'react'
 import { View, ActivityIndicator } from 'react-native'
-import { InfiniteScrollView, PostListItem, Column } from '@/components'
+import { FeedListItem, InfiniteScrollView, Column } from '@/components'
 import { usePosts } from '@/hooks'
 
 const PAGE_SIZE = 5
 
-export const PostList = () => {
+export const FeedList = () => {
 	const { posts, isRefreshing, isMutating } = usePosts()
 
 	const [visiblePosts, setVisiblePosts] = useState(posts.slice(0, PAGE_SIZE))
@@ -29,7 +29,7 @@ export const PostList = () => {
 		<InfiniteScrollView onScrollNearBottom={hasMore ? loadMorePosts : undefined}>
 			<Column>
 				{visiblePosts.map((post) => (
-					<PostListItem
+					<FeedListItem
 						key={post._id}
 						post={post}
 						showPreview={!!post.linkPreview}

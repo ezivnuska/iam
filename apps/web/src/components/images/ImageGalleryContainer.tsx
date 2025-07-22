@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { Text } from 'react-native'
 import { Column, ImageGallery, ImageGalleryHeader, ImageModal } from '@/components'
-import { useAuth, useImage, useModal } from '@/hooks'
+import { useAuth, useImage, useModal, useTheme } from '@/hooks'
 import type { Image } from '@iam/types'
 
 interface ImageGalleryContainerProps {
@@ -12,6 +12,7 @@ interface ImageGalleryContainerProps {
 
 export const ImageGalleryContainer: React.FC<ImageGalleryContainerProps> = ({ userId }) => {
 	const { user: authUser } = useAuth()
+	const { theme } = useTheme()
 	const isAdmin = authUser?.role === 'admin'
 	const isOwner = useMemo(() => {
         return !userId || authUser?.id === userId
@@ -75,7 +76,7 @@ export const ImageGalleryContainer: React.FC<ImageGalleryContainerProps> = ({ us
 	}
 
 	return (
-		<Column flex={1} spacing={10}>
+		<Column flex={1} spacing={10} style={{ backgroundColor: theme.colors.background }}>
 			{/* <ImageGalleryHeader owner={isOwner} /> */}
 			{error ? (
 				<Text>{error}</Text>

@@ -2,21 +2,24 @@
 
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
-import { UserProfileScreen, UserImagesScreen } from '@/screens'
+import { UserImagesView, UserProfileView } from '@/components'
 import { withProtectedRoute } from './withProtectedRoute'
 import type { UserProfileStackParamList } from '@iam/types'
 
 const Stack = createStackNavigator<UserProfileStackParamList>()
 
 export const UserProfileNavigator = () => (
-    <Stack.Navigator initialRouteName='UserProfile' screenOptions={{ headerShown: false }}>
+    <Stack.Navigator
+        initialRouteName='Main'
+        screenOptions={{ headerShown: false }}
+    >
         <Stack.Screen
-            name='UserProfile'
-            component={withProtectedRoute(UserProfileScreen)}
+            name='Main'
+            component={withProtectedRoute(UserProfileView)}
         />
         <Stack.Screen
             name='UserImages'
-            component={withProtectedRoute(UserImagesScreen)}
+            component={withProtectedRoute(UserImagesView)}
         />
     </Stack.Navigator>
 )

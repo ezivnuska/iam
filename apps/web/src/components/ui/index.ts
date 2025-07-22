@@ -3,5 +3,5 @@
 export * from './AutoSizeImage'
 export * from './Avatar'
 export * from './Heading'
-export * from './Screen'
+export * from './PageHeader'
 export * from './Spinner'

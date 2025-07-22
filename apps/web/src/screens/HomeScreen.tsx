@@ -1,13 +1,14 @@
 // apps/web/src/screens/HomeScreen.tsx
 
 import React from 'react'
-import { Feed } from '@/presentations'
-import { Screen } from '@/components'
+import { Text } from 'react-native'
+import { ScreenContainer } from '@/components'
 
 export const HomeScreen = () => {
 	return (
-        <Screen>
-            <Feed />
-        </Screen>
+        <ScreenContainer
+            header={() => <Text>Screen Header</Text>}
+            screen={() => <Text>Screen Title</Text>}
+        />
 	)
 }

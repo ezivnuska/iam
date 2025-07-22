@@ -1,4 +1,4 @@
-// apps/web/src/components/PostListItem.tsx
+// apps/web/src/components/feed/FeedListItem.tsx
 
 import React from 'react'
 import { Pressable, StyleSheet, Text } from 'react-native'
@@ -27,7 +27,7 @@ type Props = {
 	onCommentDeleted?: () => void
 }
 
-export const PostListItem: React.FC<Props> = ({
+export const FeedListItem: React.FC<Props> = ({
 	post,
 	showPreview,
 	onPostDeleted,
@@ -52,7 +52,7 @@ export const PostListItem: React.FC<Props> = ({
             navigate('Profile')
         } else {
             navigate('Users', {
-                screen: 'UserProfile',
+                screen: 'User',
                 params: { username: author.username as string },
             })
         }

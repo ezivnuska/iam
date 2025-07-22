@@ -1,47 +1,65 @@
 // apps/web/src/components/users/UserView.tsx
 
-import React from 'react'
-import { Pressable, Text, View } from 'react-native'
-import { Avatar, Row, UserViewHeader } from '@/components'
-import type { StackNavigationProp } from '@react-navigation/stack'
-import { useNavigation } from '@react-navigation/native'
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { Text } from 'react-native'
+import { ScreenContainer, UserScreenHeader } from '@/components'
+import { LoadingScreen } from '@/screens'
 import { UserProfileNavigator } from '@/navigation'
-import type { User, UserStackParamList } from '@iam/types'
-import { useTheme } from '@/hooks'
-import { useUserProfile } from '@/components'
-import { paddingHorizontal, paddingVertical, Size } from '@iam/theme'
-import { ImageProvider } from '@/providers'
+import { getUserByUsername } from '@services'
+import { normalizeUser } from '@utils'
+import type { User } from '@iam/types'
 
-export const UserView: React.FC<any> = () => {
-    const { theme } = useTheme()
-    const userToDisplay = useUserProfile()
-    const { navigate } = useNavigation<StackNavigationProp<UserStackParamList>>()
-    const gotoUser = () => navigate('User', {
-        screen: 'UserProfile',
-        username: userToDisplay?.username,
-    })
+const UserProfileContext = createContext<User | null>(null)
+export const useUserProfile = () => useContext(UserProfileContext)
+
+export const UserView = ({ ...props }) => {
+    
+    const username = props.route.params.username
+    const [fetchedUser, setFetchedUser] = useState<User | null>(null)
+    const [loadingUser, setLoadingUser] = useState(false)
+    const [userNotFound, setUserNotFound] = useState(false)
+    const userToDisplay = useMemo(() => fetchedUser, [fetchedUser])
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            if (!username) return
+            setLoadingUser(true)
+            setUserNotFound(false)
+            try {
+                const fetched = await getUserByUsername(username)
+                if (fetched) {
+                    setFetchedUser(normalizeUser(fetched))
+                } else {
+                    setUserNotFound(true)
+                }
+            } catch (error) {
+                console.error('[UserProfileShell] Failed to fetch user:', error)
+                setUserNotFound(true)
+            } finally {
+                setLoadingUser(false)
+            }
+        }
+        fetchUser()
+    }, [username])
+    
+    if (!username) {
+        return <Text style={{ padding: 20, color: 'red' }}>Username param is required</Text>
+    }
+
+    if (loadingUser) {
+        return <LoadingScreen label='Loading user profile...' />
+    }
+
+    if (userNotFound || !userToDisplay) {
+        return <Text style={{ padding: 20, color: 'red' }}>User not found</Text>
+    }
 
 	return (
-        <ImageProvider>
-            <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
-                <Row
-                    spacing={Size.M}
-                    align='center'
-                    paddingHorizontal={paddingHorizontal}
-                    paddingVertical={paddingVertical}
-                >
-                    <Pressable onPress={gotoUser}>
-                        <Row spacing={15} align='center'>
-                            <Avatar user={userToDisplay as User} size='md' />
-                            <Text style={{ fontSize: 32, fontWeight: '600', color: theme.colors.text }}>
-                                {userToDisplay?.username}
-                            </Text>
-                        </Row>
-                    </Pressable>
-                    <UserViewHeader />
-                </Row>
-                <UserProfileNavigator />
-            </View>
-        </ImageProvider>
+        <UserProfileContext.Provider value={userToDisplay}>
+            <ScreenContainer
+                header={UserScreenHeader}
+                screen={UserProfileNavigator}
+            />
+        </UserProfileContext.Provider>
 	)
 }

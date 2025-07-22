@@ -2,9 +2,9 @@
 
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
-import { ImagesScreen, ProfileScreen } from '@/screens'
 import { withProtectedRoute } from './withProtectedRoute'
 import type { ProfileStackParamList } from '@iam/types'
+import { ProfileImagesView, ProfileView } from '@/components'
 
 const Stack = createStackNavigator<ProfileStackParamList>()
 
@@ -13,7 +13,7 @@ export const ProfileNavigator = () => (
         initialRouteName='Main'
         screenOptions={{ headerShown: false }}
     >
-        <Stack.Screen name='Main' component={withProtectedRoute(ProfileScreen)} />
-        <Stack.Screen name='Images' component={withProtectedRoute(ImagesScreen)} />
+        <Stack.Screen name='Main' component={withProtectedRoute(ProfileView)} />
+        <Stack.Screen name='Images' component={withProtectedRoute(ProfileImagesView)} />
     </Stack.Navigator>
 )

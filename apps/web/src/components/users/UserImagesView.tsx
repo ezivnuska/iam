@@ -1,14 +1,14 @@
-// apps/web/src/screens/UserImagesScreen.tsx
+// apps/web/src/components/users/UserImagesView.tsx
 
 import React, { useMemo } from 'react'
 import { Text } from 'react-native'
-import { ImageGalleryContainer, Screen } from '@/components'
+import { ImageGalleryContainer } from '@/components'
 import { useAuth } from '@/hooks'
-import { ImageProvider } from '@/providers'
 import { LoadingScreen } from '@/screens'
 import { useUserProfile } from '@/components'
+import { ImageProvider } from '@/providers'
 
-export const UserImagesScreen = () => {
+export const UserImagesView = () => {
 	const { isAuthInitialized } = useAuth()
 	const userToDisplay = useUserProfile()
 
@@ -24,8 +24,8 @@ export const UserImagesScreen = () => {
 	}
 
 	return (
-		<Screen>
+        <ImageProvider>
             <ImageGalleryContainer userId={userToDisplay.id} />
-		</Screen>
+        </ImageProvider>
 	)
 }

@@ -1,56 +1,59 @@
-// apps/web/src/components/profile/ProfileView.tsx
+// apps/web/src/screens/UserProfileScreen.tsx
 
 import React from 'react'
-import { Pressable, Text, View } from 'react-native'
-import { Button, Avatar, Row, ProfileViewHeader } from '@/components'
-import type { StackNavigationProp } from '@react-navigation/stack'
-import { useNavigation } from '@react-navigation/native'
-import { ProfileNavigator } from '@/navigation'
-import type { User, ProfileStackParamList, RootStackParamList } from '@iam/types'
-import { useAuth, useTheme } from '@/hooks'
-import { paddingHorizontal, paddingVertical, Size } from '@iam/theme'
-import { ImageProvider } from '@/providers'
+import { StyleSheet, Text } from 'react-native'
+import {
+	Column,
+	Row,
+	IconButton,
+    EditProfileForm,
+} from '@/components'
+import { useAuth, useModal, useTheme } from '@/hooks'
+import { LoadingScreen } from '@/screens'
+import { Size } from '@iam/theme'
 
-export const ProfileView: React.FC<any> = () => {
-    const { user, logout } = useAuth()
-    const { theme } = useTheme()
-    const { navigate } = useNavigation<StackNavigationProp<RootStackParamList>>()
-    const gotoProfile = () => navigate('Profile', {
-            screen: 'Main',
-    })
+export const ProfileView = () => {
+
+	const { user, isAuthInitialized } = useAuth()
+
+	const { openFormModal } = useModal()
+	const { theme } = useTheme()
+    
+	const openEditModal = () => {
+		openFormModal(EditProfileForm, {}, { title: 'Edit Bio' })
+	}
+
+    if (!isAuthInitialized) {
+        return <LoadingScreen label='Authenticating...' />
+    }
 
 	return (
-        <ImageProvider>
-            <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
-                <Row
-                    align='center'
-                    justify='space-between'
-                >
-                    <Row
-                        spacing={Size.M}
-                        align='center'
-                        paddingHorizontal={paddingHorizontal}
-                        paddingVertical={paddingVertical}
-                    >
-                        <Pressable onPress={gotoProfile}>
-                            <Row spacing={15} align='center'>
-                                <Avatar user={user as User} size='md' />
-                                <Text style={{ fontSize: 32, fontWeight: '600', color: theme.colors.text }}>
-                                    {user?.username}
-                                </Text>
-                            </Row>
-                        </Pressable>
-                        <ProfileViewHeader />
-                    </Row>
-
-                    <Button
-                        label='Sign Out'
-                        onPress={logout}
-                        variant='muted'
-                    />
-                </Row>
-                <ProfileNavigator />
-            </View>
-        </ImageProvider>
+        <Column flex={1} spacing={15} style={{ backgroundColor: theme.colors.background }}>
+            <Row spacing={10}>
+                <Text style={[styles.text, { color: theme.colors.text }]}>
+                    {user?.bio || 'No bio yet.'}
+                </Text>
+                <IconButton
+                    onPress={openEditModal}
+                    iconName='create-outline'
+                    iconSize={28}
+                />
+            </Row>
+        </Column>
 	)
 }
+
+const styles = StyleSheet.create({
+	text: {
+        paddingVertical: Size.S,
+		fontSize: 18,
+		textAlign: 'left',
+		flex: 1,
+	},
+	username: {
+		fontWeight: 'bold',
+	},
+	editButton: {
+		marginLeft: 10,
+	},
+})

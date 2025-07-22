@@ -32,8 +32,6 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
 		}
     }
 
-    // const containerStyle = fullscreen ? styles.fullscreenContent : styles.content
-
 	return (
         <Column style={styles.content} spacing={Size.M}>
             <Row align='center'>
@@ -72,15 +70,8 @@ const styles = StyleSheet.create({
 	content: {
 		flex: 1,
 		width: '100%',
-		// marginVertical: Size.L,
-		// paddingVertical: Size.M,
 		maxWidth: 400,
 		minWidth: 300,
-		// alignSelf: 'center',
-		// paddingHorizontal: Size.M,
-        // borderWidth: 5,
-        // borderColor: 'yellow',
-        // borderStyle: 'dotted',
 	},
 	fullscreenContent: {
 		flex: 1,
