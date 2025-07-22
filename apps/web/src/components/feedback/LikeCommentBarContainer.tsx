@@ -10,7 +10,6 @@ import {
 	toggleLike,
 } from '@services'
 import type { RefType } from '@iam/types'
-import { paddingHorizontal } from '@iam/theme'
 import { View } from 'react-native'
 
 type Props = {
@@ -66,7 +65,7 @@ export const LikeCommentBarContainer: React.FC<Props> = ({
 	}
 
 	return (
-		<View style={{ paddingHorizontal }}>
+		<View>
 			<LikeCommentBar
 				likeCount={likeCount}
 				liked={liked}

@@ -54,7 +54,8 @@ export const Header: React.FC = () => {
                         <IconButton
                             iconName={isDark ? 'sunny' : 'moon'}
                             onPress={toggleTheme}
-                            iconSize={iconSize}
+                            iconSize={iconSize - 2}
+                            label={isLandscape ? 'Theme' : undefined}
                         />
                     </View>
 

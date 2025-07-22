@@ -1,7 +1,6 @@
 // apps/web/src/components/profile/ProfileViewHeader.tsx
 
-import React, { useMemo } from 'react'
-import { View } from 'react-native'
+import React from 'react'
 import { useNavigationState } from '@react-navigation/native'
 import { useAuth, useImage, useModal } from '@/hooks'
 import { navigate } from '@/navigation'

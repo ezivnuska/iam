@@ -1,18 +1,13 @@
 // apps/web/src/components/CreatePostButton.tsx
 
 import React from 'react'
-import { Pressable } from 'react-native'
-import { useDeviceInfo, useModal, usePosts, useTheme } from'@/hooks'
-import { Button, PostForm, Row } from '@/components'
+import { useModal, usePosts } from'@/hooks'
+import { Button, PostForm } from '@/components'
 import type { Post } from '@iam/types'
-import Ionicons from '@expo/vector-icons/Ionicons'
 
 export const CreatePostButton = () => {
 	const { hideModal, openFormModal } = useModal()
 	const { addPost } = usePosts()
-    const { theme } = useTheme()
-    const { orientation } = useDeviceInfo()
-    const isLandscape = orientation === 'landscape'
 
 	const onPostCreated = (post: Post) => {
 		console.log('adding post', post)
@@ -24,33 +19,11 @@ export const CreatePostButton = () => {
 		openFormModal(PostForm, { onPostCreated }, { title: 'Create Post' })
 	}
 
-	return isLandscape ? (
+	return (
         <Button
             label='New Post'
             onPress={showPostModal}
             variant='primary'
         />
-    ) : (
-        <Pressable
-            onPress={showPostModal}
-            style={{
-                width: 40,
-                height: 40,
-                borderRadius: 20,
-                overflow: 'hidden',
-                backgroundColor: theme.colors.primary,
-            }}
-        >
-            <Row
-                align='center'
-                justify='center'
-            >
-                <Ionicons
-                    name='add'
-                    size={32}
-                    color={theme.colors.tertiary}
-                />
-            </Row>
-        </Pressable>
     )
 }
