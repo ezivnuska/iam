@@ -21,10 +21,16 @@ export function ScreenContainer<HProps extends object = {}, SProps extends objec
     const { theme } = useTheme()
 
     return (
-        <Column flex={1} style={{backgroundColor: theme.colors.background }}>
+        <Column flex={1} style={{ backgroundColor: theme.colors.background }}>
             
             {HeaderComponent && (
-                <HeaderComponent {...(headerProps as HProps)} />
+                <View style={{
+                    height: 50,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                }}>
+                    <HeaderComponent {...(headerProps as HProps)} />
+                </View>
             )}
             
             <View style={{ flex: 1, flexGrow: 1, backgroundColor: theme.colors.background }}>

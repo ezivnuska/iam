@@ -18,8 +18,13 @@ export const Brand: React.FC = () => {
         <Pressable
             onPress={() => navigate('Home')}
             disabled={currentRoute === 'Home'}
+            style={{
+                height: 50,
+                flexDirection: 'row',
+                alignItems: 'center',
+            }}
         >
-            <Row wrap justify='center'>
+            <Row wrap align='center' justify='center'>
                 <Text style={{ fontSize, lineHeight, color: theme.colors.primary }}>iam</Text>
                 <Text style={{ fontSize, lineHeight, color: theme.colors.secondary }}>eric</Text>
             </Row>
