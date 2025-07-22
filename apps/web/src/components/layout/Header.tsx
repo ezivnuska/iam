@@ -32,7 +32,7 @@ export const Header: React.FC = () => {
             justify={isLandscape ? 'flex-start' : 'space-between'}
             align='center'
             spacing={18}
-            style={isLandscape && { width: '20%' }}
+            style={isLandscape && { width: '20%', paddingBottom: Size.M }}
         >
             <Brand />
 

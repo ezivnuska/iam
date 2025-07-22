@@ -8,6 +8,7 @@ export const ScreenHeaderContainer: React.FC<any> = ({ children }: { children: R
 
 	return (
         <Row
+            flex={1}
             spacing={Size.M}
             align='center'
             wrap={false}

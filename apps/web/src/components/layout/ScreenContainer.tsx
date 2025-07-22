@@ -3,7 +3,8 @@
 import React from 'react'
 import { View } from 'react-native'
 import { Column } from '@/components'
-import { useTheme } from '@/hooks'
+import { useDeviceInfo, useTheme } from '@/hooks'
+import { Size } from '@iam/theme'
 
 interface ScreenContainerProps<HProps extends object = {}, SProps extends object = {}> {
     header?: React.ComponentType<HProps>
@@ -19,16 +20,22 @@ export function ScreenContainer<HProps extends object = {}, SProps extends objec
     screenProps,
 }: ScreenContainerProps<HProps, SProps>) {
     const { theme } = useTheme()
-
+    const { orientation } = useDeviceInfo()
+    const isLandscape = orientation === 'landscape'
+    const styles = isLandscape ? { height: 55 } : { paddingBottom: Size.S }
     return (
         <Column flex={1} style={{ backgroundColor: theme.colors.background }}>
             
             {HeaderComponent && (
-                <View style={{
-                    height: 50,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                }}>
+                <View
+                    style={[
+                        styles,
+                        {
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                        }
+                    ]}
+                >
                     <HeaderComponent {...(headerProps as HProps)} />
                 </View>
             )}

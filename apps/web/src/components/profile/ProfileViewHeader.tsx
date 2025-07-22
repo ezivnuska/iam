@@ -5,7 +5,8 @@ import { View } from 'react-native'
 import { useNavigationState } from '@react-navigation/native'
 import { useAuth, useImage, useModal } from '@/hooks'
 import { navigate } from '@/navigation'
-import { Button, IconButton, ImageUploadForm, ScreenHeaderContainer, UserButton } from '@/components'
+import { Button, IconButton, ImageUploadForm, Row, ScreenHeaderContainer, UserButton } from '@/components'
+import { Size } from '@iam/theme'
 import { UploadedImage, User } from '@iam/types'
 
 export const ProfileViewHeader: React.FC<any> = () => {
@@ -34,18 +35,20 @@ export const ProfileViewHeader: React.FC<any> = () => {
 
 	return (
         <ScreenHeaderContainer>
-            <UserButton user={user as User} />
-            <Button
-                label='Images'
-                onPress={gotoImages}
-                variant={route === 'Images' ? 'transparent' : 'muted'}
-                disabled={route === 'Images'}
-            />
-            <IconButton
-                onPress={openImageUploadModal}
-                iconName='add-circle-outline'
-                iconSize={40}
-            />
+            <Row flex={1} spacing={Size.M} align='center'>
+                <UserButton user={user as User} />
+                <Button
+                    label='Images'
+                    onPress={gotoImages}
+                    variant={route === 'Images' ? 'transparent' : 'muted'}
+                    disabled={route === 'Images'}
+                />
+                <IconButton
+                    onPress={openImageUploadModal}
+                    iconName='add-circle-outline'
+                    iconSize={40}
+                />
+            </Row>
             
             <Button
                 label='Sign Out'

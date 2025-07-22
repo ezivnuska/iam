@@ -4,6 +4,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import { ScrollView } from 'react-native'
 import { ChatInput, ChatList, Column } from '@/components'
 import { useAuth, useSocket, useTheme } from '@/hooks'
+import { Size } from '@iam/theme'
 
 export const ChatView = () => {
 	const { user } = useAuth()
@@ -38,7 +39,7 @@ export const ChatView = () => {
 	}
 
 	return (
-        <Column flex={1} spacing={10} style={{ backgroundColor: theme.colors.background }}>
+        <Column flex={1} spacing={10} paddingBottom={Size.S} style={{ backgroundColor: theme.colors.background }}>
             <ChatList messages={messages} />
             <ChatInput onSend={sendMessage} />
         </Column>
