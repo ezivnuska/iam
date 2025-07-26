@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react'
 import { View } from 'react-native'
 import { SigninForm } from '@/components'
-import { useAuth, useModal, useTheme } from '@/hooks'
+import { useModal, useTheme } from '@/hooks'
 import { navigate } from '@/navigation'
 import { setUnauthorizedHandler } from '@services'
 
@@ -15,7 +15,6 @@ export const AuthLayer: React.FC<{
 }> = ({
 	children,
 }) => {
-	const { authenticate } = useAuth()
 	const { openFormModal, hideAllModals } = useModal()
 	const { theme } = useTheme()
 

@@ -1,10 +1,9 @@
 // apps/web/src/screens/FeedScreen.tsx
 
 import React, { useEffect, useRef } from 'react'
-import { ScreenContainer } from '@/components'
+import { FeedViewHeader, ScreenContainer } from '@/components'
 import { FeedNavigator } from '@/navigation'
 import { usePosts } from '@/hooks'
-import { FeedScreenHeader } from '@/presentations'
 import { LoadingScreen } from './LoadingScreen'
 
 export const FeedScreen = () => {
@@ -24,7 +23,7 @@ export const FeedScreen = () => {
     }
 	return (
         <ScreenContainer
-            header={FeedScreenHeader}
+            header={FeedViewHeader}
             screen={FeedNavigator}
         />
 	)

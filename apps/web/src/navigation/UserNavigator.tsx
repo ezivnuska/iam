@@ -15,6 +15,6 @@ export const UserNavigator = () => (
         screenOptions={{ headerShown: false }}
     >
         <Stack.Screen name='UserList' component={withProtectedRoute(UsersScreen)} />
-        <Stack.Screen name='User' component={UserView} />
+        <Stack.Screen name='User' component={withProtectedRoute(UserView)} />
     </Stack.Navigator>
 )

@@ -10,7 +10,7 @@ type Props = {
 }
 
 export const ProtectedRoute = ({ children }: Props) => {
-	const { authenticate, isAuthenticated } = useAuth()
+	const { isAuthenticated } = useAuth()
 	const { openFormModal } = useModal()
     
     useEffect(() => {
