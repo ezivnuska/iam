@@ -1,0 +1,16 @@
+// apps/web/src/shared/index.ts
+
+export * from './buttons'
+export * from './feedback'
+export * from './forms'
+export * from './grid'
+export * from './hooks'
+export * from './images'
+export * from './layout'
+export * from './media'
+export * from './modals'
+export * from './navigation'
+export * from './providers'
+export * from './scrolling'
+export * from './ui'
+export * from './utils'

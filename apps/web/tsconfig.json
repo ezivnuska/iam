@@ -7,9 +7,21 @@
 		"skipDefaultLibCheck": true,
 		"jsx": "react-jsx",
 		"isolatedModules": true,
-        "baseUrl": "./src",
+        "baseUrl": "src",
         "paths": {
-            "@/*": ["*"]
+            "@app/*": ["app/*"],
+            "@features/*": ["features/*"],
+            "@shared/*": ["shared/*"],
+            "@assets/*": ["shared/assets/*"],
+            "@hoc/*": ["shared/hoc/*"],
+            "@components/*": ["shared/ui/*"],
+            "@buttons/*": ["shared/buttons/*"],
+            "@forms/*": ["shared/forms/*"],
+            "@layout/*": ["shared/layout/*"],
+            "@media/*": ["shared/media/*"],
+            "@modals/*": ["shared/modals/*"],
+            "@hooks/*": ["shared/hooks/*"],
+            "@utils/*": ["shared/utils/*"]
         },
         "esModuleInterop": true
 	},

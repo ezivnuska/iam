@@ -119,7 +119,7 @@ module.exports = {
 	target: 'web',
 	mode: env,
 	entry: {
-		app: path.join(__dirname, 'src/index.ts'),
+		app: path.join(__dirname, 'src/app/index.ts'),
 	},
     output: {
         filename: '[name].bundle.js',
@@ -163,7 +163,21 @@ module.exports = {
 			'@iam/types': path.resolve(__dirname, '../../packages/types/src'),
 			'@utils': path.resolve(__dirname, '../../packages/utils/src'),
 			'@iam/theme': path.resolve(__dirname, '../../packages/theme/src'),
-			'@': path.resolve(__dirname, 'src'),
+			// '@': path.resolve(__dirname, 'src'),
+
+            '@app': path.resolve(__dirname, 'src/app'),
+            '@features': path.resolve(__dirname, 'src/features'),
+            '@shared': path.resolve(__dirname, 'src/shared'),
+            '@assets': path.resolve(__dirname, 'src/shared/assets'),
+            '@hoc': path.resolve(__dirname, 'src/shared/hoc'),
+            '@components': path.resolve(__dirname, 'src/shared/ui'),
+            '@buttons': path.resolve(__dirname, 'src/shared/buttons'),
+            '@forms': path.resolve(__dirname, 'src/shared/forms'),
+            '@layout': path.resolve(__dirname, 'src/shared/layout'),
+            '@media': path.resolve(__dirname, 'src/shared/media'),
+            '@modals': path.resolve(__dirname, 'src/shared/modals'),
+            '@hooks': path.resolve(__dirname, 'src/shared/hooks'),
+            '@utils': path.resolve(__dirname, 'src/shared/utils'),
 		},
 		extensions: [
 			'.web.tsx',
