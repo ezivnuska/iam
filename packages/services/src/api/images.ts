@@ -42,9 +42,8 @@ export const fetchUserImages = async ({
 		total: number
 		hasNextPage: boolean
 	}>(endpoint)
-
 	return {
-		images: res.data.images.map(normalizeImage).filter(Boolean) as Image[],
+		images: res.data.images.map(img => img).filter(Boolean) as Image[],
 		total: res.data.total,
 		hasNextPage: res.data.hasNextPage,
 	}
