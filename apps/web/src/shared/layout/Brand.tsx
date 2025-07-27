@@ -15,8 +15,8 @@ export const Brand: React.FC = () => {
 
     return (
         <Pressable
-            onPress={() => navigate('Home')}
-            disabled={currentRoute === 'Home'}
+            onPress={() => navigate('Feed')}
+            disabled={currentRoute === 'Feed'}
             style={{
                 height: 50,
                 flexDirection: 'row',

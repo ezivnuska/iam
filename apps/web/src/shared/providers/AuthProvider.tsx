@@ -54,7 +54,7 @@ export const AuthProvider = ({
 				if (authResponse) {
 					await authenticate(authResponse)
 				} else {
-					navigate('Home')
+					navigate('Feed')
 				}
 			} catch (err) {
 				console.log('Error initializing')
@@ -81,7 +81,7 @@ export const AuthProvider = ({
 		clearAuthHeader()
 		setUser(null)
 		setIsAuthenticated(false)
-		navigate('Home')
+		navigate('Feed')
 	}
 
 	return (

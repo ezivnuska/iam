@@ -14,23 +14,19 @@ import { Button } from '@shared/buttons'
 import { useAuthForm } from '@shared/hooks'
 import { z } from 'zod'
 import type { AuthMode, FieldConfig } from '@shared/forms'
-// import { AuthResponseType } from '@iam/types'
 import { Size } from '@iam/theme'
 
 type AuthModalProps = {
 	initialMode?: AuthMode
-    // authenticate: (user: AuthResponseType) => void
 	onDismiss?: () => void
 }
 
 export const AuthModal = ({
     initialMode = 'signin',
-    // authenticate,
     onDismiss,
 }: AuthModalProps) => {
 	const [mode, setMode] = useState<AuthMode>(initialMode)
     const { handleSubmit } = useAuthForm<any>()
-    // const { handleSubmit } = useAuthForm<any>(authenticate)
 	const isSignin = mode === 'signin'
 
 	const schema = isSignin ? signinSchema : signupSchema

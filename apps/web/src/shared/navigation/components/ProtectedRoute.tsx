@@ -1,8 +1,8 @@
 // apps/web/src/shared/navigation/components/ProtectedRoute.tsx
 
 import React, { useEffect } from 'react'
-import { SigninForm } from '@shared/forms'
-import { Spinner } from '@shared/ui'
+import { AuthModal } from '@shared/modals'
+import { LoadingPanel } from '@shared/ui'
 import { useAuth, useModal } from '@shared/hooks'
 import { navigate } from '@shared/navigation'
 
@@ -12,20 +12,20 @@ type Props = {
 
 export const ProtectedRoute = ({ children }: Props) => {
 	const { isAuthenticated } = useAuth()
-	const { openFormModal } = useModal()
+	const { showModal } = useModal()
     
     useEffect(() => {
         if (!isAuthenticated) {
             console.log('PROTECTED ROUTE: showing auth modal')
-            openFormModal(SigninForm, { onDismiss: handleDismiss }, { title: 'Sign In' })
+            showModal(<AuthModal onDismiss={handleDismiss} />)
         }
     }, [])
 
     const handleDismiss = () => {
-        navigate('Home')
+        navigate('Feed')
     }
 
 	return !isAuthenticated
-        ? <Spinner label='Authenticating...' />
+        ? <LoadingPanel label='Authenticating...' />
         : children
 }
