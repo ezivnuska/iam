@@ -1,7 +1,7 @@
 // apps/web/src/shared/images/ImageUpload.tsx
 
 import React, { useState } from 'react'
-import { Dimensions, Image, Platform, StyleSheet, Text } from 'react-native'
+import { Dimensions, Image, Platform, StyleSheet, Text, View } from 'react-native'
 import { Row, Column } from '@shared/grid'
 import { IconButton, Button } from '@shared/buttons'
 import { NativeCamera, WebCamera } from '@shared/media'
@@ -9,6 +9,7 @@ import { selectImage } from '@shared/images'
 import { useResponsiveImageSize } from '@shared/hooks'
 import { uploadImage } from '@iam/services'
 import type { UploadedImage } from '@iam/types'
+import { paddingHorizontal } from '@iam/theme'
 
 type ImageDataType = {
 	uri: string
@@ -95,40 +96,49 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
 	return useCamera ? (
 		renderCamera()
 	) : (
-		<Column spacing={10} style={styles.container}>
-			{imageData && (
-				<Image
-					source={{ uri: imageData.uri }}
-					style={{ width: 150, height: 150, marginVertical: 10, borderRadius: 8 }}
-					resizeMode='contain'
-				/>
-			)}
-			{error && <Text style={styles.errorText}>{error}</Text>}
-			<Row align='center'>
-				<Row align='center' paddingVertical={10}>
+		<Column flex={1} spacing={10} style={styles.container}>
+            {error && <Text style={styles.errorText}>{error}</Text>}
+            <View style={styles.previewContainer}>
+                {imageData && (
+                    <Image
+                        source={{ uri: imageData.uri }}
+                        // style={{ width: 150, height: 150, marginVertical: 10, borderRadius: 8 }}
+                        style={[styles.imagePreview, { width: imageWidth, height: imageHeight }]}
+                        resizeMode='contain'
+                    />
+                )}
+            </View>
+			<Column align='center' spacing={10} style={{ width: '100%' }}>
+				<Row flex={1} align='center' justify='space-evenly' style={{ width: '100%' }}>
 					<IconButton label='Library' onPress={handlePick} iconName='images' showLabel={!imageData} />
 					<IconButton label='Camera' onPress={() => setUseCamera(true)} iconName='camera' showLabel={!imageData} />
 				</Row>
-				{autoUpload && imageData && (
-					<Button label='Upload' onPress={handleUpload} showActivity={uploading} />
-				)}
-			</Row>
+                {autoUpload && imageData && (
+                    <Row flex={1} align='center' justify='space-evenly' style={{ width: '100%' }}>
+                        <Button label='Upload' onPress={handleUpload} showActivity={uploading} />
+                    </Row>
+                )}
+			</Column>
 		</Column>
 	)
 }
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-  },
-  imagePreview: {
-    borderRadius: 8,
-    maxWidth: '100%',
-    maxHeight: 400,
-    alignSelf: 'center',
-  },
-  errorText: {
-    color: 'red',
-    marginTop: 10,
-  },
+    container: {
+        alignItems: 'center',
+    },
+    previewContainer: {
+        flex: 1,
+        width: '100%',
+    },
+    imagePreview: {
+        borderRadius: 8,
+        maxWidth: '100%',
+        maxHeight: 400,
+        alignSelf: 'center',
+    },
+    errorText: {
+        color: 'red',
+        marginTop: 10,
+    },
 })

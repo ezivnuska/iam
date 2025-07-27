@@ -21,9 +21,9 @@ export const UserButton: React.FC<UserButtonProps> = ({ user }) => {
 	
     return (
         <Pressable onPress={gotoUser} style={[styles.container, { borderColor: theme.colors.muted, }]}>
-            <Row align='center'>
+            <Row align='center' wrap={false}>
                 <Avatar user={userToDisplay as User} size='sm' />
-                <Text style={{ paddingHorizontal: 8, fontSize: 32, fontWeight: '600', color: theme.colors.text }}>
+                <Text style={{ paddingHorizontal: 8, fontSize: 26, fontWeight: '600', color: theme.colors.text }}>
                     {userToDisplay?.username}
                 </Text>
             </Row>
@@ -33,8 +33,11 @@ export const UserButton: React.FC<UserButtonProps> = ({ user }) => {
 
 const styles = StyleSheet.create({
     container: {
+        height: 40,
         paddingHorizontal: 4,
         borderWidth: 1,
         borderRadius: 20,
+        alignItems: 'center',
+        flexDirection: 'row',
     },
 })

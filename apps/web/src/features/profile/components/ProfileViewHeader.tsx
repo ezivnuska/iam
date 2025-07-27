@@ -22,7 +22,7 @@ export const ProfileViewHeader: React.FC<any> = () => {
         hideModal()
     }
 
-    const openImageUploadModal = () => openFormModal(ImageUpload, { autoUpload: true, onUploaded: handleUploadSuccess }, {})
+    const openImageUploadModal = () => openFormModal(ImageUpload, { autoUpload: true, onUploaded: handleUploadSuccess }, { title: 'Upload Image', fullscreen: true })
 
     const route = useNavigationState((state) => {
         const profileRoute = state.routes.find((r) => r.name === 'Profile')

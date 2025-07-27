@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Button } from '@shared/buttons'
 import { DynamicFormFields } from './'
 import type { FieldConfig } from '../'
+import { Column } from '@shared/grid'
 
 interface DynamicFormProps<T extends ZodTypeAny> {
 	schema: T
@@ -164,14 +165,16 @@ export function DynamicForm<T extends ZodTypeAny>({
 				handleSubmit={form.handleSubmit(handleSubmit)}
 			/>
 
-			{children}
+            <Column spacing={10} justify='center'>
+                {children}
 
-			<Button
-				label={submitLabel}
-				onPress={form.handleSubmit(handleSubmit)}
-				showActivity={form.formState.isSubmitting}
-				variant='primary'
-			/>
+                <Button
+                    label={submitLabel}
+                    onPress={form.handleSubmit(handleSubmit)}
+                    showActivity={form.formState.isSubmitting}
+                    variant='primary'
+                />
+            </Column>
 		</FormProvider>
 	)
 }

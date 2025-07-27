@@ -15,7 +15,7 @@ import {
 } from 'react-native'
 import { ModalContainer, CenteredModal } from '@shared/modals'
 import { useModal, useTheme } from '@shared/hooks'
-import { withAlpha } from '@iam/theme'
+import { paddingVertical, withAlpha } from '@iam/theme'
 
 export type ModalContentObject = {
 	content: ReactNode
@@ -237,5 +237,6 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
 		zIndex: 10000,
+        paddingVertical,
 	},
 })

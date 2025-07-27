@@ -5,7 +5,7 @@ import { View, Text, StyleSheet, Pressable } from 'react-native'
 import { Column, Row } from '@shared/grid'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { useModal, useTheme } from '@shared/hooks'
-import { Size } from '@iam/theme'
+import { paddingVertical, Size } from '@iam/theme'
 
 interface ModalContainerProps {
 	children: ReactNode
@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
 		width: '100%',
 		maxWidth: 400,
 		minWidth: 300,
+        alignSelf: 'center',
 	},
 	fullscreenContent: {
 		flex: 1,
