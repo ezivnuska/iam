@@ -1,11 +1,11 @@
 // apps/web/src/shared/forms/PostForm.tsx
 
 import React, { useState } from 'react'
-import { ActivityIndicator, Image, View } from 'react-native'
+import { ActivityIndicator, View } from 'react-native'
 import { DynamicForm, postSchema, postFields } from './'
 import type { PostFormValues } from './'
 import * as postService from '@iam/services'
-import { ImageUploadModal } from '@shared/modals'
+import { ImageUpload } from '@shared/images'
 
 type PostFormProps = {
 	onPostCreated?: (post: any) => void
@@ -60,18 +60,10 @@ export const PostForm = ({ onPostCreated }: PostFormProps) => {
 				submitLabel='Post'
 				defaultValues={{ image: null }}
 			>
-				{localImageData && (
-					<Image
-						source={{ uri: localImageData.uri }}
-						style={{ width: 150, height: 150, marginVertical: 10, borderRadius: 8 }}
-					/>
-				)}
-
-				<ImageUploadModal
-					onImageSelected={(imageData) => setLocalImageData(imageData)}
-				/>
+                <ImageUpload autoUpload={false} onImageSelected={setLocalImageData} />
 
 				{loading && <ActivityIndicator style={{ marginTop: 20 }} />}
+                
 			</DynamicForm>
 		</View>
 	)

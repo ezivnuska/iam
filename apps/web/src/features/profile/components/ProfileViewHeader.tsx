@@ -5,7 +5,7 @@ import { useNavigationState } from '@react-navigation/native'
 import { useAuth, useImage, useModal } from '@shared/hooks'
 import { navigate } from '@shared/navigation'
 import { Button, IconButton, UserButton } from '@shared/buttons'
-import { ImageUploadForm } from '@shared/forms'
+import { ImageUpload } from '@shared/images'
 import { Row } from '@shared/grid'
 import { ScreenHeaderContainer } from '@shared/layout'
 import { Size } from '@iam/theme'
@@ -22,7 +22,7 @@ export const ProfileViewHeader: React.FC<any> = () => {
         hideModal()
     }
 
-    const openImageUploadModal = () => openFormModal(ImageUploadForm, { onUploaded: handleUploadSuccess }, {})
+    const openImageUploadModal = () => openFormModal(ImageUpload, { autoUpload: true, onUploaded: handleUploadSuccess }, {})
 
     const route = useNavigationState((state) => {
         const profileRoute = state.routes.find((r) => r.name === 'Profile')
@@ -45,11 +45,13 @@ export const ProfileViewHeader: React.FC<any> = () => {
                     variant={route === 'Images' ? 'transparent' : 'muted'}
                     disabled={route === 'Images'}
                 />
-                <IconButton
-                    onPress={openImageUploadModal}
-                    iconName='add-circle-outline'
-                    iconSize={40}
-                />
+                {route === 'Images' && (
+                    <IconButton
+                        onPress={openImageUploadModal}
+                        iconName='add-circle-outline'
+                        iconSize={40}
+                    />
+                )}
             </Row>
             
             <Button

@@ -3,23 +3,22 @@
 import React from 'react'
 import { IconButton } from '@shared/buttons'
 import { Row } from '@shared/grid'
-import { ImageUploadForm } from '@shared/forms'
 import { PageHeader } from '@shared/ui'
-import { useImage, useModal, useTheme } from '@shared/hooks'
+import { useImage, useModal } from '@shared/hooks'
 import type { UploadedImage } from '@iam/types'
+import { ImageUpload } from './ImageUpload'
 
 export const ImageGalleryHeader = ({ ...props }) => {
 
     const { addImage } = useImage()
     const { hideModal, openFormModal } = useModal()
-    const { theme } = useTheme()
 
     const handleUploadSuccess = (newImage: UploadedImage) => {
         addImage(newImage)
         hideModal()
     }
 
-    const openImageUploadModal = () => openFormModal(ImageUploadForm, { onUploaded: handleUploadSuccess }, {})
+    const openImageUploadModal = () => openFormModal(ImageUpload, { autoUpload: true, onUploaded: handleUploadSuccess }, {})
 
 	return (
 		<Row

@@ -39,13 +39,14 @@ export const CommentsList = ({
 		>
 			{comments?.map((item) => {
 				return (
-					<CommentItem
-						key={item._id}
-						comment={item}
-						isAuthor={currentUserId === item.author.id}
-						isDeleting={deletingIds.includes(item._id)}
-						onDelete={onDelete}
-					/>
+                    <View key={item._id}>
+                        <CommentItem
+                            comment={item}
+                            isAuthor={currentUserId === item.author.id}
+                            isDeleting={deletingIds.includes(item._id)}
+                            onDelete={onDelete}
+                        />
+                    </View>
 				)
 			})}
 		</ScrollView>

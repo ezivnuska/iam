@@ -24,7 +24,6 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
 	const { theme } = useTheme()
 
     const handleClose = () => {
-        console.log('handleDismiss', onDismiss)
         try {
             onDismiss?.()
         } finally {

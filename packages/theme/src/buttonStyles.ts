@@ -17,7 +17,7 @@ export const getBaseButtonStyles = (theme: Theme) =>
 		},
 		text: {
 			fontWeight: Platform.OS === 'ios' ? '600' : 'bold',
-			fontSize: 16,
+			fontSize: 20,
 			color: theme.colors.text,
 		},
 		disabled: {
