@@ -3,9 +3,9 @@
 import { UserModel } from '../models/user.model'
 import { hashPassword, comparePassword } from '../utils/password'
 import { HttpError } from '../utils/HttpError'
-import { createPayload, TokenPayload, generateToken, generateRefreshToken, verifyToken } from '@auth'
+import { createPayload, TokenPayload, generateToken, generateRefreshToken, verifyToken } from '@iam/auth'
 import crypto from 'crypto'
-import { normalizeUser } from '@utils'
+import { normalizeUser } from '@iam/utils'
 
 export const registerUser = async (email: string, username: string, password: string) => {
 	const existing = await UserModel.findOne({ email })

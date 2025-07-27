@@ -9,6 +9,11 @@
 		"isolatedModules": true,
         "baseUrl": "src",
         "paths": {
+            "@iam/auth": ["../../packages/auth/src/*"],
+			"@iam/services": ["../../packages/services/src/*"],
+			"@iam/types": ["../../packages/types/src/*"],
+			"@iam/utils": ["../../packages/utils/src/*"],
+			"@iam/theme": ["../../packages/theme/src/*"],
             "@app/*": ["app/*"],
             "@features/*": ["features/*"],
             "@shared/*": ["shared/*"],
@@ -21,7 +26,7 @@
             "@media/*": ["shared/media/*"],
             "@modals/*": ["shared/modals/*"],
             "@hooks/*": ["shared/hooks/*"],
-            "@utils/*": ["shared/utils/*"]
+            // "@utils/*": ["shared/utils/*"]
         },
         "esModuleInterop": true
 	},

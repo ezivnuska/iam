@@ -31,9 +31,9 @@
 		"ts-node": "^10.9.2"
 	},
 	"dependencies": {
-		"@auth": "workspace:*",
+		"@iam/auth": "workspace:*",
 		"@iam/types": "workspace:*",
-		"@utils": "workspace:*",
+		"@iam/utils": "workspace:*",
 		"bcryptjs": "^3.0.2",
 		"body-parser": "^1.20.3",
 		"cookie-parser": "^1.4.7",

@@ -1,7 +1,7 @@
 // apps/web/src/shared/providers/PostsProvider.tsx
 
 import React, { createContext, useState } from 'react'
-import * as postService from '@services'
+import * as postService from '@iam/services'
 import { Post } from '@iam/types'
 import { getErrorMessage } from '@shared/utils'
 
@@ -71,7 +71,7 @@ export const PostsProvider = ({ children }: { children: React.ReactNode }) => {
 		setState(prev => ({
 			...prev,
 			isMutating: true,
-			posts: prev.posts.filter(post => post._id !== id),
+			posts: prev.posts.filter(post => post.id !== id),
 		}))
 
 		try {

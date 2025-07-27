@@ -7,7 +7,6 @@ import { useNavigation } from '@react-navigation/native'
 import type { StackNavigationProp } from '@react-navigation/stack'
 import type { User, UserStackParamList } from '@iam/types'
 import{ LoadingPanel } from '@shared/ui'
-// import { normalizeUser } from '@utils'
 
 type NavProps = StackNavigationProp<UserStackParamList, 'UserList'>
 
@@ -41,7 +40,6 @@ export const UserListContainer = () => {
 	return (
         <UserList
             users={filteredUsers}
-            // users={filteredUsers.map(normalizeUser)}
             getBond={getBondForUser}
             isOnline={isOnline}
             onConfirm={confirmBond}

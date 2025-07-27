@@ -6,7 +6,8 @@ import { Brand } from '@shared/layout'
 import { Button, IconButton } from '@shared/buttons'
 import { Avatar } from '@shared/ui'
 import { FlexBox } from '@shared/grid'
-import { SigninForm } from '@shared/forms'
+// import { SigninForm } from '@shared/forms'
+import { AuthModal } from '@shared/modals'
 import { useAuth, useDeviceInfo, useModal, useTheme } from '@shared/hooks'
 import { resolveResponsiveProp, Size } from '@iam/theme'
 import type { AvatarSize } from '@shared/ui'
@@ -14,7 +15,7 @@ import { navigate, useCurrentRoute } from '@shared/navigation'
 
 export const Header: React.FC = () => {
     const { isAuthenticated, isAuthInitialized, user } = useAuth()
-    const { openFormModal } = useModal()
+    const { openFormModal, showModal } = useModal()
     const { isDark, toggleTheme } = useTheme()
     const { orientation } = useDeviceInfo()
     const currentRoute = useCurrentRoute()
@@ -25,7 +26,8 @@ export const Header: React.FC = () => {
     const navSpacing = resolveResponsiveProp({ xs: Size.S, sm: Size.S, md: Size.S, lg: Size.M })
     const avatarSize = resolveResponsiveProp({ xs: 'sm', sm: 'md', md: 'md', lg: 'lg' }) as AvatarSize
 
-    const showSigninModal = () => openFormModal(SigninForm, {}, { title: 'Sign In' })
+    // const showSigninModal = () => openFormModal(SigninForm, {}, { title: 'Sign In' })
+    const showSigninModal = () => showModal(<AuthModal />)
     const gotoProfile = () => navigate('Profile', { screen: 'Main' })
     const gotoUserList = () => navigate('Users', { screen: 'UserList' })
 

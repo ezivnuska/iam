@@ -6,8 +6,6 @@ import { IconButton } from '@shared/buttons'
 import { NativeCamera, WebCamera } from '@shared/media'
 import { selectImage } from '@shared/images'
 import { useResponsiveImageSize } from '@shared/hooks'
-import FontAwesome from '@expo/vector-icons/FontAwesome'
-import Ionicons from '@expo/vector-icons/Ionicons'
 import { Platform } from 'react-native'
 
 type ImageDataType = {

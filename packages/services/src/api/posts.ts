@@ -1,17 +1,18 @@
 // packages/services/src/api/posts.ts
 
 import { api } from './http'
-import { RefType, type Post } from '@iam/types'
+import { RefType, Post } from '@iam/types'
+import { normalizePost, normalizePosts } from '@iam/utils'
 import * as commentService from './comments'
 
 export const getAllPosts = async (): Promise<Post[]> => {
 	const res = await api.get('/posts')
-	return res.data
+	return normalizePosts(res.data)
 }
 
 export const getPostById = async (id: string): Promise<Post> => {
 	const res = await api.get<Post>(`/posts/${id}`)
-	return res.data
+	return normalizePost(res.data)
 }
 
 export const createPost = async (

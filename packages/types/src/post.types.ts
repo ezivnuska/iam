@@ -4,7 +4,7 @@ import type { UploadedImage } from './image.types'
 import { PartialUser } from './user.types'
 
 export interface Post {
-	_id: string
+	id: string
 	content: string
 	createdAt: string
 	updatedAt: string

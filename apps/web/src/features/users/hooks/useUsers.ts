@@ -1,7 +1,7 @@
 // apps/web/src/features/users/hooks/useUsers.ts
 
 import { useMemo } from 'react'
-import { usePaginatedFetch } from '@services'
+import { usePaginatedFetch } from '@iam/services'
 import { usePresence, useAuth } from '@shared/hooks'
 import type { User } from '@iam/types'
 

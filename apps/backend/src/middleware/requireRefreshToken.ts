@@ -1,7 +1,7 @@
 // apps/backend/src/middleware/requireRefreshToken.ts
 
 import { Request, Response, NextFunction } from 'express'
-import { verifyToken, TokenPayload } from '@auth'
+import { verifyToken, TokenPayload } from '@iam/auth'
 
 export const requireRefreshToken = (req: Request, res: Response, next: NextFunction): void => {
 	const token = req.cookies?.refreshToken

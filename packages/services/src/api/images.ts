@@ -2,7 +2,7 @@
 
 import { Platform } from 'react-native'
 import { api } from './http'
-import { normalizeImage } from '@utils'
+import { normalizeImage } from '@iam/utils'
 import { uriToFile } from '../utils'
 import { RefType, type Image, type UploadedImage } from '@iam/types'
 import * as commentService from './comments'

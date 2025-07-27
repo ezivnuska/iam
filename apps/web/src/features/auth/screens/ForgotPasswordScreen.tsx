@@ -3,7 +3,7 @@ import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native'
 import { useForm, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { api } from '@services'
+import { api } from '@iam/services'
 
 const schema = z.object({
 	email: z.string().email('Please enter a valid email'),

@@ -158,10 +158,10 @@ module.exports = {
             'react/jsx-runtime': path.resolve(__dirname, '../../node_modules/react/jsx-runtime'),
 			'react-native$': 'react-native-web',
 			// 'react-native-vector-icons': '@expo/vector-icons',
-			'@auth': path.resolve(__dirname, '../../packages/auth/src'),
-			'@services': path.resolve(__dirname, '../../packages/services/src'),
+			'@iam/auth': path.resolve(__dirname, '../../packages/auth/src'),
+			'@iam/services': path.resolve(__dirname, '../../packages/services/src'),
 			'@iam/types': path.resolve(__dirname, '../../packages/types/src'),
-			'@utils': path.resolve(__dirname, '../../packages/utils/src'),
+			'@iam/utils': path.resolve(__dirname, '../../packages/utils/src'),
 			'@iam/theme': path.resolve(__dirname, '../../packages/theme/src'),
 			// '@': path.resolve(__dirname, 'src'),
 
@@ -177,7 +177,7 @@ module.exports = {
             '@media': path.resolve(__dirname, 'src/shared/media'),
             '@modals': path.resolve(__dirname, 'src/shared/modals'),
             '@hooks': path.resolve(__dirname, 'src/shared/hooks'),
-            '@utils': path.resolve(__dirname, 'src/shared/utils'),
+            // '@utils': path.resolve(__dirname, 'src/shared/utils'),
 		},
 		extensions: [
 			'.web.tsx',

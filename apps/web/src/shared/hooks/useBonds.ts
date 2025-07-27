@@ -1,7 +1,7 @@
 // apps/web/src/hooks/useBonds.ts
 
 import { useCallback, useEffect, useState } from 'react'
-import * as bondService from '@services'
+import * as bondService from '@iam/services'
 import type { Bond } from '@iam/types'
 
 export const useBonds = (userId: string) => {

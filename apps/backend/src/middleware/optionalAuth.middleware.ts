@@ -1,7 +1,7 @@
 // apps/backend/src/middleware/optionalAuth.middleware.ts
 
 import { Request, Response, NextFunction, RequestHandler } from 'express'
-import { verifyToken } from '@auth'
+import { verifyToken } from '@iam/auth'
 
 export const optionalAuth: RequestHandler = (req: Request, res: Response, next: NextFunction): void => {
 	const authHeader = req.headers.authorization

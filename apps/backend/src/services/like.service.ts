@@ -75,6 +75,7 @@ export const getLikeMeta = async ({
 	refId,
 	refType,
 }: GetLikeMetaParams): Promise<{ likedByCurrentUser: boolean; count: number }> => {
+
 	const [liked, count] = await Promise.all([
 		userId ? LikeModel.exists({ user: userId, refId, refType }) : Promise.resolve(false),
 		LikeModel.countDocuments({ refId, refType }),

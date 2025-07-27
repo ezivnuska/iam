@@ -5,7 +5,7 @@ import { Alert } from 'react-native'
 import { commentSchema, commentFields } from './'
 import { DynamicForm } from '@shared/forms'
 import { useModal } from '@shared/hooks'
-import { addComment } from '@services'
+import { addComment } from '@iam/services'
 import type { CommentFormValues } from './'
 import type { Comment, CommentRefType } from '@iam/types'
 

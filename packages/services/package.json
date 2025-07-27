@@ -1,5 +1,5 @@
 {
-	"name": "@services",
+	"name": "@iam/services",
 	"version": "1.0.0",
 	"type": "commonjs",
 	"main": "build/index.js",
@@ -19,7 +19,7 @@
 	"dependencies": {
 		"@hookform/resolvers": "^5.0.1",
 		"@iam/types": "workspace:*",
-		"@utils": "workspace:*",
+		"@iam/utils": "workspace:*",
 		"axios": "^1.5.1",
 		"expo-secure-store": "^12.2.0",
 		"jwt-decode": "^4.0.0",

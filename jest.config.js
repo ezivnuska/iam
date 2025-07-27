@@ -8,8 +8,8 @@ module.exports = {
 		'<rootDir>/packages', // Include the packages folder for tests
 	],
 	moduleNameMapper: {
-		'@auth/(.*)': '<rootDir>/packages/auth/src/$1',
-		'@services/(.*)': '<rootDir>/packages/services/src/$1',
+		'@iam/auth/(.*)': '<rootDir>/packages/auth/src/$1',
+		'@iam/services/(.*)': '<rootDir>/packages/services/src/$1',
 		'@iam/types': '<rootDir>/packages/types/src/$1',
 		// Add more mappings as needed for your custom modules
 	},

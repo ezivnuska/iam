@@ -55,6 +55,7 @@ echo "Initial build complete!"
 echo "Now watching the following packages for changes..."
 build_with_watch "packages/types" & # Watch types in background
 build_with_watch "packages/auth" & # Watch auth in background
+build_with_watch "packages/services" & # Watch services in background
 build_with_watch "packages/utils" & # Watch utils in background
 build_with_watch "packages/theme" & # Watch theme in background
 build_with_watch "apps/web" & # Watch web in background

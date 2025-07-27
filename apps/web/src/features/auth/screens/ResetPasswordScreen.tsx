@@ -5,7 +5,7 @@ import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native'
 import { useRoute, useNavigation } from '@react-navigation/native'
 import type { RootStackParamList } from '@iam/types'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { resetPassword } from '@services'
+import { resetPassword } from '@iam/services'
 
 type ResetPasswordParams = {
 	token: string

@@ -8,7 +8,7 @@ import React, {
 	useState,
 } from 'react'
 import { io, Socket } from 'socket.io-client'
-import { getToken } from '@services'
+import { getToken } from '@iam/services'
 import type {
 	Bond,
 	ClientToServerEvents,

@@ -4,7 +4,6 @@ import React from 'react'
 import { View, ScrollView, ActivityIndicator, useWindowDimensions } from 'react-native'
 import { CommentItem } from './'
 import type { Comment } from '@iam/types'
-// import { normalizeUser } from '@utils'
 import { paddingHorizontal, Size } from '@iam/theme'
 
 type CommentsListProps = {
@@ -39,7 +38,6 @@ export const CommentsList = ({
 			showsVerticalScrollIndicator={false}
 		>
 			{comments?.map((item) => {
-				// const author = normalizeUser(item.author)
 				return (
 					<CommentItem
 						key={item._id}

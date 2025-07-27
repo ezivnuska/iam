@@ -2,7 +2,7 @@
 
 import { RequestHandler } from 'express'
 import * as userService from '../services/user.service'
-import { normalizeUser } from '@utils'
+import { normalizeUser } from '@iam/utils'
 
 export const getProfile: RequestHandler = async (req, res, next) => {
 	try {

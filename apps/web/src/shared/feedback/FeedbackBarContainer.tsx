@@ -9,7 +9,7 @@ import {
 	fetchPostCommentCount,
 	fetchLikeMeta,
 	toggleLike,
-} from '@services'
+} from '@iam/services'
 import type { RefType } from '@iam/types'
 import { View } from 'react-native'
 

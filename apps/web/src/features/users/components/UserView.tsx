@@ -6,8 +6,7 @@ import { ScreenContainer } from '@shared/layout'
 import { UserScreenHeader } from './'
 import { LoadingPanel } from '@shared/ui'
 import { UserProfileNavigator } from '../'
-import { getUserByUsername } from '@services'
-// import { normalizeUser } from '@utils'
+import { getUserByUsername } from '@iam/services'
 import type { User } from '@iam/types'
 
 const UserProfileContext = createContext<User | null>(null)
@@ -30,7 +29,6 @@ export const UserView = ({ ...props }) => {
                 const fetched = await getUserByUsername(username)
                 if (fetched) {
                     setFetchedUser(fetched)
-                    // setFetchedUser(normalizeUser(fetched))
                 } else {
                     setUserNotFound(true)
                 }

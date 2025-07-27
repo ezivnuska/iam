@@ -1,6 +1,6 @@
 // packages/utils/src/normalizeImage.ts
 
-import { getAvatarUrl } from './'
+import { getAvatarUrl } from './getAvatarUrl'
 import type { Image } from '@iam/types'
 
 export function normalizeImage(img?: any): Image | undefined {

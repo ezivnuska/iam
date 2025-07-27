@@ -1,7 +1,7 @@
 // apps/web/src/shared/forms/schemas/post.schema.ts
 
 import { z } from 'zod'
-import type { FieldConfig } from '@/app/types'
+import type { FieldConfig } from '../'
 import type { UploadedImage } from '@iam/types'
 
 export const postSchema = z

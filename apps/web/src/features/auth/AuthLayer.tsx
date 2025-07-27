@@ -6,7 +6,7 @@ import { View } from 'react-native'
 import { AuthModal } from '@shared/modals'
 import { useAuth, useModal, useTheme } from '@shared/hooks'
 import { navigate } from '@shared/navigation'
-import { setUnauthorizedHandler } from '@services'
+import { setUnauthorizedHandler } from '@iam/services'
 
 // AuthLayer is required to handle unauthorized modal display
 // because useModal() is not accessible from within AuthProvider
@@ -28,7 +28,8 @@ export const AuthLayer: React.FC<{
 
 	const showAuthModal = () => {
 		console.log('AUTH LAYER: showing auth modal')
-		showModal(<AuthModal onDismiss={handleClose} authenticate={authenticate} />)
+		showModal(<AuthModal onDismiss={handleClose} />)
+		// showModal(<AuthModal onDismiss={handleClose} authenticate={authenticate} />)
 	}
 
     const handleClose = () => {

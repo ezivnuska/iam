@@ -10,8 +10,7 @@ import {
 	PressableStateCallbackType,
 } from 'react-native'
 import { Row } from '@shared/grid'
-import { getBaseButtonStyles, getButtonVariantStyles, type Theme } from '@iam/theme'
-import { useTheme } from '@shared/hooks'
+import { useButtonStyles } from '@shared/hooks'
 
 export type ButtonVariant =
     | 'primary'
@@ -41,9 +40,7 @@ export const Button: React.FC<BaseButtonProps> = ({
 	variant = 'primary',
     showActivity = false,
 }) => {
-	const { theme } = useTheme()
-    const baseButtonStyles = getBaseButtonStyles(theme)
-    const buttonVariants = getButtonVariantStyles(theme)
+    const { baseButtonStyles, buttonVariants } = useButtonStyles()
     const variantStyles = buttonVariants[variant] ?? buttonVariants.primary
 	return (
 		<Pressable

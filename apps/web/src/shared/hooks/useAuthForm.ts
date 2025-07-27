@@ -2,15 +2,16 @@
 
 import { Alert } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { saveToken, signinRequest, signupRequest } from '@services'
+import { saveToken, signinRequest, signupRequest } from '@iam/services'
 import type { Path, UseFormSetError, FieldValues } from 'react-hook-form'
-import { useModal } from '@shared/hooks'
+import { useAuth, useModal } from '@shared/hooks'
 import type { AuthResponseType } from '@iam/types'
 import type { AuthMode } from '@shared/forms'
 
 export function useAuthForm<T extends FieldValues>(
-	authenticate: (data: AuthResponseType) => void
+	// authenticate: (data: AuthResponseType) => void
 ) {
+    const { authenticate } = useAuth()
     const { hideModal } = useModal()
 	const login = async (email: string, password: string) => {
 		const authenticatedUser = await signinRequest(email, password)

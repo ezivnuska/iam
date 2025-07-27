@@ -2,10 +2,10 @@
 
 import { Request, Response, NextFunction, RequestHandler } from 'express'
 import { Socket } from 'socket.io'
-import { TokenPayload, verifyToken } from '@auth'
+import { TokenPayload, verifyToken } from '@iam/auth'
 import { ImageDocument, SocketUser } from '@iam/types'
 import { findUserById } from '../services/user.service'
-import { normalizeSocketImage } from '@utils'
+import { normalizeSocketImage } from '@iam/utils'
 
 export const requireAuth = (roles: TokenPayload['role'][] = []): RequestHandler => {
 	return (req: Request, res: Response, next: NextFunction): void => {

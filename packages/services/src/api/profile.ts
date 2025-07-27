@@ -1,7 +1,6 @@
 // packages/services/src/api/profile.ts
 
 import { api } from './http'
-import { normalizeUser } from '@utils'
 import type { User } from '@iam/types'
 
 export const getProfile = () => api.get('/profile').then(res => {

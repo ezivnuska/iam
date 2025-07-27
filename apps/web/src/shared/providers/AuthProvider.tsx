@@ -7,7 +7,7 @@ import {
 	setAuthHeader,
 	clearAuthHeader,
 	trySigninFromStoredToken,
-} from '@services'
+} from '@iam/services'
 import { navigate } from '@shared/navigation'
 import type { AuthResponseType, User } from '@iam/types'
 import { useSocket } from '@shared/hooks'

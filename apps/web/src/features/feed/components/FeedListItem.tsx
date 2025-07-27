@@ -15,7 +15,6 @@ import { formatRelative } from 'date-fns'
 import { usePosts } from '../hooks'
 import { useAuth, useTheme } from '@shared/hooks'
 import { navigate } from '@shared/navigation'
-// import { normalizeUser } from '@utils'
 
 type Props = {
 	post: Post
@@ -34,15 +33,14 @@ export const FeedListItem: React.FC<Props> = ({
 	const { deletePost } = usePosts()
 	const { theme } = useTheme()
 
-	// const author = normalizeUser(post.author)
 	const author = post.author
 	const isAuthor = user?.id === author.id
 
     const iconSize = resolveResponsiveProp({ xs: 24, sm: 24, md: 24, lg: 24 })
 
 	const handleDelete = async () => {
-		await deletePost(post._id)
-		onPostDeleted?.(post._id)
+		await deletePost(post.id)
+		onPostDeleted?.(post.id)
 	}
 
     const handleUserPress = () => {
@@ -119,7 +117,7 @@ export const FeedListItem: React.FC<Props> = ({
 			)}
 
 			<FeedbackBarContainer
-				refId={post._id}
+				refId={post.id}
 				refType={RefType.Post}
 				onCommentDeleted={onCommentDeleted}
 			/>

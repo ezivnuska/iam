@@ -1,7 +1,7 @@
 // apps/web/src/shared/providers/ImageProvider.tsx
 
 import React, { createContext, useEffect, useRef, useState, useCallback } from 'react'
-import { getUserById, setAvatar as apiSetAvatar, deleteImage as apiDeleteImage, fetchUserImages } from '@services'
+import { getUserById, setAvatar as apiSetAvatar, deleteImage as apiDeleteImage, fetchUserImages } from '@iam/services'
 import { useAuth } from '@shared/hooks'
 import type { Image } from '@iam/types'
 
