@@ -7,7 +7,7 @@ import { LoadingPanel } from '@shared/ui'
 import { IconButton } from '@shared/buttons'
 import { EditProfileForm } from '@shared/forms'
 import { useAuth, useModal, useTheme } from '@shared/hooks'
-import { Size } from '@iam/theme'
+import { paddingVertical, Size } from '@iam/theme'
 
 export const ProfileView = () => {
 
@@ -25,7 +25,12 @@ export const ProfileView = () => {
     }
 
 	return (
-        <Column flex={1} spacing={15} style={{ backgroundColor: theme.colors.background }}>
+        <Column
+            flex={1}
+            spacing={15}
+            paddingVertical={paddingVertical}
+            style={{ backgroundColor: theme.colors.background }}
+        >
             <Row spacing={10}>
                 <Text style={[styles.text, { color: theme.colors.text }]}>
                     {user?.bio || 'No bio yet.'}

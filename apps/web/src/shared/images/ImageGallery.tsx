@@ -11,7 +11,7 @@ import {
 } from 'react-native'
 import { AutoSizeImage, Spinner } from '@shared/ui'
 import type { Image } from '@iam/types'
-import { resolveResponsiveProp } from '@iam/theme'
+import { resolveResponsiveProp, Size } from '@iam/theme'
 
 type Props = {
 	images: Image[]
@@ -21,7 +21,7 @@ type Props = {
 	loading?: boolean
 }
 
-const IMAGE_MARGIN = 0//8
+const IMAGE_MARGIN = Size.S
 
 const ImageGallery = ({
 	images,

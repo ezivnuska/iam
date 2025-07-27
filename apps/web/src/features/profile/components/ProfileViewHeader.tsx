@@ -37,7 +37,7 @@ export const ProfileViewHeader: React.FC<any> = () => {
 
 	return (
         <ScreenHeaderContainer>
-            <Row flex={1} spacing={Size.M} align='center'>
+            <Row flex={1} spacing={Size.S} align='center'>
                 <UserButton user={user as User} />
                 <Button
                     label='Images'
