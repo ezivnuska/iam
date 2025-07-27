@@ -6,7 +6,7 @@ import { Column, Row } from '@shared/grid'
 import { useAuth, useTheme } from '@shared/hooks'
 import { LoadingPanel } from '@shared/ui'
 import { useUserProfile } from '../'
-import { paddingVertical } from '@iam/theme'
+import { paddingHorizontal, paddingVertical } from '@iam/theme'
 
 export const UserProfileView = ({ ...props }) => {
 	const userToDisplay = useUserProfile()
@@ -21,6 +21,7 @@ export const UserProfileView = ({ ...props }) => {
             flex={1}
             spacing={15}
             paddingVertical={paddingVertical}
+            paddingLeft={paddingHorizontal}
             style={{ backgroundColor: theme.colors.background }}
         >
             <Row spacing={10}>
