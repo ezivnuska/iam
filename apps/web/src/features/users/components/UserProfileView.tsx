@@ -6,6 +6,7 @@ import { Column, Row } from '@shared/grid'
 import { useAuth, useTheme } from '@shared/hooks'
 import { LoadingPanel } from '@shared/ui'
 import { useUserProfile } from '../'
+import { paddingVertical } from '@iam/theme'
 
 export const UserProfileView = ({ ...props }) => {
 	const userToDisplay = useUserProfile()
@@ -16,7 +17,12 @@ export const UserProfileView = ({ ...props }) => {
 	if (!userToDisplay) return <LoadingPanel label='Loading user...' />
 	
     return (
-        <Column flex={1} spacing={15} style={{ backgroundColor: theme.colors.background }}>
+        <Column
+            flex={1}
+            spacing={15}
+            paddingVertical={paddingVertical}
+            style={{ backgroundColor: theme.colors.background }}
+        >
             <Row spacing={10}>
                 <Text style={[styles.text, { color: theme.colors.text }]}>
                     {userToDisplay.bio || 'No bio yet.'}
