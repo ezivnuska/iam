@@ -11,15 +11,15 @@ export const Brand: React.FC = () => {
     const { theme } = useTheme()
     const currentRoute = useCurrentRoute()
     const fontSize = resolveResponsiveProp({ xs: 20, sm: 26, md: 32, lg: 40 })
-
+    const lineHeight = fontSize
     return (
         <Pressable
             onPress={() => navigate('Feed')}
             disabled={currentRoute === 'Feed'}
         >
             <Row wrap align='center' justify='center'>
-                <Text style={{ fontSize, color: theme.colors.primary }}>iam</Text>
-                <Text style={{ fontSize, color: theme.colors.secondary }}>eric</Text>
+                <Text style={{ fontSize, lineHeight, color: theme.colors.primary }}>iam</Text>
+                <Text style={{ fontSize, lineHeight, color: theme.colors.secondary }}>eric</Text>
             </Row>
         </Pressable>
     )

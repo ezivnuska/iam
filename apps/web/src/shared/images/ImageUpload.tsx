@@ -9,7 +9,6 @@ import { selectImage } from '@shared/images'
 import { useResponsiveImageSize } from '@shared/hooks'
 import { uploadImage } from '@iam/services'
 import type { UploadedImage } from '@iam/types'
-import { paddingHorizontal } from '@iam/theme'
 
 type ImageDataType = {
 	uri: string
