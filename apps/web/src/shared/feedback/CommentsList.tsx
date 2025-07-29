@@ -4,7 +4,7 @@ import React from 'react'
 import { View, ScrollView, ActivityIndicator, useWindowDimensions } from 'react-native'
 import { CommentItem } from './'
 import type { Comment } from '@iam/types'
-import { paddingHorizontal, Size } from '@iam/theme'
+import { Size } from '@iam/theme'
 
 type CommentsListProps = {
 	comments: Comment[] | null
@@ -34,7 +34,7 @@ export const CommentsList = ({
 	return (
 		<ScrollView
 			style={{ maxHeight: height * 0.4 }}
-			contentContainerStyle={{ paddingBottom: Size.S, paddingHorizontal }}
+			contentContainerStyle={{ paddingBottom: Size.S }}
 			showsVerticalScrollIndicator={false}
 		>
 			{comments?.map((item) => {

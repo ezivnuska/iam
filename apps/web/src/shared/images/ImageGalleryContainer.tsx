@@ -79,7 +79,6 @@ export const ImageGalleryContainer: React.FC<ImageGalleryContainerProps> = ({ us
 
 	return (
 		<Column flex={1} spacing={10} style={{ backgroundColor: theme.colors.background }}>
-			{/* <ImageGalleryHeader owner={isOwner} /> */}
 			{error ? (
 				<Text>{error}</Text>
 			) : (

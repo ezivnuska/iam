@@ -6,7 +6,7 @@ import { IconButton } from '@shared/buttons'
 import { Row } from '@shared/grid'
 import { AutoSizeImage } from '@shared/ui'
 import { FeedbackBarContainer } from '@shared/feedback'
-import { withAlpha, Size, resolveResponsiveProp } from '@iam/theme'
+import { paddingHorizontal, resolveResponsiveProp, Size, withAlpha } from '@iam/theme'
 import { useAuth, useTheme } from '@shared/hooks'
 import { RefType, type Image } from '@iam/types'
 
@@ -106,12 +106,7 @@ export const ImageModal: React.FC<Props> = ({
 				</View>
 
 				<View style={styles.footer}>
-					<View
-						style={[
-							styles.footerContent,
-							{ backgroundColor: withAlpha(theme.colors.background, 0.5) },
-						]}
-					>
+					<View style={styles.footerContent}>
 						<FeedbackBarContainer
 							refId={selectedImage.id}
 							refType={RefType.Image}
@@ -127,7 +122,6 @@ export const ImageModal: React.FC<Props> = ({
 const styles = StyleSheet.create({
 	fullscreenContainer: {
 		flex: 1,
-		// backgroundColor: 'pink',
 	},
 	imageContainer: {
 		flex: 1,
@@ -146,7 +140,6 @@ const styles = StyleSheet.create({
 	},
 	headerContent: {
 		width: '100%',
-		// paddingHorizontal: Size.S,
 	},
 	imageWrapper: {
 		flex: 1,
@@ -161,10 +154,10 @@ const styles = StyleSheet.create({
 		zIndex: 10,
 		backgroundColor: 'rgba(0,0,0,0.4)',
 		maxHeight: '50%',
+        paddingHorizontal,
 	},
 	footerContent: {
 		width: '100%',
-		// paddingHorizontal: Size.S,
 		flexShrink: 1,
 	},
 })

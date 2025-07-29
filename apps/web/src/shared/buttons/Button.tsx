@@ -11,6 +11,7 @@ import {
 } from 'react-native'
 import { Row } from '@shared/grid'
 import { useButtonStyles, useTheme } from '@shared/hooks'
+import { resolveResponsiveProp } from '@iam/theme'
 
 export type ButtonVariant =
     | 'primary'
@@ -43,6 +44,8 @@ export const Button: React.FC<BaseButtonProps> = ({
     const { theme } = useTheme()
     const { baseButtonStyles, buttonVariants } = useButtonStyles()
     const variantStyles = buttonVariants[variant] ?? buttonVariants.primary
+    const fontSize = resolveResponsiveProp({ xs: 14, sm: 16, md: 18, lg: 20 })
+    
 	return (
 		<Pressable
 			onPress={onPress}
@@ -70,7 +73,7 @@ export const Button: React.FC<BaseButtonProps> = ({
                     <Text
                         style={[
                             baseButtonStyles.text,
-                            { color: variantStyles.textColor },
+                            { fontSize, color: variantStyles.textColor },
                         ]}
                     >            
                         {label}

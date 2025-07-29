@@ -27,7 +27,7 @@ export const FeedbackBarContainer: React.FC<Props> = ({
 	onCommentDeleted,
 	disabledComment = false,
 }) => {
-	const { isAuthenticated, user } = useAuth()
+	const { isAuthenticated } = useAuth()
 	const { openFormModal } = useModal()
 	const commentsRef = useRef<{ handleNewComment?: (c: any) => void }>(null)
     const [expanded, setExpanded] = useState(false)

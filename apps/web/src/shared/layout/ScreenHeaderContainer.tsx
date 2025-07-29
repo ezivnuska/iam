@@ -12,6 +12,7 @@ export const ScreenHeaderContainer: React.FC<any> = ({ children }: { children: R
             spacing={Size.M}
             align='center'
             wrap={false}
+            paddingVertical={Size.XS}
         >
             {children}
         </Row>

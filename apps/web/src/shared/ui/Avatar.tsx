@@ -8,10 +8,10 @@ import type { Image } from '@iam/types'
 export type AvatarSize = 'xs' | 'sm' | 'md' | 'lg'
 
 const sizeMap: Record<AvatarSize, number> = {
-	xs: 26,
-	sm: 32,
-	md: 40,
-	lg: 48,
+	xs: 20,
+	sm: 26,
+	md: 32,
+	lg: 36,
 }
 
 const fontSizeMap: Record<AvatarSize, number> = {

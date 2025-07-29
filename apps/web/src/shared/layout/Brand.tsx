@@ -10,22 +10,16 @@ import { navigate, useCurrentRoute } from '@shared/navigation'
 export const Brand: React.FC = () => {
     const { theme } = useTheme()
     const currentRoute = useCurrentRoute()
-    const fontSize = resolveResponsiveProp({ xs: 34, sm: 34, md: 40, lg: 40 })
-    const lineHeight = fontSize * 0.9
+    const fontSize = resolveResponsiveProp({ xs: 20, sm: 26, md: 32, lg: 40 })
 
     return (
         <Pressable
             onPress={() => navigate('Feed')}
             disabled={currentRoute === 'Feed'}
-            style={{
-                height: 50,
-                flexDirection: 'row',
-                alignItems: 'center',
-            }}
         >
             <Row wrap align='center' justify='center'>
-                <Text style={{ fontSize, lineHeight, color: theme.colors.primary }}>iam</Text>
-                <Text style={{ fontSize, lineHeight, color: theme.colors.secondary }}>eric</Text>
+                <Text style={{ fontSize, color: theme.colors.primary }}>iam</Text>
+                <Text style={{ fontSize, color: theme.colors.secondary }}>eric</Text>
             </Row>
         </Pressable>
     )

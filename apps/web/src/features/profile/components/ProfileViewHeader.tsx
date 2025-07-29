@@ -37,7 +37,7 @@ export const ProfileViewHeader: React.FC<any> = () => {
 
 	return (
         <ScreenHeaderContainer>
-            <Row flex={1} spacing={Size.S} align='center'>
+            <Row flex={1} spacing={Size.M} align='center'>
                 <UserButton user={user as User} />
                 <Button
                     label='Images'
@@ -49,7 +49,7 @@ export const ProfileViewHeader: React.FC<any> = () => {
                     <IconButton
                         onPress={openImageUploadModal}
                         iconName='add-circle-outline'
-                        iconSize={40}
+                        iconSize={28}
                     />
                 )}
             </Row>

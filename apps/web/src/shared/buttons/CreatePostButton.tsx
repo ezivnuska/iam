@@ -12,7 +12,6 @@ export const CreatePostButton = () => {
 	const { addPost } = usePosts()
 
 	const onPostCreated = (post: Post) => {
-		console.log('adding post', post)
 		addPost(post)
 		hideModal()
 	}

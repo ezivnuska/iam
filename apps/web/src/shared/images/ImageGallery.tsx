@@ -21,7 +21,7 @@ type Props = {
 	loading?: boolean
 }
 
-const IMAGE_MARGIN = Size.S
+const IMAGE_MARGIN = Size.XS
 
 const ImageGallery = ({
 	images,
@@ -36,7 +36,7 @@ const ImageGallery = ({
 	const numColumns = resolveResponsiveProp({ xs: 2, sm: 2, md: 3, lg: 4 }) ?? 2
 
 	const imageSize = useMemo(() => {
-		return (containerWidth - IMAGE_MARGIN * (numColumns + 1)) / numColumns
+		return (containerWidth -(numColumns + 1)) / numColumns
 	}, [containerWidth, numColumns])
 
 	const onLayout = (e: any) => {
@@ -91,12 +91,12 @@ const styles = StyleSheet.create({
 		paddingVertical: IMAGE_MARGIN,
 	},
 	columnWrapper: {
-		justifyContent: 'flex-start',
+		justifyContent: 'center',
 		marginBottom: IMAGE_MARGIN,
 	},
 	imageBlock: {
 		alignItems: 'center',
-		marginHorizontal: IMAGE_MARGIN / 2,
+		paddingHorizontal: IMAGE_MARGIN / 2,
 	},
 	imageWrapper: {
 		borderRadius: 8,

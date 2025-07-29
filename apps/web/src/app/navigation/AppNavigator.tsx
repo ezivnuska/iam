@@ -10,8 +10,6 @@ import { Header } from '@shared/layout'
 import { LoadingPanel } from '@shared/ui'
 import { useAuth, useTheme, useDeviceInfo } from '@shared/hooks'
 import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context'
-import { paddingHorizontal } from '@iam/theme'
-
 
 export const AppNavigator = () => {
 	const { isAuthInitialized } = useAuth()
@@ -38,12 +36,7 @@ export const AppNavigator = () => {
                             flex={1}
                             direction={isLandscape ? 'row' : 'column'}
                             align={isLandscape ? 'flex-start' : 'center'}
-                            spacing={isLandscape ? paddingHorizontal : 0}
-                            style={{
-                                alignItems: 'stretch',
-                                backgroundColor: theme.colors.background,
-                                paddingHorizontal,
-                            }}
+                            style={{ alignItems: 'stretch' }}
                         >
                             <Header />
                             <RootNavigator />

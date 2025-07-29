@@ -14,7 +14,7 @@ import { navigate, useCurrentRoute } from '@shared/navigation'
 
 export const Header: React.FC = () => {
     const { isAuthenticated, isAuthInitialized, user } = useAuth()
-    const { openFormModal, showModal } = useModal()
+    const { showModal } = useModal()
     const { isDark, toggleTheme } = useTheme()
     const { orientation } = useDeviceInfo()
     const currentRoute = useCurrentRoute()
@@ -23,7 +23,7 @@ export const Header: React.FC = () => {
     const iconSize = resolveResponsiveProp({ xs: 24, sm: 24, md: 32, lg: 32 })
     const showLabel = resolveResponsiveProp({ xs: false, sm: false, md: false, lg: true })
     const navSpacing = resolveResponsiveProp({ xs: Size.S, sm: Size.S, md: Size.S, lg: Size.M })
-    const avatarSize = resolveResponsiveProp({ xs: 'sm', sm: 'md', md: 'md', lg: 'lg' }) as AvatarSize
+    const avatarSize = resolveResponsiveProp({ xs: 'xs', sm: 'sm', md: 'md', lg: 'lg' }) as AvatarSize
 
     const showSigninModal = () => showModal(<AuthModal />)
     const gotoProfile = () => navigate('Profile', { screen: 'Main' })
@@ -34,8 +34,9 @@ export const Header: React.FC = () => {
             direction={isLandscape ? 'column' : 'row'}
             justify={isLandscape ? 'flex-start' : 'space-between'}
             align='center'
-            spacing={18}
-            style={isLandscape && { width: '20%', paddingBottom: Size.M }}
+            spacing={12}
+            paddingHorizontal={12}
+            paddingVertical={2}
         >
             <Brand />
 
@@ -44,7 +45,6 @@ export const Header: React.FC = () => {
                 direction={isLandscape ? 'column' : 'row-reverse'}
                 align={isLandscape ? 'stretch' : 'center'}
                 justify={isLandscape ? 'space-between' : 'flex-start'}
-                spacing={12}
             >
                 <FlexBox
                     flex={1}
@@ -52,13 +52,13 @@ export const Header: React.FC = () => {
                     spacing={navSpacing}
                     justify={isLandscape ? 'space-between' : 'flex-end'}
                     align={isLandscape ? 'stretch' : 'flex-end'}
+                    paddingBottom={isLandscape ? Size.M : 0}
                 >
                     <View style={{ alignSelf: 'center' }}>
                         <IconButton
                             iconName={isDark ? 'sunny' : 'moon'}
                             onPress={toggleTheme}
                             iconSize={iconSize - 2}
-                            // label={isLandscape ? 'Theme' : undefined}
                         />
                     </View>
 

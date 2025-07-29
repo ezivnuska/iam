@@ -6,18 +6,15 @@ import type { Theme } from './themes'
 export const getBaseButtonStyles = (theme: Theme) =>
 	StyleSheet.create({
 		base: {
-			// width: '100%',
-			// minHeight: 40,
-			// paddingVertical: Platform.OS === 'web' ? 7 : 6,
-			height: 40,
-			paddingHorizontal: 16,
-			borderRadius: 20,
+            paddingVertical: 4,
+			paddingHorizontal: 6,
+			borderRadius: 6,
 			alignItems: 'center',
 			justifyContent: 'center',
 		},
 		text: {
 			fontWeight: Platform.OS === 'ios' ? '600' : 'bold',
-			fontSize: 20,
+			fontSize: 14,
 			color: theme.colors.text,
 		},
 		disabled: {
@@ -27,29 +24,6 @@ export const getBaseButtonStyles = (theme: Theme) =>
 			opacity: 0.85,
 		},
 	})
-
-// export const getButtonVariantStyles = (theme: Theme) => ({
-// 	primary: {
-// 		backgroundColor: theme.colors.primary,
-// 		textColor: theme.colors.background,
-// 	},
-// 	secondary: {
-// 		backgroundColor: theme.colors.secondary,
-// 		textColor: theme.colors.background,
-// 	},
-// 	success: {
-// 		backgroundColor: theme.colors.success,
-// 		textColor: theme.colors.background,
-// 	},
-// 	danger: {
-// 		backgroundColor: theme.colors.error,
-// 		textColor: theme.colors.background,
-// 	},
-// 	transparent: {
-// 		backgroundColor: 'transparent',
-// 		textColor: theme.colors.text,
-// 	},
-// })
 
 export const getButtonVariantStyles = (theme: Theme) => ({
 	primary: {
@@ -69,7 +43,7 @@ export const getButtonVariantStyles = (theme: Theme) => ({
 		textColor: theme.colors.background,
 	},
 	warning: {
-		backgroundColor: theme.colors.warning ?? '#FBBF24', // fallback if not in theme
+		backgroundColor: theme.colors.warning ?? '#FBBF24',
 		textColor: theme.colors.background,
 	},
 	info: {

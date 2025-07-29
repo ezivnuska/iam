@@ -7,7 +7,7 @@ import { LoadingPanel } from '@shared/ui'
 import { IconButton } from '@shared/buttons'
 import { EditProfileForm } from '@shared/forms'
 import { useAuth, useModal, useTheme } from '@shared/hooks'
-import { paddingHorizontal, paddingVertical, Size } from '@iam/theme'
+import { Size } from '@iam/theme'
 
 export const ProfileView = () => {
 
@@ -28,8 +28,6 @@ export const ProfileView = () => {
         <Column
             flex={1}
             spacing={15}
-            paddingVertical={paddingVertical}
-            paddingLeft={paddingHorizontal}
             style={{ backgroundColor: theme.colors.background }}
         >
             <Row spacing={10}>
