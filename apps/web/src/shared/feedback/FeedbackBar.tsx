@@ -39,7 +39,6 @@ export const FeedbackBar: React.FC<Props> = ({
             flex={1}
             spacing={Size.M}
             align='center'
-            // justify='space-between'
             paddingVertical={Size.S}
         >
             <Pressable onPress={onToggleLike} disabled={!isAuthenticated}>
