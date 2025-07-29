@@ -26,7 +26,7 @@ export const UserButton: React.FC<UserButtonProps> = ({ user }) => {
         <Pressable onPress={gotoUser} style={styles.container}>
             <Row align='center' spacing={8} wrap={false}>
                 <Avatar user={userToDisplay as User} size={avatarSize} />
-                <Text style={{ fontSize, fontWeight: '600', color: theme.colors.text }}>
+                <Text style={{ fontSize, lineHeight: fontSize, fontWeight: '600', color: theme.colors.text }}>
                     {userToDisplay?.username}
                 </Text>
             </Row>

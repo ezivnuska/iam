@@ -36,7 +36,7 @@ export const Header: React.FC = () => {
             align='center'
             spacing={12}
             paddingHorizontal={12}
-            paddingVertical={2}
+            paddingVertical={Size.S}
         >
             <Brand />
 
@@ -51,8 +51,8 @@ export const Header: React.FC = () => {
                     direction={isLandscape ? 'column-reverse' : 'row'}
                     spacing={navSpacing}
                     justify={isLandscape ? 'space-between' : 'flex-end'}
-                    align={isLandscape ? 'stretch' : 'flex-end'}
-                    paddingBottom={isLandscape ? Size.M : 0}
+                    align={isLandscape ? 'stretch' : 'center'}
+                    paddingBottom={isLandscape ? Size.XS : 0}
                 >
                     <View style={{ alignSelf: 'center' }}>
                         <IconButton

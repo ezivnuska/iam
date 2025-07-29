@@ -4,6 +4,7 @@ import React from 'react'
 import { View } from 'react-native'
 import { Column } from '@shared/grid'
 import { useDeviceInfo, useTheme } from '@shared/hooks'
+import { Size } from '@iam/theme'
 
 interface ScreenContainerProps<HProps extends object = {}, SProps extends object = {}> {
     header?: React.ComponentType<HProps>
@@ -20,11 +21,12 @@ export function ScreenContainer<HProps extends object = {}, SProps extends objec
 }: ScreenContainerProps<HProps, SProps>) {
     const { theme } = useTheme()
     const { orientation } = useDeviceInfo()
+    const isLandscape = orientation === 'landscape'
     return (
         <Column flex={1} style={{ paddingHorizontal: 12, backgroundColor: theme.colors.background }}>
             
             {HeaderComponent && (
-                <View>
+                <View style={{ paddingVertical: isLandscape ? Size.L : Size.XS }}>
                     <HeaderComponent {...(headerProps as HProps)} />
                 </View>
             )}
