@@ -1,17 +1,14 @@
 // apps/web/src/features/feed/components/FeedListItem.tsx
 
 import React from 'react'
-import { Pressable, StyleSheet, Text } from 'react-native'
-import { AutoSizeImage, Avatar } from '@shared/ui'
-import { LinkPreview } from './'
+import { AutoSizeImage } from '@shared/ui'
+import { FeedListItemHeader, LinkPreview } from './'
 import { FeedbackBarContainer } from '@shared/feedback'
-import { IconButton } from '@shared/buttons'
-import { Column, Row } from '@shared/grid'
-import type { PartialUser, Post } from '@iam/types'
+import { Column } from '@shared/grid'
+import type { Post } from '@iam/types'
 import { RefType } from '@iam/types'
-import { resolveResponsiveProp, Size } from '@iam/theme'
+import { Size } from '@iam/theme'
 import Autolink from 'react-native-autolink'
-import { formatRelative } from 'date-fns'
 import { usePosts } from '../hooks'
 import { useAuth, useTheme } from '@shared/hooks'
 import { navigate } from '@shared/navigation'
@@ -29,22 +26,20 @@ export const FeedListItem: React.FC<Props> = ({
 	onPostDeleted,
 	onCommentDeleted,
 }) => {
-	const { user, isAuthenticated } = useAuth()
+	const { user } = useAuth()
 	const { deletePost } = usePosts()
 	const { theme } = useTheme()
 
 	const author = post.author
-	const isAuthor = user?.id === author.id
-
-    const iconSize = resolveResponsiveProp({ xs: 24, sm: 24, md: 24, lg: 24 })
+	const owned = user?.id === author.id
 
 	const handleDelete = async () => {
 		await deletePost(post.id)
 		onPostDeleted?.(post.id)
 	}
-
+    
     const handleUserPress = () => {
-        if (isAuthor) {
+        if (owned) {
             navigate('Profile')
         } else {
             navigate('Users', {
@@ -52,52 +47,20 @@ export const FeedListItem: React.FC<Props> = ({
                 params: { username: author.username as string },
             })
         }
-	}
-
-	const renderHeader = () => (
-        <Pressable
-            onPress={handleUserPress}
-        >
-            <Row
-                spacing={Size.M}
-                align='center'
-            >
-                <Avatar user={post.author as PartialUser} size='md' />
-                <Column flex={1}>
-                    <Text
-                        style={[
-                            styles.username,
-                            { color: theme.colors.text },
-                        ]}
-                    >
-                        {post.author.username}
-                    </Text>
-                    <Text
-                        style={[
-                            styles.date,
-                            { color: theme.colors.textSecondary },
-                        ]}
-                    >
-                        {formatRelative(new Date(post.createdAt), new Date())}
-                    </Text>
-                </Column>
-                {isAuthenticated && isAuthor && (
-                    <IconButton
-                        onPress={handleDelete}
-                        iconName='trash-outline'
-                        iconSize={iconSize}
-                    />
-                )}
-            </Row>
-        </Pressable>
-	)
+    }
 
 	return (
 		<Column
             spacing={Size.M} 
             style={{ marginBottom: Size.M }}
         >
-			{renderHeader()}
+			<FeedListItemHeader
+                author={author}
+                date={post.createdAt}
+                owned={owned}
+                navigateToUser={handleUserPress}
+                deletePost={handleDelete}
+            />
 
 			<Autolink
 				text={post.content}
@@ -116,23 +79,11 @@ export const FeedListItem: React.FC<Props> = ({
                 <LinkPreview url={post.linkUrl} preview={post.linkPreview} />
 			)}
 
-			<FeedbackBarContainer
-				refId={post.id}
-				refType={RefType.Post}
-				onCommentDeleted={onCommentDeleted}
-			/>
+            <FeedbackBarContainer
+                refId={post.id}
+                refType={RefType.Post}
+                onCommentDeleted={onCommentDeleted}
+            />
 		</Column>
 	)
 }
-
-const styles = StyleSheet.create({
-	username: {
-		fontSize: 20,
-		fontWeight: 'bold',
-		lineHeight: 22,
-	},
-	date: {
-		fontSize: 14,
-		lineHeight: 16,
-	},
-})

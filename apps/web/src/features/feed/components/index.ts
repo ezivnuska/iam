@@ -3,4 +3,5 @@
 export * from './LinkPreview'
 export * from './FeedList'
 export * from './FeedListItem'
+export * from './FeedListItemHeader'
 export * from './FeedViewHeader'

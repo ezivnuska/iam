@@ -11,7 +11,6 @@ import {
 	toggleLike,
 } from '@iam/services'
 import type { RefType } from '@iam/types'
-import { View } from 'react-native'
 
 type Props = {
 	refId: string
@@ -66,7 +65,7 @@ export const FeedbackBarContainer: React.FC<Props> = ({
 	}
 
 	return (
-		<View>
+		<>
 			<FeedbackBar
 				likeCount={likeCount}
 				liked={liked}
@@ -91,6 +90,6 @@ export const FeedbackBarContainer: React.FC<Props> = ({
 					onCommentDeleted={onCommentDeleted || handleCommentDeleted}
 				/>
 			)}
-		</View>
+		</>
 	)
 }

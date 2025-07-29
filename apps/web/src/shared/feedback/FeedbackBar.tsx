@@ -3,7 +3,7 @@
 import React from 'react'
 import { Pressable, StyleSheet, Text } from 'react-native'
 import { Row } from '@shared/grid'
-import { paddingHorizontal, Size } from '@iam/theme'
+import { Size } from '@iam/theme'
 import { useTheme } from '@shared/hooks'
 import Ionicons from '@expo/vector-icons/Ionicons'
 
@@ -39,9 +39,8 @@ export const FeedbackBar: React.FC<Props> = ({
             flex={1}
             spacing={Size.M}
             align='center'
-            justify='space-between'
+            // justify='space-between'
             paddingVertical={Size.S}
-            paddingHorizontal={paddingHorizontal}
         >
             <Pressable onPress={onToggleLike} disabled={!isAuthenticated}>
                 <Row
