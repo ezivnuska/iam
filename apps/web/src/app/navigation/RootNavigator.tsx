@@ -11,6 +11,7 @@ import { ChatScreen } from '@features/chat'
 import { HomeScreen } from '@features/home'
 import { ProfileScreen } from '@features/profile'
 import { FeedScreen } from '@features/feed'
+import { TileScreen } from '@features/tiles'
 import type { RootStackParamList } from '@iam/types'
 import { UserNavigator } from '@features/users'
 
@@ -25,6 +26,7 @@ export const RootNavigator = () => {
             <Stack.Screen name='Chat' component={ChatScreen} />
             <Stack.Screen name='ForgotPassword' component={ForgotPasswordScreen} />
             <Stack.Screen name='Home' component={FeedScreen} />
+            <Stack.Screen name='Tiles' component={TileScreen} />
             <Stack.Screen name='Feed' component={FeedScreen} />
             <Stack.Screen name='ResetPassword' component={ResetPasswordScreen} />
             <Stack.Screen name='PrivacyPolicy' component={PrivacyPolicyScreen} />

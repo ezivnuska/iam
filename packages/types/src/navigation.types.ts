@@ -54,6 +54,7 @@ export type RootStackParamList = {
     Protected: undefined
     ResetPassword: { token: string }
     Signin: undefined
+    Tiles: undefined
     Users: NavigatorScreenParams<UserStackParamList>
     // UserList: undefined
 }  

@@ -21,6 +21,7 @@ export const linking: LinkingOptions<RootStackParamList> = {
                 },
             },
             Home: '',
+            Tiles: 'tiles',
             ResetPassword: 'reset-password/:token',
             Profile: {
                 path: 'profile',
