@@ -75,6 +75,7 @@ export const DraggableItem: React.FC<DraggableItemProps> = ({
 
     const onTouchStart = (event: any) => {
         if (draggable) setDragging(true)
+        console.log('tile', tile)
     }
 
     const handleDrag = (event: any) => {

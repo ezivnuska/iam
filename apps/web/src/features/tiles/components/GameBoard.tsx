@@ -40,6 +40,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     }
 
     useEffect(() => {
+        console.log('tiles', tiles)
+        console.log('emptyCol', getEmptyCol())
+        console.log('emptyRow', getEmptyRow())
+    }, [tiles])
+
+    useEffect(() => {
         if (dims) {
             setItemSize(dims.width / level)
         }
@@ -76,7 +82,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const getDraggableTile = (tile: TileType): TileType => {
         const col = getEmptyCol()
         const row = getEmptyRow()
-        if (!col || !row) return tile
+        if (col == null || row == null) return tile
         let draggableTile
         if (tile.col === col) {
             draggableTile = { ...tile, direction: tile.row < row ? 'down' : tile.row > row ? 'up' : 'none' }
@@ -99,12 +105,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     }
 
     const updateTile = (tile: TileType) => {
-        const updatedTiles = tiles?.map((t) => {
+        if (!tiles) return
+        const updatedTiles = tiles.map((t) => {
             return t.id === tile.id
                 ? tile
                 : t
         })
-        if (!updatedTiles) return
         setTiles(getTiles(updatedTiles))
     }
 
