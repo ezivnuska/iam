@@ -2,12 +2,17 @@
 
 export type Direction = 'up' | 'down' | 'left' | 'right' | 'none'
 
+export type Position = {
+    id: number
+    col: number
+    row: number
+}
+
 export type TileType = {
-  id: number
-  col: number
-  row: number
-  direction?: Direction
-  dragging?: boolean
+    id: number
+    position: Position
+    // direction: Direction
+    // dragging?: boolean
 }
 
 export type GameStatus = 'idle' | 'start' | 'playing' | 'paused' | 'resolved'

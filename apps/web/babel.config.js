@@ -47,6 +47,8 @@ module.exports = {
         ['@babel/plugin-transform-class-properties', { loose: true }],
         ['@babel/plugin-transform-private-methods', { loose: true }],
         ['@babel/plugin-transform-private-property-in-object', { loose: true }],
+        '@babel/plugin-proposal-export-namespace-from',
 		'react-native-reanimated/plugin', // must be last in the list per reanimated docs
+        'react-native-worklets/plugin', // must be last in the list per reanimated docs
 	],
 }
