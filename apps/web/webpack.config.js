@@ -63,7 +63,7 @@ const includedModules = (filepath) => {
         '@react-native/assets-registry',
         '@expo/vector-icons',
         '@babel/plugin-proposal-export-namespace-from',
-        'react-native-worklets/plugin'
+        'react-native-worklets'
 	]
 
 	const matchesSources = sourcesToCompile.some(src => filepath.startsWith(src))
