@@ -296,6 +296,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                                     borderRadius: 10,
                                     overflow: 'hidden',
                                     backgroundColor: dragging ? 'purple' : draggable ? '#4682b4' : 'green',
+                                    cursor: draggable ? 'pointer' : 'auto',
                                 },
                                 dragging && animatedStyle,
                             ]}

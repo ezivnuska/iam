@@ -1,6 +1,6 @@
 // apps/web/src/shared/layout/HeaderNav.tsx
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View } from 'react-native'
 import { Button, IconButton } from '@shared/buttons'
 import { FlexBox } from '@shared/grid'
@@ -8,6 +8,7 @@ import { AuthModal } from '@shared/modals'
 import { useAuth, useDeviceInfo, useModal, useTheme } from '@shared/hooks'
 import { resolveResponsiveProp, Size } from '@iam/theme'
 import { AuthNav } from '..'
+import { navigate } from '@shared/navigation'
 
 export const HeaderNav: React.FC = () => {
     const { isAuthenticated, isAuthInitialized, user } = useAuth()
@@ -36,6 +37,14 @@ export const HeaderNav: React.FC = () => {
                 align={isLandscape ? 'stretch' : 'center'}
                 paddingBottom={isLandscape ? Size.XS : 0}
             >
+                <View style={{ alignSelf: 'center' }}>
+                    <IconButton
+                        iconName='grid'
+                        onPress={() => navigate('Tiles')}
+                        iconSize={iconSize - 2}
+                    />
+                </View>
+
                 <View style={{ alignSelf: 'center' }}>
                     <IconButton
                         iconName={isDark ? 'sunny' : 'moon'}
