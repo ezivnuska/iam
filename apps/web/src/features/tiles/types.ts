@@ -11,8 +11,8 @@ export type Position = {
 export type TileType = {
     id: number
     position: Position
-    // direction: Direction
-    // dragging?: boolean
+    draggable?: boolean
+    dragging?: boolean
 }
 
 export type GameStatus = 'idle' | 'start' | 'playing' | 'paused' | 'resolved'

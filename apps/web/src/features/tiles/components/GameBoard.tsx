@@ -27,7 +27,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
     const offset = useSharedValue(0)
 
-    const getEmptyRow = useCallback(() => {
+    useEffect(() => {
+        if (draggedTile) {
+            setDraggedTile(null)
+            resetOffsetValue()
+        }
+    }, [tiles])
+
+    const getEmptyRow = () => {
         let emptyRow = null
         if (tiles) {
             for (let r = 0; r < level; r++) {
@@ -36,9 +43,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             }
         }
         return emptyRow
-    }, [tiles])
+    }
 
-    const getEmptyCol = useCallback(() => {
+    const getEmptyCol = () => {
         let emptyCol =null
         if (tiles) {
             for (let c = 0; c < level; c++) {
@@ -47,7 +54,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             }
         }
         return emptyCol
-    }, [tiles])
+    }
     
     const emptyPos = useMemo(() => {
         const col = getEmptyCol()
@@ -57,56 +64,42 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
     const dragDirection = useMemo(() => {
         let direction = 'none'
-        if (emptyPos) {
-            console.log('emptyPos', emptyPos)
-            if (draggedTile) {
-                console.log('draggedTile', draggedTile)
-                const { col, row } = emptyPos
-                if (draggedTile.position.col === col) {
-                    direction = draggedTile.position.row < row ? 'down' : 'up'
-                } else if (draggedTile.position.row === row) {
-                    direction = draggedTile.position.col < col ? 'right' : 'left'
-                }
-            }
+        if (!emptyPos || !draggedTile) return direction
+        
+        const { col, row } = emptyPos
+        if (draggedTile.position.col === col) {
+            direction = draggedTile.position.row < row ? 'down' : 'up'
+        } else if (draggedTile.position.row === row) {
+            direction = draggedTile.position.col < col ? 'right' : 'left'
         }
-        console.log('direction', direction)
         return direction
-    }, [emptyPos, draggedTile])
+    }, [draggedTile])
 
-    const draggableTiles = useMemo<TileType[]>(() => {
-        if (emptyPos) {
-            const { col, row } = emptyPos
-            return tiles.filter(tile => tile.position.col === col || tile.position.row === row)
-        }
-        return []
+    const draggableTiles = useMemo(() => {
+        if (!emptyPos) return []
+
+        const { col, row } = emptyPos
+        const draggables = tiles.filter(tile => tile.position.col === col || tile.position.row === row)
+        return draggables
     }, [emptyPos])
 
-    const isTileDraggable = (tile: TileType) => {
-        return draggableTiles.filter(t => t.id === tile.id).length
-    }
+    const isTileDraggable = useCallback((tile: TileType) => {
+        return draggableTiles.filter(t => t.id === tile.id).length > 0
+    }, [draggableTiles])
 
-    const draggingTiles = useMemo(() => {
-        let tilesDragging: TileType[] = []
-        if (!draggedTile || !emptyPos) return tilesDragging
+    const getGroupedTiles = () => {
+        let groupedTiles: TileType[] = []
+        if (!draggedTile || !emptyPos) return groupedTiles
         const { col, row } = emptyPos
-        tilesDragging = draggableTiles.filter(t =>
+        groupedTiles = draggableTiles.filter(t =>
             t.id === draggedTile.id ||
             (dragDirection === 'up' && t.position.row > row! && t.position.row < draggedTile.position.row) ||
             (dragDirection === 'down' && t.position.row < row! && t.position.row > draggedTile.position.row) ||
             (dragDirection === 'left' && t.position.col > col! && t.position.col < draggedTile.position.col) ||
             (dragDirection === 'right' && t.position.col < col! && t.position.col > draggedTile.position.col)
         )
-        console.log('tilesDragging', tilesDragging)
-        return tilesDragging
-    }, [draggedTile])
-
-    const isTileDragging = useCallback((tile: TileType) => {
-        return draggedTile && draggingTiles.filter(t => t.id === tile.id).length
-    }, [draggingTiles, draggedTile])
-
-    useEffect(() => {
-        console.log('draggingTiles', draggingTiles)
-    }, [draggingTiles])
+        return groupedTiles
+    }
 
     useEffect(() => {
         if (dims) {
@@ -170,17 +163,25 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         offset.value = 0
     }
 
+    const groupedTiles = useMemo(() => {
+        return draggedTile ? getGroupedTiles() : []
+    }, [draggedTile])
+
+    const isTileDragging = useCallback((tile: TileType) =>
+        (draggedTile?.id === tile.id || groupedTiles.filter(t => t.id === tile.id).length > 0)
+    , [draggedTile])
+
     const onTouchStart = (event: any, tile: TileType) => {
         if (isTileDraggable(tile)) {
-            console.log('draggable tile touched', tile)
             setDraggedTile(tile)
         }
     }
 
+    const isHorizontal = useMemo(() => (dragDirection === 'left' || dragDirection === 'right'), [dragDirection])
+
     const handleDrag = (event: any, tile: TileType) => {
         if (!itemSize) return
         const { translationX, translationY } = event
-        const isHorizontal = dragDirection === 'left' || dragDirection === 'right'
         offset.value = isHorizontal
             ? dragDirection === 'left'
                 ? clamp(translationX, -itemSize, 0)
@@ -206,19 +207,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         }
     }
 
-    const moveDraggingTilesToNextPosition = () => {
-        setTiles(
-            tiles.map(t => isTileDragging(t)
-                ? { ...t, position: getNewPosition(t) }
-                : t
-            )
-        )
-        setDraggedTile(null)
-        resetOffsetValue()
-    }
-
-    const onTileMoved = (tile: TileType) => {
-        moveDraggingTilesToNextPosition()
+    const onMoved = () => {
+        setTiles(currTiles => currTiles.map(t =>
+            isTileDragging(t) ? { ...t, position: getNewPosition(t) } : t
+        ))
     }
 
     const onTileReset = () => {
@@ -226,28 +218,27 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         resetOffsetValue()
     }
 
-    const moveTile = (tile: TileType) => {
+    const moveTiles = () => {
         if (!itemSize) return
-        const isHorizontal = dragDirection === 'left' || dragDirection === 'right'
         let value = isHorizontal
             ? dragDirection === 'left' ? -itemSize : itemSize
             : dragDirection === 'up' ? -itemSize : itemSize
 
-        offset.value = withTiming(value, { duration: 250 }, () => onTileMoved(tile))
+        offset.value = withTiming(value, { duration: 100 }, () => onMoved())
     }
 
     const resetTile = () => {
-        offset.value = withTiming(0, { duration: 250 }, onTileReset)
+        offset.value = withTiming(0, { duration: 100 }, onTileReset)
     }
 
     const handleMove = (event: any, tile: TileType) => {
         if (!itemSize) return
         const { translationX, translationY } = event
-        const isHorizontal = dragDirection === 'left' || dragDirection === 'right'
+        const isClick = translationX < 5 && translationY < 5
         let newValue = isHorizontal ? translationX : translationY
-        const shouldMove = Math.abs(newValue) > itemSize / 2
+        const shouldMove = isClick || Math.abs(newValue) > itemSize / 2
         if (shouldMove) {
-            moveTile(tile)
+            moveTiles()
         } else {
             resetTile()
         }
@@ -258,28 +249,35 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     }
 
     const animatedStyle = useAnimatedStyle(() => {
-        const isHorizontal = dragDirection === 'left' || dragDirection === 'right'
         return {
             transform: [isHorizontal ? { translateX: offset.value } : { translateY: offset.value }],
-            backgroundColor: 'purple',
         }
     })
 
-    const isDragging = (tile: TileType) => {
-        console.log('')
-        let dragging = false
-        if (draggedTile && draggingTiles.filter(t => t.id === tile.id).length) dragging = true
-        return dragging
+    const renderSquare = (id: number) => {
+        return itemSize && (
+            <View
+                style={{
+                    height: itemSize,
+                    width: itemSize,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+            >
+                <Text style={styles.label}>{id + 1}</Text>
+            </View>
+        )
     }
 
     const renderTiles = () => {
-        if (!tiles || !itemSize) return null
         return (
             <View style={styles.tileContainer}>
-                {tiles?.map((tile) => {
+                {tiles.map((tile) => {
                     const coords = getTileCoords(tile)
                     if (!coords) return
                     const draggable = isTileDraggable(tile)
+                    const dragging = isTileDragging(tile)
                     const { x, y } = coords
 
                     const panGesture = Gesture.Pan()
@@ -287,35 +285,23 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                         .onChange(event => onTouchMove(event, tile))
                         .onFinalize(event => onTouchEnd(event, tile))
 
-                    return (
+                    return tile && (
                         <Animated.View
                             key={tile.id}
                             style={[
                                 {
                                     position: 'absolute',
-                                    height: itemSize,
-                                    width: itemSize,
                                     top: y,
                                     left: x,
                                     borderRadius: 10,
                                     overflow: 'hidden',
-                                    backgroundColor: draggable ? '#4682b4' : 'green',
+                                    backgroundColor: dragging ? 'purple' : draggable ? '#4682b4' : 'green',
                                 },
-                                isDragging(tile) ? animatedStyle : null,
+                                dragging && animatedStyle,
                             ]}
                         >
                             <GestureDetector gesture={panGesture}>
-                                <View
-                                    style={{
-                                        height: itemSize,
-                                        width: itemSize,
-                                        flexDirection: 'row',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                    }}
-                                >
-                                    <Text style={styles.label}>{tile.id + 1}</Text>
-                                </View>
+                                {renderSquare(tile.id)}
                             </GestureDetector>
                         </Animated.View>
                     )
@@ -323,14 +309,15 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             </View>
         )
     }
-    
     return (
         <View
             onLayout={onLayout}
             style={styles.container}
         >
-            <CheckerBoard level={4} />
-            {tiles && renderTiles()}
+            {/* <CheckerBoard level={4} /> */}
+            <View style={styles.tileContainer}>
+                {tiles && renderTiles()}
+            </View>
         </View>
     )
 }
