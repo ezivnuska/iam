@@ -2,15 +2,10 @@
 
 export type Direction = 'up' | 'down' | 'left' | 'right' | 'none'
 
-export type Position = {
+export type TileType = {
     id: number
     col: number
     row: number
-}
-
-export type TileType = {
-    id: number
-    position: Position
     draggable?: boolean
     dragging?: boolean
 }

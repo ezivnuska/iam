@@ -3,9 +3,12 @@
 import React, { useCallback, useEffect, useMemo, useState }  from 'react'
 import { LayoutChangeEvent, StyleSheet, Text, View } from 'react-native'
 import { CheckerBoard } from './'
-import { Position, TileType } from '../types'
+import { Direction, TileType } from '../types'
 import Animated, { clamp, useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
+import { Row } from '@shared/grid'
+import { Button } from '@shared/buttons'
+import { useTheme } from '@shared/hooks'
 
 type GameBoardProps = {
     level: number
@@ -16,6 +19,13 @@ type Dimensions = {
     height: number
 }
 
+type EmptyPosition = {
+    col: number
+    row: number
+}
+
+type GameStatus = 'idle' | 'start' | 'playing' | 'paused' | 'resolved'
+
 export const GameBoard: React.FC<GameBoardProps> = ({
   level = 4,
 }) => {
@@ -23,153 +33,202 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     const [itemSize, setItemSize] = useState<number>()
     const [tiles, setTiles] = useState<TileType[]>([])
     const [draggedTile, setDraggedTile] = useState<TileType | null>(null)
-    const [positions, setPositions] = useState<Position[]>([])
+    const [emptySpace, setEmptySpace] = useState<EmptyPosition>()
+	const [status, setStatus] = useState<GameStatus>()
+
+	const { theme } = useTheme()
 
     const offset = useSharedValue(0)
 
-    useEffect(() => {
-        if (draggedTile) {
-            setDraggedTile(null)
-            resetOffsetValue()
-        }
-    }, [tiles])
-
-    const getEmptyRow = () => {
-        let emptyRow = null
-        if (tiles) {
-            for (let r = 0; r < level; r++) {
-                const rowTiles = tiles.filter(t => t.position.row === r)
-                if (rowTiles.length < level) emptyRow = r
-            }
-        }
-        return emptyRow
-    }
-
-    const getEmptyCol = () => {
-        let emptyCol =null
-        if (tiles) {
-            for (let c = 0; c < level; c++) {
-                const colTiles = tiles.filter(t => t.position.col === c)
-                if (colTiles.length < level) emptyCol = c
-            }
-        }
-        return emptyCol
-    }
-    
-    const emptyPos = useMemo(() => {
-        const col = getEmptyCol()
-        const row = getEmptyRow()
-        return (col !== null && row !== null) ? { col, row } : null
-    }, [tiles])
-
-    const dragDirection = useMemo(() => {
-        let direction = 'none'
-        if (!emptyPos || !draggedTile) return direction
-        
-        const { col, row } = emptyPos
-        if (draggedTile.position.col === col) {
-            direction = draggedTile.position.row < row ? 'down' : 'up'
-        } else if (draggedTile.position.row === row) {
-            direction = draggedTile.position.col < col ? 'right' : 'left'
-        }
-        return direction
-    }, [draggedTile])
-
-    const draggableTiles = useMemo(() => {
-        if (!emptyPos) return []
-
-        const { col, row } = emptyPos
-        const draggables = tiles.filter(tile => tile.position.col === col || tile.position.row === row)
-        return draggables
-    }, [emptyPos])
-
-    const isTileDraggable = useCallback((tile: TileType) => {
-        return draggableTiles.filter(t => t.id === tile.id).length > 0
-    }, [draggableTiles])
-
-    const getGroupedTiles = () => {
-        let groupedTiles: TileType[] = []
-        if (!draggedTile || !emptyPos) return groupedTiles
-        const { col, row } = emptyPos
-        groupedTiles = draggableTiles.filter(t =>
-            t.id === draggedTile.id ||
-            (dragDirection === 'up' && t.position.row > row! && t.position.row < draggedTile.position.row) ||
-            (dragDirection === 'down' && t.position.row < row! && t.position.row > draggedTile.position.row) ||
-            (dragDirection === 'left' && t.position.col > col! && t.position.col < draggedTile.position.col) ||
-            (dragDirection === 'right' && t.position.col < col! && t.position.col > draggedTile.position.col)
-        )
-        return groupedTiles
+    const onLayout = async (e: LayoutChangeEvent) => {
+        const { layout } = e.nativeEvent
+        if (!layout) return
+        setDims({ width: layout.width, height: layout.width })
     }
 
     useEffect(() => {
-        if (dims) {
+        if (dims && !itemSize) {
             setItemSize(dims.width / level)
         }
     }, [dims])
 
     useEffect(() => {
         if (itemSize) {
-            initPositions()
+            setStatus('idle')
         }
     }, [itemSize])
 
-    const initPositions = () => {
-        const initialPositions: Position[] = []
+    const initTiles = () => {
+        const initialTiles: TileType[] = []
         let id = 0
         for (let row = 0; row < level; row++) {
             for (let col = 0; col < level; col++) {
-                initialPositions.push({ id, row, col })
+                initialTiles.push({ id, row, col })
                 id++
             }
         }
-        setPositions(initialPositions)
-    }
 
-    const initTiles = () => {
-        const initialTiles: TileType[] = []
-        while (initialTiles.length < positions.length) {
-            initialTiles.push({
-                id: initialTiles.length,
-                position: positions[initialTiles.length],
-            })
-        }
-        const emptySpace = initialTiles.pop()
+        const lastTile = initialTiles.pop()
+		let empty = { col: level - 1, row: level - 1 }
+		if (lastTile) empty = { col: lastTile.col, row: lastTile.row }
+		setEmptySpace(empty)
 
         setTiles(initialTiles)
     }
 
+	const resolveTiles = useCallback(() => {
+		if (!tiles?.length) return false
+		let numCorrect = 0
+		for (let r = 0; r < level; r++) {
+			for (let c = 0; c < level; c++) {
+				const tile = tiles.find(t => t.col === c && t.row === r)
+				if (!tile || tile.id !== numCorrect) {
+					return false
+				}
+				if (numCorrect === tiles.length - 1) return true
+				numCorrect++
+			}
+		}
+	}, [tiles])
+
     useEffect(() => {
-        if (positions.length && !tiles.length) {
-            initTiles()
+		if (draggedTile) {
+			setDraggedTile(null)
+			resetOffsetValue()
+		}
+
+		if (status === 'playing' && resolveTiles()){
+			setStatus('resolved')
+		}
+    }, [tiles])
+
+    const shuffle = () => {
+        const pile = [...tiles]
+        let col = 0
+        let row = 0
+        const shuffled: TileType[] = []
+        while (pile.length > 0) {
+			const index = Math.floor(Math.random() * pile.length)
+			const tile = pile.splice(index, 1)[0]
+			const newTile = { ...tile, col, row }
+			shuffled.push(newTile)
+			col++
+			if (col >= level) {
+				col = 0
+				row++
+			}
         }
-    }, [positions])
+        
+        // setTiles(shuffled)
+		setStatus('playing')
+    }
+
+	const startGame = () => {
+		setStatus('start')
+	}
+
+	useEffect(() => {
+		if (!status) return
+		console.log('status', status)
+		switch (status) {
+		  case 'idle':
+			initTiles()
+			break
+		  case 'start':
+			shuffle()
+			break
+		  case 'playing':
+			// setIsPaused(false)
+			break
+		  case 'paused':
+			// setIsPaused(true)
+			break
+		  case 'resolved':
+			// initTiles()
+			break
+		}
+	  }, [status])
+
+    // const getEmptyRow = () => {
+    //     let emptyRow = null
+    //     if (tiles) {
+    //         for (let r = 0; r < level; r++) {
+    //             const rowTiles = tiles.filter(t => t.row === r)
+    //             if (rowTiles.length < level) emptyRow = r
+    //         }
+    //     }
+    //     return emptyRow
+    // }
+
+    // const getEmptyCol = () => {
+    //     let emptyCol = null
+    //     if (tiles) {
+    //         for (let c = 0; c < level; c++) {
+    //             const colTiles = tiles.filter(t => t.col === c)
+    //             if (colTiles.length < level) emptyCol = c
+    //         }
+    //     }
+    //     return emptyCol
+    // }
+    
+    // const getEmptySpace = () => {
+    //     const col = getEmptyCol()
+    //     const row = getEmptyRow()
+    //     return (col !== null && row !== null) ? { col, row } : null
+    // }
+
+    const isTileDraggable = useCallback((tile: TileType) => {
+		if (status !== 'playing' || !emptySpace) return false
+        const { col, row } = emptySpace
+        const draggables = tiles.filter(tile => tile.col === col || tile.row === row)
+        return draggables.filter(t => t.id === tile.id).length > 0
+    }, [emptySpace, tiles, status])
+
+    const dragDirection = useMemo(() => {
+        let direction: Direction = 'none'
+        if (!emptySpace || !draggedTile) return direction
+        
+        const { col, row } = emptySpace
+        if (draggedTile.col === col) {
+            direction = draggedTile.row < row ? 'down' : 'up'
+        } else if (draggedTile.row === row) {
+            direction = draggedTile.col < col ? 'right' : 'left'
+        }
+        return direction
+    }, [draggedTile])
+
+	const isTileDragging = useCallback((tile: TileType) => {
+		if (!draggedTile || !emptySpace) return false
+        const { col, row } = emptySpace
+
+		let draggingTiles = tiles.filter(t => (
+			t.id === draggedTile.id ||
+			(dragDirection === 'up' && t.col === col && t.row > row! && t.row < draggedTile.row) ||
+			(dragDirection === 'down' && t.col === col && t.row < row && t.row > draggedTile.row) ||
+			(dragDirection === 'left' && t.row === row && t.col > col! && t.col < draggedTile.col) ||
+			(dragDirection === 'right' && t.row === row && t.col < col! && t.col > draggedTile.col)
+		))
+		return draggingTiles.filter(t => t.id === tile.id).length > 0
+	}, [draggedTile])
 
     const getTileCoords = (tile: TileType) => {
         if (!itemSize) return null
-        const pos = tile.position
+        const { col, row } = tile
         return {
-            x: pos.col * itemSize,
-            y: pos.row * itemSize,
+            x: col * itemSize,
+            y: row * itemSize,
         }
-    }
-
-    const onLayout = async (e: LayoutChangeEvent) => {
-        const { layout } = e.nativeEvent
-        if (!layout) return
-        setDims({ width: layout.width, height: layout.height})
     }
 
     const resetOffsetValue = () => {
         offset.value = 0
     }
 
-    const groupedTiles = useMemo(() => {
-        return draggedTile ? getGroupedTiles() : []
-    }, [draggedTile])
-
-    const isTileDragging = useCallback((tile: TileType) =>
-        (draggedTile?.id === tile.id || groupedTiles.filter(t => t.id === tile.id).length > 0)
-    , [draggedTile])
+	const finalizeMove = () => {
+		const movedTiles = tiles.map(t => getMovedTile(t, dragDirection))
+		if (draggedTile) setEmptySpace({ col: draggedTile.col, row: draggedTile.row })
+		setTiles(movedTiles)
+	}
 
     const onTouchStart = (event: any, tile: TileType) => {
         if (isTileDraggable(tile)) {
@@ -177,7 +236,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         }
     }
 
-    const isHorizontal = useMemo(() => (dragDirection === 'left' || dragDirection === 'right'), [dragDirection])
+    const isHorizontal = useMemo(() => {
+        return (dragDirection === 'left' || dragDirection === 'right')
+    }, [dragDirection])
 
     const handleDrag = (event: any, tile: TileType) => {
         if (!itemSize) return
@@ -197,25 +258,22 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         }
     }
 
-    const getNewPosition = (tile: TileType) => {
-        switch (dragDirection) {
-            case 'up': return { ...tile.position, row: tile.position.row - 1 }
-            case 'down': return { ...tile.position, row: tile.position.row + 1 }
-            case 'left': return { ...tile.position, col: tile.position.col - 1 }
-            case 'right': return { ...tile.position, col: tile.position.col + 1 }
-            default: return tile.position
-        }
-    }
-
-    const onMoved = () => {
-        setTiles(currTiles => currTiles.map(t =>
-            isTileDragging(t) ? { ...t, position: getNewPosition(t) } : t
-        ))
+    const getMovedTile = (tile: TileType, direction: Direction) => {
+		if (isTileDragging(tile)) {
+			switch (direction) {
+				case 'up': return { ...tile, row: tile.row - 1 }
+				case 'down': return { ...tile, row: tile.row + 1 }
+				case 'left': return { ...tile, col: tile.col - 1 }
+				case 'right': return { ...tile, col: tile.col + 1 }
+				default: return tile
+			}
+		}
+		return tile
     }
 
     const onTileReset = () => {
+		resetOffsetValue()
         setDraggedTile(null)
-        resetOffsetValue()
     }
 
     const moveTiles = () => {
@@ -224,7 +282,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             ? dragDirection === 'left' ? -itemSize : itemSize
             : dragDirection === 'up' ? -itemSize : itemSize
 
-        offset.value = withTiming(value, { duration: 100 }, () => onMoved())
+        offset.value = withTiming(value, { duration: 100 }, () => finalizeMove())
     }
 
     const resetTile = () => {
@@ -250,7 +308,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
     const animatedStyle = useAnimatedStyle(() => {
         return {
-            transform: [isHorizontal ? { translateX: offset.value } : { translateY: offset.value }],
+            transform: [
+                isHorizontal
+                    ? { translateX: offset.value }
+                    : { translateY: offset.value }
+            ],
         }
     })
 
@@ -263,6 +325,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'center',
+					borderWidth: 1,
+					borderColor: theme.colors.background,
                 }}
             >
                 <Text style={styles.label}>{id + 1}</Text>
@@ -271,54 +335,91 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     }
 
     const renderTiles = () => {
-        return (
-            <View style={styles.tileContainer}>
-                {tiles.map((tile) => {
-                    const coords = getTileCoords(tile)
-                    if (!coords) return
-                    const draggable = isTileDraggable(tile)
-                    const dragging = isTileDragging(tile)
-                    const { x, y } = coords
+        return tiles.map((tile) => {
+			const coords = getTileCoords(tile)
+			if (!coords) return
+			const draggable = isTileDraggable(tile)
+			const dragging = isTileDragging(tile)
+			const { x, y } = coords
 
-                    const panGesture = Gesture.Pan()
-                        .onBegin(event => onTouchStart(event, tile))
-                        .onChange(event => onTouchMove(event, tile))
-                        .onFinalize(event => onTouchEnd(event, tile))
+			const panGesture = Gesture.Pan()
+				.onBegin(event => onTouchStart(event, tile))
+				.onChange(event => onTouchMove(event, tile))
+				.onFinalize(event => onTouchEnd(event, tile))
 
-                    return tile && (
-                        <Animated.View
-                            key={tile.id}
-                            style={[
-                                {
-                                    position: 'absolute',
-                                    top: y,
-                                    left: x,
-                                    borderRadius: 10,
-                                    overflow: 'hidden',
-                                    backgroundColor: dragging ? 'purple' : draggable ? '#4682b4' : 'green',
-                                    cursor: draggable ? 'pointer' : 'auto',
-                                },
-                                dragging && animatedStyle,
-                            ]}
-                        >
-                            <GestureDetector gesture={panGesture}>
-                                {renderSquare(tile.id)}
-                            </GestureDetector>
-                        </Animated.View>
-                    )
-                })}
-            </View>
-        )
+			return (
+				<Animated.View
+					key={tile.id}
+					style={[
+						{
+							position: 'absolute',
+							top: y,
+							left: x,
+							borderRadius: 10,
+							overflow: 'hidden',
+							backgroundColor: dragging ? 'purple' : draggable ? '#4682b4' : status === 'resolved' ? 'red' : 'green',
+							cursor: draggable ? 'pointer' : 'auto',
+						},
+						dragging && animatedStyle,
+					]}
+				>
+					<GestureDetector gesture={panGesture}>
+						{renderSquare(tile.id)}
+					</GestureDetector>
+				</Animated.View>
+			)
+		})
     }
+
+	const renderNavButton = () => {
+		let onPress = () => {}
+		switch (status) {
+			case 'idle': onPress = startGame; break
+			case 'playing': onPress = () => setStatus('paused'); break
+			case 'paused': onPress = () => setStatus('playing'); break
+			case 'resolved': onPress = startGame; break
+		}
+		let label
+		switch (status) {
+			case 'idle': label = 'Play'; break
+			case 'playing': label = 'Pause'; break
+			case 'paused': label = 'Resume'; break
+			case 'resolved': label = 'Play Again'; break
+		}
+		return (
+			<Button onPress={onPress} label={label} />
+		)
+	}
+	const renderKillButton = () => status === 'paused' ? (
+		<Button onPress={() => setStatus('idle')} label='Quit' />
+	) : null
+
+	const renderResolveMessage = () => status === 'resolved' ? (
+		<Text style={styles.status}>Winner!</Text>
+	) : null
+
     return (
         <View
             onLayout={onLayout}
             style={styles.container}
         >
             {/* <CheckerBoard level={4} /> */}
-            <View style={styles.tileContainer}>
-                {tiles && renderTiles()}
-            </View>
+			{dims && (
+				<View
+					style={[
+						{ width: dims.width, height: dims.height },
+						styles.tileContainer,
+					]}
+				>
+					{tiles && renderTiles()}
+				</View>
+			)}
+            <Row spacing={20} style={styles.nav}>
+				<Text style={[styles.status, { color: theme.colors.text }]}>{status}</Text>
+				{renderNavButton()}
+				{renderKillButton()}
+				{renderResolveMessage()}
+            </Row>
         </View>
     )
 }
@@ -340,10 +441,6 @@ const styles = StyleSheet.create({
         alignItems: 'stretch',
         justifyContent: 'center',
     },
-    square: {
-        flex: 1,
-        width: '33%',
-    },
     black: {
         backgroundColor: '#555',
     },
@@ -351,18 +448,19 @@ const styles = StyleSheet.create({
         backgroundColor: '#777',
     },
     tileContainer: {
-        position: 'absolute',
-        top: 0, right: 0, bottom: 0, left: 0,
-        zIndex: 20,
-    },
-    positionContainer: {
-        position: 'absolute',
-        top: 0, right: 0, bottom: 0, left: 0,
-        zIndex: 30,
+        position: 'relative',
+		overflow: 'hidden',
     },
     label:{
         fontSize: 24,
         color: '#fff',
         fontWeight: 'bold',
     },
+	nav: {
+		marginVertical: 12,
+	},
+	status: {
+		fontWeight: 'bold',
+		fontSize: 20,
+	},
 })
