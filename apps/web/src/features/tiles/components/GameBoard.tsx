@@ -122,7 +122,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 			}
         }
         
-        // setTiles(shuffled)
+        setTiles(shuffled)
 		setStatus('playing')
     }
 

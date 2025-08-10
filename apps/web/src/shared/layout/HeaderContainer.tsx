@@ -9,7 +9,7 @@ export const HeaderContainer: React.FC<any> = ({ children }: { children: ReactNo
     let height = resolveResponsiveProp({ xs: 26, sm: 34, md: 40, lg: 46 })
     const { orientation } = useDeviceInfo()
     const isLandscape = orientation === 'landscape'
-    if (isLandscape) height += 12
+    if (!isLandscape) height += 10
 	return (
         <Row
             align='center'
