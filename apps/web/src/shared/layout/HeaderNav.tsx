@@ -1,6 +1,6 @@
 // apps/web/src/shared/layout/HeaderNav.tsx
 
-import React, { useEffect } from 'react'
+import React from 'react'
 import { View } from 'react-native'
 import { Button, IconButton } from '@shared/buttons'
 import { FlexBox } from '@shared/grid'
@@ -15,11 +15,10 @@ export const HeaderNav: React.FC = () => {
     const { showModal } = useModal()
     const { isDark, toggleTheme } = useTheme()
     const { orientation } = useDeviceInfo()
-
     const isLandscape = orientation === 'landscape'
     const iconSize = resolveResponsiveProp({ xs: 24, sm: 24, md: 32, lg: 32 })
     const navSpacing = resolveResponsiveProp({ xs: Size.S, sm: Size.S, md: Size.S, lg: Size.M })
-
+    
     const showSigninModal = () => showModal(<AuthModal />)
 
     return (
@@ -35,23 +34,33 @@ export const HeaderNav: React.FC = () => {
                 spacing={navSpacing}
                 justify={isLandscape ? 'space-between' : 'flex-end'}
                 align={isLandscape ? 'stretch' : 'center'}
-                paddingBottom={isLandscape ? Size.XS : 0}
+                paddingBottom={isLandscape ? Size.S : 0}
             >
-                <View style={{ alignSelf: 'center' }}>
+
+                <FlexBox
+                    flex={1}
+                    spacing={navSpacing}
+                    direction={isLandscape ? 'column' : 'row-reverse'}
+                    justify={isLandscape ? 'space-between' : 'flex-start'}
+                    style={{
+                        alignSelf: 'center',
+                    }}
+                >
                     <IconButton
                         iconName='grid'
                         onPress={() => navigate('Tiles')}
                         iconSize={iconSize - 2}
+                        // active={currentRoute === 'Tiles'}
                     />
-                </View>
-
-                <View style={{ alignSelf: 'center' }}>
                     <IconButton
                         iconName={isDark ? 'sunny' : 'moon'}
                         onPress={toggleTheme}
                         iconSize={iconSize - 2}
                     />
-                </View>
+                </FlexBox>
+
+                {/* <View style={{ alignSelf: 'center' }}>
+                </View> */}
 
                 {isAuthInitialized && (
                     <>

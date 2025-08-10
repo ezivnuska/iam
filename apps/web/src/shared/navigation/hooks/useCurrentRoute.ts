@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { navigationRef } from '../'
+import { useNavigation } from '@react-navigation/native'
 
 /**
  * Hook to track the current active route name.

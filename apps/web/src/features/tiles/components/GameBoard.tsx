@@ -8,7 +8,8 @@ import Animated, { clamp, useSharedValue, useAnimatedStyle, withTiming } from 'r
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { Row } from '@shared/grid'
 import { Button } from '@shared/buttons'
-import { useTheme } from '@shared/hooks'
+import { useDeviceInfo, useTheme } from '@shared/hooks'
+import { Size } from '@iam/theme'
 
 type GameBoardProps = {
     level: number
@@ -37,17 +38,19 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 	const [status, setStatus] = useState<GameStatus>()
 
 	const { theme } = useTheme()
+	const { orientation } = useDeviceInfo()
 
     const offset = useSharedValue(0)
 
     const onLayout = async (e: LayoutChangeEvent) => {
         const { layout } = e.nativeEvent
         if (!layout) return
-        setDims({ width: layout.width, height: layout.width })
+		let size = layout.height < layout.width ? layout.height : layout.width
+        setDims({ width: size, height: size })
     }
 
     useEffect(() => {
-        if (dims && !itemSize) {
+        if (dims) {
             setItemSize(dims.width / level)
         }
     }, [dims])
@@ -395,32 +398,37 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 	) : null
 
 	const renderResolveMessage = () => status === 'resolved' ? (
-		<Text style={styles.status}>Winner!</Text>
+		<Text style={[styles.status, { color: theme.colors.text }]}>Winner!</Text>
 	) : null
 
     return (
         <View
-            onLayout={onLayout}
-            style={styles.container}
+            // style={styles.container}
+			style={{ flex: 1 }}
         >
-            {/* <CheckerBoard level={4} /> */}
-			{dims && (
-				<View
-					style={[
-						{ width: dims.width, height: dims.height },
-						styles.tileContainer,
-					]}
-				>
-					{tiles && renderTiles()}
-				</View>
-			)}
-            <Row spacing={20} style={styles.nav}>
+			<View
+				onLayout={onLayout}
+				style={styles.container}
+			>
+				{/* <CheckerBoard level={4} /> */}
+				{dims && (
+					<View
+						style={[
+							{ width: dims.width, height: dims.height },
+							styles.tileContainer,
+						]}
+					>
+						{tiles && renderTiles()}
+					</View>
+				)}
+			</View>
+			<Row spacing={20} paddingVertical={Size.M}>
 				<Text style={[styles.status, { color: theme.colors.text }]}>{status}</Text>
 				{renderNavButton()}
 				{renderKillButton()}
 				{renderResolveMessage()}
-            </Row>
-        </View>
+			</Row>
+		</View>
     )
 }
 
@@ -450,15 +458,13 @@ const styles = StyleSheet.create({
     tileContainer: {
         position: 'relative',
 		overflow: 'hidden',
+		alignSelf: 'center',
     },
     label:{
         fontSize: 24,
         color: '#fff',
         fontWeight: 'bold',
     },
-	nav: {
-		marginVertical: 12,
-	},
 	status: {
 		fontWeight: 'bold',
 		fontSize: 20,
