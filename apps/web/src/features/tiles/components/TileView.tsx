@@ -10,7 +10,7 @@ export const TileView = () => {
 
 	return (
         <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
-            <TileGame level={4} />
+            <TileGame />
         </View>
 	)
 }

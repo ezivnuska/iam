@@ -1,13 +1,28 @@
 // apps/web/src/features/tiles/types.ts
 
-export type Direction = 'up' | 'down' | 'left' | 'right' | 'none'
+export enum Direction {
+    UP = 'up',
+    DOWN = 'down',
+    LEFT = 'left',
+    RIGHT = 'right',
+    NONE = 'none',
+}
 
 export type TileType = {
     id: number
     col: number
     row: number
-    draggable?: boolean
-    dragging?: boolean
 }
 
-export type GameStatus = 'idle' | 'start' | 'playing' | 'paused' | 'resolved'
+export enum GameStatus {
+    IDLE = 'idle',
+    START = 'start',
+    PLAYING = 'playing',
+    PAUSED = 'paused',
+    RESOLVED = 'resolved',
+}
+
+export type EmptyPosition = {
+    col: number
+    row: number
+}

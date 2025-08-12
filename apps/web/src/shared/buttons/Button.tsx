@@ -1,4 +1,4 @@
-// apps/web/src/shared/buttons/Button.tsx
+// apps/web/src/shared/buttons/ButtonWithIcon.tsx
 
 import React from 'react'
 import {
@@ -12,20 +12,12 @@ import {
 import { Row } from '@shared/grid'
 import { useButtonStyles, useTheme } from '@shared/hooks'
 import { resolveResponsiveProp } from '@iam/theme'
+import Ionicons from '@expo/vector-icons/Ionicons'
+import type { ButtonVariant } from './Button.types'
 
-export type ButtonVariant =
-    | 'primary'
-    | 'secondary'
-    | 'success'
-    | 'danger'
-    | 'warning'
-    | 'info'
-    | 'muted'
-    | 'tertiary'
-    | 'transparent'
-
-export type BaseButtonProps = {
+export type ButtonProps = {
     label?: string
+    iconName?: string
     onPress: () => void
     disabled?: boolean
     style?: StyleProp<ViewStyle> | ((state: PressableStateCallbackType) => StyleProp<ViewStyle>)
@@ -33,8 +25,9 @@ export type BaseButtonProps = {
     showActivity?: boolean
 }
 
-export const Button: React.FC<BaseButtonProps> = ({
+export const Button: React.FC<ButtonProps> = ({
 	label,
+    iconName,
 	onPress,
 	disabled = false,
 	style,
@@ -67,7 +60,7 @@ export const Button: React.FC<BaseButtonProps> = ({
                 ]
             }}            
 		>
-            <Row>
+            <Row spacing={6} align='center'>
                 {showActivity ? <ActivityIndicator color={variantStyles.textColor} size='small' />
                 : (
                     <Text
@@ -79,6 +72,7 @@ export const Button: React.FC<BaseButtonProps> = ({
                         {label}
                     </Text>
                 )}
+                <Ionicons name={iconName as any} size={20} color={variantStyles.textColor} />
             </Row>
 		</Pressable>
 	)

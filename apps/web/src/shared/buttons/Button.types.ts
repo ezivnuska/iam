@@ -1,8 +1,8 @@
 // apps/web/src/shared/buttons/Button.types.ts
 
 import { ReactNode } from 'react'
-import { GestureResponderEvent, StyleProp, ViewStyle, TextStyle } from 'react-native'
-import { ResponsiveProp } from '@/app/types'
+import { StyleProp, ViewStyle, TextStyle } from 'react-native'
+import type { ResponsiveProp } from '@iam/theme'
 
 export interface ButtonProps {
 	label?: string
@@ -16,3 +16,14 @@ export interface ButtonProps {
 	submitting?: boolean
     transparent?: boolean
 }
+
+export type ButtonVariant =
+    | 'primary'
+    | 'secondary'
+    | 'success'
+    | 'danger'
+    | 'warning'
+    | 'info'
+    | 'muted'
+    | 'tertiary'
+    | 'transparent'

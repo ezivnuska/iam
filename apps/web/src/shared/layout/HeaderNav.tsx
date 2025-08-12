@@ -1,7 +1,6 @@
 // apps/web/src/shared/layout/HeaderNav.tsx
 
 import React from 'react'
-import { View } from 'react-native'
 import { Button, IconButton } from '@shared/buttons'
 import { FlexBox } from '@shared/grid'
 import { AuthModal } from '@shared/modals'
@@ -58,9 +57,6 @@ export const HeaderNav: React.FC = () => {
                         iconSize={iconSize - 2}
                     />
                 </FlexBox>
-
-                {/* <View style={{ alignSelf: 'center' }}>
-                </View> */}
 
                 {isAuthInitialized && (
                     <>
