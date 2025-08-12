@@ -72,7 +72,7 @@ export const Button: React.FC<ButtonProps> = ({
                         {label}
                     </Text>
                 )}
-                <Ionicons name={iconName as any} size={20} color={variantStyles.textColor} />
+                <Ionicons name={iconName as any} size={24} color={variantStyles.textColor} />
             </Row>
 		</Pressable>
 	)

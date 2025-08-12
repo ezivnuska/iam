@@ -24,6 +24,7 @@ import postRoutes from './routes/post.routes'
 import commentRoutes from './routes/comment.routes'
 import kofiRoutes from './routes/kofi.routes'
 import likeRoutes from './routes/like.routes'
+import scoreRoutes from './routes/score.routes'
 
 // --- Constants ---
 const API_PORT = parseInt(process.env.API_PORT || '4000', 10)
@@ -62,6 +63,7 @@ app.use('/api/posts', postRoutes)
 app.use('/api/comments', commentRoutes)
 app.post('/api/kofi', kofiRoutes)
 app.use('/api/likes', likeRoutes)
+app.use('/api/scores', scoreRoutes)
 
 // --- Misc Handlers ---
 app.get('/health', (req: Request, res: Response) => {

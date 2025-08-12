@@ -22,7 +22,7 @@ export const TileGameHeader: React.FC = () => {
     const startPlay = () => setStatus(GameStatus.START)
     const unpause = () => setStatus(GameStatus.PLAYING)
     const pause = () => setStatus(GameStatus.PAUSED)
-    const reset = () => setStatus(GameStatus.IDLE)
+    const reset = () => setStatus(GameStatus.START)
 
     const renderNavButton = () => {
         let onPress
@@ -42,9 +42,9 @@ export const TileGameHeader: React.FC = () => {
         }
         let iconName
         switch (status) {
-            case GameStatus.IDLE: iconName = 'play'; break
-            case GameStatus.PLAYING: iconName = 'pause'; break
-            case GameStatus.PAUSED: iconName = 'play'; break
+            case GameStatus.IDLE: iconName = 'play-circle'; break
+            case GameStatus.PLAYING: iconName = 'pause-circle'; break
+            case GameStatus.PAUSED: iconName = 'play-circle'; break
             case GameStatus.RESOLVED: iconName = 'refresh'; break
         }
         return onPress && <Button onPress={onPress} iconName={iconName} label={label} />

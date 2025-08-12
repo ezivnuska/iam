@@ -5,8 +5,10 @@ import { LayoutChangeEvent, StyleSheet, Text, View } from 'react-native'
 import { Direction, GameStatus, TileType } from '../types'
 import Animated, { clamp, useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
-import { useTheme } from '@shared/hooks'
+import { useDeviceInfo, useTheme } from '@shared/hooks'
 import { useTiles } from '../hooks'
+import { Leaderboard } from './Leaderboard'
+import { FlexBox } from '@shared/grid'
 
 export type Dimensions = {
     width: number
@@ -19,18 +21,19 @@ export const TileGame: React.FC = () => {
     const {
         emptySpace,
         level,
+        scores,
         status,
         tiles,
+        clearScores,
         setStatus,
         setTiles,
     } = useTiles()
-
+    
     const [dims, setDims] = useState<Dimensions>()
     const [itemSize, setItemSize] = useState<number>()
     const [draggedTile, setDraggedTile] = useState<TileType | null>()
-
+    const { orientation } = useDeviceInfo()
 	const { theme } = useTheme()
-
     const offset = useSharedValue(0)
 
     const onLayout = async (e: LayoutChangeEvent) => {
@@ -263,7 +266,11 @@ export const TileGame: React.FC = () => {
     }
 
     return (
-        <View style={{ flex: 1 }}>
+        <FlexBox
+            direction={ orientation === 'landscape' ? 'row' : 'column' }
+            spacing={12}
+            style={{ flex: 1 }}
+        >
 			<View
 				onLayout={onLayout}
 				style={styles.container}
@@ -279,7 +286,8 @@ export const TileGame: React.FC = () => {
 					</View>
 				)}
 			</View>
-		</View>
+            {scores.length && <Leaderboard scores={scores} clearScores={clearScores} />}
+		</FlexBox>
     )
 }
 

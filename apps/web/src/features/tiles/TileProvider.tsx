@@ -11,6 +11,8 @@ import React, {
 } from 'react'
 import { GameStatus, TileType } from './types'
 import type { EmptyPosition } from './types'
+import { addNewScore, clearAllScores, fetchScoresForGame } from '@iam/services'
+import { Score } from '@iam/types'
 
 // ------------------ Types ------------------
 
@@ -33,6 +35,8 @@ export type TileContextValue = TileState & {
     ticking: boolean
     time?: string
     emptySpace?: EmptyPosition
+    scores: Score[]
+    clearScores: () => void
     setStatus: (status: GameStatus) => void
     setTiles: (tiles: TileType[]) => void
     startTicker: () => void
@@ -81,13 +85,31 @@ type TileProviderProps = {
 export const TileProvider: React.FC<TileProviderProps> = ({ children }) => {
     const [state, dispatch] = useReducer(reducer, initialState)
     const [ticker, setTicker] = useState<NodeJS.Timeout | null>(null)
-
+    const [scores, setScores] = useState<Score[]>([])
     const formattedTime = useMemo(() => {
-        if (state.ticks <= 0) return
         const m = Math.floor(state.ticks / 60)
         const s = state.ticks < 60 ? state.ticks : state.ticks % 60
         return `${m > 0 ? (m < 10 ? `0${m}` : `${m}`) : `00`}:${s < 10 ? `0${s}` : s}`
     }, [state.ticks])
+
+    const handleWin = async () => {
+        const newScore =  await addNewScore(formattedTime as string)
+        if (newScore) setScores(currScores => [...currScores, newScore])
+    }
+
+    const clearScores = async () => {
+        await clearAllScores()
+        setScores([])
+    }
+
+    const fetchScores = async () => {
+        const fetchedScores = await fetchScoresForGame()
+        if (fetchedScores) setScores(fetchedScores)
+    }
+
+    useEffect(() => {
+        fetchScores()
+    }, [])
 
     useEffect(() => {
         if (!state.status) return
@@ -97,6 +119,7 @@ export const TileProvider: React.FC<TileProviderProps> = ({ children }) => {
                 initTiles()
             break
             case GameStatus.START:
+                resetTicks()
                 shuffle()
             break
             case GameStatus.PLAYING:
@@ -105,6 +128,7 @@ export const TileProvider: React.FC<TileProviderProps> = ({ children }) => {
             case GameStatus.PAUSED:
             case GameStatus.RESOLVED:
                 stopTicker()
+                handleWin()
             break
         }
     }, [state.status])
@@ -241,6 +265,7 @@ export const TileProvider: React.FC<TileProviderProps> = ({ children }) => {
     const ticking = useMemo(() => ticker !== null, [ticker])
   
     const actions = useMemo(() => ({
+        clearScores,
         setStatus,
         setTiles,
         tick,
@@ -255,6 +280,7 @@ export const TileProvider: React.FC<TileProviderProps> = ({ children }) => {
                 ...state,
                 ...actions,
                 emptySpace,
+                scores,
                 ticking,
                 time: formattedTime,
             }}

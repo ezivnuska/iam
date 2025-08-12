@@ -5,6 +5,7 @@ import { View } from 'react-native'
 import { Column } from '@shared/grid'
 import { useDeviceInfo, useTheme } from '@shared/hooks'
 import { HeaderContainer } from '..'
+import { Size } from '@iam/theme'
 
 interface ScreenContainerProps<HProps extends object = {}, SProps extends object = {}> {
     header?: React.ComponentType<HProps>
@@ -23,7 +24,11 @@ export function ScreenContainer<HProps extends object = {}, SProps extends objec
     const { orientation } = useDeviceInfo()
     const isLandscape = orientation === 'landscape'
     return (
-        <Column flex={1} style={{ paddingHorizontal: 12, backgroundColor: theme.colors.background }}>
+        <Column
+            flex={1}
+            spacing={isLandscape ? Size.M : Size.XS}
+            style={{ paddingHorizontal: 12, backgroundColor: theme.colors.background }}
+        >
             
             {HeaderComponent && (
                 <HeaderContainer>
