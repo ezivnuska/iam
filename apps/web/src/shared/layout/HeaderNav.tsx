@@ -18,7 +18,7 @@ export const HeaderNav: React.FC = () => {
     const iconSize = resolveResponsiveProp({ xs: 24, sm: 24, md: 32, lg: 32 })
     const navSpacing = resolveResponsiveProp({ xs: Size.S, sm: Size.S, md: Size.S, lg: Size.M })
     
-    const showSigninModal = () => showModal(<AuthModal />)
+    const showSigninModal = () => showModal(<AuthModal />, true)
 
     return (
         <FlexBox

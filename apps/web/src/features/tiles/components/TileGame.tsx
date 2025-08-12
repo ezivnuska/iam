@@ -166,23 +166,27 @@ export const TileGame: React.FC = () => {
             ? dragDirection === Direction.LEFT ? -itemSize : itemSize
             : dragDirection === Direction.UP ? -itemSize : itemSize
 
-        offset.value = withTiming(value, { duration: 50 }, () => finalizeMove())
+        offset.value = withTiming(value, { duration: 100 }, () => finalizeMove())
     }
 
     const resetTile = () => {
-        offset.value = withTiming(0, { duration: 50 }, onTileReset)
+        offset.value = withTiming(0, { duration: 100 }, onTileReset)
     }
 
     const handleMove = (event: any, tile: TileType) => {
         if (!itemSize) return
         const { translationX, translationY } = event
         const isClick = translationX < 5 && translationY < 5
-        let newValue = isHorizontal ? translationX : translationY
-        const shouldMove = isClick || Math.abs(newValue) > itemSize / 2
-        if (shouldMove) {
-            moveTiles()
+        if (!isClick) {
+            let newValue = isHorizontal ? translationX : translationY
+            const shouldMove = isClick || Math.abs(newValue) > itemSize / 2
+            if (shouldMove) {
+                moveTiles()
+            } else {
+                resetTile()
+            }
         } else {
-            resetTile()
+            moveTiles()
         }
     }
 

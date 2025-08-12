@@ -6,10 +6,10 @@ import { resolveResponsiveProp } from '@iam/theme'
 import { useDeviceInfo } from '@shared/hooks'
 
 export const HeaderContainer: React.FC<any> = ({ children }: { children: ReactNode }) => {
-    let height = resolveResponsiveProp({ xs: 26, sm: 34, md: 40, lg: 46 })
+    let height = resolveResponsiveProp({ xs: 40, sm: 40, md: 50, lg: 50 })
     const { orientation } = useDeviceInfo()
     const isLandscape = orientation === 'landscape'
-    if (!isLandscape) height += 10
+    if (!isLandscape) height += 12
 	return (
         <Row
             align='center'

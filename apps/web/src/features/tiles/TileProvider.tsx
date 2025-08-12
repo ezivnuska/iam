@@ -98,6 +98,8 @@ export const TileProvider: React.FC<TileProviderProps> = ({ children }) => {
     }
 
     const clearScores = async () => {
+        stopTicker()
+        setStatus(GameStatus.IDLE)
         await clearAllScores()
         setScores([])
     }
@@ -116,17 +118,21 @@ export const TileProvider: React.FC<TileProviderProps> = ({ children }) => {
         switch (state.status) {
             case GameStatus.IDLE:
                 resetTicks()
+                stopTicker()
                 initTiles()
             break
             case GameStatus.START:
-                resetTicks()
                 shuffle()
             break
             case GameStatus.PLAYING:
+                // resetTicks()
                 startTicker()
             break
             case GameStatus.PAUSED:
+                stopTicker()
+            break
             case GameStatus.RESOLVED:
+                resetTicks()
                 stopTicker()
                 handleWin()
             break
@@ -224,7 +230,7 @@ export const TileProvider: React.FC<TileProviderProps> = ({ children }) => {
             }
         }
         
-        setTiles(shuffled)
+        // setTiles(shuffled)
         setStatus(GameStatus.PLAYING)
     }
 
@@ -262,7 +268,7 @@ export const TileProvider: React.FC<TileProviderProps> = ({ children }) => {
         }
     }, [ticker])
   
-    const ticking = useMemo(() => ticker !== null, [ticker])
+    const ticking = useMemo(() => ticker ? ticker !== null : false, [ticker])
   
     const actions = useMemo(() => ({
         clearScores,
