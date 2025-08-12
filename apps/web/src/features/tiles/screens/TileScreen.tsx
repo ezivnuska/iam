@@ -2,13 +2,16 @@
 
 import React from 'react'
 import { ScreenContainer } from '@shared/layout'
-import { GameBoard, TileView, TileViewHeader } from '../components'
+import { TileView, TileViewHeader } from '../components'
+import { TileProvider } from '../TileProvider'
 
 export const TileScreen = () => {
 	return (
-        <ScreenContainer
-            header={TileViewHeader}
-            screen={GameBoard}
-        />
+        <TileProvider>
+            <ScreenContainer
+                header={TileViewHeader}
+                screen={TileView}
+            />
+        </TileProvider>
 	)
 }
