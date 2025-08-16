@@ -44,7 +44,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ scores, clearScores })
 
 	return (
         <Column
-            flex={1}
+            // flex={1}
             spacing={12}
             style={{ marginBottom: 12 }}
         >

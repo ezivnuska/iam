@@ -22,7 +22,7 @@ export const TileGameHeader: React.FC = () => {
     const startPlay = () => setStatus(GameStatus.START)
     const unpause = () => setStatus(GameStatus.PLAYING)
     const pause = () => setStatus(GameStatus.PAUSED)
-    const reset = () => setStatus(GameStatus.START)
+    const reset = () => setStatus(GameStatus.IDLE)
 
     const renderNavButton = () => {
         let onPress

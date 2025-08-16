@@ -19,12 +19,12 @@ export type Dimensions = {
 export const TileGame: React.FC = () => {
 
     const {
-        emptySpace,
         level,
         scores,
         status,
         tiles,
         clearScores,
+        getSpace,
         setStatus,
         setTiles,
     } = useTiles()
@@ -35,6 +35,7 @@ export const TileGame: React.FC = () => {
     const { orientation } = useDeviceInfo()
 	const { theme } = useTheme()
     const offset = useSharedValue(0)
+    const dragDirection = useMemo(() => draggedTile && draggedTile.direction, [draggedTile])
 
     const onLayout = async (e: LayoutChangeEvent) => {
         const { layout } = e.nativeEvent
@@ -62,36 +63,17 @@ export const TileGame: React.FC = () => {
 		}
     }, [tiles])
 
-    const isTileDraggable = useCallback((tile: TileType) => {
-		if (status !== 'playing' || !emptySpace) return false
-        const { col, row } = emptySpace
-        const draggables = tiles.filter(tile => tile.col === col || tile.row === row)
-        return draggables.filter(t => t.id === tile.id).length > 0
-    }, [emptySpace, status])
-
-    const dragDirection = useMemo(() => {
-            let direction = Direction.NONE
-            if (emptySpace && draggedTile) {
-                const { col, row } = emptySpace
-                if (draggedTile.col === col) {
-                    direction = draggedTile.row < row ? Direction.DOWN : Direction.UP
-                } else if (draggedTile.row === row) {
-                    direction = draggedTile.col < col ? Direction.RIGHT : Direction.LEFT
-                }
-            }
-            return direction
-    }, [draggedTile])
-
 	const isTileDragging = useCallback((tile: TileType) => {
+        const emptySpace = getSpace(tiles)
 		if (!draggedTile || !emptySpace) return false
         const { col, row } = emptySpace
 
 		let draggingTiles = tiles.filter(t => (
 			t.id === draggedTile.id ||
-			(dragDirection === Direction.UP && t.col === col && t.row > row! && t.row < draggedTile.row) ||
-			(dragDirection === Direction.DOWN && t.col === col && t.row < row && t.row > draggedTile.row) ||
-			(dragDirection === Direction.LEFT && t.row === row && t.col > col! && t.col < draggedTile.col) ||
-			(dragDirection === Direction.RIGHT && t.row === row && t.col < col! && t.col > draggedTile.col)
+			(draggedTile.direction === Direction.UP && t.col === col && t.row > row! && t.row < draggedTile.row) ||
+			(draggedTile.direction === Direction.DOWN && t.col === col && t.row < row && t.row > draggedTile.row) ||
+			(draggedTile.direction === Direction.LEFT && t.row === row && t.col > col! && t.col < draggedTile.col) ||
+			(draggedTile.direction === Direction.RIGHT && t.row === row && t.col < col! && t.col > draggedTile.col)
 		))
 		return draggingTiles.filter(t => t.id === tile.id).length > 0
 	}, [draggedTile])
@@ -110,12 +92,12 @@ export const TileGame: React.FC = () => {
     }
 
 	const finalizeMove = () => {
-		const movedTiles = tiles.map(t => getMovedTile(t, dragDirection))
+		const movedTiles = tiles.map(t => getMovedTile(t, t.direction))
 		setTiles(movedTiles)
 	}
 
     const onTouchStart = (event: any, tile: TileType) => {
-        if (isTileDraggable(tile)) {
+        if (tile.direction !== Direction.NONE) {
             setDraggedTile(tile)
         }
     }
@@ -224,7 +206,7 @@ export const TileGame: React.FC = () => {
     }
 
     const getTileColor = (tile: TileType) => {
-        const draggable = isTileDraggable(tile)
+        const draggable = tile.direction !== Direction.NONE
         switch (status) {
             case GameStatus.RESOLVED: return 'red'
             case GameStatus.IDLE: return 'green'
@@ -238,7 +220,7 @@ export const TileGame: React.FC = () => {
         return tiles.map((tile) => {
 			const coords = getTileCoords(tile)
 			if (!coords) return
-			const draggable = isTileDraggable(tile)
+			const draggable = tile.direction !== Direction.NONE
 			const dragging = isTileDragging(tile)
 			const { x, y } = coords
 			const panGesture = Gesture.Pan()

@@ -12,6 +12,7 @@ export type TileType = {
     id: number
     col: number
     row: number
+    direction: Direction
 }
 
 export enum GameStatus {

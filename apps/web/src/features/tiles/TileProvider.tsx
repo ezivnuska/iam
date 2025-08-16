@@ -9,8 +9,7 @@ import React, {
     useState,
     ReactNode,
 } from 'react'
-import { GameStatus, TileType } from './types'
-import type { EmptyPosition } from './types'
+import { Direction, EmptyPosition, GameStatus, TileType } from './types'
 import { addNewScore, clearAllScores, fetchScoresForGame } from '@iam/services'
 import { Score } from '@iam/types'
 
@@ -37,6 +36,7 @@ export type TileContextValue = TileState & {
     emptySpace?: EmptyPosition
     scores: Score[]
     clearScores: () => void
+    getSpace: (tiles: TileType[]) => EmptyPosition
     setStatus: (status: GameStatus) => void
     setTiles: (tiles: TileType[]) => void
     startTicker: () => void
@@ -162,33 +162,29 @@ export const TileProvider: React.FC<TileProviderProps> = ({ children }) => {
 
     // ------------------ EmptySpace ------------------
 
-    const getEmptyRow = useCallback(() => {
-        let emptyRow = null
-        if (state.tiles) {
+    const getEmptyRow = (tiles: TileType[]) => {
+        if (tiles) {
             for (let r = 0; r < state.level; r++) {
-                const rowTiles = state.tiles.filter(t => t.row === r)
-                if (rowTiles.length < state.level) emptyRow = r
+                const rowTiles = tiles.filter(t => t.row === r)
+                if (rowTiles.length < state.level) return r
             }
         }
-        return emptyRow
-    }, [state.tiles])
+    }
 
-    const getEmptyCol = useCallback(() => {
-        let emptyCol = null
-        if (state.tiles) {
+    const getEmptyCol = (tiles: TileType[]) => {
+        if (tiles) {
             for (let c = 0; c < state.level; c++) {
-                const colTiles = state.tiles.filter(t => t.col === c)
-                if (colTiles.length < state.level) emptyCol = c
+                const colTiles = tiles.filter(t => t.col === c)
+                if (colTiles.length < state.level) return c
             }
         }
-        return emptyCol
-    }, [state.tiles])
+    }
 
-    const emptySpace = useMemo(() => {
-        const col = getEmptyCol()
-        const row = getEmptyRow()
-        return (col !== null && row !== null) ? { col, row } : undefined
-    }, [getEmptyCol, getEmptyRow])
+    const getEmptySpace = (tiles: TileType[]) => {
+        const col = getEmptyCol(tiles)
+        const row = getEmptyRow(tiles)
+        return { col, row } as EmptyPosition
+    }
 
     // ------------------ Tiles ------------------
 
@@ -197,20 +193,41 @@ export const TileProvider: React.FC<TileProviderProps> = ({ children }) => {
         let id = 0
         for (let row = 0; row < state.level; row++) {
             for (let col = 0; col < state.level; col++) {
-                initialTiles.push({ id, row, col })
+                initialTiles.push({ id, row, col, direction: Direction.NONE })
                 id++
             }
         }
 
         const lastTile = initialTiles.pop()
-        let empty = { col: state.level - 1, row: state.level - 1 }
-        if (lastTile) empty = { col: lastTile.col, row: lastTile.row }
+        // let empty = { col: state.level - 1, row: state.level - 1 }
+        // if (lastTile) empty = { col: lastTile.col, row: lastTile.row }
         
         setTiles(initialTiles)
     }
+
+    const getDragDirection = (tile: TileType, emptySpace: EmptyPosition) => {
+        let direction = Direction.NONE
+        if (emptySpace && tile) {
+            const { col, row } = emptySpace
+            if (tile.col === col) {
+                direction = tile.row < row ? Direction.DOWN : Direction.UP
+            } else if (tile.row === row) {
+                direction = tile.col < col ? Direction.RIGHT : Direction.LEFT
+            }
+        }
+        return direction
+    }
   
     const setTiles = (payload: TileType[]) => {
-        dispatch({ type: 'SET_TILES', payload })
+        const emptySpace = getEmptySpace(payload)
+        const tilesWithDirection = payload.map((tile) => {
+            const directionalTile = {
+                ...tile,
+                direction: getDragDirection(tile, emptySpace as EmptyPosition),
+            }
+            return directionalTile
+        })
+        dispatch({ type: 'SET_TILES', payload: tilesWithDirection })
     }
 
     const shuffle = () => {
@@ -272,6 +289,8 @@ export const TileProvider: React.FC<TileProviderProps> = ({ children }) => {
   
     const actions = useMemo(() => ({
         clearScores,
+        getSpace: getEmptySpace,
+        // getSpace: (tiles: TileType[]): EmptyPosition => getEmptySpace(tiles),
         setStatus,
         setTiles,
         tick,
@@ -285,7 +304,7 @@ export const TileProvider: React.FC<TileProviderProps> = ({ children }) => {
             value={{
                 ...state,
                 ...actions,
-                emptySpace,
+                // emptySpace,
                 scores,
                 ticking,
                 time: formattedTime,
