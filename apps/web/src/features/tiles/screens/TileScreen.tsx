@@ -5,19 +5,21 @@ import { ScreenContainer } from '@shared/layout'
 import { TileView } from '../components'
 import { TileProvider } from '../TileProvider'
 import { TileGameHeader } from '../components/TileGameHeader'
-import { usePreventBack } from '@shared/hooks'
+import { View } from 'react-native'
+import { useTheme } from '@shared/hooks'
 
 export const TileScreen = () => {
-    usePreventBack(' Are you sure you want to leave page?', () => {
-        console.log('yes, leave')
-        return true
-    })
+    const { theme } = useTheme()
 	return (
         <TileProvider>
-            <ScreenContainer
-                header={TileGameHeader}
-                screen={TileView}
-            />
+            <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
+                <View style={{ flex: 1, width: '90%', marginHorizontal: 'auto' }}>
+                    <ScreenContainer
+                        header={TileGameHeader}
+                        screen={TileView}
+                    />
+                </View>
+            </View>
         </TileProvider>
 	)
 }
