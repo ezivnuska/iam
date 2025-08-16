@@ -58,7 +58,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
 
 const styles = StyleSheet.create({
 	button: {
-        padding: Size.XS
+        paddingVertical: Size.XS
 		// paddingHorizontal: 8,
 		// paddingVertical: 4,
 	},

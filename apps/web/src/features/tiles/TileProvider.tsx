@@ -100,17 +100,17 @@ export const TileProvider: React.FC<TileProviderProps> = ({ children }) => {
 
     const handleNewScore = async () => {
         const newScore =  await addNewScore(savedScore as string)
-        setScores(currScores => [...currScores, newScore])
+        if (newScore) await fetchScores()
         setSavedScore(undefined)
     }
 
     useEffect(() => {
-        if (user) {
-            if (savedScore) {
+        if (savedScore) {
+            if (user) {
                 handleNewScore()
+            } else {
+                showAuthModal()
             }
-        } else {
-            showAuthModal()
         }
     }, [user, savedScore])
 
@@ -151,6 +151,8 @@ export const TileProvider: React.FC<TileProviderProps> = ({ children }) => {
                 initTiles()
             break
             case GameStatus.START:
+                resetTicks()
+                stopTicker()
                 shuffle()
             break
             case GameStatus.PLAYING:
@@ -257,6 +259,7 @@ export const TileProvider: React.FC<TileProviderProps> = ({ children }) => {
             return directionalTile
         })
         dispatch({ type: 'SET_TILES', payload: tilesWithDirection })
+        if (state.status === GameStatus.START) setStatus(GameStatus.PLAYING)
     }
 
     const shuffle = () => {
@@ -276,8 +279,7 @@ export const TileProvider: React.FC<TileProviderProps> = ({ children }) => {
             }
         }
         
-        // setTiles(shuffled)
-        setStatus(GameStatus.PLAYING)
+        setTiles(shuffled)
     }
 
     const setStatus = (payload: GameStatus) => {

@@ -6,7 +6,8 @@ import { useAuth, useTheme } from '@shared/hooks'
 import { Column, Row } from '@shared/grid'
 import { Score } from '@iam/types'
 import { Size } from '@iam/theme'
-import { Button } from '@shared/buttons'
+import { Button, IconButton } from '@shared/buttons'
+import { Avatar } from '@shared/ui'
 // import { formatRelative } from 'date-fns'
 
 type LeaderboardProps = {
@@ -36,8 +37,11 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ scores, clearScores })
 
     const renderItem = (item: Score) => {
         return (
-            <Row spacing={12} align='center' paddingVertical={Size.XS}>
-                <Text style={{ color: theme.colors.text }}>{item.user.username}</Text>
+            <Row spacing={12} align='center' justify='space-between' paddingVertical={2}>
+                <Row spacing={6} align='center' paddingVertical={Size.XS}>
+                    <Avatar user={item.user} size='xs' />
+                    <Text style={{ color: theme.colors.text }}>{item.user.username}</Text>
+                </Row>
                 <Text style={{ color: theme.colors.text }}>{item.score}</Text>
                 {/* <Text style={{ color: theme.colors.text }}>{formatRelative(new Date(item.createdAt), new Date())}</Text> */}
             </Row>
@@ -45,10 +49,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ scores, clearScores })
     }
 
 	return (
-        <Column
-            spacing={12}
-            style={{ marginBottom: 12 }}
-        >
+        <Column spacing={6}>
             <Row
                 spacing={12}
                 align='center'
@@ -63,13 +64,12 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ scores, clearScores })
                         },
                     ]}
                 >
-                    Scores
+                    High Scores
                 </Text>
 
                 {scores.length > 0 && user?.role === 'admin' && (
-                    <Button
-                        label='Clear'
-                        iconName='close-circle-sharp'
+                    <IconButton
+                        iconName='close'
                         onPress={clearScores}
                     />
                 )}

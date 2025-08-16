@@ -7,7 +7,6 @@ import Animated, { clamp, useSharedValue, useAnimatedStyle, withTiming } from 'r
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { useDeviceInfo, useTheme } from '@shared/hooks'
 import { useTiles } from '../hooks'
-import { Leaderboard } from './Leaderboard'
 import { FlexBox } from '@shared/grid'
 
 export type Dimensions = {
@@ -15,15 +14,12 @@ export type Dimensions = {
     height: number
 }
 
-
 export const TileGame: React.FC = () => {
 
     const {
         level,
-        scores,
         status,
         tiles,
-        clearScores,
         getSpace,
         setStatus,
         setTiles,
@@ -92,7 +88,7 @@ export const TileGame: React.FC = () => {
     }
 
 	const finalizeMove = () => {
-		const movedTiles = tiles.map(t => getMovedTile(t, t.direction))
+		const movedTiles = tiles.map(t => getMovedTile(t))
 		setTiles(movedTiles)
 	}
 
@@ -124,9 +120,9 @@ export const TileGame: React.FC = () => {
         }
     }
 
-    const getMovedTile = (tile: TileType, direction: Direction) => {
+    const getMovedTile = (tile: TileType) => {
 		if (isTileDragging(tile)) {
-			switch (direction) {
+			switch (tile.direction) {
 				case Direction.UP: return { ...tile, row: tile.row - 1 }
 				case Direction.DOWN: return { ...tile, row: tile.row + 1 }
 				case Direction.LEFT: return { ...tile, col: tile.col - 1 }
@@ -143,10 +139,10 @@ export const TileGame: React.FC = () => {
     }
 
     const moveTiles = () => {
-        if (!itemSize) return
+        if (!itemSize || !draggedTile) return
         let value = isHorizontal
-            ? dragDirection === Direction.LEFT ? -itemSize : itemSize
-            : dragDirection === Direction.UP ? -itemSize : itemSize
+            ? draggedTile.direction === Direction.LEFT ? -itemSize : itemSize
+            : draggedTile.direction === Direction.UP ? -itemSize : itemSize
 
         offset.value = withTiming(value, { duration: 100 }, () => finalizeMove())
     }
@@ -272,7 +268,6 @@ export const TileGame: React.FC = () => {
 					</View>
 				)}
 			</View>
-            {scores.length && <Leaderboard scores={scores} clearScores={clearScores} />}
 		</FlexBox>
     )
 }

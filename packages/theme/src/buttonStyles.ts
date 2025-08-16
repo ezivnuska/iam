@@ -36,7 +36,7 @@ export const getButtonVariantStyles = (theme: Theme) => ({
 	},
 	success: {
 		backgroundColor: theme.colors.success,
-		textColor: theme.colors.background,
+		textColor: 'white',//theme.colors.text,
 	},
 	danger: {
 		backgroundColor: theme.colors.error,

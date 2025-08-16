@@ -24,12 +24,13 @@ export const createScore = async (
 export const getScoresForGame = async () => {
 
 	const scores = await Score.find({})
+        .sort({ score: 1 })
+        .limit(3)
 		.populate({
 			path: 'user',
 			select: 'username avatar',
 			populate: { path: 'avatar', select: '_id filename variants username' },
 		})
-		.sort({ score: 1 })
     
 	if (!scores) {
 		throw new HttpError(`Scores for Tiles not found`, 404)
