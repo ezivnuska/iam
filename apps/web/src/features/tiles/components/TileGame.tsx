@@ -46,11 +46,11 @@ export const TileGame: React.FC = () => {
         }
     }, [dims])
 
-    useEffect(() => {
-        if (itemSize) {
-            setStatus(GameStatus.IDLE)
-        }
-    }, [itemSize])
+    // useEffect(() => {
+    //     if (itemSize) {
+    //         setStatus(GameStatus.IDLE)
+    //     }
+    // }, [itemSize])
 
     useEffect(() => {
 		if (draggedTile) {
