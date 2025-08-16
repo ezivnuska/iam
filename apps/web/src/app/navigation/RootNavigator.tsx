@@ -26,7 +26,7 @@ export const RootNavigator = () => {
             <Stack.Screen name='Chat' component={ChatScreen} />
             <Stack.Screen name='ForgotPassword' component={ForgotPasswordScreen} />
             <Stack.Screen name='Home' component={FeedScreen} />
-            <Stack.Screen name='Tiles' component={TileScreen} />
+            <Stack.Screen name='Tiles' component={TileScreen} options={{ gestureEnabled: false }} />
             <Stack.Screen name='Feed' component={FeedScreen} />
             <Stack.Screen name='ResetPassword' component={ResetPasswordScreen} />
             <Stack.Screen name='PrivacyPolicy' component={PrivacyPolicyScreen} />
