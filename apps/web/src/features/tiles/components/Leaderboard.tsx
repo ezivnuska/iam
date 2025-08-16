@@ -7,6 +7,7 @@ import { Column, Row } from '@shared/grid'
 import { Score } from '@iam/types'
 import { Size } from '@iam/theme'
 import { Button } from '@shared/buttons'
+// import { formatRelative } from 'date-fns'
 
 type LeaderboardProps = {
     scores: Score[]
@@ -38,13 +39,13 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ scores, clearScores })
             <Row spacing={12} align='center' paddingVertical={Size.XS}>
                 <Text style={{ color: theme.colors.text }}>{item.user.username}</Text>
                 <Text style={{ color: theme.colors.text }}>{item.score}</Text>
+                {/* <Text style={{ color: theme.colors.text }}>{formatRelative(new Date(item.createdAt), new Date())}</Text> */}
             </Row>
         )
     }
 
 	return (
         <Column
-            // flex={1}
             spacing={12}
             style={{ marginBottom: 12 }}
         >

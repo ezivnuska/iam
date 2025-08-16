@@ -97,7 +97,7 @@ export const TileGame: React.FC = () => {
 	}
 
     const onTouchStart = (event: any, tile: TileType) => {
-        if (tile.direction !== Direction.NONE) {
+        if (status === GameStatus.PLAYING && tile.direction !== Direction.NONE) {
             setDraggedTile(tile)
         }
     }
@@ -220,7 +220,7 @@ export const TileGame: React.FC = () => {
         return tiles.map((tile) => {
 			const coords = getTileCoords(tile)
 			if (!coords) return
-			const draggable = tile.direction !== Direction.NONE
+			const draggable = status === GameStatus.PLAYING && tile.direction !== Direction.NONE
 			const dragging = isTileDragging(tile)
 			const { x, y } = coords
 			const panGesture = Gesture.Pan()

@@ -12,6 +12,8 @@ import React, {
 import { Direction, EmptyPosition, GameStatus, TileType } from './types'
 import { addNewScore, clearAllScores, fetchScoresForGame } from '@iam/services'
 import { Score } from '@iam/types'
+import { useAuth, useModal } from '@shared/hooks'
+import { AuthModal } from '@shared/modals'
 
 // ------------------ Types ------------------
 
@@ -83,18 +85,45 @@ type TileProviderProps = {
 }
 
 export const TileProvider: React.FC<TileProviderProps> = ({ children }) => {
+    const { user } = useAuth()
+    const { hideAllModals, showModal } = useModal()
     const [state, dispatch] = useReducer(reducer, initialState)
     const [ticker, setTicker] = useState<NodeJS.Timeout | null>(null)
     const [scores, setScores] = useState<Score[]>([])
+    const [savedScore, setSavedScore] = useState<string>()
+
     const formattedTime = useMemo(() => {
         const m = Math.floor(state.ticks / 60)
         const s = state.ticks < 60 ? state.ticks : state.ticks % 60
         return `${m > 0 ? (m < 10 ? `0${m}` : `${m}`) : `00`}:${s < 10 ? `0${s}` : s}`
     }, [state.ticks])
 
+    const handleNewScore = async () => {
+        const newScore =  await addNewScore(savedScore as string)
+        setScores(currScores => [...currScores, newScore])
+        setSavedScore(undefined)
+    }
+
+    useEffect(() => {
+        if (user) {
+            if (savedScore) {
+                handleNewScore()
+            }
+        } else {
+            showAuthModal()
+        }
+    }, [user, savedScore])
+
+    const showAuthModal = () => {
+        showModal(<AuthModal onDismiss={handleClose} />)
+    }
+
+    const handleClose = () => {
+        hideAllModals()
+    }
+
     const handleWin = async () => {
-        const newScore =  await addNewScore(formattedTime as string)
-        if (newScore) setScores(currScores => [...currScores, newScore])
+        setSavedScore(formattedTime as string)
     }
 
     const clearScores = async () => {

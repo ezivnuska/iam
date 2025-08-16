@@ -167,11 +167,11 @@ import React, {
   
   // ------------------ Hook ------------------
   
-  export const usePlay = (): PlayContextValue => {
-    const context = useContext(PlayContext)
-    if (!context) {
-      throw new Error('usePlay must be used within a PlayProvider')
-    }
-    return context
-  }
+//   export const usePlay = (): PlayContextValue => {
+//     const context = useContext(PlayContext)
+//     if (!context) {
+//       throw new Error('usePlay must be used within a PlayProvider')
+//     }
+//     return context
+//   }
   

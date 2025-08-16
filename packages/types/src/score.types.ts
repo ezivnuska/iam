@@ -6,4 +6,5 @@ export interface Score {
 	_id: string
 	user: User
 	score: string
+    createdAt: string
 }

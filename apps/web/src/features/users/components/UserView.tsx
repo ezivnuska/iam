@@ -10,7 +10,7 @@ import { getUserByUsername } from '@iam/services'
 import type { User } from '@iam/types'
 
 const UserProfileContext = createContext<User | null>(null)
-export const useUserProfile = () => useContext(UserProfileContext)
+export const useUserProfile = () => UserProfileContext && useContext(UserProfileContext)
 
 export const UserView = ({ ...props }) => {
     

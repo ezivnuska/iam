@@ -8,7 +8,7 @@ export const createScore = async (
 	user: string,
 	score: string
 ) => {
-    console.log('createScore', user)
+    
 	const toObjectId = (id: string | mongoose.Types.ObjectId) =>
 		typeof id === 'string' ? new mongoose.Types.ObjectId(id) : id
 
@@ -29,8 +29,8 @@ export const getScoresForGame = async () => {
 			select: 'username avatar',
 			populate: { path: 'avatar', select: '_id filename variants username' },
 		})
-		.sort({ createdAt: -1 })
-    console.log('scores', scores)
+		.sort({ score: 1 })
+    
 	if (!scores) {
 		throw new HttpError(`Scores for Tiles not found`, 404)
 	}
