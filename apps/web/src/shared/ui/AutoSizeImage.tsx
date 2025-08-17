@@ -90,7 +90,7 @@ export const AutoSizeImage = ({
                 style={{ position: 'absolute', zIndex: 10, alignSelf: 'center' }}
                 
             >
-                <Text style={{ fontSize: 24, fontWeight: 'bold', color: theme.colors.text }}>Image Unavailable</Text>
+                <Text style={{ alignSelf: 'center', fontSize: 24, fontWeight: 'bold', color: theme.colors.text }}>Image Unavailable</Text>
             </Row>
         )
     }
@@ -99,8 +99,8 @@ export const AutoSizeImage = ({
 		<View onLayout={onLayout} style={style}>
 			{measuredWidth && (
                 <Row align='center' justify='center' style={{ aspectRatio, position: 'relative', backgroundColor: getModifiedColor(theme.colors.text, 30, 0.25) }}>
-                    {/* <Text style={{ position: 'absolute', zIndex: 10, alignSelf: 'center', color: theme.colors.background }}>Image Unavailable</Text> */}
-                    {renderPlaceholder()}
+                    <Text style={{ position: 'absolute', zIndex: 10, fontSize: 20, fontWeight: 'bold', textAlign: 'center', alignSelf: 'center', color: theme.colors.background }}>Image Unavailable</Text>
+                    {/* {renderPlaceholder()} */}
                     <RNImage
                         source={{ uri: bestUrl }}
                         style={[StyleSheet.absoluteFillObject, { position: 'absolute', zIndex: 100 }]}

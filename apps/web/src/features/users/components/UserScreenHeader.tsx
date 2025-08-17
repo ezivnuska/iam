@@ -27,6 +27,7 @@ export const UserScreenHeader: React.FC<any> = () => {
                 onPress={gotoImages}
                 variant={route === 'UserImages' ? 'transparent' : 'muted'}
                 disabled={route === 'UserImages'}
+                compact
             />
         </ScreenHeaderContainer>
 	)

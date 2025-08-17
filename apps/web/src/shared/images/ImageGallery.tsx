@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
 		paddingVertical: IMAGE_MARGIN,
 	},
 	columnWrapper: {
-		justifyContent: 'center',
+		// justifyContent: 'center',
 		marginBottom: IMAGE_MARGIN,
 	},
 	imageBlock: {

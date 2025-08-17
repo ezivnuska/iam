@@ -26,7 +26,7 @@ export function ScreenContainer<HProps extends object = {}, SProps extends objec
     return (
         <Column
             flex={1}
-            spacing={Size.M}
+            spacing={Size.XS}
             // spacing={isLandscape ? Size.M : Size.M}
             style={{ paddingHorizontal: 12, paddingVertical: 2, backgroundColor: theme.colors.background }}
         >

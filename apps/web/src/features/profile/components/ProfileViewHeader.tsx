@@ -44,6 +44,7 @@ export const ProfileViewHeader: React.FC<any> = () => {
                     onPress={gotoImages}
                     variant={route === 'Images' ? 'transparent' : 'muted'}
                     disabled={route === 'Images'}
+                    compact
                 />
                 {route === 'Images' && (
                     <IconButton
@@ -58,6 +59,7 @@ export const ProfileViewHeader: React.FC<any> = () => {
                 label='Sign Out'
                 onPress={logout}
                 variant='muted'
+                compact
             />
         </ScreenHeaderContainer>
 	)
