@@ -17,7 +17,7 @@ export const CreatePostButton = () => {
 	}
 
 	const showPostModal = () => {
-		openFormModal(PostForm, { onPostCreated }, { title: 'Create Post' })
+		openFormModal(PostForm, { onPostCreated }, { title: 'Create Post', fullscreen: true })
 	}
 
 	return (

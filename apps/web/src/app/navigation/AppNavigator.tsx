@@ -36,7 +36,13 @@ export const AppNavigator = () => {
                             flex={1}
                             direction={isLandscape ? 'row' : 'column'}
                             align={isLandscape ? 'flex-start' : 'center'}
-                            style={{ alignItems: 'stretch' }}
+                            justify='center'
+                            style={{
+                                alignItems: 'stretch',
+                                width: '100%',
+                                maxWidth: 900,
+                                marginHorizontal: 'auto',
+                            }}
                         >
                             <Header />
                             <RootNavigator />

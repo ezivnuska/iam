@@ -27,19 +27,26 @@ export function ScreenContainer<HProps extends object = {}, SProps extends objec
         <Column
             flex={1}
             spacing={Size.XS}
+            justify='center'
+            align='center'
             // spacing={isLandscape ? Size.M : Size.M}
-            style={{ paddingHorizontal: 12, paddingVertical: 2, backgroundColor: theme.colors.background }}
+            style={{ width:'100%', paddingHorizontal: 12, paddingVertical: 2, backgroundColor: theme.colors.background }}
         >
-            
-            {HeaderComponent && (
-                <HeaderContainer>
-                    <HeaderComponent {...(headerProps as HProps)} />
-                </HeaderContainer>
-            )}
-            
-            <View style={{ flex: 1, flexGrow: 1, backgroundColor: theme.colors.background }}>
-                <ScreenComponent {...(screenProps as SProps)} />
-            </View>
+            <Column
+                flex={1}
+                spacing={Size.XS}
+                style={{ width: '100%' }}
+            >
+                {HeaderComponent && (
+                    <HeaderContainer>
+                        <HeaderComponent {...(headerProps as HProps)} />
+                    </HeaderContainer>
+                )}
+                
+                <View style={{ flex: 1, flexGrow: 1, backgroundColor: theme.colors.background }}>
+                    <ScreenComponent {...(screenProps as SProps)} />
+                </View>
+            </Column>
         </Column>
     )
 }

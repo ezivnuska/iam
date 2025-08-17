@@ -20,6 +20,7 @@ export const BondControls = ({ bond, userId, onConfirm, onDelete, onCreate }: Bo
 				<IconButton
 					iconName='person-add'
 					onPress={onCreate}
+                    iconSize={26}
 				/>
 			)
 		}
@@ -37,12 +38,14 @@ export const BondControls = ({ bond, userId, onConfirm, onDelete, onCreate }: Bo
 						<IconButton
 							onPress={onConfirm}
 							iconName='checkmark-circle'
+                            iconSize={26}
 						/>
 					)}
 					{onDelete && (
 						<IconButton
 							onPress={onDelete}
 							iconName='close-circle'
+                            iconSize={26}
 						/>
 					)}
 				</Row>
@@ -53,6 +56,7 @@ export const BondControls = ({ bond, userId, onConfirm, onDelete, onCreate }: Bo
 				<IconButton
 					iconName='remove-circle'
 					onPress={onDelete}
+                    iconSize={26}
 				/>
 			)
 		}
@@ -63,6 +67,7 @@ export const BondControls = ({ bond, userId, onConfirm, onDelete, onCreate }: Bo
 			<IconButton
 				iconName='person-remove-sharp'
 				onPress={onDelete}
+                iconSize={26}
 			/>
 		)
 	}

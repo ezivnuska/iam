@@ -52,7 +52,7 @@ export const PostForm = ({ onPostCreated }: PostFormProps) => {
 	}
 
 	return (
-		<View>
+		<View style={{ alignContent: 'stretch' }}>
 			<DynamicForm
 				schema={postSchema}
 				fields={postFields}

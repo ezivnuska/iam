@@ -32,7 +32,7 @@ export const AuthModal = ({
 	const schema = isSignin ? signinSchema : signupSchema
 	const fields = (isSignin ? signinFields : signupFields) as FieldConfig<z.infer<typeof schema>>[]
 	const submitLabel = isSignin ? 'Sign In' : 'Sign Up'
-	const title = isSignin ? 'Welcome Back' : 'Create an Account'
+	const title = isSignin ? 'Sign In' : 'Sign Up'
 
 	return (
 		<ModalContainer title={title} onDismiss={onDismiss}>

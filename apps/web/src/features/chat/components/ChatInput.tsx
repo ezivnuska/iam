@@ -11,7 +11,8 @@ import { ControlledTextInput } from '@shared/forms'
 import { Size } from '@iam/theme'
 
 const schema = z.object({
-	input: z.string().min(1, 'Message is required').max(280),
+	input: z.string().min(1, 'Message is required'),
+    //.max(280),
 })
 
 type ChatFormProps = z.infer<typeof schema>
