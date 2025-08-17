@@ -54,20 +54,22 @@ export const Avatar: React.FC<AvatarProps> = ({
                 },
             ]}
         >
-            {avatar
-				? (
-					<AutoSizeImage
-						image={avatar}
-                        style={{ width: imageSize, height: imageSize }}
-						forceSquare
-					/>
-				)
-				: (
-                    <View style={{ width: imageSize, height: imageSize }}>
+            {/* {avatar
+				? ( */}
+					{avatar && (
+                        <AutoSizeImage
+                            image={avatar}
+                            style={{ width: imageSize, height: imageSize, position: 'absolute', zIndex: 100 }}
+                            forceSquare
+                        />
+                    )}
+				{/* )
+				: ( */}
+                    <View style={{ width: imageSize, height: imageSize, position: 'absolute', zIndex: 10 }}>
                         <Text style={{ lineHeight: imageSize, fontSize, color: '#555', fontWeight: 'bold', marginHorizontal: 'auto' }}>{initials}</Text>
                     </View>
-                )
-			}
+                {/* )
+			} */}
         </Pressable>
     )
 }
@@ -78,5 +80,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         overflow: 'hidden',
+        position: 'relative',
     },
 })
