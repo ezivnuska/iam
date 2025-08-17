@@ -30,44 +30,10 @@ export const useBonds = (userId: string) => {
 		fetchBonds()
 	}, [userId, fetchBonds])
 
-	const createBond = async (responderId: string) => {
-		try {
-			const bond = await bondService.createBond(responderId)
-			await fetchBonds()
-			return bond
-		} catch (err) {
-			throw err
-		}
-	}
-
-	const updateBond = async (
-		bondId: string,
-		statusUpdate: Partial<{ confirmed: boolean }>
-	) => {
-		try {
-			await bondService.updateBondStatus(bondId, statusUpdate, userId)
-			await fetchBonds()
-		} catch (err) {
-			throw err
-		}
-	}
-
-	const removeBond = async (bondId: string) => {
-		try {
-			await bondService.deleteBond(bondId)
-			await fetchBonds()
-		} catch (err) {
-			throw err
-		}
-	}
-
 	return {
 		bonds,
 		loading,
 		error,
-		createBond,
-		updateBond,
-		removeBond,
 		refetch: fetchBonds,
 		setBonds,
 	}

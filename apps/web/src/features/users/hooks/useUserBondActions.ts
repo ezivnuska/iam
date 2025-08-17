@@ -11,15 +11,11 @@ export const useUserBondActions = (users: User[]) => {
 	const [filter, setFilter] = useState<FilterType>('all')
 	const { user: currentUser } = useAuth()
 	const [liveBonds, setLiveBonds] = useState<Bond[]>([])
-
 	const {
 		bonds,
 		error: bondsError,
 		loading: loadingBonds,
 		refetch: refetchBonds,
-		createBond,
-		removeBond,
-		updateBond,
 	} = useBonds(currentUser?.id ?? '')
 
 	const { emitBondCreate, emitBondUpdate, emitBondDelete } = useSocket()
@@ -34,8 +30,9 @@ export const useUserBondActions = (users: User[]) => {
 			setLiveBonds((prev) =>
 				prev.map((b) => (b._id === updated._id ? updated : b))
 			),
-		onDeleted: (bondId) =>
-			setLiveBonds((prev) => prev.filter((b) => b._id !== bondId)),
+		onDeleted: (bondId) => {
+			setLiveBonds((prev) => prev.filter((b) => b._id !== bondId))
+        },
 		onError: (msg) => {
 			console.error('Bond socket error:', msg)
 		},
@@ -68,7 +65,6 @@ export const useUserBondActions = (users: User[]) => {
 
 	const requestBond = async (responderId: string) => {
 		try {
-			await createBond(responderId)
 			emitBondCreate(responderId)
 		} catch {
 			Alert.alert('Error', 'Could not create bond')
@@ -79,7 +75,6 @@ export const useUserBondActions = (users: User[]) => {
 		const bond = getBondForUser(userId)
 		if (bond) {
 			try {
-				await updateBond(bond._id, { confirmed: true })
 				emitBondUpdate(bond._id, { confirmed: true })
 			} catch {
 				Alert.alert('Error', 'Could not confirm bond')
@@ -91,7 +86,6 @@ export const useUserBondActions = (users: User[]) => {
 		const bond = getBondForUser(userId)
 		if (bond) {
 			try {
-				await removeBond(bond._id)
 				emitBondDelete(bond._id)
 			} catch {
 				Alert.alert('Error', 'Could not delete bond')

@@ -47,6 +47,7 @@ export const updateBondStatus = async (
 	statusUpdate: StatusUpdate,
 	actionerId: Types.ObjectId | string
 ): Promise<IBond> => {
+    
 	if (!Types.ObjectId.isValid(id)) {
 		throw new HttpError('Invalid bond ID', 400)
 	}
@@ -70,7 +71,6 @@ export const getUserBonds = async (
 		throw new HttpError('Invalid user ID', 400)
 	}
 
-	// optionally .populate('sender responder actionerId') if you want full user docs here
 	return await Bond.find({
 		$or: [{ sender: userId }, { responder: userId }],
 	})
@@ -81,10 +81,11 @@ export const getUserBonds = async (
  * @param id - The bond document ID
  */
 export const deleteBond = async (id: string): Promise<IBond> => {
+    
 	if (!Types.ObjectId.isValid(id)) {
 		throw new HttpError('Invalid bond ID', 400)
 	}
-	const bond = await Bond.findById(id)
+	const bond = await Bond.findById({ _id: id })
 	if (!bond) throw new HttpError('Bond not found', 404)
 	
 	const deletedBond = bond

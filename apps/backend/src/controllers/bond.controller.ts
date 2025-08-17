@@ -25,11 +25,14 @@ export const registerBondHandlers = (io: Server, socket: Socket) => {
 	socket.on('bond:create', async ({ responder }) => {
 		try {
 			if (!responder) throw new Error('Responder is required')
-			const bond = await bondService.createBond({ sender: userId, responder })
+			const createdBond = await bondService.createBond({ sender: userId, responder })
+            if (createdBond) {
+                const serializedBond = toBond(createdBond)
+                const { sender, responder } = serializedBond
+                io.to(sender).emit('bond:created', serializedBond)
+                io.to(responder).emit('bond:created', serializedBond)
 
-			const serializedBond = toBond(bond)
-			io.to(serializedBond.sender).emit('bond:created', serializedBond)
-			io.to(serializedBond.responder).emit('bond:created', serializedBond)
+            }
 		} catch (err) {
 			console.error('Socket bond:create error:', err)
 			socket.emit('bond:error', 'Unable to create bond')
@@ -38,11 +41,14 @@ export const registerBondHandlers = (io: Server, socket: Socket) => {
 
 	socket.on('bond:update', async ({ bondId, status }: BondStatusUpdatePayload) => {
 		try {
-			const bond = await bondService.updateBondStatus(bondId, status, userId)
+			const updatedBond = await bondService.updateBondStatus(bondId, status, userId)
+            if (updatedBond) {
+                const serializedBond = toBond(updatedBond)
+                const { sender, responder } = serializedBond
+                io.to(sender).emit('bond:updated', serializedBond)
+                io.to(responder).emit('bond:updated', serializedBond)
 
-			const serializedBond = toBond(bond)
-			io.to(serializedBond.sender).emit('bond:updated', serializedBond)
-			io.to(serializedBond.responder).emit('bond:updated', serializedBond)
+            }
 		} catch (err) {
 			console.error('Socket bond:update error:', err)
 			socket.emit('bond:error', 'Unable to update bond')
@@ -52,9 +58,12 @@ export const registerBondHandlers = (io: Server, socket: Socket) => {
 	socket.on('bond:delete', async ({ bondId }) => {
 		try {
 			const deletedBond = await bondService.deleteBond(bondId)
-			const serializedBond = toBond(deletedBond)
-			io.to(serializedBond.sender).emit('bond:deleted', serializedBond)
-			io.to(serializedBond.responder).emit('bond:deleted', serializedBond)
+            if (deletedBond) {
+                const serializedBond = toBond(deletedBond)
+                const { _id, sender, responder } = serializedBond
+                io.to(sender).emit('bond:deleted', _id)
+                io.to(responder).emit('bond:deleted', _id)
+            }
 		} catch (err) {
 			console.error('Socket bond:delete error:', err)
 			socket.emit('bond:error', 'Unable to delete bond')
@@ -64,8 +73,8 @@ export const registerBondHandlers = (io: Server, socket: Socket) => {
 
 
 export const createBond = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-	try {
-		const sender = req.user?.id
+    try {
+        const sender = req.user?.id
 		const responder = req.body.responder
 
 		if (!sender || !responder) throw new Error('Responder and sender are required')
@@ -73,8 +82,6 @@ export const createBond = async (req: Request, res: Response, next: NextFunction
 		const bond = await bondService.createBond({ sender, responder })
 
 		const serializedBond = toBond(bond)
-
-		bondEvents.emit('bond:created', serializedBond)
 
 		res.status(201).json(serializedBond)
 	} catch (error) {
@@ -124,11 +131,11 @@ export const getUserBonds = async (req: Request, res: Response, next: NextFuncti
 export const deleteBond = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 	try {
 		const bondId = req.params.id
-		const bond = await bondService.deleteBond(bondId)
-
-		const serializedBond = toBond(bond)
-		
-		bondEvents.emit('bond:deleted', serializedBond)
+		const deletedBond = await bondService.deleteBond(bondId)
+		if (deletedBond) {
+            const serializedBond = toBond(deletedBond)
+            bondEvents.emit('bond:deleted', serializedBond)
+        }
 
 		res.status(204).send()
 	} catch (error) {

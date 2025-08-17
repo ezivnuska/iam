@@ -2,11 +2,13 @@
 
 import { RequestHandler } from 'express'
 import * as userService from '../services/user.service'
+import { normalizeUser } from '@iam/utils'
 
 export const getAllUsers: RequestHandler = async (_req, res, next) => {
 	try {
 		const users = await userService.findAllUsers()
-		res.json(users)
+        const normalizedUsers = users.map(u => normalizeUser(u))
+		res.json(normalizedUsers)
 	} catch (err) {
 		next(err)
 	}

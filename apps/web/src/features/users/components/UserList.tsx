@@ -30,7 +30,6 @@ export const UserList = ({
 	onEndReached,
 }: Props) => {
 	const renderItem = useCallback((item: User) => {
-	  
 		return (
 			<UserListItem
 				profile={item}
