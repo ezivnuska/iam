@@ -62,16 +62,18 @@ export const FeedListItem: React.FC<Props> = ({
                 deletePost={handleDelete}
             />
 
-			<Autolink
-				text={post.content}
-				style={{ fontSize: 16, color: theme.colors.text }}
-				linkStyle={{ color: theme.colors.link }}
-				url
-				email={false}
-				phone={false}
-				truncate={50}
-				truncateChars='...'
-			/>
+			{!post.linkUrl && (
+                <Autolink
+                    text={post.content}
+                    style={{ fontSize: 16, color: theme.colors.text }}
+                    linkStyle={{ color: theme.colors.link }}
+                    url
+                    email={false}
+                    phone={false}
+                    truncate={50}
+                    truncateChars='...'
+                />
+            )}
 
 			{post.image && <AutoSizeImage image={post.image} />}
 

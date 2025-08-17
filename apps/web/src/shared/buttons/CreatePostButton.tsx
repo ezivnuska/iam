@@ -25,6 +25,7 @@ export const CreatePostButton = () => {
             label='New Post'
             onPress={showPostModal}
             variant='primary'
+            compact
         />
     )
 }

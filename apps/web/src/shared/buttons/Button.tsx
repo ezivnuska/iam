@@ -23,6 +23,7 @@ export type ButtonProps = {
     style?: StyleProp<ViewStyle> | ((state: PressableStateCallbackType) => StyleProp<ViewStyle>)
     variant?: ButtonVariant
     showActivity?: boolean
+    compact?: boolean
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -33,6 +34,7 @@ export const Button: React.FC<ButtonProps> = ({
 	style,
 	variant = 'primary',
     showActivity = false,
+    compact = false,
 }) => {
     const { theme } = useTheme()
     const { baseButtonStyles, buttonVariants } = useButtonStyles()
@@ -56,6 +58,9 @@ export const Button: React.FC<ButtonProps> = ({
                     variant === 'transparent' && {
                         borderColor: theme.colors.muted,
                         borderWidth: 1,
+                    },
+                    compact && {
+                        height: 30,
                     },
                 ]
             }}            

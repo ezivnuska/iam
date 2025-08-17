@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
 	content: {
 		flex: 1,
 		width: '100%',
-		maxWidth: 400,
+		maxWidth: '90%',
 		minWidth: 300,
         alignSelf: 'center',
 	},

@@ -13,6 +13,7 @@ import type { AuthResponseType, User } from '@iam/types'
 import { useSocket } from '@shared/hooks'
 
 export type AuthContextType = {
+    disconnecting: boolean,
 	isAuthenticated: boolean
 	isAuthInitialized: boolean
 	user: User | null
@@ -23,6 +24,7 @@ export type AuthContextType = {
 }
 
 export const AuthContext = createContext<AuthContextType>({
+    disconnecting: false,
 	isAuthenticated: false,
 	isAuthInitialized: false,
 	user: null,
@@ -42,6 +44,7 @@ export const AuthProvider = ({
 	const [user, setUser] = useState<User | null>(null)
 	const [isAuthenticated, setIsAuthenticated] = useState(false)
 	const [isAuthInitialized, setIsAuthInitialized] = useState(false)
+	const [disconnecting, setDisconnecting] = useState(false)
     
     const { connectSocket, disconnectSocket } = useSocket()
 
@@ -75,18 +78,21 @@ export const AuthProvider = ({
 	}
 
 	const logout = async () => {
+        setDisconnecting(true)
 		await logoutRequest()
 		await clearToken()
 		disconnectSocket()
 		clearAuthHeader()
 		setUser(null)
 		setIsAuthenticated(false)
+        setDisconnecting(false)
 		navigate('Feed')
 	}
 
 	return (
 		<AuthContext.Provider
 			value={{
+                disconnecting,
 				isAuthenticated,
 				isAuthInitialized,
 				user,

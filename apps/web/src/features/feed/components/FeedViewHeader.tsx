@@ -12,6 +12,8 @@ export const FeedViewHeader = () => {
 
 	return (
 		<Row
+            align='center'
+            justify='space-between'
             spacing={Size.M}
             style={{ width: '100%' }}
         >

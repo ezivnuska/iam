@@ -48,7 +48,7 @@ export const AuthModal = ({
 				/>
 
                 <Button
-                    label={isSignin ? 'Need an account?' : 'Already have one?'}
+                    label={isSignin ? 'Sign Up' : 'Sign In'}
                     onPress={() => setMode(isSignin ? 'signup' : 'signin')}
                     variant='transparent'
                 />

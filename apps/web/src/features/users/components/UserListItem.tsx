@@ -78,7 +78,7 @@ export const UserListItem = ({
 const styles = StyleSheet.create({
 	container: {
 		paddingVertical: Size.XS,
-        // paddingHorizontal: paddingHorizontal,
+        paddingRight: Size.XS,
 	},
 	info: {
 		flex: 1,

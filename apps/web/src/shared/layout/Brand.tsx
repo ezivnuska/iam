@@ -11,7 +11,7 @@ export const Brand: React.FC = () => {
     const { theme } = useTheme()
     const currentRoute = useCurrentRoute()
     const fontSize = resolveResponsiveProp({ xs: 20, sm: 26, md: 32, lg: 40 })
-    const lineHeight = fontSize + 8
+    const lineHeight = fontSize + 4//8
     return (
         <Pressable
             onPress={() => navigate('Feed')}

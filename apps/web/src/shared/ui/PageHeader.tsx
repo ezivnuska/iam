@@ -11,7 +11,7 @@ interface PageHeaderProps {
 
 export const PageHeader: React.FC<PageHeaderProps> = ({ title }) => {
     const { theme } = useTheme()
-    const fontSize = resolveResponsiveProp({ xs: 16, sm: 18, md: 20, lg: 22 })
+    const fontSize = resolveResponsiveProp({ xs: 18, sm: 22, md: 22, lg: 24 })
 	return (
         <Text style={{ fontSize, color: theme.colors.text }}>
             {title}

@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { ScreenContainer } from '@shared/layout'
-import { TileView } from '../components'
+import { TileGame } from '../components'
 import { TileProvider } from '../TileProvider'
 import { TileGameHeader } from '../components/TileGameHeader'
 import { View } from 'react-native'
@@ -13,10 +13,10 @@ export const TileScreen = () => {
 	return (
         <TileProvider>
             <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
-                <View style={{ flex: 1, width: '90%', marginHorizontal: 'auto' }}>
+                <View style={{ flex: 1, width: '100%', marginHorizontal: 'auto' }}>
                     <ScreenContainer
                         header={TileGameHeader}
-                        screen={TileView}
+                        screen={TileGame}
                     />
                 </View>
             </View>

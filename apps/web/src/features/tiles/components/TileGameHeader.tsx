@@ -61,23 +61,23 @@ export const TileGameHeader: React.FC = () => {
     }
 
     const renderStartButton = () => status === 'idle' ? (
-        <Button onPress={startPlay} label='Play' iconName='play' />
+        <Button onPress={startPlay} label='Play' iconName='play' compact />
     ) : null
 
     const renderPauseButton = () => status === 'playing' ? (
-        <Button onPress={pause} label='Pause' iconName='pause' />
+        <Button onPress={pause} label='Pause' iconName='pause' compact />
     ) : null
 
     const renderResumeButton = () => status === 'paused' ? (
-        <Button onPress={unpause} label='Resume' iconName='play' />
+        <Button onPress={unpause} label='Resume' iconName='play' compact />
     ) : null
 
     const renderReplayButton = () => status === 'resolved' ? (
-        <Button onPress={unpause} label='Winner' iconName='refresh' variant='success' />
+        <Button onPress={unpause} label='Winner' iconName='refresh' variant='success' compact />
     ) : null
 
     const renderKillButton = () => status === 'paused' ? (
-        <Button onPress={reset} label='Quit' iconName='close-sharp' />
+        <IconButton onPress={reset} iconName='close-circle-sharp' iconSize={36} />
     ) : null
 
     const renderTopScore = () => topScore ? (

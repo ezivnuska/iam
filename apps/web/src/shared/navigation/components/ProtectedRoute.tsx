@@ -11,11 +11,11 @@ type Props = {
 }
 
 export const ProtectedRoute = ({ children }: Props) => {
-	const { isAuthenticated } = useAuth()
+	const { disconnecting, isAuthenticated } = useAuth()
 	const { showModal } = useModal()
     
     useEffect(() => {
-        if (!isAuthenticated) {
+        if (!isAuthenticated && !disconnecting) {
             console.log('PROTECTED ROUTE: showing auth modal')
             showModal(<AuthModal onDismiss={handleDismiss} />)
         }

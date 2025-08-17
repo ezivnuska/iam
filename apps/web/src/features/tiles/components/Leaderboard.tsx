@@ -67,12 +67,12 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ scores, clearScores })
                     High Scores
                 </Text>
 
-                {scores.length > 0 && user?.role === 'admin' && (
+                {/* {scores.length > 0 && user?.role === 'admin' && (
                     <IconButton
                         iconName='close'
                         onPress={clearScores}
                     />
-                )}
+                )} */}
             </Row>
             
             <Column flex={1}>

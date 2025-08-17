@@ -6,7 +6,8 @@ import type { Theme } from './themes'
 export const getBaseButtonStyles = (theme: Theme) =>
 	StyleSheet.create({
 		base: {
-            paddingVertical: 4,
+            height: 40,
+            // paddingVertical: 4,
 			paddingHorizontal: 8,
 			borderRadius: 6,
 			alignItems: 'center',

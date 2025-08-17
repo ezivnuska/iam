@@ -22,12 +22,13 @@ export function ScreenContainer<HProps extends object = {}, SProps extends objec
 }: ScreenContainerProps<HProps, SProps>) {
     const { theme } = useTheme()
     const { orientation } = useDeviceInfo()
-    const isLandscape = orientation === 'landscape'
+    // const isLandscape = orientation === 'landscape'
     return (
         <Column
             flex={1}
-            spacing={isLandscape ? Size.M : Size.XS}
-            style={{ paddingHorizontal: 12, backgroundColor: theme.colors.background }}
+            spacing={Size.M}
+            // spacing={isLandscape ? Size.M : Size.M}
+            style={{ paddingHorizontal: 12, paddingVertical: 2, backgroundColor: theme.colors.background }}
         >
             
             {HeaderComponent && (
