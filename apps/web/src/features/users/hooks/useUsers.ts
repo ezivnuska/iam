@@ -11,7 +11,8 @@ export const useUsers = () => {
 	const { data, fetchNextPage, loading } = usePaginatedFetch<User>('users', 10, !authLoading)
 
 	const users = useMemo(() => {
-		return (data ?? []).filter((u) => u.email !== currentUser?.email)
+        const currentUsers = data ?? []
+		return currentUsers.filter((u) => u.email !== currentUser?.email)
 	}, [data, currentUser?.email])
 
 	return {

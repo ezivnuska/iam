@@ -3,7 +3,6 @@
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import { UsersScreen } from './screens'
-import { withProtectedRoute } from '@shared/navigation'
 import type { UserStackParamList } from '@iam/types'
 import { UserView } from './components'
 
@@ -14,7 +13,7 @@ export const UserNavigator = () => (
         initialRouteName='UserList'
         screenOptions={{ headerShown: false }}
     >
-        <Stack.Screen name='UserList' component={withProtectedRoute(UsersScreen)} />
-        <Stack.Screen name='User' component={withProtectedRoute(UserView)} />
+        <Stack.Screen name='UserList' component={UsersScreen} />
+        <Stack.Screen name='User' component={UserView} />
     </Stack.Navigator>
 )
