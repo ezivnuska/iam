@@ -149,25 +149,26 @@ export function DynamicForm<T extends ZodTypeAny>({
 
 	return (
 		<FormProvider {...form}>
-			<DynamicFormFields
-				fields={fields}
-				control={form.control}
-				errors={form.formState.errors}
-				inputRefs={inputRefs}
-				formValues={form.getValues()}
-				triggerField={async (name) => {
-					const isValid = await form.trigger(name as Path<z.infer<T>>)
-					if (!isValid) {
-						setTimeout(() => focusAndScrollToField(name as string), 0)
-					}
-					return isValid
-				}}
-				handleSubmit={form.handleSubmit(handleSubmit)}
-			/>
+            <Column flex={1} spacing={10} align='stretch'>
+                <DynamicFormFields
+                    fields={fields}
+                    control={form.control}
+                    errors={form.formState.errors}
+                    inputRefs={inputRefs}
+                    formValues={form.getValues()}
+                    triggerField={async (name) => {
+                        const isValid = await form.trigger(name as Path<z.infer<T>>)
+                        if (!isValid) {
+                            setTimeout(() => focusAndScrollToField(name as string), 0)
+                        }
+                        return isValid
+                    }}
+                    handleSubmit={form.handleSubmit(handleSubmit)}
+                />
 
-            <Column spacing={10} justify='center'>
-                {children}
-
+                <Column flex={1} spacing={10} align='stretch' justify='flex-end'>
+                    {children}
+                </Column>
                 <Button
                     label={submitLabel}
                     onPress={form.handleSubmit(handleSubmit)}

@@ -52,7 +52,7 @@ export const PostForm = ({ onPostCreated }: PostFormProps) => {
 	}
 
 	return (
-		<View style={{ alignContent: 'stretch' }}>
+		<View style={{ flex: 1, alignContent: 'stretch' }}>
 			<DynamicForm
 				schema={postSchema}
 				fields={postFields}
@@ -62,7 +62,7 @@ export const PostForm = ({ onPostCreated }: PostFormProps) => {
 			>
                 <ImageUpload autoUpload={false} onImageSelected={setLocalImageData} />
 
-				{loading && <ActivityIndicator style={{ marginTop: 20 }} />}
+				{/* {loading && <ActivityIndicator style={{ marginTop: 20 }} />} */}
                 
 			</DynamicForm>
 		</View>

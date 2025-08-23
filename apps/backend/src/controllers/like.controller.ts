@@ -6,6 +6,7 @@ import * as likeService from '../services/like.service'
 export const toggleLike: RequestHandler = async (req, res) => {
 	const { refId } = req.params
 	const { refType } = req.query
+    console.log('refType', refType)
 	const userId = req.user?.id
 
 	if (!userId) {

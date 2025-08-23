@@ -6,7 +6,7 @@ const LikeSchema = new Schema(
 	{
 		user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 		refId: { type: Schema.Types.ObjectId, required: true },
-		refType: { type: String, enum: ['Post', 'Image'], required: true },
+		refType: { type: String, enum: ['Memory', 'Post', 'Image'], required: true },
 	},
 	{ timestamps: true }
 )

@@ -30,7 +30,12 @@ export function ScreenContainer<HProps extends object = {}, SProps extends objec
             justify='center'
             align='center'
             // spacing={isLandscape ? Size.M : Size.M}
-            style={{ width:'100%', paddingHorizontal: 12, paddingVertical: 2, backgroundColor: theme.colors.background }}
+            style={{
+                width:'100%',
+                paddingHorizontal: 12,
+                paddingVertical: 2,
+                backgroundColor: theme.colors.background,
+            }}
         >
             <Column
                 flex={1}

@@ -20,6 +20,7 @@ import bondRoutes from './routes/bond.routes'
 import profileRoutes from './routes/profile.routes'
 import userRoutes from './routes/user.routes'
 import imageRoutes from './routes/image.routes'
+import memoryRoutes from './routes/memory.routes'
 import postRoutes from './routes/post.routes'
 import commentRoutes from './routes/comment.routes'
 import kofiRoutes from './routes/kofi.routes'
@@ -59,6 +60,7 @@ app.use('/api/bond', bondRoutes)
 app.use('/api/profile', profileRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/images', imageRoutes)
+app.use('/api/memories', memoryRoutes)
 app.use('/api/posts', postRoutes)
 app.use('/api/comments', commentRoutes)
 app.post('/api/kofi', kofiRoutes)

@@ -1,7 +1,7 @@
 // apps/web/src/shared/images/ImageUpload.tsx
 
 import React, { useState } from 'react'
-import { Dimensions, Image, Platform, StyleSheet, Text, View } from 'react-native'
+import { Dimensions, Image, LayoutChangeEvent, Platform, StyleSheet, Text, View } from 'react-native'
 import { Row, Column } from '@shared/grid'
 import { IconButton, Button } from '@shared/buttons'
 import { NativeCamera, WebCamera } from '@shared/media'
@@ -9,6 +9,7 @@ import { selectImage } from '@shared/images'
 import { useResponsiveImageSize } from '@shared/hooks'
 import { uploadImage } from '@iam/services'
 import type { UploadedImage } from '@iam/types'
+import type { Dimensions as previewDims } from '@features/tiles'
 
 type ImageDataType = {
 	uri: string
@@ -32,6 +33,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
 	const [uploading, setUploading] = useState(false)
 	const [useCamera, setUseCamera] = useState(false)
 	const [imageData, setImageData] = useState<ImageDataType | null>(null)
+    const [dims, setDims] = useState<previewDims>()
 
 	const { width: rawWidth, height: rawHeight } = useResponsiveImageSize(
 		imageData?.width,
@@ -61,6 +63,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
 		try {
 			const selected = await selectImage()
 			if (!selected) return
+            console.log('selected', selected)
 			setImageData(selected.imageData)
 			onImageSelected?.(selected.imageData)
 		} catch (err) {
@@ -92,17 +95,25 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
 		)
 	}
 
+    const onLayout = async (e: LayoutChangeEvent) => {
+        const { layout } = e.nativeEvent
+        if (!layout) return
+        let size = layout.height < layout.width ? layout.height : layout.width
+        setDims({ width: size, height: size })
+    }
+
 	return useCamera ? (
 		renderCamera()
 	) : (
-		<Column flex={1} spacing={10} style={styles.container}>
+		<Column flex={1} spacing={10} style={styles.container} align='stretch'>
             {error && <Text style={styles.errorText}>{error}</Text>}
-            <View style={styles.previewContainer}>
-                {imageData && (
+            <View style={styles.previewContainer} onLayout={onLayout}>
+                {imageData && dims && (
                     <Image
                         source={{ uri: imageData.uri }}
                         // style={{ width: 150, height: 150, marginVertical: 10, borderRadius: 8 }}
-                        style={[styles.imagePreview, { width: imageWidth, height: imageHeight }]}
+                        style={[styles.imagePreview, { width: dims.width, height: dims.height }]}
+                        // style={[styles.imagePreview, { width: imageWidth, height: imageHeight }]}
                         resizeMode='contain'
                     />
                 )}
@@ -124,7 +135,9 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
 
 const styles = StyleSheet.create({
     container: {
-        alignItems: 'center',
+        // borderWidth: 1,
+        // borderColor: 'red',
+        // alignItems: 'center',
     },
     previewContainer: {
         flex: 1,

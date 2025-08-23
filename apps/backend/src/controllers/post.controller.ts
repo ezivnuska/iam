@@ -4,6 +4,7 @@ import { Request, Response, NextFunction } from 'express'
 import * as postService from '../services/post.service'
 import { Comment } from '../models/comment.model'
 import { ScrapeError, scrapeMetadata } from '../utils/metadata.utils'
+import { RefType } from '@iam/types'
 
 /* ------------------------------- POST CRUD ------------------------------- */
 
@@ -47,7 +48,7 @@ export const updatePost = async (req: Request, res: Response, next: NextFunction
 export const deletePost = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 	try {
 		await postService.deletePost(req.params.id, req.user!.id)
-		await Comment.deleteMany({ refId: req.params.id, refType: 'Post' })
+		await Comment.deleteMany({ refId: req.params.id, refType: RefType.Post })
 		res.status(204).end()
 	} catch (err) {
 		next(err)

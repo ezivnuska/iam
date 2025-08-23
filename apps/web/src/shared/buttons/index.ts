@@ -2,6 +2,7 @@
 
 export * from './AnimatedButton'
 export * from './Button'
+export * from './CreateMemoryButton'
 export * from './CreatePostButton'
 export * from './IconButton'
 export * from './PhotoCaptureButton'

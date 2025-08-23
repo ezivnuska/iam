@@ -17,7 +17,7 @@ export const ProfileView = () => {
 	const { theme } = useTheme()
     
 	const openEditModal = () => {
-		openFormModal(EditProfileForm, {}, { title: 'Edit Bio' })
+		openFormModal(EditProfileForm, {}, { title: 'Edit Bio', fullscreen: true })
 	}
 
     if (!isAuthInitialized) {

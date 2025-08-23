@@ -32,6 +32,16 @@ export const AuthNav: React.FC = () => {
             justify='center'
             wrap={false}
         >
+                  
+            <IconButton
+                label='Memories'
+                iconName='time'
+                onPress={() => navigate('Memories')}
+                iconSize={iconSize - 2}
+                active={currentRoute === 'Chat'}
+                showLabel={showLabel}
+            />
+
             <IconButton
                 label='Chat'
                 onPress={() => navigate('Chat')}

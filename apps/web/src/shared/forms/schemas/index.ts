@@ -2,6 +2,7 @@
 
 export * from './bio.schema'
 export * from './chat.schema'
+export * from './memory.schema'
 export * from './post.schema'
 export * from './signin.schema'
 export * from './signup.schema'

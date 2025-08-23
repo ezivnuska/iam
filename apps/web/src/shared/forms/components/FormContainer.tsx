@@ -38,6 +38,13 @@ export const FormContainer: React.FC<FormContainerProps> = ({
 }
 
 const styles = StyleSheet.create({
+    content: {
+        flex: 1,
+        width: '100%',
+        minWidth: 300,
+        maxWidth: 400,
+        alignSelf: 'center',
+    },
 	title: {
 		fontSize: 20,
 		fontWeight: '600',
@@ -46,13 +53,6 @@ const styles = StyleSheet.create({
 	subtitle: {
 		marginTop: 4,
 		fontSize: 16,
-	},
-	content: {
-		flex: 1,
-		width: '100%',
-		maxWidth: 400,
-		minWidth: 300,
-		alignSelf: 'center',
 	},
 	main: {
 		flex: 1,

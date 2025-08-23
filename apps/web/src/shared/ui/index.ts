@@ -2,6 +2,7 @@
 
 export * from './AutoSizeImage'
 export * from './Avatar'
+export * from './DateSelector'
 export * from './Heading'
 export * from './LoadingPanel'
 export * from './PageHeader'

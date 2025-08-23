@@ -15,6 +15,7 @@ import { TileScreen } from '@features/tiles'
 import type { RootStackParamList } from '@iam/types'
 import { UserNavigator } from '@features/users'
 import { withProtectedRoute } from '@shared/navigation'
+import { MemoryScreen } from '@features/memory'
 
 const Stack = createStackNavigator<RootStackParamList>()
 
@@ -29,6 +30,7 @@ export const RootNavigator = () => {
             <Stack.Screen name='Home' component={FeedScreen} />
             <Stack.Screen name='Tiles' component={TileScreen} />
             <Stack.Screen name='Feed' component={FeedScreen} />
+            <Stack.Screen name='Memories' component={withProtectedRoute(MemoryScreen)} />
             <Stack.Screen name='ResetPassword' component={ResetPasswordScreen} />
             <Stack.Screen name='PrivacyPolicy' component={PrivacyPolicyScreen} />
             <Stack.Screen name='Profile' component={withProtectedRoute(ProfileScreen)} />

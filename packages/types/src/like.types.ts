@@ -1,6 +1,6 @@
 // packages/types/src/like.types.ts
 
-import { RefType } from './ref.types'
+import type { RefType } from './ref.types'
 
 export type LikeRefType = RefType
 

@@ -1,7 +1,7 @@
 // apps/web/src/shared/modals/ModalContainer.tsx
 
 import React, { ReactNode } from 'react'
-import { View, Text, StyleSheet, Pressable } from 'react-native'
+import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native'
 import { Column, Row } from '@shared/grid'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { useModal, useTheme } from '@shared/hooks'
@@ -32,7 +32,7 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
     }
 
 	return (
-        <Column style={styles.content} spacing={Size.M}>
+        <Column flex={1} style={styles.content} spacing={Size.M}>
             <Row align='center'>
                 {!!title && (
                     <View style={styles.header}>
@@ -44,8 +44,15 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
                     <Ionicons name='close-sharp' size={28} color={theme.colors.text} />
                 </Pressable>
             </Row>
-
-            <View style={styles.main}>{children}</View>
+                <ScrollView
+                    contentContainerStyle={styles.scrollViewContent}
+                    style={{ flex: 1, alignContent: 'stretch' }}
+                    showsHorizontalScrollIndicator={false}
+                    showsVerticalScrollIndicator={false}
+                >
+                    {children}
+                </ScrollView>
+            {/* <Column flex={1} style={styles.main}>{children}</Column> */}
         </Column>
 	)
 }
@@ -53,6 +60,9 @@ export const ModalContainer: React.FC<ModalContainerProps> = ({
 const styles = StyleSheet.create({
 	header: {
 		flex: 1,
+	},
+	scrollViewContent: {
+		flexGrow: 1,
 	},
 	title: {
 		fontSize: 24,

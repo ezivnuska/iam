@@ -20,6 +20,12 @@ export const linking: LinkingOptions<RootStackParamList> = {
                     FeedList: '',
                 },
             },
+            Memories: {
+                path: 'memories',
+                screens: {
+                    MemoryList: '',
+                },
+            },
             Home: '',
             Tiles: 'tiles',
             ResetPassword: 'reset-password/:token',

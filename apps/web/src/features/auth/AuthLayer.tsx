@@ -26,7 +26,7 @@ export const AuthLayer: React.FC<{
 
 	const showAuthModal = () => {
 		console.log('AUTH LAYER: showing auth modal')
-		showModal(<AuthModal onDismiss={handleClose} />)
+		showModal(<AuthModal onDismiss={handleClose} />, true)
 	}
 
     const handleClose = () => {

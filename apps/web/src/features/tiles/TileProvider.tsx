@@ -115,7 +115,7 @@ export const TileProvider: React.FC<TileProviderProps> = ({ children }) => {
     }, [user, savedScore])
 
     const showAuthModal = () => {
-        showModal(<AuthModal onDismiss={handleClose} />)
+        showModal(<AuthModal onDismiss={handleClose} />, true)
     }
 
     const handleClose = () => {

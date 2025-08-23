@@ -40,8 +40,8 @@ export const AppNavigator = () => {
                             style={{
                                 alignItems: 'stretch',
                                 width: '100%',
-                                maxWidth: 900,
                                 marginHorizontal: 'auto',
+                                maxWidth: isLandscape ? 700 : 500,
                             }}
                         >
                             <Header />

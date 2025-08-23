@@ -36,7 +36,7 @@ export const AuthModal = ({
 
 	return (
 		<ModalContainer title={title} onDismiss={onDismiss}>
-			<Column spacing={Size.L}>
+			<Column align='stretch' spacing={Size.L}>
 				<DynamicForm<typeof schema>
 					schema={schema}
 					fields={fields}

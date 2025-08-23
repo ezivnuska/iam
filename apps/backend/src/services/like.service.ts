@@ -22,7 +22,7 @@ interface GetLikeMetaParams {
 }
 
 export const isValidRefType = (refType: unknown): refType is LikeRefType => {
-	return refType === 'Post' || refType === 'Image'
+	return refType === 'Post' || refType === 'Image' || refType === 'Memory'
 }
 
 export const toggleLike = async ({

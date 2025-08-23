@@ -6,11 +6,12 @@ import { CommentsContainer, CommentForm, useFeedback } from './'
 import { useAuth, useModal } from '@shared/hooks'
 import {
 	fetchImageCommentCount,
+	fetchMemoryCommentCount,
 	fetchPostCommentCount,
 	fetchLikeMeta,
 	toggleLike,
 } from '@iam/services'
-import type { RefType } from '@iam/types'
+import { RefType } from '@iam/types'
 
 type Props = {
 	refId: string
@@ -44,7 +45,11 @@ export const FeedbackBarContainer: React.FC<Props> = ({
 		fetchLikeMeta: (id) => fetchLikeMeta(id, refType),
 		toggleLike: (id) => toggleLike(id, refType),
 		fetchCommentCount:
-			refType === 'Post' ? fetchPostCommentCount : fetchImageCommentCount,
+			refType === RefType.Post
+                ? fetchPostCommentCount
+                : refType === RefType.Memory
+                    ? fetchMemoryCommentCount
+                    : fetchImageCommentCount,
 	})
 
 	const handleAddComment = () => {

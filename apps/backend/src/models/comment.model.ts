@@ -9,7 +9,7 @@ const commentSchema = new mongoose.Schema({
 	},
 	refType: {
 		type: String,
-		enum: ['Post', 'Image'],
+		enum: ['Memory', 'Post', 'Image'],
 		required: true,
 	},
 	author: {

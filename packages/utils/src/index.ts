@@ -2,6 +2,7 @@
 
 export * from './getAvatarUrl'
 export * from './normalizeImage'
+export * from './normalizeMemory'
 export * from './normalizePost'
 export * from './normalizeSocketImage'
 export * from './normalizeSocketUser'

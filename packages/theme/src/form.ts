@@ -28,8 +28,6 @@ export const form: NamedStyles<any> = {
 		fontSize: 18,
 		backgroundColor: c.formField.background,
 		color: c.formField.text,
-		borderWidth: 1,
-		borderColor: c.formField.border,
 		outlineWidth: 0,
 		outlineColor: 'transparent',
 	} as TextStyle,

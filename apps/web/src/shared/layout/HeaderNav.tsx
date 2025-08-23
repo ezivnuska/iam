@@ -7,6 +7,7 @@ import { AuthModal } from '@shared/modals'
 import { useAuth, useDeviceInfo, useModal, useTheme } from '@shared/hooks'
 import { resolveResponsiveProp, Size } from '@iam/theme'
 import { AuthNav } from '..'
+import { useCurrentRoute } from '@shared/navigation'
 import { navigate } from '@shared/navigation'
 
 export const HeaderNav: React.FC = () => {
@@ -14,9 +15,11 @@ export const HeaderNav: React.FC = () => {
     const { showModal } = useModal()
     const { isDark, toggleTheme } = useTheme()
     const { orientation } = useDeviceInfo()
+    const currentRoute = useCurrentRoute()
     const isLandscape = orientation === 'landscape'
     const iconSize = resolveResponsiveProp({ xs: 24, sm: 24, md: 32, lg: 32 })
     const navSpacing = resolveResponsiveProp({ xs: Size.S, sm: Size.S, md: Size.S, lg: Size.M })
+    const showLabel = resolveResponsiveProp({ xs: false, sm: false, md: false, lg: true })
     
     const showSigninModal = () => showModal(<AuthModal />, true)
 
@@ -45,16 +48,22 @@ export const HeaderNav: React.FC = () => {
                         alignSelf: 'center',
                     }}
                 >
+
                     <IconButton
+                        label='Tiles'
                         iconName='grid'
                         onPress={() => navigate('Tiles')}
                         iconSize={iconSize - 2}
-                        // active={currentRoute === 'Tiles'}
+                        active={currentRoute === 'Tiles'}
+                        showLabel={showLabel}
                     />
+
                     <IconButton
+                        label='Theme'
                         iconName={isDark ? 'sunny' : 'moon'}
                         onPress={toggleTheme}
                         iconSize={iconSize - 2}
+                        showLabel={showLabel}
                     />
                 </FlexBox>
 
@@ -63,7 +72,7 @@ export const HeaderNav: React.FC = () => {
                         {isAuthenticated ? (
                             <AuthNav />
                         ) : (
-                            <Button label='Sign In' onPress={showSigninModal} />
+                            <Button label='Sign In' onPress={showSigninModal} compact />
                         )}
                     </>
                 )}

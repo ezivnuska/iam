@@ -17,6 +17,13 @@ export type FeedStackParamList = {
 }
 
 /**
+ * Screens related to memories
+ */
+export type MemoryStackParamList = {
+    MemoryList: undefined
+}
+
+/**
  * Screens related to a user's profile
  */
 export type UserProfileStackParamList = {
@@ -47,6 +54,7 @@ export type ProfileStackParamList = {
 export type RootStackParamList = {
     Chat: undefined
     Feed: undefined
+    Memories: undefined
     ForgotPassword: { token: string }
     Home: undefined
     Profile: NavigatorScreenParams<ProfileStackParamList>
