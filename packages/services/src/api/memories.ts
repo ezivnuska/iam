@@ -43,6 +43,11 @@ export const updateMemory = async (id: string, content: string, date: Date, imag
 	return res.data
 }
 
+export const deleteMemoryImage = async (id: string): Promise<Memory> => {
+	const res = await api.put(`/memories/${id}/image/delete`, { withCredentials: true })
+	return res.data
+}
+
 export const deleteMemory = async (id: string): Promise<{ success: boolean }> => {
 	const res = await api.delete(`/memories/${id}`, { withCredentials: true })
 	return res.data

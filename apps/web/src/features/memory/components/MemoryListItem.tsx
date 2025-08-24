@@ -28,7 +28,7 @@ export const MemoryListItem: React.FC<Props> = ({
 	onCommentDeleted,
 }) => {
 	const { user } = useAuth()
-	const { deleteMemory, updateMemory } = useMemory()
+	const { deleteMemory, deleteMemoryImage, updateMemory } = useMemory()
     const { hideModal, openFormModal } = useModal()
 	const { theme } = useTheme()
 
@@ -93,6 +93,7 @@ export const MemoryListItem: React.FC<Props> = ({
             )} */}
 
 			{memory.image && <AutoSizeImage image={memory.image} />}
+			{memory.image && <IconButton onPress={() => deleteMemoryImage(memory.id)} iconName='close' />}
 
 			{/* {showPreview && post.linkUrl && post.linkPreview && (
                 <LinkPreview url={post.linkUrl} preview={post.linkPreview} />

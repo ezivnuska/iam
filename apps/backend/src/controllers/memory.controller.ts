@@ -45,6 +45,15 @@ export const updateMemory = async (req: Request, res: Response, next: NextFuncti
 	}
 }
 
+export const deleteMemoryImage = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+	try {
+		const memory = await memoryService.deleteMemoryImage(req.params.id)
+		res.json(memory)
+	} catch (err) {
+		next(err)
+	}
+}
+
 export const deleteMemory = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 	try {
 		await memoryService.deleteMemory(req.params.id, req.user!.id)

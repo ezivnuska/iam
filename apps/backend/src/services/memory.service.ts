@@ -96,6 +96,25 @@ export const updateMemory = async (
     return formatMemory(memory)
 }
 
+export const deleteMemoryImage = async (
+    id: string,
+) => {
+    const memory = await Memory.findOne({ _id: id })
+        .populate({
+            path: 'author',
+            select: 'username avatar',
+            populate: { path: 'avatar', select: '_id filename variants username' },
+        })
+        .populate('image')
+
+    if (!memory) throw new HttpError('Memory not found or unauthorized', 404)
+
+    memory.image = null
+
+    await memory.save()
+    return formatMemory(memory)
+}
+
 export const deleteMemory = async (id: string, userId: string) => {
     const result = await Memory.deleteOne({ _id: id, author: userId })
     console.log('memory deleted', result)

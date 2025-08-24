@@ -14,6 +14,7 @@ export type MemoryContextType = {
 	addMemory: (memory: Memory) => void
 	updateMemory: (memory: Memory) => void
 	deleteMemory: (id: string) => Promise<void>
+	deleteMemoryImage: (id: string) => Promise<void>
 	refreshMemories: () => Promise<void>
 }
 
@@ -98,6 +99,30 @@ export const MemoryProvider = ({ children }: { children: React.ReactNode }) => {
 		}
 	}
 
+    const deleteMemoryImage = async (id: string) => {
+		const previousMemories = state.memories
+		setState(prev => ({
+			...prev,
+			isMutating: true,
+			memories: prev.memories.map(memory => memory.id === id ? { ...memory, imageId: null } : memory),
+		}))
+
+		try {
+			await memoryService.deleteMemoryImage(id)
+		} catch (err) {
+			setState(prev => ({
+				...prev,
+				error: getErrorMessage(err),
+				memories: previousMemories,
+			}))
+		} finally {
+			setState(prev => ({
+				...prev,
+				isMutating: false,
+			}))
+		}
+	}
+
 	return (
 		<MemoryContext.Provider
 			value={{
@@ -109,6 +134,7 @@ export const MemoryProvider = ({ children }: { children: React.ReactNode }) => {
 				addMemory,
 				updateMemory,
 				deleteMemory,
+				deleteMemoryImage,
 				refreshMemories,
 			}}
 		>

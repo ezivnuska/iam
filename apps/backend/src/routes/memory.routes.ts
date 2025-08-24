@@ -4,6 +4,7 @@ import express, { Router } from 'express'
 import {
 	createMemory,
 	deleteMemory,
+	deleteMemoryImage,
 	getAllMemories,
 	getMemoryById,
 	updateMemory,
@@ -18,6 +19,7 @@ router.get('/', optionalAuth, asyncHandler(getAllMemories))
 router.get('/:id', asyncHandler(getMemoryById))
 router.post('/', requireAuth(), asyncHandler(createMemory))
 router.put('/:id', requireAuth(), asyncHandler(updateMemory))
+router.put('/:id/image/delete', requireAuth(), asyncHandler(deleteMemoryImage))
 router.delete('/:id', requireAuth(), asyncHandler(deleteMemory))
 
 export default router
