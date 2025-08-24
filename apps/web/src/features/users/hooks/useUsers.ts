@@ -2,7 +2,8 @@
 
 import { useMemo } from 'react'
 import { usePaginatedFetch } from '@iam/services'
-import { usePresence, useAuth } from '@shared/hooks'
+import { useAuth } from '@features/auth'
+import { usePresence } from '@shared/hooks'
 import type { User } from '@iam/types'
 
 export const useUsers = () => {

@@ -2,7 +2,8 @@
 
 import React from 'react'
 import { useNavigationState } from '@react-navigation/native'
-import { useAuth, useImage, useModal } from '@shared/hooks'
+import { useAuth } from '@features/auth'
+import { useImage, useModal } from '@shared/hooks'
 import { navigate } from '@shared/navigation'
 import { Button, IconButton, UserButton } from '@shared/buttons'
 import { ImageUpload } from '@shared/images'

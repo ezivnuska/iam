@@ -6,7 +6,8 @@ import { Column, Row } from '@shared/grid'
 import { LoadingPanel } from '@shared/ui'
 import { IconButton } from '@shared/buttons'
 import { EditProfileForm } from '@shared/forms'
-import { useAuth, useModal, useTheme } from '@shared/hooks'
+import { useAuth } from '@features/auth'
+import { useModal, useTheme } from '@shared/hooks'
 import { Size } from '@iam/theme'
 
 export const ProfileView = () => {

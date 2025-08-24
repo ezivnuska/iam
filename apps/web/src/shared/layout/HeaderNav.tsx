@@ -3,8 +3,9 @@
 import React from 'react'
 import { Button, IconButton } from '@shared/buttons'
 import { FlexBox } from '@shared/grid'
-import { AuthModal } from '@shared/modals'
-import { useAuth, useDeviceInfo, useModal, useTheme } from '@shared/hooks'
+// import { AuthModal } from '@shared/modals'
+import { useAuth, useAuthModal } from '@features/auth'
+import { useDeviceInfo, useModal, useTheme } from '@shared/hooks'
 import { resolveResponsiveProp, Size } from '@iam/theme'
 import { AuthNav } from '..'
 import { useCurrentRoute } from '@shared/navigation'
@@ -12,7 +13,7 @@ import { navigate } from '@shared/navigation'
 
 export const HeaderNav: React.FC = () => {
     const { isAuthenticated, isAuthInitialized, user } = useAuth()
-    const { showModal } = useModal()
+    const { showAuthModal } = useAuthModal()
     const { isDark, toggleTheme } = useTheme()
     const { orientation } = useDeviceInfo()
     const currentRoute = useCurrentRoute()
@@ -21,7 +22,7 @@ export const HeaderNav: React.FC = () => {
     const navSpacing = resolveResponsiveProp({ xs: Size.S, sm: Size.S, md: Size.S, lg: Size.M })
     const showLabel = resolveResponsiveProp({ xs: false, sm: false, md: false, lg: true })
     
-    const showSigninModal = () => showModal(<AuthModal />, true)
+    // const showSigninModal = () => showModal(<AuthModal />, true)
 
     return (
         <FlexBox
@@ -72,7 +73,7 @@ export const HeaderNav: React.FC = () => {
                         {isAuthenticated ? (
                             <AuthNav />
                         ) : (
-                            <Button label='Sign In' onPress={showSigninModal} compact />
+                            <Button label='Sign In' onPress={showAuthModal} compact />
                         )}
                     </>
                 )}

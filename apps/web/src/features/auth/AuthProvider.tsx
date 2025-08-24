@@ -1,4 +1,4 @@
-// apps/web/src/shared/providers/AuthProvider.tsx
+// apps/web/src/features/auth/AuthProvider.tsx
 
 import React, { useEffect, useState, createContext } from 'react'
 import {
@@ -11,6 +11,7 @@ import {
 import { navigate } from '@shared/navigation'
 import type { AuthResponseType, User } from '@iam/types'
 import { useSocket } from '@shared/hooks'
+import { AuthLayer, AuthModalProvider } from '@features/auth'
 
 export type AuthContextType = {
     disconnecting: boolean,
@@ -102,7 +103,11 @@ export const AuthProvider = ({
 				setUser,
 			}}
 		>
-            {children}
+            <AuthModalProvider>
+                <AuthLayer>
+                    {children}
+                </AuthLayer>
+            </AuthModalProvider>
 		</AuthContext.Provider>
 	)
 }

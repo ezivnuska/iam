@@ -1,7 +1,5 @@
 // apps/web/src/shared/hooks/index.ts
 
-export * from './useAuth'
-export * from './useAuthForm'
 export * from './useBonds'
 export * from './useBondSocket'
 export * from './useBreakpoint'

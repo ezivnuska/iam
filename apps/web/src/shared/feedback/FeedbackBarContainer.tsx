@@ -3,7 +3,8 @@
 import React, { useRef, useState } from 'react'
 import { FeedbackBar } from '@shared/feedback'
 import { CommentsContainer, CommentForm, useFeedback } from './'
-import { useAuth, useModal } from '@shared/hooks'
+import { useAuth } from '@features/auth'
+import { useModal } from '@shared/hooks'
 import {
 	fetchImageCommentCount,
 	fetchMemoryCommentCount,

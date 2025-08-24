@@ -2,7 +2,8 @@
 
 import React from 'react'
 import { Alert } from 'react-native'
-import { useAuth, useModal } from '@shared/hooks'
+import { useAuth } from '@features/auth'
+import { useModal } from '@shared/hooks'
 import { updateSelf } from '@iam/services'
 import type { Path, UseFormSetError } from 'react-hook-form'
 import { DynamicForm, bioFields, bioSchema, type BioFormValues } from './'

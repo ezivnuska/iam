@@ -3,7 +3,7 @@
 import React, { useMemo } from 'react'
 import { Text } from 'react-native'
 import { ImageGalleryContainer } from '@shared/images'
-import { useAuth } from '@shared/hooks'
+import { useAuth } from '@features/auth'
 import { LoadingPanel } from '@shared/ui'
 import { useUserProfile } from './'
 import { ImageProvider } from '@shared/providers'

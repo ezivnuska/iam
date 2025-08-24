@@ -4,7 +4,8 @@ import React, { useRef, useState, useEffect } from 'react'
 import { ScrollView } from 'react-native'
 import { ChatInput, ChatList } from '@features/chat'
 import { Column } from '@shared/grid'
-import { useAuth, useSocket, useTheme } from '@shared/hooks'
+import { useAuth } from '@features/auth'
+import { useSocket, useTheme } from '@shared/hooks'
 import { Size } from '@iam/theme'
 
 export const ChatView = () => {

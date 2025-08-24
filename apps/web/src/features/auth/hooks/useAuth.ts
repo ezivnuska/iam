@@ -1,7 +1,7 @@
-// apps/web/src/shared/hooks/useAuth.ts
+// apps/web/src/features/auth/hooks/useAuth.ts
 
 import { useContext } from 'react'
-import { AuthContext, AuthContextType } from '@shared/providers'
+import { AuthContext, AuthContextType } from '..'
 
 export const useAuth = (): AuthContextType => {
 	const context = useContext(AuthContext)

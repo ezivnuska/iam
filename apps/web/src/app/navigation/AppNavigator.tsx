@@ -8,7 +8,8 @@ import { linking } from './linking'
 import { FlexBox } from '@shared/grid'
 import { Header } from '@shared/layout'
 import { LoadingPanel } from '@shared/ui'
-import { useAuth, useTheme, useDeviceInfo } from '@shared/hooks'
+import { useAuth } from '@features/auth'
+import { useTheme, useDeviceInfo } from '@shared/hooks'
 import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context'
 
 export const AppNavigator = () => {

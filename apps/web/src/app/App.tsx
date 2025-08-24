@@ -2,8 +2,8 @@
 
 import React from 'react'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
-import { AuthProvider, MemoryProvider, ModalProvider, PostsProvider, SocketProvider, ThemeProvider } from '@shared/providers'
-import { AuthLayer } from '@features/auth'
+import { MemoryProvider, ModalProvider, PostsProvider, SocketProvider, ThemeProvider } from '@shared/providers'
+import { AuthProvider } from '@features/auth'
 import { AppNavigator } from '@app/navigation'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 
@@ -17,9 +17,7 @@ const App = () => {
                             <SocketProvider>
                                 <AuthProvider>
                                     <ModalProvider>
-                                        <AuthLayer>
-                                            <AppNavigator />
-                                        </AuthLayer>
+                                        <AppNavigator />
                                     </ModalProvider>
                                 </AuthProvider>
                             </SocketProvider>

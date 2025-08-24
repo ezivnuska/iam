@@ -7,7 +7,8 @@ import { Row } from '@shared/grid'
 import { AutoSizeImage } from '@shared/ui'
 import { FeedbackBarContainer } from '@shared/feedback'
 import { paddingHorizontal, resolveResponsiveProp, Size, withAlpha } from '@iam/theme'
-import { useAuth, useTheme } from '@shared/hooks'
+import { useAuth } from '@features/auth'
+import { useTheme } from '@shared/hooks'
 import { RefType, type Image } from '@iam/types'
 
 type Props = {

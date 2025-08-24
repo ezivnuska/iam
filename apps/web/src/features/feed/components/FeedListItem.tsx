@@ -10,7 +10,8 @@ import { RefType } from '@iam/types'
 import { Size } from '@iam/theme'
 import Autolink from 'react-native-autolink'
 import { usePosts } from '../hooks'
-import { useAuth, useTheme } from '@shared/hooks'
+import { useAuth } from '@features/auth'
+import { useTheme } from '@shared/hooks'
 import { navigate } from '@shared/navigation'
 
 type Props = {

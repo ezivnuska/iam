@@ -2,9 +2,8 @@
 
 import React, { useEffect } from 'react'
 import { View } from 'react-native'
-import { AuthModal } from '@shared/modals'
-import { useModal, useTheme } from '@shared/hooks'
-import { navigate } from '@shared/navigation'
+import { useAuthModal } from '.'
+import { useTheme } from '@shared/hooks'
 import { setUnauthorizedHandler } from '@iam/services'
 
 // AuthLayer is required to handle unauthorized modal display
@@ -15,35 +14,17 @@ export const AuthLayer: React.FC<{
 }> = ({
 	children,
 }) => {
-	const { hideAllModals, showModal } = useModal()
+	const { showAuthModal } = useAuthModal()
 	const { theme } = useTheme()
 
 	useEffect(() => {
 		setUnauthorizedHandler(() => {
-			showAuthModal()
+			showAuthModal(true)
 		})
 	}, [])
 
-	const showAuthModal = () => {
-		console.log('AUTH LAYER: showing auth modal')
-		showModal(<AuthModal onDismiss={handleClose} />, true)
-	}
-
-    const handleClose = () => {
-        try {
-            navigate('Feed')
-        } finally {
-			hideAllModals()
-		}
-    }
-
 	return (
-		<View
-            style={{
-                flex: 1,
-                backgroundColor: theme.colors.background,
-            }}
-        >
+		<View style={{ flex: 1, backgroundColor: theme.colors.background }}>
 			{children}
 		</View>
 	)

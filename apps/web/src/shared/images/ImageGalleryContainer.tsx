@@ -5,7 +5,8 @@ import { Text } from 'react-native'
 import { Column } from '@shared/grid'
 import { ImageGallery } from '@shared/images'
 import { ImageModal } from '@shared/modals'
-import { useAuth, useImage, useModal, useTheme } from '@shared/hooks'
+import { useAuth } from '@features/auth'
+import { useImage, useModal, useTheme } from '@shared/hooks'
 import type { Image } from '@iam/types'
 
 interface ImageGalleryContainerProps {

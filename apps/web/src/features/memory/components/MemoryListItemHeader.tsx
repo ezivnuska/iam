@@ -8,7 +8,8 @@ import { Column, Row } from '@shared/grid'
 import type { PartialUser } from '@iam/types'
 import { resolveResponsiveProp, Size } from '@iam/theme'
 import { formatRelative } from 'date-fns'
-import { useAuth, useTheme } from '@shared/hooks'
+import { useAuth } from '@features/auth'
+import { useTheme } from '@shared/hooks'
 
 type Props = {
 	author: PartialUser

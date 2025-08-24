@@ -2,7 +2,8 @@
 
 import React from 'react'
 import { FlatList, Text, View } from 'react-native'
-import { useAuth, useTheme } from '@shared/hooks'
+import { useAuth } from '@features/auth'
+import { useTheme } from '@shared/hooks'
 import { Column, Row } from '@shared/grid'
 import { Score } from '@iam/types'
 import { Size } from '@iam/theme'

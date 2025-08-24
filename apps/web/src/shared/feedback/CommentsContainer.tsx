@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react'
 import { deleteComment, fetchComments } from '@iam/services'
-import { useAuth } from '@shared/hooks'
+import { useAuth } from '@features/auth'
 import type { Comment, CommentRefType } from '@iam/types'
 import { CommentsList } from '.'
 

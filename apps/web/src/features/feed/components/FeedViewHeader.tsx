@@ -3,7 +3,7 @@
 import React from 'react'
 import { CreatePostButton } from '@shared/buttons'
 import { PageHeader } from '@shared/ui'
-import { useAuth } from '@shared/hooks'
+import { useAuth } from '@features/auth'
 import { Row } from '@shared/grid'
 import { Size } from '@iam/theme'
 

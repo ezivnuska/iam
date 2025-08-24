@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { ImageGalleryContainer } from '@shared/images'
-import { useAuth } from '@shared/hooks'
+import { useAuth } from '@features/auth'
 import { LoadingPanel } from '@shared/ui'
 
 export const ProfileImagesView = () => {

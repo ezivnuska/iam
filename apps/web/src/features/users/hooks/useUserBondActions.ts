@@ -1,7 +1,8 @@
 // apps/web/src/features/users/hooks/useUserBondActions.ts
 
 import React, { useEffect, useState, useCallback, useMemo } from 'react'
-import { useAuth, useBonds, useBondSocket, useSocket } from '@shared/hooks'
+import { useAuth } from '@features/auth'
+import { useBonds, useBondSocket, useSocket } from '@shared/hooks'
 import { Alert } from 'react-native'
 import type { User, Bond } from '@iam/types'
 

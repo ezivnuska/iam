@@ -12,8 +12,8 @@ import React, {
 import { Direction, EmptyPosition, GameStatus, TileType } from './types'
 import { addNewScore, clearAllScores, fetchScoresForGame } from '@iam/services'
 import { Score } from '@iam/types'
-import { useAuth, useModal } from '@shared/hooks'
-import { AuthModal } from '@shared/modals'
+import { useAuth, useAuthModal } from '@features/auth'
+import { useModal } from '@shared/hooks'
 
 // ------------------ Types ------------------
 
@@ -87,6 +87,7 @@ type TileProviderProps = {
 export const TileProvider: React.FC<TileProviderProps> = ({ children }) => {
     const { user } = useAuth()
     const { hideAllModals, showModal } = useModal()
+    const { showAuthModal } = useAuthModal()
     const [state, dispatch] = useReducer(reducer, initialState)
     const [ticker, setTicker] = useState<NodeJS.Timeout | null>(null)
     const [scores, setScores] = useState<Score[]>([])
@@ -109,18 +110,18 @@ export const TileProvider: React.FC<TileProviderProps> = ({ children }) => {
             if (user) {
                 handleNewScore()
             } else {
-                showAuthModal()
+                showAuthModal(false)
             }
         }
     }, [user, savedScore])
 
-    const showAuthModal = () => {
-        showModal(<AuthModal onDismiss={handleClose} />, true)
-    }
+    // const showAuthModal = () => {
+    //     showModal(<AuthModal onDismiss={handleClose} />, true)
+    // }
 
-    const handleClose = () => {
-        hideAllModals()
-    }
+    // const handleClose = () => {
+    //     hideAllModals()
+    // }
 
     const handleWin = async () => {
         setSavedScore(formattedTime as string)

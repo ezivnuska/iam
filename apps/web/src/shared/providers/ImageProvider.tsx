@@ -2,7 +2,7 @@
 
 import React, { createContext, useEffect, useRef, useState, useCallback } from 'react'
 import { getUserById, setAvatar as apiSetAvatar, deleteImage as apiDeleteImage, fetchUserImages } from '@iam/services'
-import { useAuth } from '@shared/hooks'
+import { useAuth } from '@features/auth'
 import type { Image } from '@iam/types'
 
 export type ImageContextType = {
