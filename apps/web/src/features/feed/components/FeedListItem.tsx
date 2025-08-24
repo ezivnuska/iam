@@ -52,7 +52,7 @@ export const FeedListItem: React.FC<Props> = ({
 
 	return (
 		<Column
-            spacing={Size.M} 
+            spacing={Size.S} 
             style={{ marginBottom: Size.M }}
         >
 			<FeedListItemHeader
@@ -63,7 +63,7 @@ export const FeedListItem: React.FC<Props> = ({
                 deletePost={handleDelete}
             />
 
-			{!post.linkUrl && (
+			{!post.linkUrl && post.content.length > 0 && (
                 <Autolink
                     text={post.content}
                     style={{ fontSize: 16, color: theme.colors.text }}

@@ -5,7 +5,7 @@ import { Alert, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
 import { Row } from '@shared/grid'
 import { ControlledTextInput } from '@shared/forms'
 import { addComment } from '@iam/services'
-import { useForm, FieldErrors } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Size } from '@iam/theme'
@@ -68,12 +68,6 @@ export const CommentForm = ({ id, type, onComment }: Props) => {
 			}
 		}
 	}
-
-    const onInvalid = (errors: FieldErrors<CommentFormProps>) => {
-        if (errors.content) {
-            inputRef.current?.focus()
-        }
-    }
 
 	return (
         <Row spacing={Size.S} align='center'>

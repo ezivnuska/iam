@@ -28,12 +28,14 @@ interface AvatarProps {
 	}
 	size?: AvatarSize
     onPress?: () => void
+    style?: any
 }
 
 export const Avatar: React.FC<AvatarProps> = ({
     user,
     size = 'md',
 	onPress = null,
+    style,
 }) => {
 	const imageSize = sizeMap[size]
 	const fontSize = fontSizeMap[size]
@@ -51,6 +53,7 @@ export const Avatar: React.FC<AvatarProps> = ({
                     height: imageSize,
                     borderRadius: imageSize / 2,
                     borderWidth: 1,
+                    ...style,
                 },
             ]}
         >

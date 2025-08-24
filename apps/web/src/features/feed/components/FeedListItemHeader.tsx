@@ -29,7 +29,7 @@ export const FeedListItemHeader: React.FC<Props> = ({
 	const { isAuthenticated } = useAuth()
 	const { theme } = useTheme()
 
-    const iconSize = resolveResponsiveProp({ xs: 24, sm: 24, md: 24, lg: 24 })
+    const iconSize = resolveResponsiveProp({ xs: 26, sm: 26, md: 26, lg: 26 })
 
 	return (
         <Row spacing={Size.M} align='center' justify='space-between'>

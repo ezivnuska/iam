@@ -1,7 +1,7 @@
 // apps/web/src/shared/feedback/FeedbackBar.tsx
 
 import React from 'react'
-import { Pressable, StyleSheet, Text } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { Row } from '@shared/grid'
 import { Size } from '@iam/theme'
 import { useTheme } from '@shared/hooks'
@@ -31,14 +31,15 @@ export const FeedbackBar: React.FC<Props> = ({
     const { theme } = useTheme()
     const commentDisabled = disabledComment || !isAuthenticated
     const textColor = (!isAuthenticated || commentDisabled) ? theme.colors.textSecondary : theme.colors.text
-
+    const showLikes = likeCount !== undefined
+    const showComments = commentCount !== undefined
 	return (
 		<Row
             spacing={Size.M}
             align='center'
             // paddingVertical={Size.S}
         >
-            {likeCount !== undefined && (
+            {showLikes && (
                 <Pressable onPress={onToggleLike} disabled={!isAuthenticated}>
                     <Row
                         spacing={Size.XS}
@@ -60,7 +61,9 @@ export const FeedbackBar: React.FC<Props> = ({
                 </Pressable>
             )}
 
-			{commentCount !== undefined && (
+            {showLikes && showComments && <View style={{ width: 2, backgroundColor: '#ccc' }}>&nbsp;</View>}
+
+			{showComments && (
                 <Pressable
                     onPress={onToggleComments}
                     disabled={commentDisabled}

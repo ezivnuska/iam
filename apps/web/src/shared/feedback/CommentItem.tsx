@@ -1,13 +1,14 @@
 // apps/web/src/shared/feedback/CommentItem.tsx
 
 import React from 'react'
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Avatar } from '@shared/ui'
 import { IconButton } from '@shared/buttons'
 import { Column, Row } from '@shared/grid'
 import { Comment, PartialUser } from '@iam/types'
 import { Size } from '@iam/theme'
 import { useTheme } from '@shared/hooks'
+import Feather from '@expo/vector-icons/Feather'
 
 type CommentItemProps = {
 	comment: Comment
@@ -30,13 +31,13 @@ export const CommentItem = ({
 			spacing={Size.S}
 			align='flex-start'
             justify='flex-start'
-            // paddingVertical={paddingVertical}
             paddingBottom={paddingVertical}
 			style={{ opacity: isDeleting ? 0.5 : 1 }}
 		>
             <Avatar
                 user={comment.author as PartialUser}
                 size='xs'
+                style={{ marginTop: 2 }}
             />
             <Row
                 flex={1}
@@ -54,10 +55,24 @@ export const CommentItem = ({
                     <View>
                         {isDeleting
                             ? <ActivityIndicator size={20} color={theme.colors.text} />
+                            // : (
+                            //     <TouchableOpacity
+                            //         onPress={onDelete}
+                            //         disabled={isDeleting}
+                            //         style={[
+                            //             styles.button,
+                            //             styles.cancel,
+                            //             isDeleting && styles.disabled,
+                            //         ]}
+                            //     >
+                            //         <Feather name='slash' size={30} color={isDeleting ? '#fff' : '#000'} />
+                            //     </TouchableOpacity>
+                            // )
                             : <IconButton
-                                iconName='trash-bin'
+                                iconName='remove-circle'
                                 onPress={onDelete}
                                 disabled={isDeleting}
+                                iconSize={30}
                             />
                         }
                     </View>
@@ -77,5 +92,30 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         backgroundColor: '#ddd',
     },
-	text: {},
+	text: {
+        fontSize: 16,
+        lineHeight: 24,
+        fontWeight: 500,
+    },
+    button: {
+        borderWidth: 1,
+        outlineWidth: 1,
+        outlineColor: '#fff',
+        height: 40,
+        width: 40,
+        borderRadius: 20,
+        overflow: 'hidden',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    send: {
+        backgroundColor: '#3a3',
+    },
+    cancel: {
+        backgroundColor: '#c66',
+    },
+    disabled: {
+        backgroundColor: '#666',
+        cursor: 'pointer',
+    },
 })
