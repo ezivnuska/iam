@@ -2,24 +2,32 @@
 
 import React from 'react'
 import { View, ScrollView, ActivityIndicator, useWindowDimensions } from 'react-native'
-import { CommentItem } from './'
-import type { Comment } from '@iam/types'
+import { CommentItem } from '.'
+import type { Comment, CommentRefType } from '@iam/types'
 import { Size } from '@iam/theme'
+import { Column } from '..'
+import { CommentForm } from './CommentForm'
 
 type CommentsListProps = {
+    refId: string
+    refType: CommentRefType
 	comments: Comment[] | null
 	deletingIds: string[]
 	currentUserId?: string
 	onDelete: (id: string) => void
 	isLoading?: boolean
+    onComment: (comment: Comment) => void
 }
 
 export const CommentsList = ({
+    refId,
+    refType,
 	comments,
 	deletingIds,
 	currentUserId,
-	onDelete,
 	isLoading,
+	onComment,
+	onDelete,
 }: CommentsListProps) => {
 	const { height } = useWindowDimensions()
 
@@ -32,23 +40,24 @@ export const CommentsList = ({
 	}
 
 	return (
-		<ScrollView
-			style={{ maxHeight: height * 0.4 }}
-			contentContainerStyle={{ paddingBottom: Size.S }}
-			showsVerticalScrollIndicator={false}
-		>
-			{comments?.map((item) => {
-				return (
-                    <View key={item._id}>
+        <Column flex={1} spacing={12}>
+            <ScrollView
+                style={{ maxHeight: height * 0.4 }}
+                contentContainerStyle={{ paddingBottom: Size.S }}
+                showsVerticalScrollIndicator={false}
+            >
+                {comments?.map((item, index) => (
+                    <View key={`comment-${item.id}-${index}`}>
                         <CommentItem
                             comment={item}
                             isAuthor={currentUserId === item.author.id}
-                            isDeleting={deletingIds.includes(item._id)}
-                            onDelete={onDelete}
+                            isDeleting={deletingIds.includes(item.id)}
+                            onDelete={() => onDelete(item.id)}
                         />
                     </View>
-				)
-			})}
-		</ScrollView>
+                ))}
+            </ScrollView>
+            <CommentForm id={refId} type={refType} onComment={onComment} />
+        </Column>
 	)
 }

@@ -13,7 +13,7 @@ type CommentItemProps = {
 	comment: Comment
 	isAuthor: boolean
 	isDeleting: boolean
-	onDelete: (id: string) => void
+	onDelete: () => void
 	paddingVertical?: number
 }
 
@@ -55,7 +55,7 @@ export const CommentItem = ({
                             ? <ActivityIndicator size={20} color={theme.colors.text} />
                             : <IconButton
                                 iconName='trash-bin'
-                                onPress={() => onDelete(comment._id)}
+                                onPress={onDelete}
                                 disabled={isDeleting}
                             />
                         }

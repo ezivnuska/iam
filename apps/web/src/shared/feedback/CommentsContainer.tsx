@@ -57,7 +57,7 @@ export const CommentsContainer = forwardRef(
 			setDeletingIds((prev) => [...prev, id])
 			try {
 				await deleteComment(id)
-				setComments((prev) => prev?.filter((c) => c._id !== id) || null)
+				setComments((prev) => prev?.filter((c) => c.id !== id) || null)
 				onCommentDeleted?.()
 			} catch (err) {
 				console.error('Failed to delete comment:', err)
@@ -68,11 +68,14 @@ export const CommentsContainer = forwardRef(
 
 		return (
 			<CommentsList
+                refId={refId}
+                refType={refType}
 				comments={comments}
 				isLoading={loading}
 				deletingIds={deletingIds}
 				currentUserId={user?.id}
 				onDelete={handleDelete}
+                onComment={handleNewComment}
 			/>
 		)
 	}

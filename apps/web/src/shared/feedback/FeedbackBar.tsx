@@ -15,7 +15,6 @@ type Props = {
 	isAuthenticated: boolean
 	onToggleLike: () => void
 	onToggleComments: () => void
-	onAddComment: () => void
 	disabledComment?: boolean
 }
 
@@ -27,7 +26,6 @@ export const FeedbackBar: React.FC<Props> = ({
 	isAuthenticated,
 	onToggleLike,
 	onToggleComments,
-	onAddComment,
 	disabledComment = false,
 }) => {
     const { theme } = useTheme()
@@ -36,7 +34,6 @@ export const FeedbackBar: React.FC<Props> = ({
 
 	return (
 		<Row
-            flex={1}
             spacing={Size.M}
             align='center'
             paddingVertical={Size.S}
@@ -66,12 +63,7 @@ export const FeedbackBar: React.FC<Props> = ({
 				disabled={commentDisabled}
 			>
                 <Row spacing={5} align='center'>
-                    <Text
-                        style={[
-                            styles.bottomButton,
-                            { color: textColor },
-                        ]}
-                    >
+                    <Text style={[styles.bottomButton, { color: textColor }]}>
                         {commentCount} {`Comment${commentCount !== 1 ? 's' : ''}`}
                     </Text>
 
@@ -85,12 +77,6 @@ export const FeedbackBar: React.FC<Props> = ({
                     )}
                 </Row>
 			</Pressable>
-
-			{isAuthenticated && (
-				<Pressable onPress={onAddComment}>
-					<Text style={[styles.bottomButton, { color: textColor }]}>Add Comment</Text>
-				</Pressable>
-			)}
 		</Row>
 	)
 }

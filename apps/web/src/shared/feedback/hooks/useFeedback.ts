@@ -11,9 +11,9 @@ type Props = {
 	refId: string
 	initialLikeMeta?: LikeMeta
 	initialCommentCount?: number
-	toggleLike: (refId: string) => Promise<LikeMeta>
-	fetchLikeMeta: (refId: string) => Promise<LikeMeta>
-	fetchCommentCount: (refId: string) => Promise<number>
+	toggleLike?: (refId: string) => Promise<LikeMeta>
+	fetchLikeMeta?: (refId: string) => Promise<LikeMeta>
+	fetchCommentCount?: (refId: string) => Promise<number>
 }
 
 export const useFeedback = ({
@@ -34,12 +34,14 @@ export const useFeedback = ({
 		const loadInitialMeta = async () => {
 			try {
 				const [likeData, commentCount] = await Promise.all([
-					fetchLikeMeta(refId),
-					fetchCommentCount(refId),
+					fetchLikeMeta?.(refId),
+					fetchCommentCount?.(refId),
 				])
-				setLiked(likeData.likedByCurrentUser)
-				setLikeCount(likeData.count)
-				setCommentCount(commentCount)
+                if (likeData) {
+                    setLiked(likeData.likedByCurrentUser)
+                    setLikeCount(likeData.count)
+                }
+				if (commentCount) setCommentCount(commentCount)
 			} catch (err) {
 				console.error('Failed to fetch initial meta:', err)
 			}
@@ -49,9 +51,11 @@ export const useFeedback = ({
 
 	const handleToggleLike = async () => {
 		try {
-			const data = await toggleLike(refId)
-			setLiked(data.likedByCurrentUser)
-			setLikeCount(data.count)
+			const data = await toggleLike?.(refId)
+			if (data) {
+                setLiked(data.likedByCurrentUser)
+                setLikeCount(data.count)
+            }
 		} catch (err) {
 			console.error('Failed to toggle like:', err)
 		}
@@ -69,8 +73,8 @@ export const useFeedback = ({
 
 	const handleCommentDeleted = async () => {
 		try {
-			const count = await fetchCommentCount(refId)
-			setCommentCount(count)
+			const count = await fetchCommentCount?.(refId)
+			if (count) setCommentCount(count)
 			if (count === 0) setExpanded(false)
 		} catch (err) {
 			console.error('Failed to refresh comment count:', err)

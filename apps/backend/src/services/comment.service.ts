@@ -4,7 +4,6 @@ import mongoose from 'mongoose'
 import { Comment } from '../models/comment.model'
 import { HttpError } from '../utils/HttpError'
 import type { CommentRefType } from '@iam/types'
-import { normalizeDocs } from '../utils/normalizeId'
 
 export const createComment = async (
 	refId: string,
@@ -42,8 +41,7 @@ export const getCommentsForRef = async (
 	if (!comments || comments.length === 0) {
 		throw new HttpError(`${refType} comments not found`, 404)
 	}
-
-	return normalizeDocs(comments)
+	return comments
 }
 
 export const getCommentSummaryForRef = async (

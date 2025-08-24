@@ -45,6 +45,12 @@ export interface PartialUser {
 	avatar?: Image
 }
 
+export interface Author {
+    id: string,
+	username: string
+	avatar?: Image
+}
+
 export interface AuthResponseType {
 	accessToken: string
 	user: User

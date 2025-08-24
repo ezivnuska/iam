@@ -2,9 +2,8 @@
 
 import React, { useRef, useState } from 'react'
 import { FeedbackBar } from '@shared/feedback'
-import { CommentsContainer, CommentForm, useFeedback } from './'
+import { CommentsContainer, useFeedback } from './'
 import { useAuth } from '@features/auth'
-import { useModal } from '@shared/hooks'
 import {
 	fetchImageCommentCount,
 	fetchMemoryCommentCount,
@@ -25,12 +24,10 @@ type Props = {
 export const FeedbackBarContainer: React.FC<Props> = ({
 	refId,
 	refType,
-	onCommentAdded,
 	onCommentDeleted,
 	disabledComment = false,
 }) => {
 	const { isAuthenticated } = useAuth()
-	const { openFormModal } = useModal()
 	const commentsRef = useRef<{ handleNewComment?: (c: any) => void }>(null)
     const [expanded, setExpanded] = useState(false)
 	const {
@@ -53,23 +50,6 @@ export const FeedbackBarContainer: React.FC<Props> = ({
                     : fetchImageCommentCount,
 	})
 
-	const handleAddComment = () => {
-		openFormModal(
-			CommentForm,
-			{
-				id: refId,
-				type: refType,
-				onCommentAdded: (newComment: any) => {
-					handleCommentAdded()
-					onCommentAdded?.()
-					setExpanded(true)
-					commentsRef.current?.handleNewComment?.(newComment)
-				},
-			},
-			{ title: 'Add Comment' }
-		)
-	}
-
 	return (
 		<>
 			<FeedbackBar
@@ -83,7 +63,6 @@ export const FeedbackBarContainer: React.FC<Props> = ({
 					handleToggleComments()
 					setExpanded(!expanded)
 				}}
-				onAddComment={handleAddComment}
 				disabledComment={disabledComment}
 			/>
 

@@ -1,6 +1,5 @@
 // apps/web/src/shared/forms/index.ts
 
-export * from './EditProfileForm'
 export * from './MemoryForm'
 export * from './PostForm'
 export * from './schemas'
