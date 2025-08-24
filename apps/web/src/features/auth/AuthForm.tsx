@@ -11,7 +11,7 @@ import {
 } from '@shared/forms'
 import { Column, Row } from '@shared/grid'
 import { Button } from '@shared/buttons'
-import { useAuthForm, useAuthModal } from '@features/auth'
+import { useAuthForm, useAuth } from '@features/auth'
 import { useTheme } from '@shared/hooks'
 import { z } from 'zod'
 import type { AuthMode, FieldConfig } from '@shared/forms'
@@ -19,15 +19,16 @@ import { Size } from '@iam/theme'
 import Ionicons from '@expo/vector-icons/Ionicons'
 
 type AuthFormProps = {
-	initialMode?: AuthMode
+	mode?: AuthMode
+    dismiss?: () => void
 }
 
 export const AuthForm = ({
-    initialMode = 'signin',
+    mode = 'signin',
+    dismiss,
 }: AuthFormProps) => {
-	const [mode, setMode] = useState<AuthMode>(initialMode)
     const { handleSubmit } = useAuthForm<any>()
-    const { secure, hideAuthModal } = useAuthModal()
+    const { secure, hideAuthModal } = useAuth()
     const { theme } = useTheme()
 	const isSignin = mode === 'signin'
 
@@ -37,49 +38,23 @@ export const AuthForm = ({
 	const title = isSignin ? 'Sign In' : 'Sign Up'
 
     const handleClose = () => {
-        hideAuthModal()
+        dismiss?.() || hideAuthModal()
     }
 
 	return (
-        <Column flex={1} style={styles.content} spacing={Size.M}>
-            <Row align='center'>
-                {!!title && (
-                    <View style={styles.header}>
-                        <Text style={[styles.title, { color: theme.colors.text }]}>{title}</Text>
-                        {/* {subtitle && <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>{subtitle}</Text>} */}
-                    </View>
-                )}
-                <Pressable onPress={handleClose}>
-                    <Ionicons name='close-sharp' size={28} color={theme.colors.text} />
-                </Pressable>
-            </Row>
-            <ScrollView
-                contentContainerStyle={styles.scrollview}
-                style={{ flex: 1, alignContent: 'stretch' }}
-                showsHorizontalScrollIndicator={false}
-                showsVerticalScrollIndicator={false}
-            >
-                {/* <ModalContainer title={title} onDismiss={onDismiss}> */}
-                <Column align='stretch' spacing={Size.L}>
-                    <DynamicForm<typeof schema>
-                        schema={schema}
-                        fields={fields}
-                        onSubmit={(data, setError) =>
-                            handleSubmit(data, setError, { mode, saveEmail: true })
-                        }
-                        submitLabel={submitLabel}
-                        prefillEmail
-                    />
-
-                    <Button
-                        label={isSignin ? 'Sign Up' : 'Sign In'}
-                        onPress={() => setMode(isSignin ? 'signup' : 'signin')}
-                        variant='transparent'
-                    />
-                </Column>
-                {/* </ModalContainer> */}
-            </ScrollView>
-        </Column>
+        // <Column flex={1} style={styles.content} spacing={Size.M}>
+            
+                <DynamicForm<typeof schema>
+                    schema={schema}
+                    fields={fields}
+                    onSubmit={(data, setError) =>
+                        handleSubmit(data, setError, { mode, saveEmail: true })
+                    }
+                    submitLabel={submitLabel}
+                    prefillEmail
+                />
+            
+        // </Column>
 		
 	)
 }

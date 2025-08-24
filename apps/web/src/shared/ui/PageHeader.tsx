@@ -13,7 +13,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({ title }) => {
     const { theme } = useTheme()
     const fontSize = resolveResponsiveProp({ xs: 18, sm: 22, md: 22, lg: 24 })
 	return (
-        <Text style={{ fontSize, color: theme.colors.text }}>
+        <Text style={{ marginTop: 2, fontSize, fontWeight: 500, color: theme.colors.text }}>
             {title}
         </Text>
 	)

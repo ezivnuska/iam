@@ -22,18 +22,22 @@ export const form: NamedStyles<any> = {
 
 	input: {
 		flex: 1,
-		paddingHorizontal: 12,
-		lineHeight: 48,
-		borderRadius: 12,
+		paddingHorizontal: 18,
+		paddingVertical: 9,
+		lineHeight: 30,
+		borderRadius: 24,
 		fontSize: 18,
 		backgroundColor: c.formField.background,
 		color: c.formField.text,
+        borderWidth: 1,
+        borderColor: c.formField.border,
 		outlineWidth: 0,
 		outlineColor: 'transparent',
 	} as TextStyle,
 
 	inputFocused: {
 		borderColor: c.formField.borderFocused,
+		backgroundColor: c.formField.backgroundFocused,
 	} as TextStyle,
 
 	textArea: {

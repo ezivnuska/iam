@@ -6,7 +6,7 @@ import { resolveResponsiveProp } from '@iam/theme'
 import { useDeviceInfo } from '@shared/hooks'
 
 export const HeaderContainer: React.FC<any> = ({ children }: { children: ReactNode }) => {
-    let height = resolveResponsiveProp({ xs: 30, sm: 40, md: 44, lg: 60 })
+    let height = resolveResponsiveProp({ xs: 48, sm: 48, md: 48, lg: 60 })
     let bgColor = resolveResponsiveProp({ xs: 'red', sm: 'yellow', md: 'orange', lg: 'blue' })
     const { orientation } = useDeviceInfo()
     const isLandscape = orientation === 'landscape'

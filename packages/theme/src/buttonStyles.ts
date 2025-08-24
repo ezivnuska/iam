@@ -6,16 +6,16 @@ import type { Theme } from './themes'
 export const getBaseButtonStyles = (theme: Theme) =>
 	StyleSheet.create({
 		base: {
-            height: 40,
+            height: 48,
             // paddingVertical: 4,
-			paddingHorizontal: 8,
-			borderRadius: 6,
+			paddingHorizontal: 12,
+			borderRadius: 24,
 			alignItems: 'center',
 			justifyContent: 'center',
 		},
 		text: {
 			fontWeight: Platform.OS === 'ios' ? '600' : 'bold',
-			fontSize: 14,
+			fontSize: 16,
 			color: theme.colors.text,
 		},
 		disabled: {

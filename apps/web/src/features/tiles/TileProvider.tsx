@@ -12,8 +12,7 @@ import React, {
 import { Direction, EmptyPosition, GameStatus, TileType } from './types'
 import { addNewScore, clearAllScores, fetchScoresForGame } from '@iam/services'
 import { Score } from '@iam/types'
-import { useAuth, useAuthModal } from '@features/auth'
-import { useModal } from '@shared/hooks'
+import { useAuth } from '@features/auth'
 
 // ------------------ Types ------------------
 
@@ -85,9 +84,7 @@ type TileProviderProps = {
 }
 
 export const TileProvider: React.FC<TileProviderProps> = ({ children }) => {
-    const { user } = useAuth()
-    const { hideAllModals, showModal } = useModal()
-    const { showAuthModal } = useAuthModal()
+    const { user, showAuthModal } = useAuth()
     const [state, dispatch] = useReducer(reducer, initialState)
     const [ticker, setTicker] = useState<NodeJS.Timeout | null>(null)
     const [scores, setScores] = useState<Score[]>([])

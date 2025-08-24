@@ -60,7 +60,8 @@ export const Button: React.FC<ButtonProps> = ({
                         borderWidth: 1,
                     },
                     compact && {
-                        height: 30,
+                        height: 36,
+                        lineHeight: 36,
                     },
                 ]
             }}            

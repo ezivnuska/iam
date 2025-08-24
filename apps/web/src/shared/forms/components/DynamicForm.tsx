@@ -149,7 +149,7 @@ export function DynamicForm<T extends ZodTypeAny>({
 
 	return (
 		<FormProvider {...form}>
-            <Column flex={1} spacing={10} align='stretch'>
+            <Column flex={1} spacing={10}>
                 <DynamicFormFields
                     fields={fields}
                     control={form.control}
@@ -166,9 +166,11 @@ export function DynamicForm<T extends ZodTypeAny>({
                     handleSubmit={form.handleSubmit(handleSubmit)}
                 />
 
-                <Column flex={1} spacing={10} align='stretch' justify='flex-end'>
-                    {children}
-                </Column>
+                {children && (
+                    <Column flex={1} spacing={10}>
+                        {children}
+                    </Column>
+                )}
                 <Button
                     label={submitLabel}
                     onPress={form.handleSubmit(handleSubmit)}

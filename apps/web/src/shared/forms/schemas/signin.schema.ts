@@ -11,7 +11,7 @@ export const signinSchema = z.object({
 export type SigninFormValues = z.infer<typeof signinSchema>
 
 export const signinFields: FieldConfig<SigninFormValues>[] = [
-    { name: 'email', label: 'Email Address', autoFocus: true, placeholder: 'email', keyboardType: 'email-address' },
+    { name: 'email', label: 'Email', autoFocus: true, placeholder: 'email', keyboardType: 'email-address' },
     { name: 'password', label: 'Password', secure: true, placeholder: 'password' },
 ]
 

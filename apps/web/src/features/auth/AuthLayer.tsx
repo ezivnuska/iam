@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react'
 import { View } from 'react-native'
-import { useAuthModal } from '.'
+import { useAuth } from '.'
 import { useTheme } from '@shared/hooks'
 import { setUnauthorizedHandler } from '@iam/services'
 
@@ -14,7 +14,7 @@ export const AuthLayer: React.FC<{
 }> = ({
 	children,
 }) => {
-	const { showAuthModal } = useAuthModal()
+	const { showAuthModal } = useAuth()
 	const { theme } = useTheme()
 
 	useEffect(() => {
