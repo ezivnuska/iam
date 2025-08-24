@@ -148,11 +148,7 @@ const FullscreenOverlay = ({
 	const { theme } = useTheme()
 	return (
 		<View
-            pointerEvents='box-none'
-            style={[
-                styles.overlay,
-                { backgroundColor: withAlpha(theme.colors.background, 0.5) },
-            ]}
+            style={[styles.overlay, { backgroundColor: withAlpha(theme.colors.background, 0.5) }]}
         >
             <View
                 style={[

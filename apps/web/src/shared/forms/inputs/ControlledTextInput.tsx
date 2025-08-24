@@ -13,6 +13,7 @@ import {
 } from 'react-native'
 import { Controller, FieldError, Control, FieldPath, FieldValues } from 'react-hook-form'
 import { useTheme } from '@shared/hooks'
+import { form as formStyles } from '@iam/theme'
 
 type Props<T extends FieldValues> = {
 	name: FieldPath<T>
@@ -50,7 +51,7 @@ export const ControlledTextInput = <T extends FieldValues>({
 	}
 
 	return (
-		<View style={{ flex: 1 }}>
+		<View style={{ flex: 1, height }}>
             {label && <Text style={styles.label}>{label}</Text>}
             <Controller
                 name={name}
@@ -73,9 +74,9 @@ export const ControlledTextInput = <T extends FieldValues>({
                         multiline
                         onContentSizeChange={onContentSizeChange}
                         style={[
-                            styles.input,
-                            { height, textAlignVertical: 'top' },
-							isFocused && styles.inputFocused,
+                            formStyles.input,
+                            { height, textAlignVertical: 'center' },
+							isFocused && formStyles.inputFocused,
                             // error && styles.errorInput,
                             style,
                         ]}

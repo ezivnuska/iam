@@ -29,15 +29,17 @@ export const FeedbackBarContainer: React.FC<Props> = ({
 }) => {
 	const { isAuthenticated } = useAuth()
 	const commentsRef = useRef<{ handleNewComment?: (c: any) => void }>(null)
-    const [expanded, setExpanded] = useState(false)
+    // const [expanded, setExpanded] = useState(false)
 	const {
+		commentCount,
+        expanded,
 		likeCount,
 		liked,
-		commentCount,
 		handleToggleLike,
 		handleToggleComments,
 		handleCommentAdded,
 		handleCommentDeleted,
+        setExpanded,
 	} = useFeedback({
 		refId,
 		fetchLikeMeta: (id) => fetchLikeMeta(id, refType),

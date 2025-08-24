@@ -59,6 +59,7 @@ export const CommentsContainer = forwardRef(
 				await deleteComment(id)
 				setComments((prev) => prev?.filter((c) => c.id !== id) || null)
 				onCommentDeleted?.()
+                refreshComments()
 			} catch (err) {
 				console.error('Failed to delete comment:', err)
 			} finally {

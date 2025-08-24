@@ -8,9 +8,9 @@ import { useTheme } from '@shared/hooks'
 import Ionicons from '@expo/vector-icons/Ionicons'
 
 type Props = {
-	likeCount: number
-	liked: boolean
-	commentCount: number
+	likeCount?: number
+	liked?: boolean
+	commentCount?: number
 	expanded?: boolean
 	isAuthenticated: boolean
 	onToggleLike: () => void
@@ -29,63 +29,74 @@ export const FeedbackBar: React.FC<Props> = ({
 	disabledComment = false,
 }) => {
     const { theme } = useTheme()
-    const commentDisabled = disabledComment || !isAuthenticated || commentCount === 0
+    const commentDisabled = disabledComment || !isAuthenticated
     const textColor = (!isAuthenticated || commentDisabled) ? theme.colors.textSecondary : theme.colors.text
 
 	return (
 		<Row
             spacing={Size.M}
             align='center'
-            paddingVertical={Size.S}
+            // paddingVertical={Size.S}
         >
-            <Pressable onPress={onToggleLike} disabled={!isAuthenticated}>
-                <Row
-                    spacing={Size.XS}
-                    justify='center'
-                    align='center'
+            {likeCount !== undefined && (
+                <Pressable onPress={onToggleLike} disabled={!isAuthenticated}>
+                    <Row
+                        spacing={Size.XS}
+                        justify='center'
+                        align='center'
+                    >
+                        <Text style={[styles.bottomButton, { color: textColor }]}>
+                            {likeCount} {`like${likeCount !== 1 ? 's' : ''}`}
+                        </Text>
+
+                        {isAuthenticated && (
+                            <Ionicons
+                                name={liked ? 'heart' : 'heart-outline'}
+                                size={20}
+                                color={liked ? 'red' : textColor}
+                            />                      
+                        )}
+                    </Row>
+                </Pressable>
+            )}
+
+			{commentCount !== undefined && (
+                <Pressable
+                    onPress={onToggleComments}
+                    disabled={commentDisabled}
                 >
-                    <Text style={[styles.bottomButton, { color: textColor }]}>
-                        {likeCount} {`like${likeCount !== 1 ? 's' : ''}`}
-                    </Text>
+                    <Row spacing={5} align='center'>
+                        {commentCount > 0 ? (
+                            <Text style={[styles.bottomButton, { color: textColor }]}>
+                                {`${commentCount} Comment${commentCount !== 1 ? 's' : ''}`}
+                            </Text>
+                        ) : (
+                            <Text style={[styles.bottomButton, { color: textColor }]}>
+                                Add comment
+                            </Text>
+                        )}
 
-                    {isAuthenticated && (
-                        <Ionicons
-                            name={liked ? 'heart' : 'heart-outline'}
-                            size={20}
-                            color={liked ? 'red' : textColor}
-                        />                      
-                    )}
-                </Row>
-            </Pressable>
-
-			<Pressable
-				onPress={onToggleComments}
-				disabled={commentDisabled}
-			>
-                <Row spacing={5} align='center'>
-                    <Text style={[styles.bottomButton, { color: textColor }]}>
-                        {commentCount} {`Comment${commentCount !== 1 ? 's' : ''}`}
-                    </Text>
-
-                    {commentCount > 0 && (
-                        <Ionicons
-                            name={`chevron-${expanded ? 'up' : 'down' }`}
-                            size={16}
-                            color={textColor}
-                            style={{ marginTop: 3 }}
-                        />
-                    )}
-                </Row>
-			</Pressable>
+                        {commentCount > 0 && (
+                            <Ionicons
+                                name={`chevron-${expanded ? 'up' : 'down' }`}
+                                size={16}
+                                color={textColor}
+                                style={{ marginTop: 3 }}
+                            />
+                        )}
+                    </Row>
+                </Pressable>
+            )}
 		</Row>
 	)
 }
 
 const styles = StyleSheet.create({
 	container: {
-		height: 50,
+		height: 48,
 	},
 	bottomButton: {
 		fontSize: 16,
+        fontWeight: 500,
 	},
 })

@@ -3,7 +3,7 @@
 import { Request, Response, NextFunction } from 'express'
 import * as commentService from '../services/comment.service'
 import type { CommentRefType } from '@iam/types'
-import { normalizeComments } from '@iam/utils'
+import { normalizeComment, normalizeComments } from '@iam/utils'
 
 export const addComment = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
@@ -15,7 +15,7 @@ export const addComment = async (req: Request, res: Response, next: NextFunction
 
 	try {
 		const comment = await commentService.createComment(refId, refType, req.user!.id, content)
-		res.status(201).json(comment)
+		res.status(201).json(normalizeComment(comment))
 	} catch (err) {
 		next(err)
 	}
@@ -31,7 +31,7 @@ export const getComments = async (req: Request, res: Response, next: NextFunctio
 
 	try {
 		const comments = await commentService.getCommentsForRef(refId as string, refType as CommentRefType)
-		res.json(normalizeComments(comments))
+		res.status(201).json(normalizeComments(comments))
 	} catch (err) {
 		next(err)
 	}

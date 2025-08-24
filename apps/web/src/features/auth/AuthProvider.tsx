@@ -122,7 +122,6 @@ export const AuthProvider = ({
     
     const renderModal = () => (
         <View
-            pointerEvents='box-none'
             style={[styles.overlay, { backgroundColor: withAlpha(theme.colors.background, 1) }]}
         >
             <Column flex={1} style={styles.content}>

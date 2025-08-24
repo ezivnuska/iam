@@ -76,7 +76,7 @@ export const CommentForm = ({ id, type, onComment }: Props) => {
     }
 
 	return (
-        <Row spacing={Size.S} align='flex-end'>
+        <Row spacing={Size.S} align='center'>
 			<ControlledTextInput
 				name='content'
 				control={control}

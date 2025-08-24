@@ -40,7 +40,7 @@ export const CommentsList = ({
 	}
 
 	return (
-        <Column flex={1} spacing={12}>
+        <Column flex={1}>
             <ScrollView
                 style={{ maxHeight: height * 0.4 }}
                 contentContainerStyle={{ paddingBottom: Size.S }}

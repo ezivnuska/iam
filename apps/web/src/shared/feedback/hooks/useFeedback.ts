@@ -18,15 +18,15 @@ type Props = {
 
 export const useFeedback = ({
 	refId,
-	initialLikeMeta = { count: 0, likedByCurrentUser: false },
-	initialCommentCount = 0,
+	initialLikeMeta,
+	initialCommentCount,
 	toggleLike,
 	fetchLikeMeta,
 	fetchCommentCount,
 }: Props) => {
-	const [likeCount, setLikeCount] = useState(initialLikeMeta.count)
-	const [liked, setLiked] = useState(initialLikeMeta.likedByCurrentUser)
-	const [commentCount, setCommentCount] = useState(initialCommentCount)
+	const [likeCount, setLikeCount] = useState<number | undefined>()
+	const [liked, setLiked] = useState<boolean | undefined>()
+	const [commentCount, setCommentCount] = useState<number | undefined>()
 	const [expanded, setExpanded] = useState(false)
 	const [commentRefreshToken, setCommentRefreshToken] = useState(0)
 
@@ -41,7 +41,8 @@ export const useFeedback = ({
                     setLiked(likeData.likedByCurrentUser)
                     setLikeCount(likeData.count)
                 }
-				if (commentCount) setCommentCount(commentCount)
+				// if (commentCount) 
+                    setCommentCount(commentCount)
 			} catch (err) {
 				console.error('Failed to fetch initial meta:', err)
 			}
@@ -67,7 +68,7 @@ export const useFeedback = ({
 
 	const handleCommentAdded = () => {
 		setExpanded(true)
-		setCommentCount(prev => prev + 1)
+		setCommentCount(prev => prev && prev + 1)
 		setCommentRefreshToken(Date.now())
 	}
 
@@ -92,5 +93,6 @@ export const useFeedback = ({
 		handleToggleComments,
 		handleCommentAdded,
 		handleCommentDeleted,
+        setExpanded,
 	}
 }

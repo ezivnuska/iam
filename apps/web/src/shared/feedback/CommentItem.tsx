@@ -30,7 +30,8 @@ export const CommentItem = ({
 			spacing={Size.S}
 			align='flex-start'
             justify='flex-start'
-            paddingVertical={paddingVertical}
+            // paddingVertical={paddingVertical}
+            paddingBottom={paddingVertical}
 			style={{ opacity: isDeleting ? 0.5 : 1 }}
 		>
             <Avatar
