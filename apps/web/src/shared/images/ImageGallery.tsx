@@ -12,11 +12,13 @@ import {
 import { AutoSizeImage, Spinner } from '@shared/ui'
 import type { Image } from '@iam/types'
 import { resolveResponsiveProp, Size } from '@iam/theme'
+import Ionicons from '@expo/vector-icons/Ionicons'
 
 type Props = {
 	images: Image[]
 	currentAvatarId?: string | null
 	onImagePress: (image: Image) => void
+	onDelete?: (id: string) => void
 	onEndReached?: () => void
 	loading?: boolean
 }
@@ -29,6 +31,7 @@ const ImageGallery = ({
 	onImagePress,
 	onEndReached,
 	loading,
+    onDelete,
 }: Props) => {
 	const { width: windowWidth } = useWindowDimensions()
 	const [containerWidth, setContainerWidth] = useState<number>(windowWidth)
@@ -71,14 +74,22 @@ const ImageGallery = ({
 				renderItem={({ item }) => {
 					const isAvatar = item.id === currentAvatarId
 					return (
-						<TouchableOpacity
-							onPress={() => onImagePress(item)}
-							style={[styles.imageBlock, { width: imageSize }]}
-						>
-							<View style={[styles.imageWrapper, isAvatar && styles.avatarHighlight]}>
+                        <View style={[styles.imageBlock, isAvatar && styles.avatarHighlight]}>
+                            <TouchableOpacity
+                                onPress={() => onImagePress(item)}
+                                style={[styles.imageWrapper, { width: imageSize }]}
+                            >
 								<AutoSizeImage image={item} />
-							</View>
-						</TouchableOpacity>
+                            </TouchableOpacity>
+                            {onDelete && (
+                                <TouchableOpacity
+                                    onPress={() => onDelete(item.id)}
+                                    style={styles.deleteButton}
+                                >
+                                    <Ionicons name='close' size={30} color={'red'} />
+                                </TouchableOpacity>
+                            )}
+                        </View>
 					)
 				}}
 			/>
@@ -96,14 +107,22 @@ const styles = StyleSheet.create({
 	},
 	imageBlock: {
 		alignItems: 'center',
-		paddingHorizontal: IMAGE_MARGIN / 2,
+        zIndex: 10,
 	},
+    deleteButton: {
+        position: 'absolute',
+        top: 4,
+        right: 4,
+        zIndex: 100,
+    },
 	imageWrapper: {
+		paddingHorizontal: IMAGE_MARGIN / 2,
 		borderRadius: 8,
 		overflow: 'hidden',
 		width: '100%',
 		borderWidth: 1,
 		backgroundColor: '#eee',
+        position: 'relative',
 	},
 	avatarHighlight: {
 		borderWidth: 3,

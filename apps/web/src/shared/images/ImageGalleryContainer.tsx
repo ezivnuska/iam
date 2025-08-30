@@ -89,6 +89,7 @@ export const ImageGalleryContainer: React.FC<ImageGalleryContainerProps> = ({ us
 					onImagePress={handleImagePress}
 					loading={isLoading}
 					onEndReached={() => hasNextPage && loadImages()}
+                    onDelete={(isOwner || isAdmin) ? handleDelete : undefined}
 				/>
 			)}
 		</Column>
