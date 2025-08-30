@@ -3,7 +3,7 @@
 import React from 'react'
 import { Pressable, StyleSheet, Text } from 'react-native'
 import { Row } from '@shared/grid'
-import { Size } from '@iam/theme'
+import { Size, withAlpha } from '@iam/theme'
 import { useTheme } from '@shared/hooks'
 import Ionicons from '@expo/vector-icons/Ionicons'
 
@@ -30,7 +30,7 @@ export const FeedbackBar: React.FC<Props> = ({
 }) => {
     const { theme } = useTheme()
     const commentDisabled = disabledComment || !isAuthenticated
-    const textColor = (!isAuthenticated || commentDisabled) ? theme.colors.textSecondary : theme.colors.text
+    const textColor = (!isAuthenticated || commentDisabled) ? withAlpha(theme.colors.textSecondary, 0.5) : theme.colors.text
     const showLikes = likeCount !== undefined
     const showComments = commentCount !== undefined
 	return (
@@ -41,7 +41,7 @@ export const FeedbackBar: React.FC<Props> = ({
             {showLikes && (
                 <Pressable onPress={onToggleLike} disabled={!isAuthenticated}>
                     <Row
-                        spacing={Size.XS}
+                        spacing={Size.S}
                         justify='center'
                         align='center'
                     >
@@ -60,19 +60,19 @@ export const FeedbackBar: React.FC<Props> = ({
                 </Pressable>
             )}
 
-            {showLikes && showComments && <Text style={{ width: 2, backgroundColor: '#ccc' }}>&nbsp;</Text>}
+            {showLikes && showComments && <Text style={{ width: 2, backgroundColor: textColor }}>&nbsp;</Text>}
 
 			{showComments && (
                 <Pressable
                     onPress={onToggleComments}
                     disabled={commentDisabled}
                 >
-                    <Row spacing={5} align='center'>
+                    <Row spacing={Size.S} align='center'>
                         <Text style={[styles.bottomButton, { color: textColor }]}>
                             {`${commentCount} Comment${commentCount !== 1 ? 's' : ''}`}
                         </Text>
 
-                        {commentCount > 0 && (
+                        {isAuthenticated && commentCount > 0 && (
                             <Ionicons
                                 name={`chevron-${expanded ? 'up' : 'down' }`}
                                 size={16}

@@ -9,6 +9,7 @@ import { Comment, PartialUser } from '@iam/types'
 import { Size } from '@iam/theme'
 import { useTheme } from '@shared/hooks'
 import Feather from '@expo/vector-icons/Feather'
+import { formatRelative } from 'date-fns'
 
 type CommentItemProps = {
 	comment: Comment
@@ -46,9 +47,14 @@ export const CommentItem = ({
                 style={{ opacity: isDeleting ? 0.5 : 1 }}
             >
                 <Column flex={1} spacing={Size.XS}>
-                    <Text style={[styles.author, { color: theme.colors.text, fontWeight: 600 }]}>
-                        {comment.author.username}
-                    </Text>
+                    <Row flex={1} spacing={Size.M} align='center'>
+                        <Text style={[styles.author, { color: theme.colors.text, fontWeight: 600 }]}>
+                            {comment.author.username}
+                        </Text>
+                        <Text style={[ styles.date, { color: theme.colors.textSecondary }]}>
+                            {formatRelative(new Date(comment.createdAt), new Date())}
+                        </Text>
+                    </Row>
                     <Text style={[styles.text, { color: theme.colors.textSecondary }]}>{comment.content}</Text>
                 </Column>
                 {isAuthor && (
@@ -118,4 +124,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#666',
         cursor: 'pointer',
     },
+	date: {
+		fontSize: 14,
+		lineHeight: 16,
+	},
 })

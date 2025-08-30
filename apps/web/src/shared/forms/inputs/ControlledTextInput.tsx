@@ -45,7 +45,7 @@ export const ControlledTextInput = <T extends FieldValues>({
 	}
 
 	return (
-		<View style={{ height }}>
+		<View style={{ flex: 1, height }}>
             {label && <Text style={styles.label}>{label}</Text>}
             <Controller
                 name={name}

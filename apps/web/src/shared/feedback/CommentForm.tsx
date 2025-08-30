@@ -73,7 +73,7 @@ export const CommentForm = ({ id, type, onComment }: Props) => {
 	}
 
 	return (
-        <Row spacing={Size.S} align='center'>
+        <Row flex={1} spacing={Size.S} align='center'>
 			<ControlledTextInput
                 inputRef={inputRef}
 				name='content'

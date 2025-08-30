@@ -7,6 +7,7 @@ import { InfiniteScrollView } from '@shared/scrolling'
 import { Column } from '@shared/grid'
 import { usePosts } from '../hooks'
 import { useTheme } from '@shared/hooks'
+import { Size } from '@iam/theme'
 
 const PAGE_SIZE = 5
 
@@ -32,7 +33,7 @@ export const FeedList = () => {
 	return (
         <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
             <InfiniteScrollView onScrollNearBottom={hasMore ? loadMorePosts : undefined}>
-                <Column>
+                <Column spacing={Size.S}>
                     {visiblePosts.map((post) => (
                         <View key={post.id}>
                             <FeedListItem

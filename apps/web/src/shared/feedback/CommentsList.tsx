@@ -40,10 +40,10 @@ export const CommentsList = ({
 	}
 
 	return (
-        <Column flex={1}>
+        <Column flex={1} spacing={Size.XS}>
             <ScrollView
-                style={{ maxHeight: height * 0.4 }}
-                contentContainerStyle={{ paddingBottom: Size.S }}
+                style={{ maxHeight: height * 0.4, flexGrow: 0 }}
+                // contentContainerStyle={{ paddingBottom: Size.S }}
                 showsVerticalScrollIndicator={false}
             >
                 {comments?.map((item, index) => (
