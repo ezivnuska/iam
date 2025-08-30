@@ -108,6 +108,18 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
 		renderCamera()
 	) : (
 		<Column flex={1} spacing={10} style={styles.container} align='stretch'>
+
+            <Column align='center' spacing={10} style={{ width: '100%' }}>
+                <Row flex={1} align='center' justify='space-evenly' style={{ width: '100%' }}>
+                    <IconButton label='Library' onPress={handlePick} iconName='images' showLabel={!imageData} />
+                    <IconButton label='Camera' onPress={() => setUseCamera(true)} iconName='camera' showLabel={!imageData} />
+                </Row>
+                {autoUpload && imageData && (
+                    <Row flex={1} align='center' justify='space-evenly' style={{ width: '100%' }}>
+                        <Button label='Upload' onPress={handleUpload} showActivity={uploading} />
+                    </Row>
+                )}
+            </Column>
             {error && <Text style={styles.errorText}>{error}</Text>}
             <View style={styles.previewContainer} onLayout={onLayout}>
                 {dims && (
@@ -130,18 +142,6 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
                     ) : null
                 )}
             </View>
-
-			<Column align='center' spacing={10} style={{ width: '100%' }}>
-				<Row flex={1} align='center' justify='space-evenly' style={{ width: '100%' }}>
-					<IconButton label='Library' onPress={handlePick} iconName='images' showLabel={!imageData} />
-					<IconButton label='Camera' onPress={() => setUseCamera(true)} iconName='camera' showLabel={!imageData} />
-				</Row>
-                {autoUpload && imageData && (
-                    <Row flex={1} align='center' justify='space-evenly' style={{ width: '100%' }}>
-                        <Button label='Upload' onPress={handleUpload} showActivity={uploading} />
-                    </Row>
-                )}
-			</Column>
 		</Column>
 	)
 }

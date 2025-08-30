@@ -104,6 +104,7 @@ export const MemoryProvider = ({
 	}
 
 	const addMemory = async (memory: Memory) => {
+        console.log('adding', memory)
 		setState(prev => ({ ...prev, memories: [memory, ...prev.memories] }))
         hideModal()
 	}

@@ -23,7 +23,7 @@ export const form: NamedStyles<any> = {
 	input: {
 		flex: 1,
 		paddingHorizontal: 18,
-		paddingVertical: 9,
+		paddingVertical: 6,
 		lineHeight: 30,
 		borderRadius: 24,
 		fontSize: 18,
@@ -37,7 +37,7 @@ export const form: NamedStyles<any> = {
 
 	inputFocused: {
 		borderColor: c.formField.borderFocused,
-		backgroundColor: c.formField.backgroundFocused,
+		// backgroundColor: c.formField.backgroundFocused,
 	} as TextStyle,
 
 	textArea: {

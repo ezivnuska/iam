@@ -26,6 +26,7 @@ export const MemoryList = () => {
     }, [])
 
 	useEffect(() => {
+        console.log('memories changed', memories)
 		setVisibleMemories(memories.slice(0, PAGE_SIZE))
 	}, [memories])
 

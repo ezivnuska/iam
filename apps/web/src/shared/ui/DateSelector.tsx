@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
     buttonContainer: {
         flex: 1,
         width: '100%',
-        height: 48,
+        height: 40,
         flexDirection: 'row',
         justifyContent: 'space-evenly',
         borderRadius: 24,
@@ -287,8 +287,8 @@ const styles = StyleSheet.create({
     },
     button: {
         flex: 1,
-        paddingVertical: 9,
-        height: 48,
+        // paddingVertical: 9,
+        height: 40,
         // backgroundColor: '#E9ECEF',
         flexDirection: 'row',
         justifyContent: 'center',
