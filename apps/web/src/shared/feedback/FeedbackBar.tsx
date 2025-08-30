@@ -1,7 +1,7 @@
 // apps/web/src/shared/feedback/FeedbackBar.tsx
 
 import React from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text } from 'react-native'
 import { Row } from '@shared/grid'
 import { Size } from '@iam/theme'
 import { useTheme } from '@shared/hooks'
@@ -37,7 +37,6 @@ export const FeedbackBar: React.FC<Props> = ({
 		<Row
             spacing={Size.M}
             align='center'
-            // paddingVertical={Size.S}
         >
             {showLikes && (
                 <Pressable onPress={onToggleLike} disabled={!isAuthenticated}>
@@ -61,7 +60,7 @@ export const FeedbackBar: React.FC<Props> = ({
                 </Pressable>
             )}
 
-            {showLikes && showComments && <View style={{ width: 2, backgroundColor: '#ccc' }}>&nbsp;</View>}
+            {showLikes && showComments && <Text style={{ width: 2, backgroundColor: '#ccc' }}>&nbsp;</Text>}
 
 			{showComments && (
                 <Pressable
@@ -69,15 +68,9 @@ export const FeedbackBar: React.FC<Props> = ({
                     disabled={commentDisabled}
                 >
                     <Row spacing={5} align='center'>
-                        {commentCount > 0 ? (
-                            <Text style={[styles.bottomButton, { color: textColor }]}>
-                                {`${commentCount} Comment${commentCount !== 1 ? 's' : ''}`}
-                            </Text>
-                        ) : (
-                            <Text style={[styles.bottomButton, { color: textColor }]}>
-                                Add comment
-                            </Text>
-                        )}
+                        <Text style={[styles.bottomButton, { color: textColor }]}>
+                            {`${commentCount} Comment${commentCount !== 1 ? 's' : ''}`}
+                        </Text>
 
                         {commentCount > 0 && (
                             <Ionicons

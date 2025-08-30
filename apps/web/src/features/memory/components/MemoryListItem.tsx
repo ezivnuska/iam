@@ -1,21 +1,21 @@
-// apps/web/src/features/feed/components/MemoryListItem.tsx
+// apps/web/src/features/memory/components/MemoryListItem.tsx
 
-import React, { useMemo } from 'react'
+import React from 'react'
 import { AutoSizeImage } from '@shared/ui'
-import { MemoryListItemHeader } from '.'
+import { MemoryForm, MemoryListItemHeader } from '.'
 import { FeedbackBarContainer } from '@shared/feedback'
 import { Column, Row } from '@shared/grid'
-import type { Memory, Post } from '@iam/types'
+import type { Memory } from '@iam/types'
 import { RefType } from '@iam/types'
 import { Size } from '@iam/theme'
 import { useMemory } from '../hooks'
 import { useAuth } from '@features/auth'
 import { useModal, useTheme } from '@shared/hooks'
 import { navigate } from '@shared/navigation'
-import { StyleSheet, Text } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import { formatDate } from 'date-fns'
-import { MemoryForm } from '@shared/forms'
 import { IconButton } from '@shared/buttons'
+import { ModalContainer } from '@shared/modals'
 
 type Props = {
 	memory: Memory
@@ -29,22 +29,28 @@ export const MemoryListItem: React.FC<Props> = ({
 	onCommentDeleted,
 }) => {
 	const { user } = useAuth()
+	const { hideModal, showModal } = useModal()
 	const { deleteMemory, deleteMemoryImage, updateMemory } = useMemory()
-    const { hideModal, openFormModal } = useModal()
 	const { theme } = useTheme()
 
 	const author = memory.author
 	const owned = user?.id === author.id
-    
-    const onMemoryUpdated = (memory: Memory) => {
-        updateMemory(memory)
-        hideModal()
-    }
 
 	const handleDelete = async () => {
 		await deleteMemory(memory.id)
 		onMemoryDeleted?.(memory.id)
 	}
+
+    const editMemory = () => {
+        showModal((
+            <ModalContainer
+                title='Add or Update Memory'
+                onDismiss={hideModal}
+            >
+                <MemoryForm memory={memory} />
+            </ModalContainer>
+        ), true)
+    }
     
     const handleUserPress = () => {
         if (owned) {
@@ -55,10 +61,6 @@ export const MemoryListItem: React.FC<Props> = ({
                 params: { username: author.username as string },
             })
         }
-    }
-
-    const showMemoryModal = () => {
-        openFormModal(MemoryForm, { onComplete: onMemoryUpdated, memory }, { title: 'Edit Memory', fullscreen: true })
     }
 
 	return (
@@ -76,25 +78,41 @@ export const MemoryListItem: React.FC<Props> = ({
 
             <Row spacing={12} justify='space-between'>
                 <Text style={[styles.text, { color: theme.colors.text }]}>{formatDate(new Date(memory.date), 'MMMM do y')}</Text>
-                <IconButton onPress={showMemoryModal} iconName='create' />
+                {owned && <IconButton onPress={editMemory} iconName='create' />}
             </Row>
             <Text style={[styles.text, { color: theme.colors.text }]}>{memory.content}</Text>
 
-			{/* {!post.linkUrl && (
-                <Autolink
-                    text={post.content}
-                    style={{ fontSize: 16, color: theme.colors.text }}
-                    linkStyle={{ color: theme.colors.link }}
-                    url
-                    email={false}
-                    phone={false}
-                    truncate={50}
-                    truncateChars='...'
-                />
-            )} */}
-
-			{memory.image && <AutoSizeImage image={memory.image} />}
-			{memory.image && <IconButton onPress={() => deleteMemoryImage(memory.id)} iconName='close' />}
+			{memory.image && (
+                <View style={{ flex: 1, position: 'relative' }}>
+                    <View style={{ flex: 1, zIndex: 10 }}>
+                        <AutoSizeImage image={memory.image} />
+                    </View>
+                    {owned && (
+                        <View
+                            style={{
+                                position: 'absolute',
+                                top: 6,
+                                right: 6,
+                                zIndex: 100,
+                            }}
+                        >
+                            <Row
+                                align='center'
+                                justify='center'
+                                style={{
+                                    backgroundColor: '#000',
+                                    borderRadius: 24,
+                                    height: 36,
+                                    width: 36,
+                                    alignContent: 'center',
+                                }}
+                            >
+                                <IconButton onPress={() => deleteMemoryImage(memory.id)} iconName='close' iconSize={30} />
+                            </Row>
+                        </View>
+                    )}
+                </View>
+            )}
 
 			{/* {showPreview && post.linkUrl && post.linkPreview && (
                 <LinkPreview url={post.linkUrl} preview={post.linkPreview} />

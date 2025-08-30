@@ -68,7 +68,7 @@ export const ChatInput = ({ onSend }: Props) => {
 	}
 
 	return (
-		<Row spacing={Size.S} align='flex-end'>
+		<Row spacing={Size.S} align='center'>
 			<ControlledTextInput
 				name='input'
 				control={control}

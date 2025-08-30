@@ -41,8 +41,7 @@ export const useFeedback = ({
                     setLiked(likeData.likedByCurrentUser)
                     setLikeCount(likeData.count)
                 }
-				// if (commentCount) 
-                    setCommentCount(commentCount)
+                setCommentCount(commentCount)
 			} catch (err) {
 				console.error('Failed to fetch initial meta:', err)
 			}

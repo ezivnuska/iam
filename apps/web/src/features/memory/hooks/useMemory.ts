@@ -1,7 +1,7 @@
 // apps/web/src/features/feed/hooks/usePosts.ts
 
 import { useContext } from 'react'
-import { MemoryContext, MemoryContextType } from '@shared/providers'
+import { MemoryContext, MemoryContextType } from '..'
 
 export const useMemory = (): MemoryContextType => {
 	const context = useContext(MemoryContext)

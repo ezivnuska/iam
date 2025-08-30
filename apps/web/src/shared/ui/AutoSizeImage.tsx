@@ -47,9 +47,9 @@ export const AutoSizeImage = ({
   
 	const onLayout = (event: LayoutChangeEvent) => {
 		if (containerWidth === undefined) {
-			const width = event.nativeEvent.layout.width
+			const { height, width } = event.nativeEvent.layout
 			if (width && width !== measuredWidth) {
-				setMeasuredWidth(width);
+				setMeasuredWidth(width)
 			}
 		}
 	}

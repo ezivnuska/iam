@@ -1,5 +1,6 @@
 // apps/web/src/hooks/useResponsiveImageSize.ts
 
+import { Image } from '@iam/types'
 import { useState, useEffect } from 'react'
 import { Dimensions, ScaledSize } from 'react-native'
 

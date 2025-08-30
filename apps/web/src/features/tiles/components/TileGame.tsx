@@ -46,12 +46,6 @@ export const TileGame: React.FC = () => {
         }
     }, [dims])
 
-    // useEffect(() => {
-    //     if (itemSize) {
-    //         setStatus(GameStatus.IDLE)
-    //     }
-    // }, [itemSize])
-
     useEffect(() => {
 		if (draggedTile) {
 			setDraggedTile(null)
@@ -93,7 +87,7 @@ export const TileGame: React.FC = () => {
 	}
 
     const onTouchStart = (event: any, tile: TileType) => {
-        if (status === GameStatus.PLAYING && tile.direction !== Direction.NONE) {
+        if (status === GameStatus.PLAYING && !draggedTile && tile.direction !== Direction.NONE) {
             setDraggedTile(tile)
         }
     }

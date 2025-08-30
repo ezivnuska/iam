@@ -16,10 +16,10 @@ export const HeaderNav: React.FC = () => {
     const { orientation } = useDeviceInfo()
     const currentRoute = useCurrentRoute()
     const isLandscape = orientation === 'landscape'
-    const iconSize = resolveResponsiveProp({ xs: 24, sm: 24, md: 32, lg: 32 })
+    const iconSize = resolveResponsiveProp({ xs: 22, sm: 22, md: 26, lg: 30 })
     const navSpacing = resolveResponsiveProp({ xs: Size.S, sm: Size.S, md: Size.S, lg: Size.M })
     const showLabel = resolveResponsiveProp({ xs: false, sm: false, md: false, lg: true })
-
+    
     return (
         <FlexBox
             flex={1}
@@ -41,6 +41,7 @@ export const HeaderNav: React.FC = () => {
                     spacing={navSpacing}
                     direction={isLandscape ? 'column' : 'row-reverse'}
                     justify={isLandscape ? 'space-between' : 'flex-start'}
+                    align='center'
                     style={{
                         alignSelf: 'center',
                     }}

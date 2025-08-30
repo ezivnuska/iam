@@ -66,7 +66,7 @@ export const FeedListItem: React.FC<Props> = ({
 			{!post.linkUrl && post.content.length > 0 && (
                 <Autolink
                     text={post.content}
-                    style={{ fontSize: 16, color: theme.colors.text }}
+                    style={{ fontSize: 16, lineHeight: 30, color: theme.colors.text }}
                     linkStyle={{ color: theme.colors.link }}
                     url
                     email={false}

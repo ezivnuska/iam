@@ -5,7 +5,7 @@ import { Dimensions, Image, LayoutChangeEvent, Platform, StyleSheet, Text, View 
 import { Row, Column } from '@shared/grid'
 import { IconButton, Button } from '@shared/buttons'
 import { NativeCamera, WebCamera } from '@shared/media'
-import { selectImage } from '@shared/images'
+import { selectImage, useBestVariant } from '@shared/images'
 import { useResponsiveImageSize } from '@shared/hooks'
 import { uploadImage } from '@iam/services'
 import type { UploadedImage } from '@iam/types'
@@ -22,19 +22,21 @@ type ImageUploadProps = {
 	autoUpload?: boolean
 	onImageSelected?: (imageData: ImageDataType) => void
 	onUploaded?: (result: UploadedImage) => void
+    preview?: UploadedImage
 }
 
 export const ImageUpload: React.FC<ImageUploadProps> = ({
 	autoUpload = false,
 	onImageSelected,
 	onUploaded,
+    preview,
 }) => {
 	const [error, setError] = useState<string | null>(null)
 	const [uploading, setUploading] = useState(false)
 	const [useCamera, setUseCamera] = useState(false)
 	const [imageData, setImageData] = useState<ImageDataType | null>(null)
     const [dims, setDims] = useState<previewDims>()
-
+    
 	const { width: rawWidth, height: rawHeight } = useResponsiveImageSize(
 		imageData?.width,
 		imageData?.height
@@ -108,16 +110,27 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
 		<Column flex={1} spacing={10} style={styles.container} align='stretch'>
             {error && <Text style={styles.errorText}>{error}</Text>}
             <View style={styles.previewContainer} onLayout={onLayout}>
-                {imageData && dims && (
-                    <Image
-                        source={{ uri: imageData.uri }}
-                        // style={{ width: 150, height: 150, marginVertical: 10, borderRadius: 8 }}
-                        style={[styles.imagePreview, { width: dims.width, height: dims.height }]}
-                        // style={[styles.imagePreview, { width: imageWidth, height: imageHeight }]}
-                        resizeMode='contain'
-                    />
+                {dims && (
+                    imageData ? (
+                        <Image
+                            source={{ uri: imageData.uri }}
+                            // style={{ width: 150, height: 150, marginVertical: 10, borderRadius: 8 }}
+                            style={[styles.imagePreview, { width: dims.width, height: dims.height }]}
+                            // style={[styles.imagePreview, { width: imageWidth, height: imageHeight }]}
+                            resizeMode='contain'
+                        />
+                    ) : preview ? (
+                        <Image
+                            source={{ uri: useBestVariant(preview, dims.width) }}
+                            // style={{ width: 150, height: 150, marginVertical: 10, borderRadius: 8 }}
+                            style={[styles.imagePreview, { width: dims.width, height: dims.height }]}
+                            // style={[styles.imagePreview, { width: imageWidth, height: imageHeight }]}
+                            resizeMode='contain'
+                        />
+                    ) : null
                 )}
             </View>
+
 			<Column align='center' spacing={10} style={{ width: '100%' }}>
 				<Row flex={1} align='center' justify='space-evenly' style={{ width: '100%' }}>
 					<IconButton label='Library' onPress={handlePick} iconName='images' showLabel={!imageData} />

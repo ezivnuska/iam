@@ -1,24 +1,24 @@
 // apps/web/src/shared/buttons/CreateMemoryButton.tsx
 
 import React from 'react'
-import { useModal } from'@shared/hooks'
-import { useMemory } from'@features/memory'
+import { MemoryForm, useMemory } from'@features/memory'
 import { Button } from '@shared/buttons'
-import { MemoryForm } from '@shared/forms'
-import type { Memory } from '@iam/types'
+import { useModal } from '@shared/hooks'
+import { ModalContainer } from '@shared/modals'
 
 export const CreateMemoryButton = () => {
-	const { hideModal, openFormModal } = useModal()
-	const { addMemory } = useMemory()
+	const { hideModal, showModal } = useModal()
 
-	const onMemoryCreated = (memory: Memory) => {
-		addMemory(memory)
-		hideModal()
-	}
-
-	const showMemoryModal = () => {
-		openFormModal(MemoryForm, { onComplete: onMemoryCreated }, { title: 'Create Memory', fullscreen: true })
-	}
+    const showMemoryModal = () => {
+        showModal((
+            <ModalContainer
+                title='Add or Update Memory'
+                onDismiss={hideModal}
+            >
+                <MemoryForm />
+            </ModalContainer>
+        ), true)
+    }
 
 	return (
         <Button

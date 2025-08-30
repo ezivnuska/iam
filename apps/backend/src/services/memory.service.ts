@@ -74,25 +74,40 @@ export const updateMemory = async (
     userId: string,
     content: string,
     date: Date,
-    image?: { id: string }
+    image?: string,
 ) => {
-    const memory = await Memory.findOne({ _id: id, author: userId })
+    console.log('updating memory')
+    console.log('memory id', id)
+    console.log('author id', userId)
+    console.log('content', content)
+    console.log('image', image)
+    console.log(' ')
+
+    let updates = {
+        content,
+        date,
+        image: image ? new mongoose.Types.ObjectId(image) : undefined,
+    }
+
+    console.log('updates', updates)
+
+    const memory = await Memory.findByIdAndUpdate(id, updates, { new: true })
         .populate({
             path: 'author',
             select: 'username avatar',
             populate: { path: 'avatar', select: '_id filename variants username' },
         })
         .populate('image')
+    console.log('updated memory', memory)
+    // if (!memory) throw new HttpError('Memory not found or unauthorized', 404)
 
-    if (!memory) throw new HttpError('Memory not found or unauthorized', 404)
+    // memory.content = content
+    // memory.date = date
+    // if (image?.id) {
+    //     memory.image = new mongoose.Types.ObjectId(image.id)
+    // }
 
-    memory.content = content
-    memory.date = date
-    if (image?.id) {
-        memory.image = new mongoose.Types.ObjectId(image.id)
-    }
-
-    await memory.save()
+    // await memory.save()
     return formatMemory(memory)
 }
 

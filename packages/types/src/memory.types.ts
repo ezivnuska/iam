@@ -13,10 +13,4 @@ export interface Memory {
     likedByCurrentUser: boolean
     image?: UploadedImage
     date: Date,
-    // linkUrl?: string
-	// linkPreview?: {
-	// 	title?: string
-	// 	description?: string
-	// 	image?: string
-	// }
 }

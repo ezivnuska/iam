@@ -13,7 +13,8 @@ import Feather from '@expo/vector-icons/Feather'
 import type { Comment, CommentRefType } from '@iam/types'
 
 const schema = z.object({
-	content: z.string().min(1).max(140),
+	content: z.string().min(1),
+    // .max(200),
 })
 
 type CommentFormProps = z.infer<typeof schema>
@@ -44,12 +45,14 @@ export const CommentForm = ({ id, type, onComment }: Props) => {
     const inputValue = watch('content') || ''
 
 	const onSubmit = async (data: CommentFormProps) => {
+        console.log('onSubmit', data)
 		if (!data?.content) {
 			Alert.alert('Error', 'Comment data missing')
 			return
 		}
 
 		try {
+            console.log('addComment', id, type, data.content)
             const newComment = await addComment(id, type, data.content)
             onComment(newComment)
             setValue('content', '')
@@ -72,12 +75,12 @@ export const CommentForm = ({ id, type, onComment }: Props) => {
 	return (
         <Row spacing={Size.S} align='center'>
 			<ControlledTextInput
+                inputRef={inputRef}
 				name='content'
 				control={control}
 				error={errors.content}
 				autoFocus
 				placeholder='Say something...'
-				inputRef={inputRef}
 				onSubmitEditing={handleSubmit(onSubmit)}
 				returnKeyType='send'
 			/>

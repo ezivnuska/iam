@@ -1,17 +1,15 @@
-// apps/web/src/shared/forms/MemoryForm.tsx
+// apps/web/src/fetaures/memory/components/MemoryForm.tsx
 
-import React, { useEffect, useMemo, useState } from 'react'
-import { ActivityIndicator, View } from 'react-native'
-import { DynamicForm, memorySchema, memoryFields } from './'
-import type { MemoryFormValues } from './'
+import React, { useState } from 'react'
+import { View } from 'react-native'
+import { memorySchema, memoryFields, type MemoryFormValues, useMemory } from '../'
+import { DynamicForm } from '@shared/forms'
 import * as memoryService from '@iam/services'
 import { ImageUpload } from '@shared/images'
 import DateSelector from '@shared/ui/DateSelector'
-import { getDate, getMonth, getYear } from 'date-fns'
 import { Memory } from '@iam/types'
 
 type MemoryFormProps = {
-	onComplete: (memory: any) => void
     memory?: Memory
 }
 
@@ -22,14 +20,14 @@ type ImageData = {
 	height?: number
 }
 
-export const MemoryForm = ({ onComplete, memory }: MemoryFormProps) => {
+export const MemoryForm = ({ memory }: MemoryFormProps) => {
+    
 	const [localImageData, setLocalImageData] = useState<ImageData | null>(null)
 	const [loading, setLoading] = useState(false)
     const [date, setDate] = useState<Date>(memory?.date || new Date())
-    // const year = useMemo(() => date && getYear(date), [date])
-    // const month = useMemo(() => date && getMonth(date), [date])
-    // const day = useMemo(() => date && getDate(date), [date])
 
+    const { addMemory, updateMemory } = useMemory()
+    
 	const onSubmit = async (data: MemoryFormValues, setError: any) => {
 		if (!localImageData && (!data.content || data.content.trim() === '')) {
 			setError('content', {
@@ -39,27 +37,41 @@ export const MemoryForm = ({ onComplete, memory }: MemoryFormProps) => {
 			return
 		}
 
-		let newMemory = memory
+		let newMemory
 		setLoading(true)
         const content = data.content ?? ''
         let uploadedImage
-		try {
-			if (localImageData) {
+        if (localImageData) {
+            try {
 				uploadedImage = await memoryService.uploadImage({ imageData: localImageData })
-			}
-
-            if (memory) {
-                newMemory = await memoryService.updateMemory(memory.id, content, date, uploadedImage?.id)
-            } else {
-                newMemory = await memoryService.createMemory(content, date, uploadedImage?.id)
+            } catch (err) {
+                setError('image', { type: 'manual', message: 'Failed to upload memory image' })
             }
-		} catch (err) {
-			setError('content', { type: 'manual', message: 'Failed to create memory' })
-		} finally {
-			setLoading(false)
-		}
+        }
+        
+        if (memory) {
+            try {
+                newMemory = await memoryService.updateMemory(memory.id, content, date, uploadedImage?.id)
+            } catch (err) {
+                setError('content', { type: 'manual', message: 'Failed to update memory' })
+            }
+        } else {
+            try {
+                newMemory = await memoryService.createMemory(content, date, uploadedImage?.id)
+            } catch (err) {
+                setError('content', { type: 'manual', message: 'Failed to create memory' })
+            }
+        }
 
-		if (newMemory) onComplete(newMemory)
+		setLoading(false)
+
+        console.log('newMemory', newMemory)
+        console.log('memory', memory)
+
+        if (newMemory) {
+            if (memory) updateMemory(newMemory)
+            else addMemory(newMemory)
+        }
 	}
 
 	return (
@@ -72,9 +84,11 @@ export const MemoryForm = ({ onComplete, memory }: MemoryFormProps) => {
 				defaultValues={memory}
 			>
                 <DateSelector onChange={setDate} memory={memory} />
-                <ImageUpload autoUpload={false} onImageSelected={setLocalImageData} />
-
-				{/* {loading && <ActivityIndicator style={{ marginTop: 20 }} />} */}
+                <ImageUpload
+                    autoUpload={false}
+                    onImageSelected={setLocalImageData}
+                    preview={memory?.image}
+                />
                 
 			</DynamicForm>
 		</View>

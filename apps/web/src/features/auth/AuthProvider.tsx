@@ -19,6 +19,7 @@ import { AuthLayer } from '@features/auth'
 import { AuthForm } from '.'
 import type { AuthMode } from '@shared/forms'
 import Ionicons from '@expo/vector-icons/Ionicons'
+import { DefaultModal } from '@shared/modals/DefaultModal'
 
 export type AuthContextType = {
     disconnecting: boolean,
@@ -120,34 +121,16 @@ export const AuthProvider = ({
 		navigate('Feed')
 	}
     
-    const renderModal = () => (
-        <View
-            style={[styles.overlay, { backgroundColor: withAlpha(theme.colors.background, 1) }]}
-        >
-            <Column flex={1} style={styles.content}>
-                <Row align='center' paddingVertical={12}>
-                    <Row spacing={24} align='center' style={styles.header}>
-                        <Text style={[styles.title, { color: theme.colors.text }]}>{authMode === 'signin' ? 'Sign In' : 'Sign Up'}</Text>
-                        <Pressable onPress={() => setAuthMode(authMode === 'signin' ? 'signup' : 'signin')}>
-                            <Text style={[styles.title, { alignSelf: 'center', color: withAlpha(theme.colors.link, 0.75), fontWeight: 500 }]}>{authMode === 'signin' ? 'Sign Up' : 'Sign In'}</Text>
-                        </Pressable>
-                        {/* {subtitle && <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>{subtitle}</Text>} */}
-                    </Row>
-                    <Pressable onPress={hideAuthModal}>
-                        <Ionicons name='close-sharp' size={28} color={theme.colors.text} />
-                    </Pressable>
-                </Row>
-                <ScrollView
-                    contentContainerStyle={styles.scrollContent}
-                    style={{ flex: 1 }}
-                    showsHorizontalScrollIndicator={false}
-                    showsVerticalScrollIndicator={false}
-                >
-                    <AuthForm mode={authMode} dismiss={hideAuthModal} />
-                </ScrollView>
-            </Column>
-        </View>
-    )
+    const renderModal = () => {
+        return (
+            <DefaultModal
+                title={authMode === 'signin' ? 'Sign In' : 'Sign Up'}
+                onDismiss={() => setModalVisible(false)}
+            >
+                <AuthForm mode={authMode} dismiss={hideAuthModal} />
+            </DefaultModal>
+        )
+    }
 
 	return (
 		<AuthContext.Provider

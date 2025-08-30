@@ -1,15 +1,12 @@
-// apps/web/src/shared/forms/schemas/memory.schema.ts
+// apps/web/src/features/memory/memory.schema.ts
 
 import { z } from 'zod'
-import type { FieldConfig } from '../'
+import type { FieldConfig } from '@shared/forms'
 import type { UploadedImage } from '@iam/types'
 
 export const memorySchema = z
 	.object({
 		content: z.string().max(280).optional(),
-		// year: z.number(),
-		// month: z.number(),
-		// day: z.number(),
         image: z
             .custom<UploadedImage>()
             .optional()

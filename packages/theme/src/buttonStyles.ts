@@ -5,25 +5,35 @@ import type { Theme } from './themes'
 
 export const getBaseButtonStyles = (theme: Theme) =>
 	StyleSheet.create({
-		base: {
+		container: {
             height: 48,
-            // paddingVertical: 4,
 			paddingHorizontal: 12,
 			borderRadius: 24,
 			alignItems: 'center',
 			justifyContent: 'center',
 		},
+        compactContainer: {
+            height: 30,
+        },
+        transparentContainer: {
+            height: 30,
+        },
 		text: {
 			fontWeight: Platform.OS === 'ios' ? '600' : 'bold',
-			fontSize: 16,
+			fontSize: 20,
 			color: theme.colors.text,
+		},
+		compactText: {
+			fontSize: 16,
 		},
 		disabled: {
 			opacity: 0.5,
 		},
 		pressed: {
 			opacity: 0.85,
-		},
+            borderColor: theme.colors.muted,
+            borderWidth: 1,
+        },
 	})
 
 export const getButtonVariantStyles = (theme: Theme) => ({

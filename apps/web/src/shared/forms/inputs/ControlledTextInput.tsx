@@ -1,6 +1,6 @@
 // apps/web/src/shared/forms/inputs/ControlledTextInput.tsx
 
-import React, { useEffect, useState, useRef, forwardRef, useImperativeHandle } from 'react'
+import React, { useState } from 'react'
 import {
 	TextInput,
 	Text,
@@ -8,7 +8,6 @@ import {
 	TextInputProps,
 	NativeSyntheticEvent,
 	TextInputContentSizeChangeEventData,
-	Platform,
 	StyleSheet,
 } from 'react-native'
 import { Controller, FieldError, Control, FieldPath, FieldValues } from 'react-hook-form'
@@ -21,10 +20,11 @@ type Props<T extends FieldValues> = {
 	error?: FieldError
 	label?: string
 	maxHeight?: number
-    inputRef?: React.RefObject<TextInput | null>
+    inputRef: React.RefObject<TextInput | null>
 } & TextInputProps
 
 export const ControlledTextInput = <T extends FieldValues>({
+    inputRef,
 	name,
 	control,
 	error,
@@ -33,15 +33,9 @@ export const ControlledTextInput = <T extends FieldValues>({
 	style,
 	...rest
 }: Props<T>) => {
-	const inputRef = useRef<TextInput>(null)
 	const [height, setHeight] = useState(40)
 	const [isFocused, setIsFocused] = useState(false)
     const { theme } = useTheme()
-	useEffect(() => {
-        if (rest.inputRef && inputRef.current) {
-            rest.inputRef.current = inputRef.current
-        }
-    }, [rest.inputRef])
 
 	const onContentSizeChange = (
 		e: NativeSyntheticEvent<TextInputContentSizeChangeEventData>
@@ -77,7 +71,6 @@ export const ControlledTextInput = <T extends FieldValues>({
                             formStyles.input,
                             { height, textAlignVertical: 'center' },
 							isFocused && formStyles.inputFocused,
-                            // error && styles.errorInput,
                             style,
                         ]}
                         placeholderTextColor={theme.colors.muted}

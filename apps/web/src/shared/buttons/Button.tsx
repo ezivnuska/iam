@@ -10,7 +10,7 @@ import {
 	PressableStateCallbackType,
 } from 'react-native'
 import { Row } from '@shared/grid'
-import { useButtonStyles, useTheme } from '@shared/hooks'
+import { useButtonStyles } from '@shared/hooks'
 import { resolveResponsiveProp } from '@iam/theme'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import type { ButtonVariant } from './Button.types'
@@ -36,7 +36,6 @@ export const Button: React.FC<ButtonProps> = ({
     showActivity = false,
     compact = false,
 }) => {
-    const { theme } = useTheme()
     const { baseButtonStyles, buttonVariants } = useButtonStyles()
     const variantStyles = buttonVariants[variant] ?? buttonVariants.primary
     const fontSize = resolveResponsiveProp({ xs: 14, sm: 16, md: 18, lg: 20 })
@@ -48,21 +47,15 @@ export const Button: React.FC<ButtonProps> = ({
 			style={({ pressed }) => {
                 const customStyle =
                     typeof style === 'function' ? style({ pressed }) : style
-            
+                
                 return [
-                    baseButtonStyles.base,
+                    baseButtonStyles.container,
                     { backgroundColor: variantStyles.backgroundColor },
                     disabled && baseButtonStyles.disabled,
                     pressed && baseButtonStyles.pressed,
                     customStyle,
-                    variant === 'transparent' && {
-                        borderColor: theme.colors.muted,
-                        borderWidth: 1,
-                    },
-                    compact && {
-                        height: 36,
-                        lineHeight: 36,
-                    },
+                    variant === 'transparent' && baseButtonStyles.transparentContainer,
+                    compact && baseButtonStyles.compactContainer,
                 ]
             }}            
 		>
@@ -73,6 +66,7 @@ export const Button: React.FC<ButtonProps> = ({
                         style={[
                             baseButtonStyles.text,
                             { fontSize, color: variantStyles.textColor },
+                            compact && baseButtonStyles.compactText,
                         ]}
                     >            
                         {label}

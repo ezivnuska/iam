@@ -38,7 +38,7 @@ export const getCommentsForRef = async (
 		})
 		.sort({ createdAt: -1 })
 
-	if (!comments || comments.length === 0) {
+	if (!comments) {
 		throw new HttpError(`${refType} comments not found`, 404)
 	}
 	return comments

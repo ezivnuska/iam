@@ -1,6 +1,6 @@
 // apps/web/src/features/memory/components/MemoryList.tsx
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useRef, useState, useEffect, useCallback } from 'react'
 import { View, ActivityIndicator } from 'react-native'
 import { MemoryListItem } from '.'
 import { InfiniteScrollView } from '@shared/scrolling'
@@ -11,10 +11,19 @@ import { useTheme } from '@shared/hooks'
 const PAGE_SIZE = 5
 
 export const MemoryList = () => {
-	const { memories, isRefreshing, isMutating } = useMemory()
+	const { memories, isInitialized, isRefreshing, isMutating, refreshMemories } = useMemory()
 	const { theme } = useTheme()
 
 	const [visibleMemories, setVisibleMemories] = useState(memories.slice(0, PAGE_SIZE))
+
+    const didMountRef = useRef(false)
+
+    useEffect(() => {
+        if (!didMountRef.current) {
+            didMountRef.current = true
+            refreshMemories()
+        }
+    }, [])
 
 	useEffect(() => {
 		setVisibleMemories(memories.slice(0, PAGE_SIZE))
@@ -28,17 +37,14 @@ export const MemoryList = () => {
 	}, [memories, visibleMemories.length])
 
 	const hasMore = visibleMemories.length < memories.length
-
+    
 	return (
         <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
             <InfiniteScrollView onScrollNearBottom={hasMore ? loadMoreMemories : undefined}>
-                <Column>
+                <Column spacing={12}>
                     {visibleMemories.map((memory) => (
                         <View key={memory.id}>
-                            <MemoryListItem
-                                memory={memory}
-                                // showPreview={!!memory.linkPreview}
-                            />
+                            <MemoryListItem memory={memory} />
                         </View>
                     ))}
                 </Column>
