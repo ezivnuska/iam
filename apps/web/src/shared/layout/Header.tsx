@@ -23,7 +23,7 @@ export const Header: React.FC<HeaderProps> = ({ user }) => {
             align='center'
             spacing={12}
             paddingHorizontal={12}
-            style={{ backgroundColor: 'red' }}
+            // style={{ backgroundColor: 'red' }}
         >
             <Row
                 align='center'
