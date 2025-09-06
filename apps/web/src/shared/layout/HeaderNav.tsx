@@ -9,9 +9,14 @@ import { resolveResponsiveProp, Size } from '@iam/theme'
 import { AuthNav } from '..'
 import { useCurrentRoute } from '@shared/navigation'
 import { navigate } from '@shared/navigation'
+import { User } from '@iam/types'
 
-export const HeaderNav: React.FC = () => {
-    const { isAuthenticated, isAuthInitialized, showAuthModal } = useAuth()
+type HeaderNavProps = {
+    user?: User | undefined
+}
+
+export const HeaderNav: React.FC<HeaderNavProps> = ({ user }) => {
+    const { showAuthModal } = useAuth()
     const { isDark, toggleTheme } = useTheme()
     const { orientation } = useDeviceInfo()
     const currentRoute = useCurrentRoute()
@@ -65,14 +70,10 @@ export const HeaderNav: React.FC = () => {
                     />
                 </FlexBox>
 
-                {isAuthInitialized && (
-                    <>
-                        {isAuthenticated ? (
-                            <AuthNav />
-                        ) : (
-                            <Button label='Sign In' onPress={() => showAuthModal(false)} compact />
-                        )}
-                    </>
+                {user ? (
+                    <AuthNav user={user} />
+                ) : (
+                    <Button label='Sign In' onPress={() => showAuthModal(false)} compact />
                 )}
             </FlexBox>
         </FlexBox>

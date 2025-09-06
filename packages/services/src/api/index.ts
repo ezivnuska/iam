@@ -1,6 +1,7 @@
 // packages/services/src/api/index.ts
 
 export * from './auth'
+export * from './authHeaders'
 export * from './bonds'
 export * from './comments'
 export * from './http'

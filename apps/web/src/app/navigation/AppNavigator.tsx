@@ -13,7 +13,7 @@ import { useTheme, useDeviceInfo } from '@shared/hooks'
 import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context'
 
 export const AppNavigator = () => {
-	const { isAuthInitialized } = useAuth()
+	const { isAuthInitialized, user } = useAuth()
 	const { theme } = useTheme()
 	const { orientation } = useDeviceInfo()
 	const isLandscape = orientation === 'landscape'
@@ -45,7 +45,7 @@ export const AppNavigator = () => {
                                 maxWidth: isLandscape ? 700 : 500,
                             }}
                         >
-                            <Header />
+                            <Header user={user} />
                             <RootNavigator />
                         </FlexBox>
                     )

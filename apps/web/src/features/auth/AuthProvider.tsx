@@ -1,206 +1,174 @@
 // apps/web/src/features/auth/AuthProvider.tsx
 
-import React, { useEffect, useState, createContext } from 'react'
-import { Modal, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import React, { createContext, useEffect, useState, useMemo } from 'react'
+import { Modal, Platform } from 'react-native'
 import {
-	clearToken,
 	logoutRequest,
+	trySigninFromStoredToken,
+	tokenStorage,
 	setAuthHeader,
 	clearAuthHeader,
-	trySigninFromStoredToken,
 } from '@iam/services'
-import { navigate } from '@shared/navigation'
-import { Column, Row } from '@shared/grid'
-import { Button } from '@shared/buttons'
-import { paddingVertical, withAlpha } from '@iam/theme'
-import type { AuthResponseType, User } from '@iam/types'
 import { useSocket, useTheme } from '@shared/hooks'
 import { AuthLayer } from '@features/auth'
 import { AuthForm } from '.'
-import type { AuthMode } from '@shared/forms'
-import Ionicons from '@expo/vector-icons/Ionicons'
+import { AuthMode } from '@shared/forms'
 import { DefaultModal } from '@shared/modals/DefaultModal'
+import type { AuthResponseType, User } from '@iam/types'
 
 export type AuthContextType = {
-    disconnecting: boolean,
+	disconnecting: boolean
 	isAuthenticated: boolean
 	isAuthInitialized: boolean
-    loading: boolean
-    secure?: boolean
-	user: User | null
-    authenticate: (response: AuthResponseType) => void
-    hideAuthModal: () => void,
+	loading: boolean
+	secure?: boolean
+	user?: User
+	authenticate: (response: AuthResponseType) => Promise<void>
+	hideAuthModal: () => void
 	logout: () => Promise<void>
-	setUser: (user: User | null) => void
-    showAuthModal: (isSecure: boolean) => void
+	setUser: (user: User | undefined) => void
+	showAuthModal: (isSecure: boolean) => void
 }
 
 export const AuthContext = createContext<AuthContextType>({
-    disconnecting: false,
+	disconnecting: false,
 	isAuthenticated: false,
 	isAuthInitialized: false,
-    loading: false,
-    secure: false,
-	user: null,
-    hideAuthModal: () => {},
-    showAuthModal: (isSecure: boolean) => {},
+	loading: false,
+	secure: false,
+	user: undefined,
+	authenticate: async () => {},
+	hideAuthModal: () => {},
 	logout: async () => {},
 	setUser: () => {},
-	authenticate: () => {},
+	showAuthModal: () => {},
 })
 
-type AuthProviderProps = {
-	children: React.ReactNode
+type AuthState = {
+	user?: User
+	isAuthInitialized: boolean
+	disconnecting: boolean
+	modalVisible: boolean
+	secure: boolean
+	authMode: AuthMode
 }
 
-export const AuthProvider = ({
-	children,
-}: AuthProviderProps) => {
-	const [user, setUser] = useState<User | null>(null)
-	const [isAuthenticated, setIsAuthenticated] = useState(false)
-	const [isAuthInitialized, setIsAuthInitialized] = useState(false)
-	const [disconnecting, setDisconnecting] = useState(false)
-    const [modalVisible, setModalVisible] = useState(false)
-    const [secure, setSecure] = useState(false)
-    const [authMode, setAuthMode] = useState<AuthMode>('signin')
+type AuthProviderProps = { children: React.ReactNode }
 
-    const { theme } = useTheme()
+export const AuthProvider = ({ children }: AuthProviderProps) => {
+	const { theme } = useTheme()
+	const [state, setState] = useState<AuthState>({
+		user: undefined,
+		isAuthInitialized: false,
+		disconnecting: false,
+		modalVisible: false,
+		secure: false,
+		authMode: AuthMode.SIGNIN,
+	})
 
-    const useNativeModal = Platform.OS !== 'web'
+	const useNativeModal = Platform.OS !== 'web'
+	const { connectSocket, disconnectSocket } = useSocket()
 
-    const showAuthModal = (isSecure = false) => {
-        setModalVisible(true)
-        if (isSecure) setSecure(true)
-    }
+	const isAuthenticated = useMemo(() => !!state.user, [state.user])
+	const loading = useMemo(() => !state.isAuthInitialized, [state.isAuthInitialized])
 
-    const hideAuthModal = () => {
-        setModalVisible(false)
-        if (secure) navigate('Feed')
-    }
-    
-    const { connectSocket, disconnectSocket } = useSocket()
+	// ---------------- Modal ----------------
+	const showAuthModal = (secure = false) => {
+		if (!state.modalVisible) setState(prev => ({ ...prev, modalVisible: true, secure }))
+	}
+	const hideAuthModal = () => setState(prev => ({ ...prev, modalVisible: false, secure: false }))
 
-    const loading = !isAuthInitialized
+	// ---------------- Set User ----------------
+	const setUser = (user: User | undefined) => setState(prev => ({ ...prev, user }))
+	useEffect(() => {
+		if (state.user && state.modalVisible) hideAuthModal()
+	}, [state.user])
 
+	// ---------------- Initialize Auth ----------------
 	useEffect(() => {
 		const initialize = async () => {
 			try {
 				const authResponse = await trySigninFromStoredToken()
-				if (authResponse) {
-					await authenticate(authResponse)
-				} else {
-					navigate('Feed')
-				}
+				if (authResponse) await authenticate(authResponse)
 			} catch (err) {
-				console.log('Error initializing')
+				console.log('[AuthProvider] Error initializing auth:', err)
 			} finally {
-				setIsAuthInitialized(true)
+				setState(prev => ({ ...prev, isAuthInitialized: true }))
 			}
 		}
-
 		initialize()
 	}, [])
 
+	// ---------------- Authenticate ----------------
 	const authenticate = async (data: AuthResponseType) => {
-		const { accessToken, user: userProfile } = data
-		setAuthHeader(accessToken)
-		setUser(userProfile)
-		setIsAuthenticated(true)
-		connectSocket(accessToken)
+		const { user, accessToken, refreshToken } = data
+
+		if (Platform.OS !== 'web' && accessToken && refreshToken) {
+			// Native - store tokens and set header
+			await tokenStorage.save(accessToken, refreshToken)
+			setAuthHeader(accessToken)
+		}
+
+		// Web - cookies handle auth automatically
+		const tokenForSocket = Platform.OS === 'web' ? undefined : accessToken
+		connectSocket(tokenForSocket)
+
+		setUser(user)
 	}
 
+	// ---------------- Logout ----------------
 	const logout = async () => {
-        setDisconnecting(true)
+		setState(prev => ({ ...prev, disconnecting: true }))
 		await logoutRequest()
-		await clearToken()
-		disconnectSocket()
+
+		if (Platform.OS !== 'web') await tokenStorage.clear()
 		clearAuthHeader()
-		setUser(null)
-		setIsAuthenticated(false)
-        setDisconnecting(false)
-		navigate('Feed')
+		disconnectSocket()
+		setState(prev => ({ ...prev, user: undefined, disconnecting: false }))
 	}
-    
-    const renderModal = () => {
-        return (
-            <DefaultModal
-                title={authMode === 'signin' ? 'Sign In' : 'Sign Up'}
-                onDismiss={() => setModalVisible(false)}
-            >
-                <AuthForm mode={authMode} dismiss={hideAuthModal} />
-            </DefaultModal>
-        )
-    }
+
+	// ---------------- Modal Render ----------------
+	const renderModal = () => (
+		<DefaultModal
+			title={state.authMode === AuthMode.SIGNIN ? 'Sign In' : 'Sign Up'}
+			onDismiss={hideAuthModal}
+		>
+			<AuthForm mode={state.authMode} dismiss={hideAuthModal} />
+		</DefaultModal>
+	)
 
 	return (
 		<AuthContext.Provider
 			value={{
-                disconnecting,
+				disconnecting: state.disconnecting,
 				isAuthenticated,
-				isAuthInitialized,
-				user,
-                loading,
+				isAuthInitialized: state.isAuthInitialized,
+				loading,
+				user: state.user,
 				authenticate,
 				logout,
-                hideAuthModal,
+				hideAuthModal,
 				setUser,
-                showAuthModal,
+				showAuthModal,
 			}}
 		>
+			{state.modalVisible &&
+				(useNativeModal ? (
+					<Modal
+						transparent
+						visible
+						animationType="fade"
+						presentationStyle="overFullScreen"
+						onRequestClose={hideAuthModal}
+					>
+						{renderModal()}
+					</Modal>
+				) : (
+					renderModal()
+				))
+			}
 
-            {modalVisible ? (
-                useNativeModal ? (
-                    <Modal
-                        transparent
-                        visible={true}
-                        animationType='fade'
-                        presentationStyle='overFullScreen'
-                        onRequestClose={hideAuthModal}
-                    >
-                        {renderModal()}
-                    </Modal>
-                ) : (
-                    renderModal()
-                )
-            ) : null}
-
-            <AuthLayer>
-                {children}
-            </AuthLayer>
-
+			<AuthLayer>{children}</AuthLayer>
 		</AuthContext.Provider>
 	)
 }
-
-const styles = StyleSheet.create({
-    overlay: {
-        position: 'absolute',
-		top: 0,
-		left: 0,
-		right: 0,
-		bottom: 0,
-		zIndex: 9999,
-        justifyContent: 'center',
-        alignItems: 'center',
-        pointerEvents: 'box-none',
-    },
-    content: {
-		flex: 1,
-		width: '90%',
-		maxWidth: 400,
-		minWidth: 300,
-        alignSelf: 'center',
-	},
-    header: {
-		flex: 1,
-	},
-	title: {
-		fontSize: 24,
-		fontWeight: '600',
-	},
-    scrollContent: {
-		flexGrow: 1,
-        paddingTop: 6,
-        paddingBottom: 24,
-	},
-})

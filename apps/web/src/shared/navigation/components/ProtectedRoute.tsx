@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react'
 import { LoadingPanel } from '@shared/ui'
 import { useAuth } from '@features/auth'
+import { navigate } from '@shared/navigation'
 
 type Props = {
 	children: React.ReactNode
@@ -13,7 +14,8 @@ export const ProtectedRoute = ({ children }: Props) => {
     
     useEffect(() => {
         if (!isAuthenticated && !disconnecting) {
-            showAuthModal(true)
+            // showAuthModal(true)
+            navigate('Feed')
         }
     }, [])
 

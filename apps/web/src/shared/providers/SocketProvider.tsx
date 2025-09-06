@@ -8,7 +8,7 @@ import React, {
 	useState,
 } from 'react'
 import { io, Socket } from 'socket.io-client'
-import { getToken } from '@iam/services'
+import { getCachedToken } from '@iam/services'
 import type {
 	Bond,
 	ClientToServerEvents,
@@ -23,7 +23,7 @@ type KoFiDonation = {
 
 export type SocketContextType = {
 	socket: Socket | null
-	connectSocket: (token: string) => void
+	connectSocket: (token?: string) => void
 	disconnectSocket: () => void
 	onDonation: (cb: (data: KoFiDonation) => void) => () => void
 	onChatMessage: (cb: (msg: any) => void) => () => void
@@ -58,7 +58,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
 		error: [] as ((msg: string) => void)[],
 	})
 
-	const connectSocket = (token: string) => {
+	const connectSocket = (token?: string) => {
 		if (!token) return
         console.log('connecting socket...')
 		if (socketRef.current) {
@@ -66,14 +66,14 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
 		}
 
 		const socketInstance = io(SOCKET_URL, {
-			auth: { token },
+			auth: token ? { token } : undefined,
 			withCredentials: true,
 			transports: ['websocket'],
 			path: '/socket.io',
 		})
 
 		socketInstance.on('reconnect_attempt', async () => {
-			const freshToken = await getToken()
+			const freshToken = await getCachedToken()
 			if (freshToken) {
 				(socketInstance.auth as { token: string }).token = freshToken
 			}

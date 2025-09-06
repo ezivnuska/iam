@@ -53,5 +53,12 @@ export interface Author {
 
 export interface AuthResponseType {
 	accessToken: string
+    refreshToken?: string
 	user: User
 }
+
+export interface RefreshTokenResponse {
+    accessToken: string
+    user: User
+}
+  

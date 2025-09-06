@@ -4,7 +4,7 @@ import React from 'react'
 import { View } from 'react-native'
 import { Column } from '@shared/grid'
 import { useDeviceInfo, useTheme } from '@shared/hooks'
-import { HeaderContainer } from '..'
+import { HeaderContainer, ScreenHeaderContainer } from '..'
 import { Size } from '@iam/theme'
 
 interface ScreenContainerProps<HProps extends object = {}, SProps extends object = {}> {
@@ -43,9 +43,9 @@ export function ScreenContainer<HProps extends object = {}, SProps extends objec
                 style={{ width: '100%' }}
             >
                 {HeaderComponent && (
-                    <HeaderContainer>
+                    <ScreenHeaderContainer>
                         <HeaderComponent {...(headerProps as HProps)} />
-                    </HeaderContainer>
+                    </ScreenHeaderContainer>
                 )}
                 
                 <View style={{ flex: 1, flexGrow: 1, backgroundColor: theme.colors.background }}>

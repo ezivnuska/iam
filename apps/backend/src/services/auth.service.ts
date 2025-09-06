@@ -3,10 +3,19 @@
 import { UserModel } from '../models/user.model'
 import { hashPassword, comparePassword } from '../utils/password'
 import { HttpError } from '../utils/HttpError'
-import { createPayload, TokenPayload, generateToken, generateRefreshToken, verifyToken } from '@iam/auth'
+import {
+	createPayload,
+	TokenPayload,
+	generateToken,
+	generateRefreshToken,
+	verifyToken,
+} from '@iam/auth'
 import crypto from 'crypto'
 import { normalizeUser } from '@iam/utils'
 
+/**
+ * Register a new user
+ */
 export const registerUser = async (email: string, username: string, password: string) => {
 	const existing = await UserModel.findOne({ email })
 	if (existing) throw new HttpError('Email already registered', 409)
@@ -25,14 +34,20 @@ export const registerUser = async (email: string, username: string, password: st
 	await user.save()
 
 	const payload = createPayload(user)
-	const token = generateToken(payload)
+	const accessToken = generateToken(payload)
 	const refreshToken = generateRefreshToken(payload)
 
-	return { token, refreshToken }
+	return { accessToken, refreshToken, user: normalizeUser(user) }
 }
 
+/**
+ * Login an existing user
+ */
 export const loginUser = async (email: string, password: string) => {
-	const user = await UserModel.findOne({ email }).select('+password').populate('avatar')
+	const user = await UserModel.findOne({ email })
+		.select('+password')
+		.populate('avatar')
+
 	if (!user) {
 		throw new HttpError('Validation failed', undefined, {
 			field: 'email',
@@ -46,7 +61,7 @@ export const loginUser = async (email: string, password: string) => {
 			field: 'password',
 			issue: 'Invalid password',
 		})
-	}  
+	}
 
 	const payload = createPayload(user)
 	const accessToken = generateToken(payload)
@@ -55,6 +70,9 @@ export const loginUser = async (email: string, password: string) => {
 	return { accessToken, refreshToken, user: normalizeUser(user) }
 }
 
+/**
+ * Refresh an access token using a refresh token
+ */
 export const refreshAccessToken = async (refreshToken: string) => {
 	if (!refreshToken) throw new HttpError('No refresh token provided', 401)
 
@@ -73,6 +91,9 @@ export const refreshAccessToken = async (refreshToken: string) => {
 	return { accessToken }
 }
 
+/**
+ * Verify email token and activate user
+ */
 export const verifyEmailToken = async (token: string) => {
 	const user = await UserModel.findOne({
 		verifyToken: token,
@@ -87,6 +108,9 @@ export const verifyEmailToken = async (token: string) => {
 	await user.save()
 }
 
+/**
+ * Forgot password - issue reset token
+ */
 export const forgotPassword = async (email: string) => {
 	const user = await UserModel.findOne({ email })
 	if (!user) throw new HttpError('No user with that email', 400)
@@ -99,6 +123,9 @@ export const forgotPassword = async (email: string) => {
 	// TODO: send email with reset URL
 }
 
+/**
+ * Reset password
+ */
 export const resetPassword = async (token: string, newPassword: string) => {
 	const user = await UserModel.findOne({
 		resetPasswordToken: token,

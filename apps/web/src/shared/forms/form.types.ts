@@ -11,4 +11,7 @@ export type FieldConfig<T> = {
     placeholder?: string
 }
 
-export type AuthMode = 'signin' | 'signup'
+export enum AuthMode {
+    SIGNIN = 'signin',
+    SIGNUP = 'signup',
+}

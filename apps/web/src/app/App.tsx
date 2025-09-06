@@ -17,9 +17,9 @@ const App = () => {
                             <SocketProvider>
                                 <AuthProvider>
                                     <ModalProvider>
-                <MemoryProvider>
-                                        <AppNavigator />
-                </MemoryProvider>
+                                        <MemoryProvider>
+                                            <AppNavigator />
+                                        </MemoryProvider>
                                     </ModalProvider>
                                 </AuthProvider>
                             </SocketProvider>

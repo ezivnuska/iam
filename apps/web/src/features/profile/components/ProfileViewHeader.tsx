@@ -1,6 +1,6 @@
 // apps/web/src/features/profile/components/ProfileViewHeader.tsx
 
-import React, { useMemo } from 'react'
+import React from 'react'
 import { useNavigationState } from '@react-navigation/native'
 import { useAuth } from '@features/auth'
 import { useImage, useModal } from '@shared/hooks'
@@ -33,10 +33,6 @@ export const ProfileViewHeader: React.FC<any> = () => {
         }
         return null
     })
-
-    useMemo(() => {
-        console.log('route', route)
-    }, [route])
     
     const gotoImages = () => navigate('Images' as never)
 

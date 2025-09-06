@@ -5,14 +5,17 @@ import { View } from 'react-native'
 import { IconButton } from '@shared/buttons'
 import { Avatar } from '@shared/ui'
 import { FlexBox } from '@shared/grid'
-import { useAuth } from '@features/auth'
 import { useDeviceInfo } from '@shared/hooks'
 import { resolveResponsiveProp, Size } from '@iam/theme'
 import type { AvatarSize } from '@shared/ui'
 import { navigate, useCurrentRoute } from '@shared/navigation'
+import type { User } from '@iam/types'
 
-export const AuthNav: React.FC = () => {
-    const { user } = useAuth()
+type AuthNavProps = {
+    user?: User | undefined
+}
+
+export const AuthNav: React.FC<AuthNavProps> = ({ user }) => {
     const { orientation } = useDeviceInfo()
     const currentRoute = useCurrentRoute()
 

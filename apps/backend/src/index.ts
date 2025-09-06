@@ -44,11 +44,13 @@ registerSocketServer(io)
 initSockets(io)
 
 // --- Express Middleware ---
-app.use(cookieParser())
+
 app.use(cors(corsOptions))
 app.use(express.json({ limit: '5mb' }))
 app.use(express.urlencoded({ extended: true }))
-app.use(express.static('dist'))
+app.use(cookieParser())
+
+// app.use(express.static('dist'))
 
 const imagesPath = path.resolve(__dirname, '../../images')
 app.use('/images', express.static(imagesPath))

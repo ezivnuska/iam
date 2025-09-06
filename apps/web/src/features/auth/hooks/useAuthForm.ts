@@ -1,8 +1,8 @@
 // apps/web/src/hooks/useAuthForm.ts
 
-import { Alert } from 'react-native'
+import { Alert, Platform } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { saveToken, signinRequest, signupRequest } from '@iam/services'
+import { signinRequest, signupRequest, tokenStorage } from '@iam/services'
 import type { Path, UseFormSetError, FieldValues } from 'react-hook-form'
 import { useAuth } from '@features/auth'
 import type { AuthMode } from '@shared/forms'
@@ -10,18 +10,19 @@ import type { AuthMode } from '@shared/forms'
 export function useAuthForm<T extends FieldValues>() {
     const { authenticate, hideAuthModal } = useAuth()
 	const login = async (email: string, password: string) => {
-		const authenticatedUser = await signinRequest(email, password)
-		await saveToken(authenticatedUser.accessToken)
-		await authenticate(authenticatedUser)
+        const authResponse = await signinRequest(email, password)
+        // Native - store tokens securely
+        if (Platform.OS !== 'web') await tokenStorage.save(authResponse.accessToken)
+        await authenticate(authResponse)
         hideAuthModal()
-	}
+    }
 
 	const signup = async (email: string, username: string, password: string) => {
-		const authenticatedUser = await signupRequest(email, username, password)
-		await saveToken(authenticatedUser.accessToken)
-		await authenticate(authenticatedUser)
+        const authResponse = await signupRequest(email, username, password)
+        if (Platform.OS !== 'web') await tokenStorage.save(authResponse.accessToken)
+        await authenticate(authResponse)
         hideAuthModal()
-	}
+    }
 
 	const handleSubmit = async (
 		data: T,

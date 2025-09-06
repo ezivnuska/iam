@@ -7,6 +7,8 @@ declare global {
 	namespace Express {
 		interface Request {
 			user?: TokenPayload
+            refreshToken?: string
+            clientType?: string
 			file?: MulterFile
 			files?: MulterFile[]
 		}

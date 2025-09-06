@@ -1,67 +1,39 @@
-// packages/services/src/tokenStorage.ts
+// packages/services/src/auth/tokenStorage.ts
 
-import localStorage from '@react-native-async-storage/async-storage'
-import { TOKEN_KEY } from '../constants'
+import { Platform } from 'react-native'
 
-// Save token to storage
-export async function saveToken(token: string) {
-	localStorage.setItem(TOKEN_KEY, token)
+// Conditionally import SecureStore for native
+let SecureStore: typeof import('expo-secure-store') | undefined
+if (Platform.OS !== 'web') {
+	SecureStore = require('expo-secure-store')
 }
 
-// Get token from storage
-export async function getToken(): Promise<string | null> {
-	return localStorage.getItem(TOKEN_KEY)
+const TOKEN_KEY = 'accessToken'
+const REFRESH_KEY = 'refreshToken'
+
+export const tokenStorage = {
+	
+	async save(accessToken: string, refreshToken?: string): Promise<void> {
+		if (Platform.OS === 'web') return
+		await SecureStore?.setItemAsync(TOKEN_KEY, accessToken)
+		if (refreshToken) {
+			await SecureStore?.setItemAsync(REFRESH_KEY, refreshToken)
+		}
+	},
+
+	async getAccessToken(): Promise<string | null> {
+		if (Platform.OS === 'web') return null
+		return (await SecureStore?.getItemAsync(TOKEN_KEY)) ?? null
+	},
+
+	async getRefreshToken(): Promise<string | null> {
+		if (Platform.OS === 'web') return null
+		return (await SecureStore?.getItemAsync(REFRESH_KEY)) ?? null
+	},
+
+	async clear(): Promise<void> {
+		if (Platform.OS === 'web') return
+		await SecureStore?.deleteItemAsync(TOKEN_KEY)
+		await SecureStore?.deleteItemAsync(REFRESH_KEY)
+	},
 }
-
-// Clear token from storage
-export async function clearToken() {
-	localStorage.removeItem(TOKEN_KEY)
-}
-
-export async function getUserFromToken(token: string): Promise<any> {
-    try {
-        const payload = JSON.parse(atob(token.split('.')[1]))
-        return { email: payload.email, username: payload.username } // Add other fields as needed
-    } catch (error) {
-        throw new Error('Failed to decode token')
-    }
-}
-
-//
-// with expo-secure-storage...
-
-// import { Platform } from 'react-native'
-
-// // Conditionally import to avoid crash on web
-// let SecureStore: typeof import('expo-secure-store') | undefined
-// if (Platform.OS !== 'web') {
-//   SecureStore = require('expo-secure-store')
-// }
-
-// const STORAGE_KEY = 'accessToken'
-
-// export const tokenStorage = {
-//   async save(key: string, value: string) {
-//     if (Platform.OS === 'web') {
-//       localStorage.setItem(key, value)
-//     } else {
-//       await SecureStore?.setItemAsync?.(key, value)
-//     }
-//   },
-
-//   async get(key: string): Promise<string | null> {
-//     if (Platform.OS === 'web') {
-//       return localStorage.getItem(key)
-//     } else {
-//       return await SecureStore?.getItemAsync?.(key) ?? null
-//     }
-//   },
-
-//   async remove(key: string) {
-//     if (Platform.OS === 'web') {
-//       localStorage.removeItem(key)
-//     } else {
-//       await SecureStore?.deleteItemAsync?.(key)
-//     }
-//   },
-// }
